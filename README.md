@@ -27,3 +27,6 @@ Server specs:
 Appunti per how-to da seguire:
 - Generale: https://www.kreaweb.be/diy-home-server-introduction/
 - GPU distribuita: 
+- Post-install: https://opensourcelibs.com/lib/xshok-proxmox, https://opensourcelibs.com/lib/proxmox-zfs-postinstall
+- Risorse vari: https://opensourcelibs.com/lib/awesome-proxmox-ve
+- Netdata: https://community.netdata.cloud/t/best-way-to-setup-netdata-in-a-proxmox-host-with-some-lxc-containers/81
