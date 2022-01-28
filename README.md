@@ -25,6 +25,7 @@ Server specs:
 - Disco(i) per TrueNas con HBA in IT mode (3x4 tera - raidz)
 
 Appunti per how-to da seguire:
+- Flash H310: https://fohdeesha.com/docs/H310.html
 - Generale: https://www.kreaweb.be/diy-home-server-introduction/
 - GPU distribuita: 
 - Post-install: https://opensourcelibs.com/lib/xshok-proxmox, https://opensourcelibs.com/lib/proxmox-zfs-postinstall
