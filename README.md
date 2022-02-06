@@ -11,13 +11,14 @@ Proxmox (Hypervisor)
 - PiHole (Firewall)
 - TrueNAS (filesystem)
 - HEIMDALL (AppDashboard)
-- debian(s) con Docker Swarm
+- debian(s) con Docker Swarm o Microk8s
     (https://thehomelab.wiki/books/dns-reverse-proxy)
     - Nginx proxy manager
 	- Cloudflare DNS docker
 	- MariaDB docker
 	- Authelia
 	- PiHole
+      - Guacamole
 
 Server specs:
 - Disco(i) per OS (3x250GB - raidz)
