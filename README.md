@@ -28,7 +28,7 @@ Server specs:
 Appunti per how-to da seguire:
 - Flash H310: https://fohdeesha.com/docs/H310.html
 - Generale: https://www.kreaweb.be/diy-home-server-introduction/
-- GPU distribuita: 
+- GPU distribuita: https://drive.google.com/drive/folders/15hGRYQGB69pES2GyUR9Q2zHVvEAVHxDa
 - Post-install: https://opensourcelibs.com/lib/xshok-proxmox, https://opensourcelibs.com/lib/proxmox-zfs-postinstall
 - Risorse vari: https://opensourcelibs.com/lib/awesome-proxmox-ve
 - Netdata: https://community.netdata.cloud/t/best-way-to-setup-netdata-in-a-proxmox-host-with-some-lxc-containers/81
