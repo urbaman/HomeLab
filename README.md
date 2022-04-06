@@ -36,7 +36,8 @@ Appunti per how-to da seguire:
 
 ZFS: aggiungere un disco creando un mirror:
 
-` #backup the partition table from da0 to restore to (new) da1 
+```
+#backup the partition table from da0 to restore to (new) da1 
 
 gpart backup vtbd0 > /tmp/vtbd0.bak
 
@@ -52,4 +53,5 @@ gpart bootcode -b /boot/pmbr -p /boot/gptzfsboot -i 2 vtbd1
 
 #write EFI partition to new disk
 
-dd if=/boot/boot1.efifat of=/dev/vtbd1p1 bs=4m `
+dd if=/boot/boot1.efifat of=/dev/vtbd1p1 bs=4m
+```
