@@ -13,3 +13,5 @@ https://digitalis.io/blog/postgresql/deploying-postgresql-for-high-availability-
 # Spostare la directory di data
 
 https://www.digitalocean.com/community/tutorials/how-to-move-a-postgresql-data-directory-to-a-new-location-on-ubuntu-16-04
+
+# PgBouncer
