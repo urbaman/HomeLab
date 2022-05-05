@@ -19,3 +19,9 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-e
 ## Glusterfs
 
 https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
+
+# Keepalived
+
+'''
+Ciao
+'''
