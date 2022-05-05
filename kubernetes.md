@@ -1,8 +1,8 @@
 # Kubernetes
 
-3x controllers
-3x (minimum) workers
-glusterfs volume
+- 3x controllers
+- 3x (minimum) workers
+- glusterfs volume
 
 ## Kuernetes
 
