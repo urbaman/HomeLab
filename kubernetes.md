@@ -4,7 +4,7 @@
 - 3x (minimum) workers
 - glusterfs volume
 
-## Kuernetes
+## Kubernetes
 
 ### High availability
 
