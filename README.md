@@ -20,6 +20,8 @@ Proxmox (Hypervisor)
 	- PiHole
       - Guacamole
 
+https://github.com/awesome-selfhosted/awesome-selfhosted
+
 ### Server specs:
 - Disco(i) per OS (3x250GB - raidz)
 - Disco(i) per VMs (3x1 tera - raidz)
