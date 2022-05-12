@@ -1,8 +1,10 @@
 # Kubernetes
 
-- 3x controllers
-- 3x (minimum) workers
-- glusterfs volume
+- 3x controllers: k8cp1, k8cp2, k8cp3
+- 3x workers: k8w1, k8w2, k8w3
+- 3x etcd cluster: etcd1, etce2, etcd3
+- 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
+- 3x glusterfs cluster: truenas1, truenas2, truenas3
 
 ## Kubernetes
 
