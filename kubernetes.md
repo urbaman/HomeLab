@@ -1,30 +1,38 @@
 # Kubernetes
 
+## Cluster structure
+
 - 3x controllers: k8cp1, k8cp2, k8cp3
 - 3x workers: k8w1, k8w2, k8w3
 - 3x etcd cluster: etcd1, etce2, etcd3
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
 - 3x glusterfs cluster: truenas1, truenas2, truenas3
 
-## Kubernetes
+## 2) Ecternal Etcd
 
-### High availability
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
+
+## 1) Glusterfs
+
+https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
+
+## 2) Ecternal Etcd
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
+
+## 3) kubernetes
+
+...
+
+## 4) High availability
 
 https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
 
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 
-### Ecternal Etcd
+### Keepalived
 
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
-
-## Glusterfs
-
-https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
-
-# Keepalived
-
-## All
+#### All
 
 /etc/keepalived/check_apiserver.sh
 
@@ -42,7 +50,7 @@ if ip addr | grep -q 10.0.50.64; then
 fi
 ```
 
-## Master
+#### Master
 
 ```bash
 ! /etc/keepalived/keepalived.conf
@@ -76,7 +84,7 @@ vrrp_instance VI_1 {
 }
 ```
 
-## Backup
+#### Backup
 
 ```bash
 ! /etc/keepalived/keepalived.conf
@@ -110,9 +118,9 @@ vrrp_instance VI_1 {
 }
 ```
 
-# Haproxy
+### Haproxy
 
-## All
+#### All
 
 ```bash
 # /etc/haproxy/haproxy.cfg
