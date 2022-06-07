@@ -8,7 +8,11 @@
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
 - 3x glusterfs cluster: truenas1, truenas2, truenas3
 
-## 2) Ecternal Etcd
+## 1) Glusterfs
+
+https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
+
+## 2) External Etcd
 
 ### Downloading etcd Binaries
 
@@ -240,14 +244,6 @@ Finally, let’s ensure that all the nodes are participating in the cluster.
 etcdctl --endpoints https://10.0.0.60:2379 --cert /etc/etcd/server.crt --cacert /etc/etcd/etcd-ca.crt --key /etc/etcd/server.key member list
 ```
 Congratulations! You now have a secure, distributed, highly available etcd cluster that’s ready for a production-grade K3s cluster environment.
-
-## 1) Glusterfs
-
-https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
-
-## 2) Ecternal Etcd
-
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
 
 ## 3) kubernetes
 
