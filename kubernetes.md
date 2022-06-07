@@ -58,7 +58,7 @@ First, let’s create the CA certificate that’s going to be used by all the et
 
 ```bash
 echo '{"CN":"CA","key":{"algo":"rsa","size":2048}}' | cfssl gencert -initca - | cfssljson -bare ca -
-echo '{"signing":{"default":{"expiry":"43800h","usages":["signing","key encipherment","server auth","client auth"]}}}' &gt; ca-config.json
+echo '{"signing":{"default":{"expiry":"43800h","usages":["signing","key encipherment","server auth","client auth"]}}}' > ca-config.json
 ```
 
 This results in three files – ca-key.pem, ca.pem, and ca.csr
