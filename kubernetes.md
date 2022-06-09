@@ -204,6 +204,20 @@ WantedBy=multi-user.target
 
 Since the configuration per node is moved into the dedicated file (/etc/etcd/etcd.conf), the unit file remains the same for all the nodes.
 
+Now we mount glusterfs for external data persiostence.
+
+```bash
+sudo apt install glusterfs-client
+sudo mkdir -p /var/lib/etcd
+sudo vi /etc/fstab
+```
+
+Add
+
+```bash
+glusterserver1:/volname/etcd/etcd1 /var/lib/etcd glusterfs defaults,_netdev,backup-volfile-servers=glusterserver2:glusterserver3 0 0
+```
+
 We are now ready to start the service. Run the below command on each node to start the etcd cluster.
 
 ```bash
