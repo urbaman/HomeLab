@@ -261,7 +261,55 @@ Congratulations! You now have a secure, distributed, highly available etcd clust
 
 ## 3) kubernetes
 
-...
+### Containerd
+
+Load the necessary modules for Containerd:
+
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+
+Setup the required kernel parameters:
+
+```bash
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+EOF
+
+sudo sysctl --system
+```
+
+Configure containerd:
+
+```bash
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo systemctl restart containerd
+```
+
+### Disable swap
+
+Turn swap off:
+
+```bash
+sudo swapoff -a
+```
+
+And prevents it from turning on after reboots by commenting it in the /etc/fstab file:
+
+```bash
+sudo vi /etc/fstab
+```
+
+https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
 
 ## 4) High availability
 
