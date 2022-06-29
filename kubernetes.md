@@ -332,14 +332,6 @@ EOF
 sudo sysctl --system
 ```
 
-Configure containerd:
-
-```bash
-sudo mkdir -p /etc/containerd
-sudo containerd config default | sudo tee /etc/containerd/config.toml
-sudo systemctl restart containerd
-```
-
 ### Disable swap
 
 Turn swap off:
@@ -352,6 +344,95 @@ And prevents it from turning on after reboots by commenting it in the /etc/fstab
 
 ```bash
 sudo vi /etc/fstab
+```
+
+### Containerd
+
+#### Using Docker Repository
+
+Docker offers the containerd containerd.io package in the .deb format through the Docker repository. So, install the required packages for containerd installation.
+
+```bash
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg lsb-release
+```
+
+##### Set up Docker Repository
+
+Then, add the Docker’s GPG key to your system.
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+And then, add the Docker repository to the system by running the below command.
+
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+```
+
+##### Install Containerd
+
+After adding the Docker’s repository, update the repository index.
+
+```bash
+sudo apt update
+```
+
+Then, install containerd using the apt command.
+
+```bash
+sudo apt install -y containerd.io
+```
+
+By now, the containerd service should be up and running.
+
+```bash
+sudo systemctl status containerd
+```
+
+Output:
+
+```bash
+● containerd.service - containerd container runtime
+     Loaded: loaded (/lib/systemd/system/containerd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2022-05-01 13:59:49 EDT; 18s ago
+       Docs: https://containerd.io
+    Process: 2182 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)
+   Main PID: 2183 (containerd)
+      Tasks: 8
+     Memory: 18.8M
+        CPU: 63ms
+     CGroup: /system.slice/containerd.service
+             └─2183 /usr/local/bin/containerd
+
+May 01 13:59:49 ubuntu-2204 containerd[2183]: time="2022-05-01T13:59:49.941358574-04:00" level=info msg=serving... address=/run/containerd/containerd.sock.ttrpc
+May 01 13:59:49 ubuntu-2204 containerd[2183]: time="2022-05-01T13:59:49.941402747-04:00" level=info msg=serving... address=/run/containerd/containerd.sock
+May 01 13:59:49 ubuntu-2204 systemd[1]: Started containerd container runtime.
+```
+
+##### Containerd configuration for Kubernetes
+
+Containerd uses a configuration file config.toml for managing demons. For Kubernetes, you need to configure the Systemd group driver for runC.
+
+```bash
+cat <<EOF | sudo tee -a /etc/containerd/config.toml
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+SystemdCgroup = true
+EOF
+```
+
+Then, enable CRI plugins by commenting out disabled_plugins = ["cri"] in the config.toml file.
+
+```bash
+sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/config.tomlCOPY
+```
+
+Next, use the below command to restart the containerd service.
+
+```bash
+sudo systemctl restart containerd
 ```
 
 https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
