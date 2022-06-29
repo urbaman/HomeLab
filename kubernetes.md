@@ -465,6 +465,8 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-clu
 
 https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
 
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
+
 ## 4) High availability
 
 https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
