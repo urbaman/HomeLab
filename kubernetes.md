@@ -467,7 +467,7 @@ https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
 
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 
-## 4) High availability
+### High availability
 
 https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
 
@@ -479,9 +479,9 @@ Install both keepalived and haproxy
 apt install keepalived haproxy
 ```
 
-### Keepalived
+#### Keepalived
 
-#### All
+##### All
 
 ```bash
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
@@ -505,7 +505,7 @@ if ip addr | grep -q 10.0.50.64; then
 fi
 ```
 
-#### Master
+##### Master
 
 ```bash
 ! /etc/keepalived/keepalived.conf
@@ -539,7 +539,7 @@ vrrp_instance VI_1 {
 }
 ```
 
-#### Backup
+##### Backup
 
 ```bash
 ! /etc/keepalived/keepalived.conf
@@ -573,9 +573,15 @@ vrrp_instance VI_1 {
 }
 ```
 
-### Haproxy
+##### All
 
-#### All
+```bash
+sudo service keepalived restart
+```
+
+#### Haproxy
+
+##### All
 
 ```bash
 # /etc/haproxy/haproxy.cfg
@@ -629,4 +635,16 @@ backend apiserver
         server k8cp1 k8cp1.urbaman.it:6443 check
         server k8cp2 k8cp2.urbaman.it:6443 check
         server k8cp3 k8cp3.urbaman.it:6443 check
+```
+
+Restart haproxy
+
+```bash
+sudo service haproxy restart
+```
+
+And check connection from another machine
+
+```bash
+nc -v 10.0.50.64 6443
 ```
