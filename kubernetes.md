@@ -306,6 +306,20 @@ On a system with only cgroupv1, you would only see:
 nodev   cgroup
 ```
 
+### Disable swap
+
+Turn swap off:
+
+```bash
+sudo swapoff -a
+```
+
+And prevents it from turning on after reboots by commenting it in the /etc/fstab file:
+
+```bash
+sudo vi /etc/fstab
+```
+
 ### Containerd
 
 Load the necessary modules for Containerd:
@@ -331,22 +345,6 @@ EOF
 
 sudo sysctl --system
 ```
-
-### Disable swap
-
-Turn swap off:
-
-```bash
-sudo swapoff -a
-```
-
-And prevents it from turning on after reboots by commenting it in the /etc/fstab file:
-
-```bash
-sudo vi /etc/fstab
-```
-
-### Containerd
 
 #### Using Docker Repository
 
