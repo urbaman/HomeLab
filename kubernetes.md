@@ -473,9 +473,21 @@ https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#option
 
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 
+Install both keepalived and haproxy
+
+```bash
+apt install keepalived haproxy
+```
+
 ### Keepalived
 
 #### All
+
+```bash
+sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+sudo echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
+sudo sysctl -p
+```
 
 /etc/keepalived/check_apiserver.sh
 
