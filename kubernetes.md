@@ -669,3 +669,112 @@ And check connection from another machine
 ```bash
 nc -v 10.0.50.64 6443
 ```
+
+### Set up the etcd cluster
+
+Follow these instructions to set up the etcd cluster.
+
+Copy the following files from any etcd node in the etcd cluster to the first control panel node:
+Copy etcd certs to first control panel
+
+```bash
+export CONTROL_PLANE="ubuntu@10.0.50.31"
+scp /etc/etcd/etcd-ca.crt "${CONTROL_PLANE}":/home/ubuntu/ca.crt
+scp /etc/etcd/server.crt "${CONTROL_PLANE}":/home/ubuntu/apiserver-etcd-client.crt
+scp /etc/etcd/server.key "${CONTROL_PLANE}":/home/ubuntu/apiserver-etcd-client.key
+```
+
+Replace the value of CONTROL_PLANE with the user@host of the first control-plane node.
+
+On the first control panel, copy the files to the following locations:
+
+```bash
+sudo cp ca.crt /etc/kubernetes/pki/etcd/
+sudo cp apiserver-etcd-client.crt /etc/kubernetes/pki/
+sudo cp apiserver-etcd-client.key /etc/kubernetes/pki/
+```
+
+### Set up the first control plane node
+
+Create a file called kubeadm-config.yaml with the following contents (modify IPs and hostnames as needed, then eliminate comments):
+
+```bash
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: stable
+controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
+etcd:
+  external:
+    endpoints:
+      - https://10.0.50.41:2379 # change ETCD_0_IP appropriately
+      - https://10.0.50.42:2379 # change ETCD_1_IP appropriately
+      - https://10.0.50.43:2379 # change ETCD_2_IP appropriately
+    caFile: /etc/kubernetes/pki/etcd/ca.crt
+    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+```
+
+Note: The difference between stacked etcd and external etcd here is that the external etcd setup requires a configuration file with the etcd endpoints under the external object for etcd. In the case of the stacked etcd topology, this is managed automatically.
+
+The following steps are similar to the stacked etcd setup:
+
+```bash
+sudo kubeadm init --config kubeadm-config.yaml --upload-certs
+```
+
+Write the output join commands that are returned to a text file for later use.
+
+### Apply the CNI plugin of your choice.
+
+Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
+
+```bash
+kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml 
+curl https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml -O
+```
+
+If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR).
+
+```bash
+kubectl create -f custom-resources.yaml
+```
+
+To start using your cluster, you need to run the following as a regular user:
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+### Steps for the rest of the control panel nodes
+
+The steps are the same as for the stacked etcd setup:
+
+Make sure the first control plane node is fully initialized.
+
+Join each control plane node with the join command you saved to a text file. It's recommended to join the control plane nodes one at a time.
+Don't forget that the decryption key from --certificate-key expires after two hours, by default.
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+### Install workers
+
+Worker nodes can be joined to the cluster with the command you stored previously as the output from the kubeadm init command:
+
+```bash
+sudo kubeadm join 192.168.0.200:6443 --token 9vr73a.a8uxyaju799qwdjv --discovery-token-ca-cert-hash sha256:7c2e69131a36ae2a042a339b33381c6d0d43887e2de83720eff5359e26aec866
+```
+
+### Control panel node isolation
+
+By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
+
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
+```
