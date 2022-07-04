@@ -710,6 +710,8 @@ apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
+networking:
+  podSubnet: "10.0.80.0/16" # change this (see below)
 etcd:
   external:
     endpoints:
@@ -722,6 +724,8 @@ etcd:
 ```
 
 Note: The difference between stacked etcd and external etcd here is that the external etcd setup requires a configuration file with the etcd endpoints under the external object for etcd. In the case of the stacked etcd topology, this is managed automatically.
+
+Remember to change the controlPlaneEndpoint, podSubnet (equal to following calico IP CIDR), etcd endpoints (equal to the endpoints of the external etcd)
 
 The following steps are similar to the stacked etcd setup:
 
