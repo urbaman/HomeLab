@@ -435,17 +435,23 @@ May 01 13:59:49 ubuntu-2204 systemd[1]: Started containerd container runtime.
 Containerd uses a configuration file config.toml for managing demons. For Kubernetes, you need to configure the Systemd group driver for runC.
 
 ```bash
-cat <<EOF | sudo tee -a /etc/containerd/config.toml
-[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-SystemdCgroup = true
-EOF
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
 ```
 
-Then, enable CRI plugins by commenting out disabled_plugins = ["cri"] in the config.toml file.
+Set the cgroup driver for runc to systemd which is required for the kubelet. For more information on this config file see the containerd configuration docs here and also here.
+
+At the end of this section in /etc/containerd/config.toml
 
 ```bash
-sudo sed -i 's/^disabled_plugins \=/\#disabled_plugins \=/g' /etc/containerd/config.tomlCOPY
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+...
+```
+
+Around line 112, change the value for SystemCgroup from false to true.
+
+```bash
+SystemdCgroup = true
 ```
 
 Next, use the below command to restart the containerd service.
