@@ -36,6 +36,8 @@ https://github.com/awesome-selfhosted/awesome-selfhosted
 - Netdata: https://community.netdata.cloud/t/best-way-to-setup-netdata-in-a-proxmox-host-with-some-lxc-containers/81
 - Ceph: https://blog.miniserver.it/proxmox/come-fare-un-cluster-proxmox-con-ceph/
 
+- Traefik: https://blog.zachinachshon.com/categories
+
 ### ZFS: aggiungere un disco creando un mirror:
 
 psSense
