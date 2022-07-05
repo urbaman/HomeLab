@@ -70,3 +70,6 @@ The Snapcrafters community maintains the Snap version of the Helm package:
 ```bash
 sudo snap install helm --classic
 ```
+
+https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
+https://www.howtogeek.com/devops/how-to-install-kubernetes-cert-manager-and-configure-lets-encrypt/
