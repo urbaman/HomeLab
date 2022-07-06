@@ -71,6 +71,14 @@ The Snapcrafters community maintains the Snap version of the Helm package:
 sudo snap install helm --classic
 ```
 
+## Cloudflare DynDNS
+
+https://docs.cf.containeroo.ch/
+
+## Monitoring
+
+https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+
 ## Traefik
 https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
 https://www.howtogeek.com/devops/how-to-install-kubernetes-cert-manager-and-configure-lets-encrypt/
