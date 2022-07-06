@@ -81,5 +81,9 @@ https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-promet
 
 ## Traefik
 https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
+
 https://www.howtogeek.com/devops/how-to-install-kubernetes-cert-manager-and-configure-lets-encrypt/
+
 https://www.youtube.com/watch?v=dEAtD9PVr_Q
+
+https://dev.to/bgalvao/traefik-lets-encrypt-cloudflare-36fj
