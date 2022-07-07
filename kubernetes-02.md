@@ -133,17 +133,14 @@ spec:
 
 ##### Method 2 — Connecting using the PersistentVolume resource:
 
-To create the PersistentVolume object for the GlusterFS volume, use the following manifest. The storage size does not take any effect.
+To create the PersistentVolume object for the GlusterFS volume, use the following manifest. The storage size does not take any effect. Be sure to name the claim you'll bind it to.
 
 ```bash
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: glusterfs-volume
-  labels:
-    storage.k8s.io/name: glusterfs
-    storage.k8s.io/part-of: kubernetes-complete-reference
-    storage.k8s.io/created-by: ssbostan
+  name: glusterfs-path
+  namespace: project-namespace
 spec:
   accessModes:
     - ReadWriteOnce
@@ -158,6 +155,43 @@ spec:
     endpoints: glusterfs-cluster
     path: HDD5T/path/...
     readOnly: no
+  claimRef:
+    name: glusterfs-path-pvc
+    namespace: project-namespace
+```
+
+The create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim:
+
+```bash
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: glusterfs-path-pvc
+    namespace: project-namespace
+spec:
+    storageClassName: ""
+    volumeName: glusterfs-path
+```
+
+And then, use the claim as a volume in the pods:
+
+```bash
+apiVersion: v1
+kind: Pod
+metadata:
+    name: mypod
+    namespace: project-namespace
+spec:
+    containers:
+      - name: myfrontend
+        image: nginx
+        volumeMounts:
+        - mountPath: "/var/www/html"
+          name: mypd
+    volumes:
+      - name: mypd
+        persistentVolumeClaim:
+          claimName: glusterfs-path-pvc
 ```
 
 ## Helm
