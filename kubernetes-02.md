@@ -68,10 +68,6 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: glusterfs-cluster
-  labels:
-    storage.k8s.io/name: glusterfs
-    storage.k8s.io/part-of: kubernetes-complete-reference
-    storage.k8s.io/created-by: ssbostan
 subsets:
   - addresses:
       - ip: 10.0.50.21
@@ -109,10 +105,6 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: test
-  labels:
-    app.kubernetes.io/name: alpine
-    app.kubernetes.io/part-of: kubernetes-complete-reference
-    app.kubernetes.io/created-by: ssbostan
 spec:
   containers:
     - name: alpine
