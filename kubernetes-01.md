@@ -29,11 +29,7 @@
 | haproxy3.urbaman.it    | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
 | k8cp.urbaman.it        | N/A | N/A  | N/A                      | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
 
-## 1) Glusterfs
-
-https://itnext.io/kubernetes-storage-part-2-glusterfs-complete-tutorial-77542c12a602
-
-## 2) External Etcd
+## 1) External Etcd
 
 ### Downloading etcd Binaries
 
@@ -280,7 +276,7 @@ etcdctl --endpoints https://10.0.0.60:2379 --cert /etc/etcd/server.crt --cacert 
 ```
 Congratulations! You now have a secure, distributed, highly available etcd cluster that’s ready for a production-grade K3s cluster environment.
 
-## 3) kubernetes
+## 2) kubernetes
 
 ### cgroups
 
