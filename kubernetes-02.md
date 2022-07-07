@@ -71,11 +71,11 @@ metadata:
 subsets:
   - addresses:
       - ip: 10.0.50.21
-        hostname: truenas1.urbaman.it
+        hostname: truenas1
       - ip: 10.0.50.22
-        hostname: truenas2.urbaman.it
+        hostname: truenas2
       - ip: 10.0.50.23
-        hostname: truenas3.urbaman.it
+        hostname: truenas3
     ports:
       - port: 1
 ```
