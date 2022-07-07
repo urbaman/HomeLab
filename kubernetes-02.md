@@ -135,8 +135,6 @@ metadata:
   namespace: project-namespace
 spec:
   accessModes:
-    - ReadWriteOnce
-    - ReadOnlyMany
     - ReadWriteMany
   capacity:
     storage: 10Gi
@@ -146,10 +144,11 @@ spec:
   glusterfs:
     endpoints: glusterfs-cluster
     path: HDD5T/path/...
-    readOnly: no
+    readOnly: false
   claimRef:
     name: glusterfs-path-pvc
     namespace: project-namespace
+  persistentVolumeReclaimPolicy: Retain
 ```
 
 The create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim:
@@ -161,6 +160,8 @@ metadata:
     name: glusterfs-path-pvc
     namespace: project-namespace
 spec:
+    accessModes:
+      - ReadWriteMany
     storageClassName: ""
     volumeName: glusterfs-path
 ```
