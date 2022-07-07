@@ -49,6 +49,115 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
 ```
 
+## Storage (GlusterFS)
+
+### glusterfs-client
+
+Fist you need to install the glusterfs-client package on your nodes. The client is used by the kubernetes scheduler to create the gluster volumes.
+
+```bash
+$ sudo apt install gluster-client
+```
+
+### Discovering GlusterFS in Kubernetes:
+
+GlusterFS cluster should be discovered in the Kubernetes cluster. To do that, you need to add an Endpoints object that points to the servers of the GlusterFS cluster.
+
+```bash
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: glusterfs-cluster
+  labels:
+    storage.k8s.io/name: glusterfs
+    storage.k8s.io/part-of: kubernetes-complete-reference
+    storage.k8s.io/created-by: ssbostan
+subsets:
+  - addresses:
+      - ip: 10.0.50.21
+        hostname: truenas1.urbaman.it
+      - ip: 10.0.50.22
+        hostname: truenas2.urbaman.it
+      - ip: 10.0.50.23
+        hostname: truenas3.urbaman.it
+    ports:
+      - port: 1
+```
+
+To persist the Gluster endpoints, you also need to create a relative service.
+
+```bash
+apiVersion: v1
+kind: Service
+metadata:
+  name: glusterfs-cluster 
+spec:
+  ports:
+  - port: 1
+```
+
+### Using GlusterFS in Kubernetes:
+
+##### Method 1 — Connecting to GlusterFS directly with Pod manifest:
+
+To connect to the GlusterFS volume directly with Pod manifest, use the GlusterfsVolumeSource in the Pod. Here is an example (create the path in the glusterfs volume - HDD5T in my situation):
+
+```bash
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+  labels:
+    app.kubernetes.io/name: alpine
+    app.kubernetes.io/part-of: kubernetes-complete-reference
+    app.kubernetes.io/created-by: ssbostan
+spec:
+  containers:
+    - name: alpine
+      image: alpine:latest
+      command:
+        - touch
+        - /data/test
+      volumeMounts:
+        - name: glusterfs-volume
+          mountPath: /data
+  volumes:
+    - name: glusterfs-volume
+      glusterfs:
+        endpoints: glusterfs-cluster
+        path: HDD5T/path
+        readOnly: no
+```
+
+##### Method 2 — Connecting using the PersistentVolume resource:
+
+To create the PersistentVolume object for the GlusterFS volume, use the following manifest. The storage size does not take any effect.
+
+```bash
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: glusterfs-volume
+  labels:
+    storage.k8s.io/name: glusterfs
+    storage.k8s.io/part-of: kubernetes-complete-reference
+    storage.k8s.io/created-by: ssbostan
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: k8s-volume
+    readOnly: no
+```
+
 ## Helm
 
 ### From Apt (Debian/Ubuntu)
