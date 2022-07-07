@@ -98,6 +98,8 @@ spec:
 
 ### Using GlusterFS in Kubernetes:
 
+Create the desired path in the glusterfs volume (HDD5T/path/... in my situation)
+
 ##### Method 1 — Connecting to GlusterFS directly with Pod manifest:
 
 To connect to the GlusterFS volume directly with Pod manifest, use the GlusterfsVolumeSource in the Pod. Here is an example (create the path in the glusterfs volume - HDD5T in my situation):
@@ -125,7 +127,7 @@ spec:
     - name: glusterfs-volume
       glusterfs:
         endpoints: glusterfs-cluster
-        path: HDD5T/path
+        path: HDD5T/path/...
         readOnly: no
 ```
 
@@ -154,7 +156,7 @@ spec:
   volumeMode: Filesystem
   glusterfs:
     endpoints: glusterfs-cluster
-    path: k8s-volume
+    path: HDD5T/path/...
     readOnly: no
 ```
 
