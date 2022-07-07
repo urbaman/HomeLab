@@ -217,6 +217,8 @@ https://docs.cf.containeroo.ch/
 
 https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 
+https://adamtheautomator.com/prometheus-kubernetes/
+
 ## Traefik
 https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
 
