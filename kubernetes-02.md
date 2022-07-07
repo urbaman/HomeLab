@@ -219,6 +219,16 @@ https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-promet
 
 https://adamtheautomator.com/prometheus-kubernetes/
 
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-kubernetes-monitoring-stack-with-prometheus-grafana-and-alertmanager-on-digitalocean#step-3-accessing-grafana-and-exploring-metrics-data
+
+Exposing Grafana:
+
+```bash
+kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
+  --namespace "$NAMESPACE" \
+  -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
 ## Traefik
 https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
 
