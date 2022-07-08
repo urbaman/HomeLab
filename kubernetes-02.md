@@ -281,6 +281,8 @@ spec:
     secretRef:
       name: cloudflare-global-api-key
       namespace: cloudflare-operator
+  managedZones:
+    - example.com
 EOF
 ```
 
