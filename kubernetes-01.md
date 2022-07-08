@@ -707,7 +707,7 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
-  podSubnet: "10.0.80.0/16" # change this (see below)
+  podSubnet: "10.0.80.0/24" # change this (see below)
 etcd:
   external:
     endpoints:
@@ -745,6 +745,21 @@ If you wish to customize the Calico install, customize the downloaded custom-res
 ```bash
 kubectl create -f custom-resources.yaml
 ```
+
+The, intstall the calicoctl to manage Calico.
+
+```bash
+kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calicoctl.yaml
+alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
+```
+
+This way, in order to use the calicoctl alias when reading manifests, redirect the file into stdin, for example:
+
+```bash
+calicoctl create -f - < my_manifest.yaml
+```
+
+### Setup kubectl for a normal user
 
 To start using your cluster, you need to run the following as a regular user:
 
