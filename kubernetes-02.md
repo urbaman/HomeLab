@@ -465,4 +465,6 @@ https://www.howtogeek.com/devops/how-to-install-kubernetes-cert-manager-and-conf
 
 https://www.youtube.com/watch?v=dEAtD9PVr_Q
 
+https://www.youtube.com/playlist?list=PL34sAs7_26wNldKrBBY_uagluNKC9cCak
+
 https://dev.to/bgalvao/traefik-lets-encrypt-cloudflare-36fj
