@@ -180,7 +180,6 @@ spec:
   capacity:
     storage: 10Gi
   storageClassName: ""
-  persistentVolumeReclaimPolicy: Recycle
   volumeMode: Filesystem
   glusterfs:
     endpoints: glusterfs-cluster
@@ -192,7 +191,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-The create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim:
+The create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim):
 
 ```bash
 apiVersion: v1
