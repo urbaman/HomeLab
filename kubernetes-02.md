@@ -479,19 +479,108 @@ kubectl create namespace traefik
 
 ### Create the glusterfs endpoints in the traefik namespace
 
+```bash
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: glusterfs-cluster
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 10.0.50.21
+        hostname: truenas1
+      - ip: 10.0.50.22
+        hostname: truenas2
+      - ip: 10.0.50.23
+        hostname: truenas3
+    ports:
+      - port: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glusterfs-cluster
+  namespace: traefik
+spec:
+  ports:
+  - port: 1
+```
+
 ### Create the path in the gluster volume (from a node in the glusterfs cluster)
 
+```bash
 cd /cluster/HDD5T
 mkdir k8sstorage
 cd /k8sstorage
 mkdir traefik-ssl
+```
 
 ### Create the pv and the pvc
 
+```bash
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: traefik-ssl-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 128Mi
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/traefik-ssl
+    readOnly: false
+  claimRef:
+    name: traefik-ssl-claim
+    namespace: traefik
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: traefik-ssl-claim
+    namespace: traefik
+spec:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 128Mi
+    storageClassName: ""
+    volumeName: traefik-ssl-volume
+```
+
 ### Get the helm chart
+
+```bash
+helm repo add traefik https://helm.traefik.io/traefik
+helm repo update
+```
 
 ### Modify the values to see the persistent volume claim
 
+```bash
+helm show values traefik/traefik > traefik.yaml
+vi traefik.yaml
+```
+
+Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above
+
 ### Install
 
+```bash
+helm install traefik traefik/traefik --values traefik.yaml -n traefik
+```
 
+### Check the dashboard
+
+Go to a machine with a browser and kubectl installed and properly configured, open the terminal
+
+```bash
+kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
+```
+
+Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
