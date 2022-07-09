@@ -202,6 +202,9 @@ metadata:
 spec:
     accessModes:
       - ReadWriteMany
+    resources:
+      requests:
+        storage: 10Gi
     storageClassName: ""
     volumeName: glusterfs-path
 ```
