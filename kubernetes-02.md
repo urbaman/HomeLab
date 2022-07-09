@@ -473,16 +473,25 @@ https://www.youtube.com/watch?v=n5dpQLqOfqM
 
 https://dev.to/bgalvao/traefik-lets-encrypt-cloudflare-36fj
 
-Create the traefik namespace
+### Create the traefik namespace
 
-Create the glusterfs endpoints in the traefik namespace
+kubectl create namespace traefik
 
-Create the path in the gluster volume
+### Create the glusterfs endpoints in the traefik namespace
 
-Create the pv and the pvc
+### Create the path in the gluster volume (from a node in the glusterfs cluster)
 
-Modify the values to see the persistent volume claim
+cd /cluster/HDD5T
+mkdir k8sstorage
+cd /k8sstorage
+mkdir traefik-ssl
 
-Install
+### Create the pv and the pvc
+
+### Get the helm chart
+
+### Modify the values to see the persistent volume claim
+
+### Install
 
 
