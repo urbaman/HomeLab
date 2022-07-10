@@ -446,6 +446,52 @@ EOF
 
 ## Monitoring
 
+Start checking the bind address of kube-proxy, kube-scheduler, kube-control-monitor
+
+```bash
+kubectl edit cm kube-proxy-config -n kube-system
+## Change from
+    metricsBindAddress: 127.0.0.1:10249 ### <--- Too secure
+## Change to
+    metricsBindAddress: 0.0.0.0:10249
+```
+
+And reload kube-proxy deployment
+
+```bash
+kubectl rollout restart deployment kube-proxy -n kube-system
+```
+
+On every control-panel, change bind adreess to 0.0.0.0:
+
+```bash
+sudo vi /etc/kubernetes/manifests/kube-scheduler.conf
+sudo vi /etc/kubernetes/manifests/kube-control-manager.conf
+```
+
+The kill each scheduler and each control manager pods in the kube-system namespace
+
+```bash
+kubectl delete pod <pod-name> -n kube-system
+```
+
+Get the helm value file and add all your namespaces. Add others and upgrade the deploy if needed.
+
+```bash
+  namespaces:
+    releaseNamespace: true
+    additional:
+      - calico-apiserver
+      - calico-system
+      - cloudflare-operator
+      - default
+      - kube-node-lease
+      - kube-public
+      - metallb-system
+      - tigera-operator
+      - traefik
+```
+
 https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 
 https://adamtheautomator.com/prometheus-kubernetes/
