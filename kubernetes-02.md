@@ -492,6 +492,48 @@ Get the helm value file and add all your namespaces. Add others and upgrade the 
       - traefik
 ```
 
+### Monitoring other services/apps on other namespaces
+
+Take a look at the helm values of the prometheus-stack implementation:
+
+```bash
+kubectl get prometheus -n monitoring prometheus-kube-prometheus-prometheus -o yaml
+```
+
+Near the end you'll find something like:
+
+```bash
+  serviceMonitorSelector:
+    matchLabels:
+      release: prometheus
+```
+
+In here, ```release: prometheus``` is the label to add to the Service Monitors you'll need to add to the services to monitor.
+
+#### Example: Traefik (see more below for Traefik implementation)
+
+Remmber to set the metrics port expose setting to true when installing Traefik, then create the following Service Monitor:
+
+```bash
+kind: ServiceMonitor
+metadata:
+  name: traefik-sm
+  labels:
+    traefik: http
+    release: prometheus
+spec:
+  jobLabel: traefik
+  selector:
+    matchExpressions:
+    - {key: app.kubernetes.io/name, operator: Exists}
+  namespaceSelector:
+    matchNames:
+    - traefik
+  endpoints:
+  - port: metrics
+    interval: 15s
+```
+
 https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 
 https://adamtheautomator.com/prometheus-kubernetes/
@@ -613,7 +655,9 @@ helm show values traefik/traefik > traefik.yaml
 vi traefik.yaml
 ```
 
-Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above
+Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above.
+
+Go to the ports section, and set to true both the metrics and the dashboard expose settings.
 
 ### Install
 
