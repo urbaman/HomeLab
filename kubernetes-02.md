@@ -159,11 +159,11 @@ subjects:
     namespace: monitoring
 ```
 
-Download the graphana dashboard json, create the configmap and label it.
+Install the grafana dashboar, download the json from grafana, create the configmap in the monitoring namespace and label it.
 
 ```bash
-kubectl create configmap grafana-dashboard-metallb --from-file=/path_to/metallb_dashboard.json
-kubectl label configmap grafana-dashboard-metallb grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-metallb -n monitoring --from-file=/path_to/metallb_dashboard.json
+kubectl label configmap grafana-dashboard-metallb -n monitoring grafana_dashboard="1"
 ```
 
 ## Storage (GlusterFS)
@@ -522,7 +522,7 @@ EOF
 
 ### Monitoring
 
-TO add Cloudflare Operator to Prometheus/Graphana monitoring, get back here after ahbing implemented the stack, and create a podmonitor and a graphana ashboard
+TO add Cloudflare Operator to Prometheus/Graphana monitoring, get back here after having implemented the stack, and create a podmonitor and a grafana dashboard
 
 ```bash
 wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
@@ -534,22 +534,16 @@ Edit the podmonitor yaml file to add the ```release: prometheus``` label
 kubectl apply -f https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
 ```
 
-Download Grafana dashboard
+Install the dashboard in grafana, download the json and create a configmap fron it in the monitoring namespace.
 
 ```bash
-wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/grafana/dashboards/overview.json -O /tmp/grafana-dashboard-cloudflare-operator.json
+kubectl create configmap grafana-dashboard-cloudflare-operator -n monitoring --from-file=/tmp/grafana-dashboard-cloudflare-operator.json
 ```
 
-Create the configmap
+Add label so Grafana can fetch the dashboard
 
 ```bash
-kubectl create configmap grafana-dashboard-cloudflare-operator --from-file=/tmp/grafana-dashboard-cloudflare-operator.json
-```
-
-Add label so Grafana can fetch dashboard
-
-```bash
-kubectl label configmap grafana-dashboard-cloudflare-operator grafana_dashboard="1"
+kubectl label configmap grafana-dashboard-cloudflare-operator -n monitoring grafana_dashboard="1"
 ```
 
 ## Monitoring
@@ -642,11 +636,12 @@ spec:
     interval: 15s
 ```
 
-https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+To add a grafana dashboard, first install it in grafana, then download the json from grafana itself, and then create a configmap fron it in the monitoring namespace
 
-https://adamtheautomator.com/prometheus-kubernetes/
-
-https://www.digitalocean.com/community/tutorials/how-to-set-up-a-kubernetes-monitoring-stack-with-prometheus-grafana-and-alertmanager-on-digitalocean#step-3-accessing-grafana-and-exploring-metrics-data
+```bash
+kubectl create configmap grafana-dashboard-traefik --from-file=/path_to/traefik_dashboard.json
+kubectl label configmap grafana-dashboard-traefik grafana_dashboard="1"
+```
 
 Exposing Grafana:
 
