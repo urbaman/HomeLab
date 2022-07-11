@@ -508,7 +508,7 @@ Near the end you'll find something like:
       release: prometheus
 ```
 
-In here, ```release: prometheus``` is the label to add to the Service Monitors you'll need to add to the services to monitor.
+In here, ```release: prometheus``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
 
 #### Example: Traefik (see more below for Traefik implementation)
 
