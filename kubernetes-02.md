@@ -159,6 +159,13 @@ subjects:
     namespace: monitoring
 ```
 
+Download the graphana dashboard json, create the configmap and label it.
+
+```bash
+kubectl create configmap grafana-dashboard-metallb --from-file=/path_to/metallb_dashboard.json
+kubectl label configmap grafana-dashboard-metallb grafana_dashboard="1"
+```
+
 ## Storage (GlusterFS)
 
 ### glusterfs-client
