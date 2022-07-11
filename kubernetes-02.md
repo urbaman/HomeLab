@@ -444,6 +444,38 @@ spec:
 EOF
 ```
 
+### Monitoring
+
+TO add Cloudflare Operator to Prometheus/Graphana monitoring, get back here after ahbing implemented the stack, and create a podmonitor and a graphana ashboard
+
+```bash
+wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
+```
+
+Edit the podmonitor yaml file to add the ```release: prometheus``` label
+
+```
+kubectl apply -f https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
+```
+
+Download Grafana dashboard
+
+```bash
+wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/grafana/dashboards/overview.json -O /tmp/grafana-dashboard-cloudflare-operator.json
+```
+
+Create the configmap
+
+```bash
+kubectl create configmap grafana-dashboard-cloudflare-operator --from-file=/tmp/grafana-dashboard-cloudflare-operator.json
+```
+
+Add label so Grafana can fetch dashboard
+
+```bash
+kubectl label configmap grafana-dashboard-cloudflare-operator grafana_dashboard="1"
+```
+
 ## Monitoring
 
 Start checking the bind address of kube-proxy, kube-scheduler, kube-control-monitor
