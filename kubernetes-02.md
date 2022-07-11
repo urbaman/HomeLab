@@ -90,6 +90,75 @@ spec:
   - metallb-pool
 ```
 
+### Monitoring
+
+After implementing the prometheus-stack (see below), get the ptometheus-operator.yaml file from the github project, add the label ```release: prometheus``` to both the Pod Monitors and apply.
+
+```bash
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: metallb-controller
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      component: controller
+  namespaceSelector:
+    matchNames:
+      - metallb-system
+  podMetricsEndpoints:
+    - port: monitoring
+      path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: metallb-speaker
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      component: speaker
+  namespaceSelector:
+    matchNames:
+      - metallb-system
+  podMetricsEndpoints:
+    - port: monitoring
+      path: /metrics
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus-k8s
+  namespace: metallb-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus-k8s
+  namespace: metallb-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-k8s
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-k8s
+    namespace: monitoring
+```
+
 ## Storage (GlusterFS)
 
 ### glusterfs-client
