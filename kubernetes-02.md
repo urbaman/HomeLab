@@ -636,7 +636,7 @@ spec:
     interval: 15s
 ```
 
-To add a grafana dashboard, first install it in grafana, then download the json from grafana itself, and then create a configmap fron it in the monitoring namespace
+To add a grafana dashboard, first install it in grafana, then download the json from grafana itself, and then create a configmap from it in the monitoring namespace
 
 ```bash
 kubectl create configmap grafana-dashboard-traefik --from-file=/path_to/traefik_dashboard.json
