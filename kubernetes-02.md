@@ -873,7 +873,37 @@ vi traefik.yaml
 
 Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above.
 
-Go to the ports section, and set to true both the metrics and the dashboard expose settings.
+Go to the ports section, and set to true both the metrics and the traefik (dashboard) expose settings. Also add a redirect from web to websecure and the default tls resolver:
+
+```bash
+ports:
+  metrics:
+    expose: true
+    exposedPort: 9100
+    port: 9100
+    protocol: TCP
+  traefik:
+    expose: true
+    exposedPort: 9000
+    port: 9000
+    protocol: TCP
+  web:
+    expose: true
+    exposedPort: 80
+    port: 8000
+    protocol: TCP
+    redirectTo: websecure
+  websecure:
+    expose: true
+    exposedPort: 443
+    port: 8443
+    protocol: TCP
+    tls:
+      certResolver: "cloudflare"
+      domains: []
+      enabled: true
+      options: ""
+```
 
 Finally do to the deployment section, and add the following initContainer to properly manage certificates permissions:
 
