@@ -915,6 +915,15 @@ ingressRoute:
     labels: {}
 ```
 
+Enable the ingressClass, set it to default:
+
+```bash
+ingressClass:
+  enabled: true
+  fallbackApiVersion: ""
+  isDefaultClass: true
+```
+
 Finally do to the deployment section, and add the following initContainer to properly manage certificates permissions:
 
 ```bash
