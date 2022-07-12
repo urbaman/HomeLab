@@ -875,6 +875,68 @@ Go to the persistence section, turn it to true, uncomment the esistingClaim line
 
 Go to the ports section, and set to true both the metrics and the dashboard expose settings.
 
+Finally do to the deployment section, and add the following initContainer to properly manage certificates permissions:
+
+```bash
+deployment:
+  additionalContainers: []
+  additionalVolumes: []
+  annotations: {}
+  enabled: true
+  imagePullSecrets: []
+  initContainers:
+    - name: volume-permissions
+      image: busybox:1.31.1
+      command: ["sh", "-c", "chmod -Rv 600 /ssl-certs/*"]
+      volumeMounts:
+        - name: ssl-certs
+          mountPath: /ssl-certs
+```
+
+### Create SSL certs for your domains (Cloudflare DNS challenge)
+
+Create a secret with your own Cloudlfare email and API Key:
+
+```bash
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-dnschallenge-credentials
+  namespace: traefik
+type: Opaque
+stringData:
+  email: yourmail@example.com
+  apiKey: yourglobalapikey
+```
+
+Also in the vaules yaml file, add the following additionalArguments and the env settings
+
+```bash
+additionalArguments:
+# DNS Challenge
+# Cloudflare
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
+  - --certificatesresolvers.cloudflare.acme.email=urbaman@gmail.com
+  - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
+  - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
+```
+
+```bash
+env:
+# DNS Challenge Credentials
+# Cloudflare:
+   - name: CF_API_EMAIL
+     valueFrom:
+       secretKeyRef:
+         key: email
+         name: cloudflare-dnschallenge-credentials
+   - name: CF_API_KEY
+     valueFrom:
+       secretKeyRef:
+         key: apiKey
+         name: cloudflare-dnschallenge-credentials
+```
+
 ### Install
 
 ```bash
