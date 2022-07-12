@@ -905,6 +905,16 @@ ports:
       options: ""
 ```
 
+Enable the dashboard ingress:
+
+```bash
+ingressRoute:
+  dashboard:
+    annotations: {}
+    enabled: true
+    labels: {}
+```
+
 Finally do to the deployment section, and add the following initContainer to properly manage certificates permissions:
 
 ```bash
