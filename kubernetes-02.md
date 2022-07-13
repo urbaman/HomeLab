@@ -765,17 +765,6 @@ kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
 ```
 
 ## Traefik
-https://www.padok.fr/en/blog/traefik-kubernetes-certmanager
-
-https://www.howtogeek.com/devops/how-to-install-kubernetes-cert-manager-and-configure-lets-encrypt/
-
-https://www.youtube.com/watch?v=dEAtD9PVr_Q
-
-https://www.youtube.com/playlist?list=PL34sAs7_26wNldKrBBY_uagluNKC9cCak
-
-https://www.youtube.com/watch?v=n5dpQLqOfqM
-
-https://dev.to/bgalvao/traefik-lets-encrypt-cloudflare-36fj
 
 ### Create the traefik namespace
 
@@ -815,8 +804,14 @@ spec:
 ```bash
 cd /cluster/HDD5T
 mkdir k8sstorage
-cd /k8sstorage
+cd k8sstorage
 mkdir traefik-ssl
+```
+
+#### Give the directory the right ownership
+
+```bash
+chown 65532:65532 /cluster/HDD5T/k8sstorage/traefik-ssl
 ```
 
 ### Create the pv and the pvc
