@@ -764,11 +764,47 @@ kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
   -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
-## Traefik
+## Install pebble for ssl certificates of internal services
 
-### Create the traefik namespace
+Create the traefik namespace (we need pebble to be in the same namespace as traefik
 
+```bash
 kubectl create namespace traefik
+```
+
+Let's install the helm repo, get the values and modify them:
+
+```bash
+helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
+helm repo update
+helm show values jupyterhub/pebble > pebble.yaml
+vi pebble.yaml
+```
+
+Set coredns enabled false, as we do not need it
+
+```bash
+## coredns is an optional DNS server that can for example point anything.test
+## to your-acme-client.your-namespace.svc.cluster.local.
+coredns:
+  enabled: false
+```
+
+Set pebble to skip validation (uncomment and set to 1, keep a look to indentation:
+
+```bash
+   # ## ref: https://github.com/letsencrypt/pebble#skipping-validation
+    - name: PEBBLE_VA_ALWAYS_VALID
+      value: "1"
+```
+
+Install pebble:
+
+```
+helm install pebble jupyterhub/pebble -n traefik -values pebble.yaml
+```
+
+## Traefik
 
 ### Create the glusterfs endpoints in the traefik namespace
 
@@ -868,6 +904,17 @@ vi traefik.yaml
 
 Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above.
 
+```bash
+persistence:
+  accessMode: ReadWriteMany
+  annotations: {}
+  enabled: true
+  existingClaim: traefik-ssl-claim
+  name: ssl-certs
+  path: /ssl-certs
+  size: 128Mi
+```
+
 Go to the ports section, and set to true both the metrics and the traefik (dashboard) expose settings. Also add a redirect from web to websecure and the default tls resolver:
 
 ```bash
@@ -919,7 +966,7 @@ ingressClass:
   isDefaultClass: true
 ```
 
-Finally do to the deployment section, and add the following initContainer to properly manage certificates permissions:
+Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions (it will probably not run...):
 
 ```bash
 deployment:
@@ -937,7 +984,7 @@ deployment:
           mountPath: /ssl-certs
 ```
 
-### Create SSL certs for your domains (Cloudflare DNS challenge)
+### Create SSL certs for your domains (Cloudflare DNS challenge, pebble)
 
 Create a secret with your own Cloudlfare email and API Key:
 
@@ -953,32 +1000,47 @@ stringData:
   apiKey: yourglobalapikey
 ```
 
-Also in the vaules yaml file, add the following additionalArguments and the env settings
+Also in the traefik vaules yaml file, add the following additionalArguments, the env settings and the volume settings
 
 ```bash
 additionalArguments:
 # DNS Challenge
 # Cloudflare
   - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
-  - --certificatesresolvers.cloudflare.acme.email=urbaman@gmail.com
+  - --certificatesresolvers.cloudflare.acme.email=yourmail@example.com
   - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
   - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
+  - --certificatesresolvers.pebble.acme.tlschallenge=true
+  - --certificatesresolvers.pebble.acme.email=yourmail@example.com
+  - --certificatesresolvers.pebble.acme.storage=/ssl-certs/acme-pebble.json
+  - --certificatesresolvers.pebble.acme.caserver=https://pebble/dir
+
 ```
 
 ```bash
 env:
+# Pebble letsencrypt challenge
+- name: LEGO_CA_CERTIFICATES
+  value: "/certs/root-cert.pem"
 # DNS Challenge Credentials
 # Cloudflare:
-   - name: CF_API_EMAIL
-     valueFrom:
-       secretKeyRef:
-         key: email
-         name: cloudflare-dnschallenge-credentials
-   - name: CF_API_KEY
-     valueFrom:
-       secretKeyRef:
-         key: apiKey
-         name: cloudflare-dnschallenge-credentials
+- name: CF_API_EMAIL
+  valueFrom:
+    secretKeyRef:
+      key: email
+      name: cloudflare-dnschallenge-credentials
+- name: CF_API_KEY
+  valueFrom:
+    secretKeyRef:
+      key: apiKey
+      name: cloudflare-dnschallenge-credentials
+```
+
+```bash
+volumes:
+  - name: pebble
+    mountPath: "/certs"
+    type: configMap
 ```
 
 ### Install
@@ -996,3 +1058,5 @@ kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
 ```
 
 Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
+
+Remember to select the proper tls certResolver in the Ingress Routes (cloudflare services to expose to internet, pebble for internals)
