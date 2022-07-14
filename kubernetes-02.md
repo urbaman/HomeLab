@@ -766,6 +766,8 @@ kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
 
 ## Install pebble for ssl certificates of internal services
 
+Install only for test environments, use cloudflare for production.
+
 Create the traefik namespace (we need pebble to be in the same namespace as traefik
 
 ```bash
@@ -941,7 +943,7 @@ ports:
     port: 8443
     protocol: TCP
     tls:
-      certResolver: "cloudflare" # Only if you need a default certResolver
+      certResolver: "cloudflare" # Or "pebble" if you so choose
       domains: []
       enabled: true
       options: ""
@@ -966,7 +968,7 @@ ingressClass:
   isDefaultClass: true
 ```
 
-Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions (it will probably not run...):
+Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
 
 ```bash
 deployment:
@@ -984,7 +986,7 @@ deployment:
           mountPath: /ssl-certs
 ```
 
-### Create SSL certs for your domains (Cloudflare DNS challenge, pebble)
+### Create SSL certs for your domains (Cloudflare DNS challenge for production OR pebble for test/dev)
 
 Create a secret with your own Cloudlfare email and API Key:
 
@@ -1038,6 +1040,7 @@ env:
 ```
 
 ```bash
+# Onluy for pebble
 volumes:
   - name: pebble
     mountPath: "/certs"
@@ -1059,5 +1062,3 @@ kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
 ```
 
 Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
-
-Remember to select the proper tls certResolver in the Ingress Routes (cloudflare services to expose to internet, pebble for internals)
