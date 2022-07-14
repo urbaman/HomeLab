@@ -941,13 +941,13 @@ ports:
     port: 8443
     protocol: TCP
     tls:
-      certResolver: "cloudflare"
+      certResolver: "cloudflare" # Only if you need a default certResolver
       domains: []
       enabled: true
       options: ""
 ```
 
-Enable the dashboard ingress:
+Enable the dashboard ingress route:
 
 ```bash
 ingressRoute:
@@ -1000,7 +1000,7 @@ stringData:
   apiKey: yourglobalapikey
 ```
 
-Also in the traefik vaules yaml file, add the following additionalArguments, the env settings and the volume settings
+Also in the traefik vaules yaml file, add the following additionalArguments (choose only one resolver), the env settings and the volume settings (volume only for pebble certResolver)
 
 ```bash
 additionalArguments:
@@ -1010,6 +1010,7 @@ additionalArguments:
   - --certificatesresolvers.cloudflare.acme.email=yourmail@example.com
   - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
   - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
+# Pebble
   - --certificatesresolvers.pebble.acme.tlschallenge=true
   - --certificatesresolvers.pebble.acme.email=yourmail@example.com
   - --certificatesresolvers.pebble.acme.storage=/ssl-certs/acme-pebble.json
@@ -1019,7 +1020,7 @@ additionalArguments:
 
 ```bash
 env:
-# Pebble letsencrypt challenge
+# Only for Pebble letsencrypt challenge, comment or delete for others
 - name: LEGO_CA_CERTIFICATES
   value: "/certs/root-cert.pem"
 # DNS Challenge Credentials
