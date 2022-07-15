@@ -1062,3 +1062,5 @@ kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
 ```
 
 Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
+
+## kured
