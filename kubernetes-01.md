@@ -29,6 +29,17 @@
 | haproxy3.urbaman.it    | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
 | k8cp.urbaman.it        | N/A | N/A  | N/A                      | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
 
+## 0) Preparing the servers
+
+- datetime
+- unattended-upgrades
+
+https://linoxide.com/enable-automatic-updates-on-ubuntu-20-04/
+
+- postfix for sending mail
+
+https://techlabs.blog/categories/how-to-guides/configure-proxmox-email-notifications-using-postfix-smtp-relayhost
+
 ## 1) External Etcd
 
 ### Downloading etcd Binaries
