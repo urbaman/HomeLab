@@ -36,9 +36,171 @@
 
 https://linoxide.com/enable-automatic-updates-on-ubuntu-20-04/
 
-- postfix for sending mail
+### postfix for sending mail
 
-https://techlabs.blog/categories/how-to-guides/configure-proxmox-email-notifications-using-postfix-smtp-relayhost
+#### Instll packages:
+
+```bash
+sudo apt install postfix mailutils libsasl2-modules postfix-pcre
+```
+
+#### setup postfix logs:
+
+```bash
+sudo touch /var/log/mail.log
+sudo touch /var/log/mail.err
+sudo touch /var/log/mail.warn
+sudo touch /var/log/mail.info
+sudo chown syslog:adm /var/log/mail*
+```
+
+Change rsyslog conf: ```bash sudo vi /etc/rsyslog.d/50-default.conf```, restart the service
+
+```bash
+#  Default rules for rsyslog.
+#
+#                       For more information see rsyslog.conf(5) and /etc/rsyslog.conf
+
+#
+# First some standard log files.  Log by facility.
+#
+auth,authpriv.*                 /var/log/auth.log
+*.*;auth,authpriv.none          -/var/log/syslog
+#cron.*                         /var/log/cron.log
+#daemon.*                       -/var/log/daemon.log
+kern.*                          -/var/log/kern.log
+#lpr.*                          -/var/log/lpr.log
+mail.*                          -/var/log/mail.log
+#user.*                         -/var/log/user.log
+
+#
+# Logging for the mail system.  Split it up so that
+# it is easy to write scripts to parse these files.
+#
+mail.info                       -/var/log/mail.info
+mail.warn                       -/var/log/mail.warn
+mail.err                        /var/log/mail.err
+
+#
+# Some "catch-all" log files.
+#
+#*.=debug;\
+#       auth,authpriv.none;\
+#       news.none;mail.none     -/var/log/debug
+#*.=info;*.=notice;*.=warn;\
+#       auth,authpriv.none;\
+#       cron,daemon.none;\
+#       mail,news.none          -/var/log/messages
+
+#
+# Emergencies are sent to everybody logged in.
+#
+*.emerg                         :omusrmsg:*
+
+#
+# I like to have messages displayed on the console, but only on a virtual
+# console I usually leave idle.
+#
+#daemon,mail.*;\
+#       news.=crit;news.=err;news.=notice;\
+#       *.=debug;*.=info;\
+#       *.=notice;*.=warn       /dev/tty8
+```
+
+```bash
+sudo service rsyslog restart
+```
+
+#### Configure postfix
+
+Change /etc/postfix/main.cf to include/change these lines:
+
+```bash
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+myhostname=k8cp1.urbaman.it
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+#mydestination = $myhostname, localhost.$mydomain, localhost
+#relayhost =
+mynetworks = 127.0.0.0/8
+inet_interfaces = loopback-only
+recipient_delimiter = +
+
+#Relay
+relayhost = [smtp.urbaman.it]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+compatibility_level = 2
+
+smtp_header_checks = pcre:/etc/postfix/smtp_header_checks
+```
+
+Be sure there are no dupes as the main.cf may have smtp_sasl_security_options = {} , and relayhost = {}. Just delete or comment those lines.
+
+Create an /etc/postfix/sasl_passwd file with:
+
+```bash
+[smtp.gmail.com]:587    testmehere@gmail.com:PASSWD
+```
+
+run
+
+```bash
+chmod 600 /etc/postfix/sasl_passwd
+/etc/postfix/sasl_passwd
+```
+
+##### Customize From field
+
+Create /etc/postfix/smtp_header_checks file, this changes all outgoing mail:
+
+```bash
+/^From:.*/ REPLACE From: HOSTNAME-alert <HOSTNAME-alert@something.com>
+```
+
+```bash
+sudo chmod 600 /etc/postfix/smtp_header_checks
+postmap /etc/postfix/smtp_header_checks
+```
+
+Restart service:
+
+```bash
+service postfix restart
+```
+
+Test:
+
+```bash
+echo "Test mail from postfix" | mail -s "Test Postfix" test@test.com
+```
+
+Logs:
+
+```bash
+/var/log/mail.warn
+```
+
+is helpful as well as
+
+```bash
+/var/log/mail.info
+```
 
 ## 1) External Etcd
 
