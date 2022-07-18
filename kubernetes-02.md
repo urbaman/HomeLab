@@ -1112,7 +1112,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`k8dashboard.urbaman.it`)
+  - match: Host(`k8dashboard.example.com`)
     kind: Rule
     services:
     - name: kubernetes-dashboard
@@ -1127,7 +1127,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`k8dashboard.urbaman.it`)
+  - match: Host(`k8dashboard.example.com`)
     kind: Rule
     services:
     - name: kubernetes-dashboard
