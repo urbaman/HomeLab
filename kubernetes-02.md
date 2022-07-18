@@ -1063,4 +1063,110 @@ kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
 
 Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
 
+### Proxy an internal service (https redirect, basic auth)
+
+Generate a username/password base64 hash to use in the basicauth secret:
+
+```bash
+htpasswd -nb username password | base64
+dXNlcm5hbWU6JGFwcjEkLmtMR05oTzAkcnZVZTZBY0k3R2dyRHlFbkI0d2J2LwoK
+```
+
+Customize and apply the following yaml file (this is for the k8s dashboard previously exposed, can point to any exposed service):
+
+```bash
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: k8dashboard-basic-auth
+  namespace: kubernetes-dashboard
+spec:
+  basicAuth:
+    secret: k8dashboard-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: k8dashboard-https-redirect
+  namespace: kubernetes-dashboard
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: k8dashboard-basic-auth
+  namespace: kubernetes-dashboard
+data:
+  users: |
+    dXNlcm5hbWU6JGFwcjEkLmtMR05oTzAkcnZVZTZBY0k3R2dyRHlFbkI0d2J2LwoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: k8dashboard-websecure
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`k8dashboard.urbaman.it`)
+    kind: Rule
+    services:
+    - name: kubernetes-dashboard
+      port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: k8dashboard-web
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`k8dashboard.urbaman.it`)
+    kind: Rule
+    services:
+    - name: kubernetes-dashboard
+      port: 80
+    middlewares:
+      - name: k8dashboard-https-redirect
+```
+
+### Proxy an external service
+
+You first need to define endpoitns and service
+
+```bash
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: truenas1
+  namespace: truenas
+subsets:
+  - addresses:
+    - ip: 10.0.50.21
+    ports:
+    - port: 80
+      name: truenas1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: truenas1
+  namespace: truenas
+spec:
+  ports:
+     - protocol: TCP
+       port: 80
+       targetPort: 80
+       name: truenas1
+       nodePort: 0
+```
+
+Then you can point to the service as an internal service
+
 ## kured
