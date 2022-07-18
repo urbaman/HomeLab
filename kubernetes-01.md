@@ -421,6 +421,12 @@ These lines allow you to determine how the upgrade will occur. The first line ha
 
 The value "1" enables the auto-update and the auto-upgrade respectively. If you want to disable it, set this value to "0".
 
+Finally, restart unattended-upgrades service
+
+```bash
+sudo service unattended-upgrades restart
+```
+
 ## 1) External Etcd
 
 ### Downloading etcd Binaries
