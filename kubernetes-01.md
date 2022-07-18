@@ -402,9 +402,10 @@ sudo vi /etc/apt/apt.conf.d/20auto-upgrades
 
 By default, the file has two lines as shown.
 
+```bash
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
-
+```
 
 These lines allow you to determine how the upgrade will occur. The first line handles the update of the package lists while the second one initiates the automatic upgrades.
 
