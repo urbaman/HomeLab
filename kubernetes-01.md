@@ -36,7 +36,7 @@
 Check timedatectl status:
 
 ```bash
-timedtaectl status
+timedatectl status
 ```
 
 If the Time zone is different from the wanted one, we can list all the available timezones:
@@ -69,7 +69,7 @@ sudo touch /var/log/mail.info
 sudo chown syslog:adm /var/log/mail*
 ```
 
-Change rsyslog conf: ```bash sudo vi /etc/rsyslog.d/50-default.conf```, restart the service
+Change rsyslog conf in /etc/rsyslog.d/50-default.conf, restart the service
 
 ```bash
 #  Default rules for rsyslog.
@@ -176,8 +176,8 @@ Create an /etc/postfix/sasl_passwd file with:
 run
 
 ```bash
-chmod 600 /etc/postfix/sasl_passwd
-/etc/postfix/sasl_passwd
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
 ```
 
 ##### Customize From field
@@ -190,7 +190,7 @@ Create /etc/postfix/smtp_header_checks file, this changes all outgoing mail:
 
 ```bash
 sudo chmod 600 /etc/postfix/smtp_header_checks
-postmap /etc/postfix/smtp_header_checks
+sudo postmap /etc/postfix/smtp_header_checks
 ```
 
 Restart service:
