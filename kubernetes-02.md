@@ -810,7 +810,7 @@ helm install pebble jupyterhub/pebble -n traefik -values pebble.yaml
 
 ### Create the glusterfs endpoints in the traefik namespace
 
-```bash
+```yaml
 apiVersion: v1
 kind: Endpoints
 metadata:
