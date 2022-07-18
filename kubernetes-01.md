@@ -180,6 +180,16 @@ sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
+Set the default root email in /etc/aliases adding the following line:
+
+```bash
+root me@myemail.com
+```
+
+```bash
+sudo newaliases
+```
+
 ##### Customize From field
 
 Create /etc/postfix/smtp_header_checks file, this changes all outgoing mail:
