@@ -1193,9 +1193,9 @@ sudo kubeadm join 192.168.0.200:6443 --token 9vr73a.a8uxyaju799qwdjv --discovery
 From one of the control planes:
 
 ```bash
-scp /etc/kubernetes/admin.conf ubuntu@worker1
-scp /etc/kubernetes/admin.conf ubuntu@worker1
-scp /etc/kubernetes/admin.conf ubuntu@worker1
+sudo scp /etc/kubernetes/admin.conf ubuntu@k8w1:/home/ubuntu
+sudo scp /etc/kubernetes/admin.conf ubuntu@k8w2:/home/ubuntu
+sudo scp /etc/kubernetes/admin.conf ubuntu@k8w3:/home/ubuntu
 ```
 
 ```bash
