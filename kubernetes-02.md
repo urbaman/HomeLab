@@ -92,7 +92,7 @@ spec:
 
 ### Monitoring
 
-After implementing the prometheus-stack (see below), get the ptometheus-operator.yaml file from the github project, add the label ```release: prometheus``` to both the Pod Monitors and apply.
+After implementing the prometheus-stack (see below), get the ptometheus-operator.yaml file from the github project, add the label ```release: kube-prometheus-stack``` to both the Pod Monitors and apply.
 
 ```bash
 apiVersion: monitoring.coreos.com/v1
@@ -100,7 +100,7 @@ kind: PodMonitor
 metadata:
   name: metallb-controller
   labels:
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -117,7 +117,7 @@ kind: PodMonitor
 metadata:
   name: metallb-speaker
   labels:
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
@@ -528,7 +528,7 @@ TO add Cloudflare Operator to Prometheus/Graphana monitoring, get back here afte
 wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
 ```
 
-Edit the podmonitor yaml file to add the ```release: prometheus``` label
+Edit the podmonitor yaml file to add the ```release: kube-prometheus-stack``` label
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
@@ -617,10 +617,10 @@ Near the end you'll find something like:
 ```bash
   serviceMonitorSelector:
     matchLabels:
-      release: prometheus
+      release: kube-prometheus-stack
 ```
 
-In here, ```release: prometheus``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
+In here, ```release: kube-prometheus-stack``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
 
 ##### Example: Traefik (see more below for Traefik implementation)
 
@@ -632,7 +632,7 @@ metadata:
   name: traefik-sm
   labels:
     traefik: http
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   jobLabel: traefik
   selector:
@@ -740,7 +740,7 @@ metadata:
   namespace: monitoring
   labels:
     app: etcd
-    release: prometheus
+    release: kube-prometheus-stack
 spec:
   endpoints:
   - interval: 30s
