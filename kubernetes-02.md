@@ -267,7 +267,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-The create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim):
+Then create the relative PersistentVolumeClaim (be sure to name the PersistentVolume to Claim):
 
 ```bash
 apiVersion: v1
@@ -551,7 +551,7 @@ kubectl label configmap grafana-dashboard-cloudflare-operator -n monitoring graf
 Start checking the bind address of kube-proxy, kube-scheduler, kube-control-monitor
 
 ```bash
-kubectl edit cm kube-proxy-config -n kube-system
+kubectl edit cm kube-proxy -n kube-system
 ## Change from
     metricsBindAddress: 127.0.0.1:10249 ### <--- Too secure
 ## Change to
@@ -567,11 +567,11 @@ kubectl rollout restart deployment kube-proxy -n kube-system
 On every control-panel, change bind adreess to 0.0.0.0:
 
 ```bash
-sudo vi /etc/kubernetes/manifests/kube-scheduler.conf
-sudo vi /etc/kubernetes/manifests/kube-control-manager.conf
+sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
+sudo vi /etc/kubernetes/manifests/kube-control-manager.yaml
 ```
 
-The kill each scheduler and each control manager pods in the kube-system namespace
+Then kill each scheduler and each control manager pods in the kube-system namespace
 
 ```bash
 kubectl delete pod <pod-name> -n kube-system
