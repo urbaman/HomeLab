@@ -1190,10 +1190,25 @@ Worker nodes can be joined to the cluster with the command you stored previously
 sudo kubeadm join 192.168.0.200:6443 --token 9vr73a.a8uxyaju799qwdjv --discovery-token-ca-cert-hash sha256:7c2e69131a36ae2a042a339b33381c6d0d43887e2de83720eff5359e26aec866
 ```
 
+From one of the control planes:
+
+```bash
+scp /etc/kubernetes/admin.conf ubuntu@worker1
+scp /etc/kubernetes/admin.conf ubuntu@worker1
+scp /etc/kubernetes/admin.conf ubuntu@worker1
+```
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
 ### Control panel node isolation
 
 By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
 
 ```bash
 kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
+kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule-
 ```
