@@ -601,7 +601,7 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
 ```
 
 ```bash
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
+helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
 ```
 
 ### Monitoring other services/apps on other namespaces
