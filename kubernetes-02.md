@@ -580,6 +580,12 @@ kubectl delete pod <pod-name> -n kube-system
 Get the helm value file and add all your namespaces. Add others and upgrade the deploy if needed.
 
 ```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
+```
+
+```bash
   namespaces:
     releaseNamespace: true
     additional:
@@ -594,12 +600,16 @@ Get the helm value file and add all your namespaces. Add others and upgrade the 
       - traefik
 ```
 
+```bash
+helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
+```
+
 ### Monitoring other services/apps on other namespaces
 
 Take a look at the helm values of the prometheus-stack implementation:
 
 ```bash
-kubectl get prometheus -n monitoring prometheus-kube-prometheus-prometheus -o yaml
+kubectl get kube-prometheus-stack -n monitoring prometheus-kube-prometheus-prometheus -o yaml
 ```
 
 Near the end you'll find something like:
