@@ -1222,7 +1222,7 @@ I will set the following arguments:
       --alert-filter-regexp=^RebootRequired$
       --end-time string=17:00
       --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
-      --prometheus-url=http://prometheus.monitoring.svc.cluster.local
+      --prometheus-url=http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
       --reboot-days=mo,tu,we,th,fr
       --start-time=10:00
       --time-zone=Europe/Rome
