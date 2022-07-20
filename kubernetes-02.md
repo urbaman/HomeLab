@@ -1258,6 +1258,14 @@ Now copy the token and paste it into the Enter token field on the login screen.
 
 Click the Sign in button and that's it. You are now logged in as an admin.
 
+## Metrics Server
+
+Install the metrics server for autoscaling purposes.
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
+```
+
 ## Portainer
 
 To deploy Portainer, get the yaml manifest:
