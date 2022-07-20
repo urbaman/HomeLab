@@ -485,22 +485,22 @@ This results in three files – ca-key.pem, ca.pem, and ca.csr
 Next, we will generate the certificate and key for the first node.
 
 ```bash
-export NAME=node-1
-export ADDRESS=10.0.0.60,$NAME
+export NAME=etcd1
+export ADDRESS=10.0.50.41,$NAME,10.0.50.64,k8cp,k8cp.urbaman.it,10.0.50.42,etcd2,10.0.50.43,etcd3
 echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="$ADDRESS" - | cfssljson -bare $NAME
 ```
 
 Repeat the steps for the next two nodes.
 
 ```bash
-export NAME=node-2
-export ADDRESS=10.0.0.61,$NAME
+export NAME=etcd2
+export ADDRESS=10.0.50.42,$NAME,10.0.50.64,k8cp,k8cp.urbaman.it,10.0.50.43,etcd3,10.0.50.41,etcd1
 echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="$ADDRESS" - | cfssljson -bare $NAME
 ```
 
 ```bash
-export NAME=node-3
-export ADDRESS=10.0.0.62,$NAME
+export NAME=etcd3
+export ADDRESS=10.0.50.43,$NAME,10.0.50.64,k8cp,k8cp.urbaman.it,10.0.50.42,etcd2,10.0.50.41,etcd1
 echo '{"CN":"'$NAME'","hosts":[""],"key":{"algo":"rsa","size":2048}}' | cfssl gencert -config=ca-config.json -ca=ca.pem -ca-key=ca-key.pem -hostname="$ADDRESS" - | cfssljson -bare $NAME
 ```
 
@@ -519,7 +519,17 @@ scp node-1.pem $USER@$HOST:server.crt
 scp node-1-key.pem $USER@$HOST:server.key
 ```
 
-SSH into each node and run the below commands to move the certificates into an appropriate directory.
+Copy the certificates to an appropriate directory on the node.
+
+```bash
+sudo mkdir -p /etc/etcd
+sudo cp ca.pem /etc/etcd/etcd-ca.crt
+sudo cp node-1.pem /etc/etcd/server.crt
+sudo cp node-1-key.pem /etc/etcd/server.key
+sudo chmod 600 /etc/etcd/server.key
+```
+
+SSH into each node and run the below commands to move the certificates into the appropriate directory.
 
 ```bash
 HOST=10.0.0.60
@@ -1047,6 +1057,28 @@ backend apiserver
         server k8cp1 k8cp1.urbaman.it:6443 check
         server k8cp2 k8cp2.urbaman.it:6443 check
         server k8cp3 k8cp3.urbaman.it:6443 check
+
+#---------------------------------------------------------------------
+# etcd frontend which proxys to the etcd nodes
+#---------------------------------------------------------------------
+frontend etcd
+    bind *:2379
+    mode tcp
+    option tcplog
+    default_backend etcd
+
+#---------------------------------------------------------------------
+# round robin balancing for etcd
+#---------------------------------------------------------------------
+backend etcd
+    option httpchk GET /healthz
+    http-check expect status 200
+    mode tcp
+    option ssl-hello-chk
+    balance     roundrobin
+        server etcd1 etcd1.urbaman.it:2379 check
+        server etcd2 etcd2.urbaman.it:2379 check
+        server etcd3 etcd3.urbaman.it:2379 check
 ```
 
 Restart haproxy
@@ -1100,9 +1132,7 @@ networking:
 etcd:
   external:
     endpoints:
-      - https://10.0.50.41:2379 # change ETCD_0_IP appropriately
-      - https://10.0.50.42:2379 # change ETCD_1_IP appropriately
-      - https://10.0.50.43:2379 # change ETCD_2_IP appropriately
+      - https://k8cp.urbaman.it:2379 # change to the haproxy vip ip/host appropriately
     caFile: /etc/kubernetes/pki/etcd/ca.crt
     certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
     keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
