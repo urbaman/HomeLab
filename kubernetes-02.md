@@ -608,6 +608,12 @@ Under the grafana header, add some plugins:
       - grafana-clock-panel
 ```
 
+They will then be managed through the grafana config map:
+
+```bash
+kubectl edit cm -n monitoring kube-prometheus-stack-grafana
+```
+
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
 ```
