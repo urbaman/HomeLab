@@ -561,7 +561,7 @@ kubectl edit cm kube-proxy -n kube-system
 And reload kube-proxy deployment
 
 ```bash
-kubectl rollout restart deployment kube-proxy -n kube-system
+kubectl delete pod -n kube-ysstem kubepod1 kubepod2 ...
 ```
 
 On every control-panel, change bind adreess to 0.0.0.0:
