@@ -600,6 +600,14 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - traefik
 ```
 
+Under the grafana header, add some plugins:
+
+```bash
+    plugins:
+      - grafana-piechart-panel
+      - grafana-clock-panel
+```
+
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
 ```
