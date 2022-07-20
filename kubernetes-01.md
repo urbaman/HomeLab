@@ -882,17 +882,8 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
-
-https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
-
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 
 ### High availability
-
-https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
-
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 
 Install both keepalived and haproxy
 
