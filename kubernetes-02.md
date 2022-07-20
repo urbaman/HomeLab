@@ -630,7 +630,7 @@ Near the end you'll find something like:
 
 In here, ```release: kube-prometheus-stack``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
 
-##### Example: Traefik (see more below for Traefik implementation)
+#### Example: Traefik (see more below for Traefik implementation)
 
 Remmber to set the metrics port expose setting to true when installing Traefik, then create the following Service Monitor:
 
