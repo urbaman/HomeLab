@@ -1117,6 +1117,7 @@ Replace the value of CONTROL_PLANE with the user@host of the first control-plane
 On the first control panel, copy the files to the following locations:
 
 ```bash
+sudo mkdir /etc/kubernetes/pki/etcd
 sudo cp ca.crt /etc/kubernetes/pki/etcd/
 sudo cp apiserver-etcd-client.crt /etc/kubernetes/pki/
 sudo cp apiserver-etcd-client.key /etc/kubernetes/pki/
@@ -1133,7 +1134,7 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
-  podSubnet: "10.0.80.0/24" # change this (see below)
+  podSubnet: "172.16.0.0/12" # change this (see below)
 etcd:
   external:
     endpoints:
