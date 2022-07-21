@@ -1148,6 +1148,8 @@ Note: The difference between stacked etcd and external etcd here is that the ext
 
 Remember to change the controlPlaneEndpoint, podSubnet (equal to following calico IP CIDR), etcd endpoints (equal to the endpoints of the external etcd)
 
+Note: the podSubnet (CIDR of IPs assigned to the pods) must be a private network CIDR (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) of other local network CIDRs already in use. I use 10.0.x.x and 192.168.1.x, so I assign 192.168.0.0/16 to kubernetes internal network. Also keep in mind that kubernetes by default assigns a /24 set of IPs to each node, so there will in my case 24-12=12, 2^12=4.096 nodes in the cluster, each with a 65-110 pods max. Please note that there's quite a bit of IPs wasted, as top cluster nodes is 1000 and I do only 6. Being in my own nome network simplifies a little bit, but beware the network implications of these setitngs.
+
 The following steps are similar to the stacked etcd setup:
 
 ```bash
