@@ -400,6 +400,8 @@ You can also determine the time the update will occur by uncommenting the line b
 // Unattended-Upgrade::Automatic-Reboot-Time "04:00";
 ```
 
+For this specific implementation, we will set unattended-upgrades to automatic reboot on etcd and haproxy nodes, setting the automatic reboot time with half an hour offset from each other, starting at 02:00 for the first node and finishing at 04:30 for the last node.
+
 There are many other rules you can set to suit your needs. Simply scroll and uncomment the directives as we have just elaborated.
 
 Once you are done, save the changes and exit the configuration file. That's about it in this section.
