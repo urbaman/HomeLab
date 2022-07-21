@@ -565,6 +565,7 @@ ETCD_PEER_TRUSTED_CA_FILE="/etc/etcd/etcd-ca.crt"
 ETCD_PEER_KEY_FILE="/etc/etcd/server.key"
 ETCD_PEER_CERT_FILE="/etc/etcd/server.crt"
 ETCD_DATA_DIR="/var/lib/etcd"
+ETCD_SNAPSHOT_COUNT="10000"
 ```
 
 For node 2, use the below content.
@@ -585,6 +586,7 @@ ETCD_PEER_TRUSTED_CA_FILE="/etc/etcd/etcd-ca.crt"
 ETCD_PEER_KEY_FILE="/etc/etcd/server.key"
 ETCD_PEER_CERT_FILE="/etc/etcd/server.crt"
 ETCD_DATA_DIR="/var/lib/etcd"
+ETCD_SNAPSHOT_COUNT="10000"
 ```
 
 Finally, create the configuration file for the last node.
@@ -605,6 +607,7 @@ ETCD_PEER_TRUSTED_CA_FILE="/etc/etcd/etcd-ca.crt"
 ETCD_PEER_KEY_FILE="/etc/etcd/server.key"
 ETCD_PEER_CERT_FILE="/etc/etcd/server.crt"
 ETCD_DATA_DIR="/var/lib/etcd"
+ETCD_SNAPSHOT_COUNT="10000"
 ```
 
 With the configuration in place, it’s time for us to create the systemd unit file on each node.
