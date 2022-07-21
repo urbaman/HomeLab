@@ -345,7 +345,11 @@ NOTE: backup any zone/domain/records you'll want to keep, we'll need to manage t
 
 ```bash
 helm repo add containeroo https://charts.containeroo.ch
+```
+
 Update your local Helm chart repository cache:
+
+```bash
 helm repo update
 ```
 
