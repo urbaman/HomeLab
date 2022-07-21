@@ -1158,6 +1158,16 @@ sudo kubeadm init --config kubeadm-config.yaml --upload-certs
 
 Write the output join commands that are returned to a text file for later use.
 
+### Setup kubectl for a normal user
+
+To start using your cluster, you need to run the following as a regular user:
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
 ### Apply the CNI plugin of your choice.
 
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
@@ -1184,16 +1194,6 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 
 ```bash
 calicoctl create -f - < my_manifest.yaml
-```
-
-### Setup kubectl for a normal user
-
-To start using your cluster, you need to run the following as a regular user:
-
-```bash
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 ### Steps for the rest of the control panel nodes
