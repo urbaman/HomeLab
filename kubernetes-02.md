@@ -618,6 +618,8 @@ They will then be managed through the grafana config map:
 kubectl edit cm -n monitoring kube-prometheus-stack-grafana
 ```
 
+Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezione in the dashboards.
+
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
 ```
