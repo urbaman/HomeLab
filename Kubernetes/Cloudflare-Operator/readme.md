@@ -28,7 +28,7 @@ helm repo update
 cloudflare-operator requires a number of CRD resources, which must be installed manually using kubectl.
 
 ```bash
-kubectl apply -f https://github.com/containeroo/cloudflare-operator/releases/download/v0.2.3/crds.yaml
+kubectl apply -f https://github.com/containeroo/cloudflare-operator/releases/download/v0.3.3/crds.yaml
 ```
 
 ### Install cloudflare-operator
@@ -40,7 +40,7 @@ helm install \
   cloudflare-operator containeroo/cloudflare-operator \
   --namespace cloudflare-operator \
   --create-namespace \
-  --version v0.2.4
+  --version v0.3.3
 ```
 
 ## Preparation
@@ -206,11 +206,12 @@ wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/co
 
 Edit the podmonitor yaml file to add the ```release: kube-prometheus-stack``` label
 
+
 ```
 kubectl apply -f https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
 ```
 
-Install the dashboard in grafana, download the json and create a configmap fron it in the monitoring namespace.
+Install the dashboard in grafana, download the json and create a configmap from it in the monitoring namespace.
 
 ```bash
 kubectl create configmap grafana-dashboard-cloudflare-operator -n monitoring --from-file=/tmp/grafana-dashboard-cloudflare-operator.json
