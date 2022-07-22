@@ -642,7 +642,7 @@ In here, ```release: kube-prometheus-stack``` is the label to add to the Service
 
 #### Example: Traefik (see more below for Traefik implementation)
 
-Remmber to set the metrics port expose setting to true when installing Traefik, then create the following Service Monitor:
+Remember to set the metrics port expose setting to true when installing Traefik, then create the following Service Monitor:
 
 ```bash
 apiVersion: monitoring.coreos.com/v1
