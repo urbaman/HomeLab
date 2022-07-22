@@ -1,0 +1,12 @@
+piVersion: cf.containeroo.ch/v1beta1
+kind: Account
+metadata:
+  name: account-sample
+spec:
+  email: mail@example.com
+  globalAPIKey:
+    secretRef:
+      name: cloudflare-global-api-key
+      namespace: cloudflare-operator
+  managedZones:
+    - example.com
