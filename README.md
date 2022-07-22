@@ -3,22 +3,24 @@
 Il progetto Proxmox prevede di impostare un cluster di almeno tre nodi Proxmox, per far girare le seguenti istanze:
 
 Proxmox (Hypervisor)
-- NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/
-- Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
-- UrBackup (Backup)
+- PfSense in HA
 - HomeAssistant (domotica)
-- Bitwarden (Passmanager)
-- PiHole (Firewall)
-- TrueNAS (filesystem)
-- HEIMDALL (AppDashboard)
-- debian(s) con Docker Swarm o Microk8s
-    (https://thehomelab.wiki/books/dns-reverse-proxy)
-    - Nginx proxy manager
-	- Cloudflare DNS docker
-	- MariaDB docker
-	- Authelia
-	- PiHole
-      - Guacamole
+- 3x TrueNAS SCALE cluster (filesystem)
+- Truecommand to manage TrueNAS SCALE gluster cluster
+- 3x haproxy for HA implementations
+- 3x etcd cluster for kubernetes
+- 3x ccontrol planes, 3x worker nodes kubernetes cluster
+    - Metallb Loadbalancer
+    - Containeroo Cloudflare Operator
+    - Portainer
+    - Traefik
+    - NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/
+    - Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
+    - Vaultwarden https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment
+    - Authelia? https://www.authelia.com/integration/kubernetes/introduction/
+    - Guacamole? https://github.com/thomas-illiet/k8s-guacamole
+    - UrBackup (Backup)
+    - HEIMDALL (AppDashboard)
 
 https://github.com/awesome-selfhosted/awesome-selfhosted
 
