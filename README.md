@@ -3,8 +3,8 @@
 Il progetto Proxmox prevede di impostare un cluster di almeno tre nodi Proxmox, per far girare le seguenti istanze:
 
 Proxmox (Hypervisor)
-- NextCloud (FileServer)
-- Plex (MediaServer)
+- NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/
+- Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
 - UrBackup (Backup)
 - HomeAssistant (domotica)
 - Bitwarden (Passmanager)
