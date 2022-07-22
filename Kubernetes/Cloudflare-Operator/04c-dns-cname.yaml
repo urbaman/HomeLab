@@ -1,0 +1,12 @@
+apiVersion: cf.containeroo.ch/v1beta1
+kind: DNSRecord
+metadata:
+  name: blog-example-com
+  namespace: cloudflare-operator
+spec:
+  name: blog.example.com
+  content: arecord.example.com
+  type: CNAME
+  proxied: true
+  ttl: 1
+  interval: 5m

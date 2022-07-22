@@ -1,0 +1,13 @@
+apiVersion: cf.containeroo.ch/v1beta1
+kind: DNSRecord
+metadata:
+  name: example-com
+  namespace: cloudflare-operator
+spec:
+  name: example.com
+  type: A
+  ipRef:
+    name: dynamic-external-ipv4-address
+  proxied: true
+  ttl: 1
+  interval: 5m
