@@ -726,12 +726,8 @@ metadata:
   namespace: monitoring
 subsets:
 - addresses:
-  - ip: 10.0.50.41
-    nodeName: etcd1
-  - ip: 10.0.50.42
-    nodeName: etcd2
-  - ip: 10.0.50.43
-    nodeName: etcd3
+  - ip: 10.0.50.64
+    nodeName: etcd
   ports:
   - name: metrics
     port: 2379
