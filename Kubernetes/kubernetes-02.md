@@ -65,7 +65,7 @@ metadata:
 spec:
   addresses:
   - 10.0.50.100-10.0.50.199
-
+---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
