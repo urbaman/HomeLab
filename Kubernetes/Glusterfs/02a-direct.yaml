@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+spec:
+  containers:
+    - name: alpine
+      image: alpine:latest
+      command:
+        - touch
+        - /data/test
+      volumeMounts:
+        - name: glusterfs-volume
+          mountPath: /data
+  volumes:
+    - name: glusterfs-volume
+      glusterfs:
+        endpoints: glusterfs-cluster
+        path: HDD5T/path/...
+        readOnly: no
