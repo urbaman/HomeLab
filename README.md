@@ -3,22 +3,24 @@
 Il progetto Proxmox prevede di impostare un cluster di almeno tre nodi Proxmox, per far girare le seguenti istanze:
 
 Proxmox (Hypervisor)
-- NextCloud (FileServer)
-- Plex (MediaServer)
-- UrBackup (Backup)
+- PfSense in HA
 - HomeAssistant (domotica)
-- Bitwarden (Passmanager)
-- PiHole (Firewall)
-- TrueNAS (filesystem)
-- HEIMDALL (AppDashboard)
-- debian(s) con Docker Swarm o Microk8s
-    (https://thehomelab.wiki/books/dns-reverse-proxy)
-    - Nginx proxy manager
-	- Cloudflare DNS docker
-	- MariaDB docker
-	- Authelia
-	- PiHole
-      - Guacamole
+- 3x TrueNAS SCALE cluster (filesystem)
+- Truecommand to manage TrueNAS SCALE gluster cluster
+- 3x haproxy for HA implementations
+- 3x etcd cluster for kubernetes
+- 3x ccontrol planes, 3x worker nodes kubernetes cluster
+    - Metallb Loadbalancer
+    - Containeroo Cloudflare Operator
+    - Portainer
+    - Traefik
+    - NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/
+    - Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
+    - Vaultwarden https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment
+    - Authelia? https://www.authelia.com/integration/kubernetes/introduction/
+    - Guacamole? https://github.com/thomas-illiet/k8s-guacamole
+    - UrBackup (Backup)
+    - HEIMDALL (AppDashboard)
 
 https://github.com/awesome-selfhosted/awesome-selfhosted
 
@@ -37,59 +39,3 @@ https://github.com/awesome-selfhosted/awesome-selfhosted
 - Ceph: https://blog.miniserver.it/proxmox/come-fare-un-cluster-proxmox-con-ceph/
 
 - Traefik: https://blog.zachinachshon.com/categories
-
-### ZFS: aggiungere un disco creando un mirror:
-
-psSense
-
-```
-#check the zpool and the available drives (freeBSD/pfSense)
-zpool status
-sysctl kern.disks
-
-#backup the partition table from da0 to restore to (new) da1 
-gpart backup da0 > /tmp/da0.bak
-gpart restore -l da1 < /tmp/da0.bak
-
-#add new partitioned disk to zpool zpool1
-zpool attach zpool1 da0p3 da1p3
-
-#write bootloader to new disk
-gpart bootcode -b /boot/pmbr -p /boot/gptzfsboot -i 2 da1
-
-#write EFI partition to new disk
-dd if=/boot/boot1.efifat of=/dev/da1p1 bs=4m
-```
-
-TrueNAS
-```
-gdisk /dev/sda
-  b (enter filename)
-
-#5: restore partition backup to sdb with gdisk
- gdisk /dev/sdb
-r (recover and then l to load backup filename
-
-#6: Check the boot-pool status
-It should display boot-pool and the largest partition of the sda drive like following
- zpool status boot-pool
-  pool: boot-pool
-state: ONLINE
-config:
-
-    NAME        STATE     READ WRITE CKSUM
-    boot-pool  ONLINE       0     0     0
-      sda3       ONLINE       0     0     0
-
-errors: No known data errors
-
-#7: Attach the sdb to the zpool
-Keep in mind to use the largest partition which should be the same as on sda
- zpool attach boot-pool sdb3
-
-#8: Copy the EFI Boot partition
- dd if=/dev/sda2 of=/dev/sdb2
-
-#9: Copy the BIOS Boot partition (not sure if needed)
- dd if=/dev/sda1 of=/dev/sdb1
- ```
