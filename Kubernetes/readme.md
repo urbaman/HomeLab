@@ -51,6 +51,6 @@ Here are the detailed steps to deploy our homelab cluster
 5. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
 6. [Traefik for ingress and proxy](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Traefik)
 7. [Kubernetes Dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Dashboard)
-8. [Metrics Server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics Server)
+8. [Metrics Server]("https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics Server")
 9. [Portainer managing dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Portainer)
 10. [Kured for automatic reboots](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Kured)
