@@ -17,8 +17,6 @@ kubectl edit configmap -n kube-system kube-proxy
 and set:
 
 ```bash
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
-kind: KubeProxyConfiguration
 mode: "ipvs"
 ipvs:
   strictARP: true
