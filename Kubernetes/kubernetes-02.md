@@ -90,7 +90,7 @@ spec:
 
 ### Monitoring
 
-After implementing the prometheus-stack (see below), get the ptometheus-operator.yaml file from the github project, add the label ```release: kube-prometheus-stack``` to both the Pod Monitors and apply.
+After implementing the prometheus-stack (see below), get the prometheus-operator.yaml file from the github project, add the label ```release: kube-prometheus-stack``` to both the Pod Monitors and apply.
 
 ```bash
 apiVersion: monitoring.coreos.com/v1
