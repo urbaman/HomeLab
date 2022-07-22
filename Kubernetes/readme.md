@@ -35,4 +35,4 @@ Here is the Cluster infrastructure we will deploy
 
 Here are the detailed steps to deploy our homelab cluster
 
-- (PReparing the machines)[https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/01-Prepare-Machines]
+- [Preparing the machines](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/01-Prepare-Machines)
