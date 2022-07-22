@@ -1,0 +1,14 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: stable
+controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
+networking:
+  podSubnet: "172.16.0.0/12" # change this (see below)
+etcd:
+  external:
+    endpoints:
+      - https://k8cp.urbaman.it:2379 # change ETCD_0_IP appropriately
+    caFile: /etc/kubernetes/pki/etcd/ca.crt
+    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
