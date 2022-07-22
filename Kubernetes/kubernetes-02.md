@@ -157,7 +157,7 @@ subjects:
     namespace: monitoring
 ```
 
-Install the grafana dashboar, download the json from grafana, create the configmap in the monitoring namespace and label it.
+Install the grafana dashboard, download the json from grafana, create the configmap in the monitoring namespace and label it.
 
 ```bash
 kubectl create configmap grafana-dashboard-metallb -n monitoring --from-file=/path_to/metallb_dashboard.json
@@ -168,13 +168,13 @@ kubectl label configmap grafana-dashboard-metallb -n monitoring grafana_dashboar
 
 ### glusterfs-client
 
-Fist you need to install the glusterfs-client package on your nodes. The client is used by the kubernetes scheduler to create the gluster volumes.
+Fist you need to install the glusterfs-client package on your nodes. The client is used by the kubernetes scheduler to create the glusterfs volumes.
 
 ```bash
-$ sudo apt install gluster-client
+sudo apt install glusterfs-client
 ```
 
-### Discovering GlusterFS in Kubernetes:
+### Discovering GlusterFS in Kubernetes
 
 GlusterFS cluster should be discovered in the Kubernetes cluster. To do that, you need to add an Endpoints object that points to the servers of the GlusterFS cluster.
 
@@ -195,7 +195,7 @@ subsets:
       - port: 1
 ```
 
-To persist the Gluster endpoints, you also need to create a relative service.
+To persist the Glusterfs endpoints, you also need to create a relative service.
 
 ```bash
 apiVersion: v1
@@ -207,11 +207,11 @@ spec:
   - port: 1
 ```
 
-### Using GlusterFS in Kubernetes:
+### Using GlusterFS in Kubernetes
 
 Create the desired path in the glusterfs volume (HDD5T/path/... in my situation)
 
-##### Method 1 — Connecting to GlusterFS directly with Pod manifest:
+#### Method 1 — Connecting to GlusterFS directly with Pod manifest
 
 To connect to the GlusterFS volume directly with Pod manifest, use the GlusterfsVolumeSource in the Pod. Here is an example (create the path in the glusterfs volume - HDD5T in my situation):
 
@@ -238,7 +238,7 @@ spec:
         readOnly: no
 ```
 
-##### Method 2 — Connecting using the PersistentVolume resource:
+#### Method 2 — Connecting using the PersistentVolume resource
 
 To create the PersistentVolume object for the GlusterFS volume, use the following manifest. The storage size does not take any effect. Be sure to name the claim you'll bind it to.
 
@@ -297,9 +297,9 @@ spec:
         image: nginx
         volumeMounts:
         - mountPath: "/var/www/html"
-          name: mypd
+          name: mypod
     volumes:
-      - name: mypd
+      - name: mypod
         persistentVolumeClaim:
           claimName: glusterfs-path-pvc
 ```
@@ -328,7 +328,7 @@ sudo snap install helm --classic
 
 ## Cloudflare DynDNS and DNS records
 
-To manage cloudflare DNS records we use cloudflare-operator from containeroo. It will check the ecternal public IP of the cluster and create/update selected records (A and CNAME) in all of our cloudflare account.
+To manage cloudflare DNS records we use cloudflare-operator from containeroo. It will check the external public IP of the cluster and create/update selected records (A and CNAME) in all of our cloudflare account.
 
 NOTE: backup any zone/domain/records you'll want to keep, we'll need to manage them through cloudflare-operator.
 
@@ -339,7 +339,7 @@ NOTE: backup any zone/domain/records you'll want to keep, we'll need to manage t
 
 ### Steps
 
-#### Add the containeroo Helm repository (This repository is the only supported source of containeroo charts):
+#### Add the containeroo Helm repository (This repository is the only supported source of containeroo charts)
 
 ```bash
 helm repo add containeroo https://charts.containeroo.ch
@@ -524,7 +524,7 @@ EOF
 
 ### Monitoring
 
-TO add Cloudflare Operator to Prometheus/Graphana monitoring, get back here after having implemented the stack, and create a podmonitor and a grafana dashboard
+TO add Cloudflare Operator to Prometheus/Grafana monitoring, get back here after having implemented the stack, and create a podmonitor and a grafana dashboard
 
 ```bash
 wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
@@ -532,11 +532,11 @@ wget https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/co
 
 Edit the podmonitor yaml file to add the ```release: kube-prometheus-stack``` label
 
-```
+```bash
 kubectl apply -f https://raw.githubusercontent.com/containeroo/cloudflare-operator/master/config/manifests/prometheus/monitor.yaml
 ```
 
-Install the dashboard in grafana, download the json and create a configmap fron it in the monitoring namespace.
+Install the dashboard in grafana, download the json and create a configmap from it in the monitoring namespace.
 
 ```bash
 kubectl create configmap grafana-dashboard-cloudflare-operator -n monitoring --from-file=/tmp/grafana-dashboard-cloudflare-operator.json
@@ -548,7 +548,7 @@ Add label so Grafana can fetch the dashboard
 kubectl label configmap grafana-dashboard-cloudflare-operator -n monitoring grafana_dashboard="1"
 ```
 
-## Monitoring
+## Monitoring with Prometheus-stack
 
 Start checking the bind address of kube-proxy, kube-scheduler, kube-control-monitor
 
@@ -563,10 +563,10 @@ kubectl edit cm kube-proxy -n kube-system
 And reload kube-proxy deployment
 
 ```bash
-kubectl delete pod -n kube-ysstem kubepod1 kubepod2 ...
+kubectl delete pod -n kube-system kubepod1 kubepod2 ...
 ```
 
-On every control-panel, change bind adreess to 0.0.0.0:
+On every control-panel, change bind address to 0.0.0.0:
 
 ```bash
 sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
@@ -616,7 +616,7 @@ They will then be managed through the grafana config map:
 kubectl edit cm -n monitoring kube-prometheus-stack-grafana
 ```
 
-Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezione in the dashboards.
+Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezone in the dashboards.
 
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
@@ -774,61 +774,19 @@ spec:
 
 And apply it with kubectl.
 
-Finally, add a grafana dashboard for etcd on grafana, set trhe datasource, get the json, create a configmap from it and label it.
+Finally, add a grafana dashboard for etcd on grafana, set the datasource, get the json, create a configmap from it and label it.
 
 ```bash
 kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etcd-cluster.json
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ```
 
-### Exposing Grafana:
+### Exposing Grafana
 
 ```bash
 kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
   --namespace "$NAMESPACE" \
   -p '{"spec": {"type": "LoadBalancer"}}'
-```
-
-## Install pebble for ssl certificates of internal services
-
-Install only for test environments, use cloudflare for production.
-
-Create the traefik namespace (we need pebble to be in the same namespace as traefik
-
-```bash
-kubectl create namespace traefik
-```
-
-Let's install the helm repo, get the values and modify them:
-
-```bash
-helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
-helm repo update
-helm show values jupyterhub/pebble > pebble.yaml
-vi pebble.yaml
-```
-
-Set coredns enabled false, as we do not need it
-
-```bash
-## coredns is an optional DNS server that can for example point anything.test
-## to your-acme-client.your-namespace.svc.cluster.local.
-coredns:
-  enabled: false
-```
-
-Set pebble to skip validation (uncomment and set to 1, keep a look to indentation:
-
-```bash
-   # ## ref: https://github.com/letsencrypt/pebble#skipping-validation
-    - name: PEBBLE_VA_ALWAYS_VALID
-      value: "1"
-```
-
-Install pebble:
-
-```
-helm install pebble jupyterhub/pebble -n traefik -values pebble.yaml
 ```
 
 ## Traefik
@@ -862,7 +820,7 @@ spec:
   - port: 1
 ```
 
-### Create the path in the gluster volume (from a node in the glusterfs cluster)
+### Create the path in the glusterfs volume (from a node in the glusterfs cluster)
 
 ```bash
 cd /cluster/HDD5T
@@ -929,7 +887,7 @@ helm show values traefik/traefik > traefik.yaml
 vi traefik.yaml
 ```
 
-Go to the persistence section, turn it to true, uncomment the esistingClaim line and set it to the claim above.
+Go to the persistence section, turn it to true, uncomment the existingClaim line and set it to the claim above.
 
 ```bash
 persistence:
@@ -968,7 +926,7 @@ ports:
     port: 8443
     protocol: TCP
     tls:
-      certResolver: "cloudflare" # Or "pebble" if you so choose
+      certResolver: "cloudflare"
       domains: []
       enabled: true
       options: ""
@@ -1011,7 +969,7 @@ deployment:
           mountPath: /ssl-certs
 ```
 
-### Create SSL certs for your domains (Cloudflare DNS challenge for production OR pebble for test/dev)
+### Create SSL certs for your domains
 
 Create a secret with your own Cloudlfare email and API Key:
 
@@ -1027,7 +985,7 @@ stringData:
   apiKey: yourglobalapikey
 ```
 
-Also in the traefik vaules yaml file, add the following additionalArguments (choose only one resolver), the env settings and the volume settings (volume only for pebble certResolver)
+Also in the traefik vales yaml file, add the following additionalArguments and the env settings:
 
 ```bash
 additionalArguments:
@@ -1037,19 +995,11 @@ additionalArguments:
   - --certificatesresolvers.cloudflare.acme.email=yourmail@example.com
   - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
   - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
-# Pebble
-  - --certificatesresolvers.pebble.acme.tlschallenge=true
-  - --certificatesresolvers.pebble.acme.email=yourmail@example.com
-  - --certificatesresolvers.pebble.acme.storage=/ssl-certs/acme-pebble.json
-  - --certificatesresolvers.pebble.acme.caserver=https://pebble/dir
 
 ```
 
 ```bash
 env:
-# Only for Pebble letsencrypt challenge, comment or delete for others
-- name: LEGO_CA_CERTIFICATES
-  value: "/certs/root-cert.pem"
 # DNS Challenge Credentials
 # Cloudflare:
 - name: CF_API_EMAIL
@@ -1062,14 +1012,6 @@ env:
     secretKeyRef:
       key: apiKey
       name: cloudflare-dnschallenge-credentials
-```
-
-```bash
-# Onluy for pebble
-volumes:
-  - name: pebble
-    mountPath: "/certs"
-    type: configMap
 ```
 
 ### Install
@@ -1086,7 +1028,7 @@ Go to a machine with a browser and kubectl installed and properly configured, op
 kubectl -n traefik port-forward traefik-667459fcbf-h7cqf 9000:9000
 ```
 
-Now point the browser to http://localhost:9000/dashboard/ (remember the final slash)
+Now point the browser to <http://localhost:9000/dashboard/> (remember the final slash)
 
 ### Proxy an internal service (https redirect, basic auth)
 
@@ -1326,7 +1268,7 @@ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
 
 To deploy Portainer, get the yaml manifest:
 
-wget https://raw.githubusercontent.com/portainer/k8s/master/deploy/manifests/portainer/portainer.yaml
+wget <https://raw.githubusercontent.com/portainer/k8s/master/deploy/manifests/portainer/portainer.yaml>
 
 Add a persistent volume and a persistent volume claim to the manifest just after the service account (needs to be after the namespace creation, before the actual deploy creation), and reference the claim in the volume definition:
 
@@ -1460,9 +1402,9 @@ Flags:
       --reboot-delay duration               add a delay after drain finishes but before the reboot command is issued (default 0, no time)
       --reboot-sentinel string              path to file whose existence signals need to reboot (default "/var/run/reboot-required")
       --reboot-sentinel-command string      command for which a successful run signals need to reboot (default ""). If non-empty, sentinel file will be ignored.
-      --slack-channel string                slack channel for reboot notfications
-      --slack-hook-url string               slack hook URL for reboot notfications [deprecated in favor of --notify-url]
-      --slack-username string               slack username for reboot notfications (default "kured")
+      --slack-channel string                slack channel for reboot notifications
+      --slack-hook-url string               slack hook URL for reboot notifications [deprecated in favor of --notify-url]
+      --slack-username string               slack username for reboot notifications (default "kured")
       --start-time string                   schedule reboot only after this time of day (default "0:00")
       --time-zone string                    use this timezone for schedule inputs (default "UTC")
       --log-format string                   log format specified as text or json, defaults to "text"
