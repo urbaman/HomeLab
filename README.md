@@ -14,7 +14,7 @@ Proxmox (Hypervisor)
     - [x] Containeroo Cloudflare Operator
     - [x] Portainer
     - [x] Traefik
-    - [ ] NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/
+    - [ ] NextCloud (FileServer) https://eramons.github.io/techblog/post/nextcloud/ https://tansanrao.com/home-lab-nextcloud-s3-kubernetes/
     - [ ] Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
     - [ ] Vaultwarden https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment
     - [ ] Authelia? https://www.authelia.com/integration/kubernetes/introduction/
