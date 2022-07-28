@@ -19,6 +19,7 @@ Proxmox (Hypervisor)
     - [x] Redis and Redis Prometheus-Grafana monitoring
     - [x] NextCloud (FileServer) and Prometheus-Grafana monitoring
     - [ ] Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
+        - [ ] With Sonarr, Radarr, Transmission, Jackett https://greg.jeanmart.me/2020/04/13/self-host-your-media-center-on-kubernetes-wi/
     - [ ] Vaultwarden https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment
     - [ ] Authelia? https://www.authelia.com/integration/kubernetes/introduction/
     - [ ] Guacamole? https://github.com/thomas-illiet/k8s-guacamole
