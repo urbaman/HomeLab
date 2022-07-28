@@ -90,7 +90,6 @@ spec:
             - mountPath: /var/www/html/data
               name: nextcloud-data
 ---
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -104,3 +103,45 @@ spec:
       targetPort: 80
   selector:
     app: nextcloud
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud-https-redirect
+  namespace: nextcloud
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-websecure
+  namespace: nextcloud
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`nextcloud.urbaman.it`)
+    kind: Rule
+    services:
+    - name: nextcloud
+      port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-web
+  namespace: nextcloud
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`nextcloud.urbaman.it`)
+    kind: Rule
+    services:
+    - name: nextcloud
+      port: 8080
+    middlewares:
+      - name: nextcloud-https-redirect
