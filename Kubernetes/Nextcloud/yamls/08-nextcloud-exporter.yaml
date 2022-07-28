@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-exporter
+  namespace: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-exporter
+  template:
+    metadata:
+      labels:
+        app: nextcloud-exporter
+    spec:
+      containers:
+      - name: nextcloud-exporter
+        image: xperimental/nextcloud-exporter:latest
+        ports:
+        - containerPort: 9205
+          name: metrics
+        env:
+        - name: NEXTCLOUD_AUTH_TOKEN
+          value: "auth_token"
+        - name: NEXTCLOUD_SERVER
+          value: "https://nextcloud.urbaman.it"
+        - name: NEXTCLOUD_TIMEOUT
+          value: "5s"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-exporter
+  namespace: nextcloud
+  labels:
+    app: nextcloud-exporter
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9205
+    protocol: TCP
+    name: http
+  selector:
+    app: nextcloud-exporter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nextcloud-exporter
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobLabel: nextcloud
+  endpoints:
+    - interval: 5s
+      port: http
+  namespaceSelector:
+    matchNames:
+    - nextcloud
+  selector:
+    matchLabels:
+      app: nextcloud-exporter

@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud 
+  labels:
+    app: nextcloud 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud 
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      volumes:
+      - name: nextcloud-app
+        persistentVolumeClaim: 
+          claimName: nextcloud-pvc
+      - name: nextcloud-data
+        persistentVolumeClaim: 
+          claimName: nextcloud-data-pvc
+      containers:
+        - image: nextcloud:apache
+          name: nextcloud 
+          ports:
+            - containerPort: 80
+          env:
+            - name: REDIS_HOST
+              value: redis-master
+            - name: MYSQL_HOST
+              value: mariadb 
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DATABASE
+                  name: nextcloud-secrets
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: nextcloud-secrets
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: nextcloud-secrets
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: nextcloud-secrets
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: REDIS_HOST_PASSWORD
+                  name: nextcloud-secrets
+            - name: NEXTCLOUD_ADMIN_USER
+              value: "admin"
+            - name: SMTP_HOST
+              value: "smtp.urbaman.it"
+            - name: SMTP_SECURE
+              value: "tls"
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_NAME
+              value: "nextcloud@urbaman.it"
+            - name: MAIL_FROM_ADDRESS
+              value: "nextcloud@urbaman.it"
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: "urbaman.it"
+            - name: TRUSTED_PROXIES
+              value: "10.0.50.100"
+            - name: OVERWRITEHOST
+              value: "nextcloud.urbaman.it"
+            - name: OVERWRITEPROTOCOL
+              value: "https"
+            - name: OVERWRITECLIURL
+              value: "nextcloud.urbaman.it"
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SMTP_PASSWORD
+                  name: nextcloud-secrets 
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: nextcloud-app
+            - mountPath: /var/www/html/data
+              name: nextcloud-data
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  ports:
+    - port: 8080
+      targetPort: 80
+  selector:
+    app: nextcloud

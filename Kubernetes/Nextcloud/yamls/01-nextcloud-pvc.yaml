@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: glusterfs-cluster
+  namespace: nextcloud
+subsets:
+  - addresses:
+      - ip: 10.0.50.21
+        hostname: truenas1
+      - ip: 10.0.50.22
+        hostname: truenas2
+      - ip: 10.0.50.23
+        hostname: truenas3
+    ports:
+      - port: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glusterfs-cluster
+  namespace: nextcloud
+spec:
+  ports:
+  - port: 1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-mariadb-pv
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 8Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/nextcloud/mariadb
+    readOnly: false
+  claimRef:
+    name: nextcloud-mariadb-pvc
+    namespace: nextcloud
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: nextcloud-mariadb-pvc
+    namespace: nextcloud
+spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: ""
+    volumeName: nextcloud-mariadb-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-pv
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 8Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/nextcloud/nextcloud
+    readOnly: false
+  claimRef:
+    name: nextcloud-pvc
+    namespace: nextcloud
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: nextcloud-pvc
+    namespace: nextcloud
+spec:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: ""
+    volumeName: nextcloud-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-data-pv
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 5Ti
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/nextcloud/data
+    readOnly: false
+  claimRef:
+    name: nextcloud-data-pvc
+    namespace: nextcloud
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: nextcloud-data-pvc
+    namespace: nextcloud
+spec:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 5Ti
+    storageClassName: ""
+    volumeName: nextcloud-data-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-master-pv
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 8Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/nextcloud/redis/master
+    readOnly: false
+  claimRef:
+    name: redis-master-pvc
+    namespace: nextcloud
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: redis-master-pvc
+    namespace: nextcloud
+spec:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: ""
+    volumeName: redis-master-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-replica-pv
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 8Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  glusterfs:
+    endpoints: glusterfs-cluster
+    path: HDD5T/k8storage/nextcloud/redis/replica
+    readOnly: false
+  claimRef:
+    name: redis-replica-pvc
+    namespace: nextcloud
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: redis-replica-pvc
+    namespace: nextcloud
+spec:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: ""
+    volumeName: redis-replica-pv
