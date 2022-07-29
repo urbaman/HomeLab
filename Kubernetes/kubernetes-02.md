@@ -1416,11 +1416,13 @@ I will set the following arguments:
       --alert-filter-regexp=^RebootRequired$
       --end-time=17:00
       --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
-      --prometheus-url=http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
+      --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
       --reboot-days=mo,tu,we,th,fr
       --start-time=10:00
       --time-zone=Europe/Rome
 ```
+
+Be aware to put your proper url to the prometheus service in the `--prometheus-url=` flag.
 
 To check for prometheus alerts (not checking kured's alerts), reboot between 9 and 17 in weekdays, Europe/Rome timezone, send notifications by email.
 
