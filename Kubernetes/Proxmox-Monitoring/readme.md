@@ -1,6 +1,4 @@
-# Even more tools
-
-## Proxmox, Prometheus, Grafana
+# Proxmox, Prometheus, Grafana
 
 After installing the prometheus exporter on the nodes, define endpoints, service and service monitor:
 
