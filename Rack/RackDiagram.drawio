@@ -1,0 +1,103 @@
+<mxfile host="65bd71144e">
+    <diagram id="ahZWNk10tz0PuRP8X0LK" name="Pagina-1">
+        <mxGraphModel dx="674" dy="548" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="61" value="" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fillColor=#FFFFFF;strokeWidth=4;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="80" width="1010" height="1030" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="Front" style="strokeColor=#666666;html=1;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rackGeneral.container;fillColor2=#2A2A2A;container=1;collapsible=0;childLayout=rack;allowGaps=1;marginLeft=33;marginRight=9;marginTop=21;marginBottom=22;textColor=#666666;numDisp=ascend;fontSize=24;fontColor=#000000;gradientColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="270" width="280" height="328.6" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Patch Panel" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.general.cat5e_enhanced_patch_panel_48_ports;fontColor=#000000;fillColor=#666666;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="21" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="&amp;nbsp; &amp;nbsp; Switch Netgear 4p +&amp;nbsp;&lt;span style=&quot;color: rgb(34 , 34 , 34) ; font-family: &amp;#34;arial&amp;#34; , &amp;#34;helvetica&amp;#34; , sans-serif ; font-size: small ; background-color: rgb(255 , 255 , 255)&quot;&gt;HP 800 G2 Mini PC&lt;/span&gt;" style="html=1;verticalLabelPosition=middle;verticalAlign=middle;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rack.hpe_aruba.switches.j9777a_2530_8g_front;gradientColor=none;labelPosition=right;align=left;fontColor=#000000;fillColor=#666666;strokeColor=#9C9C9C;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="40" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="83" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="102" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="121" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="&lt;span style=&quot;font-family: helvetica; font-size: 12px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: left; text-indent: 0px; text-transform: none; word-spacing: 0px; display: inline; float: none;&quot;&gt;Dell R620: Pvenode3 - front&lt;/span&gt;" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.dell.dell_poweredge_1u;fontColor=#000000;fillColor=#666666;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="140" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="&amp;nbsp; &amp;nbsp; Switch Intellinet 24p" style="html=1;verticalLabelPosition=middle;verticalAlign=middle;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rack.hpe_aruba.switches.j9773a_2530_24g_poeplus_switch;labelPosition=right;align=left;spacingLeft=0;fontColor=#000000;fillColor=#666666;strokeColor=#9C9C9C;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="60" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&lt;span style=&quot;font-family: helvetica; font-size: 12px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: left; text-indent: 0px; text-transform: none; word-spacing: 0px; display: inline; float: none;&quot;&gt;Dell R620: Pvenode2 - front&lt;/span&gt;" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.dell.dell_poweredge_1u;fontColor=#000000;fillColor=#666666;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="160" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Dell R620: Pvenode1 - front" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.dell.dell_poweredge_1u;fontColor=#000000;fillColor=#666666;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="180" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="200" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="219" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Fans: intake" style="shape=mxgraph.rack.apc.apc_smart_ups_750_va_1u;html=1;labelPosition=right;align=left;spacingLeft=15;dashed=0;shadow=0;fillColor=#666666;fontColor=#000000;strokeColor=#9C9C9C;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="240" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="UPS" style="shape=mxgraph.rack.apc.apc_smart_ups_1000-3000_va_2u;html=1;labelPosition=right;align=left;spacingLeft=15;dashed=0;shadow=0;fillColor=#666666;fontColor=#000000;strokeColor=#9C9C9C;" parent="2" vertex="1">
+                    <mxGeometry x="33" y="260" width="238" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="Rear" style="strokeColor=#666666;html=1;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rackGeneral.container;fillColor2=#2A2A2A;container=1;collapsible=0;childLayout=rack;allowGaps=1;marginLeft=33;marginRight=9;marginTop=21;marginBottom=22;textColor=#666666;numDisp=ascend;fontSize=24;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="610" width="280" height="328.6" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="Fans: outtake" style="shape=mxgraph.rack.apc.apc_smart_ups_750_va_1u;html=1;labelPosition=right;align=left;spacingLeft=15;dashed=0;shadow=0;fillColor=#666666;fontColor=#000000;strokeColor=#9C9C9C;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="21" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="41" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="60" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="79" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="98" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="117" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="&lt;span style=&quot;font-family: helvetica; font-size: 12px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: left; text-indent: 0px; text-transform: none; word-spacing: 0px; display: inline; float: none;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;Dell R620: Pvenode3 - rear&lt;/span&gt;" style="html=1;verticalLabelPosition=middle;verticalAlign=middle;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rack.hpe_aruba.switches.jl724a_aruba_6200f_24_port_1gbe_and_4_port_sfpplus_switch_rear;gradientColor=none;labelPosition=right;align=left;fontColor=#000000;fillColor=#666666;strokeColor=#9C9C9C;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="140" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="&lt;span style=&quot;font-family: helvetica; font-size: 12px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: left; text-indent: 0px; text-transform: none; word-spacing: 0px; display: inline; float: none;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;Dell R620: Pvenode2 - rear&lt;/span&gt;" style="html=1;verticalLabelPosition=middle;verticalAlign=middle;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rack.hpe_aruba.switches.jl724a_aruba_6200f_24_port_1gbe_and_4_port_sfpplus_switch_rear;gradientColor=none;labelPosition=right;align=left;fontColor=#000000;fillColor=#666666;strokeColor=#9C9C9C;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="160" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="&amp;nbsp; &amp;nbsp; &amp;nbsp;Dell R620: Pvenode1 - rear" style="html=1;verticalLabelPosition=middle;verticalAlign=middle;outlineConnect=0;shadow=0;dashed=0;shape=mxgraph.rack.hpe_aruba.switches.jl724a_aruba_6200f_24_port_1gbe_and_4_port_sfpplus_switch_rear;gradientColor=none;labelPosition=right;align=left;fontColor=#000000;fillColor=#666666;strokeColor=#9C9C9C;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="180" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="200" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="219" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="Cover plate" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rackGeneral.plate;fillColor=#666666;labelBackgroundColor=none;fontColor=#000000;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="238" width="238" height="19" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="&lt;span style=&quot;font-family: &amp;#34;helvetica&amp;#34; ; font-size: 12px ; font-style: normal ; font-weight: 400 ; letter-spacing: normal ; text-align: left ; text-indent: 0px ; text-transform: none ; word-spacing: 0px ; display: inline ; float: none&quot;&gt;Power strip&lt;/span&gt;" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.dell.power_strip;gradientColor=none;fontColor=#000000;fillColor=#666666;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="260" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="Power strip" style="strokeColor=#9C9C9C;html=1;labelPosition=right;align=left;spacingLeft=15;shadow=0;dashed=0;outlineConnect=0;shape=mxgraph.rack.dell.power_strip;gradientColor=none;fontColor=#000000;fillColor=#666666;" parent="18" vertex="1">
+                    <mxGeometry x="33" y="280" width="238" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="&lt;font style=&quot;font-size: 38px&quot;&gt;Rack diagram&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;labelBackgroundColor=none;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="140" width="100" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
