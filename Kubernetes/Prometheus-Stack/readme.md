@@ -60,6 +60,12 @@ Under the grafana header, add some plugins:
       - grafana-clock-panel
 ```
 
+And chenge the default dashboard timezone to "browser":
+
+```bash
+  defaultDashboardsTimezone: browser
+```
+
 They will then be managed through the grafana config map:
 
 ```bash
