@@ -52,18 +52,45 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - traefik
 ```
 
+Disable the internal etcd scraping:
+
+```bash
+kubeEtcd:
+  enabled: false
+```
+
+And define Alertmanager notifications by email:
+
+```bash
+    route:
+      group_by: ['namespace']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - receiver: 'null'
+        matchers:
+          - alertname =~ "InfoInhibitor|Watchdog"
+      - receiver: 'mail'
+    receivers:
+    - name: 'null'
+    - name: 'mail'
+      email_configs:
+      - to: 'tomail@domain.com'
+        from: 'frommail@domain.com'
+        smarthost: smtp.domain.com:587
+        auth_username: 'tomail@domain.com'
+        auth_identity: 'tomail@domain.com'
+        auth_password: 'password'
+```
+
 Under the grafana header, add some plugins:
 
 ```bash
     plugins:
       - grafana-piechart-panel
       - grafana-clock-panel
-```
-
-And chenge the default dashboard timezone to "browser":
-
-```bash
-  defaultDashboardsTimezone: browser
 ```
 
 They will then be managed through the grafana config map:
