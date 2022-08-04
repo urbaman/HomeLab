@@ -4,6 +4,7 @@ Il progetto Proxmox prevede di impostare un cluster di almeno tre nodi Proxmox, 
 
 Plesk (mailserver)
 - [ ] How to manage the mailserver with cloudflare
+
 Proxmox (Hypervisor)
 - [x] PfSense in HA
 - [x] HomeAssistant (domotica)
