@@ -201,8 +201,18 @@ alertmanager:
       - receiver: 'null'
         matchers:
           - alertname =~ "InfoInhibitor|Watchdog"
+      - receiver: 'mail'
     receivers:
     - name: 'null'
+    - name: 'mail'
+      email_configs:
+      - to: 'tomail@domain.com'
+        from: 'frommail@domain.com'
+        smarthost: smtp.domain.com:587
+        auth_username: 'tomail@domain.com'
+        auth_identity: 'tomail@domain.com'
+        auth_password: 'password'
+        send_resolved: true
     templates:
     - '/etc/alertmanager/config/*.tmpl'
 

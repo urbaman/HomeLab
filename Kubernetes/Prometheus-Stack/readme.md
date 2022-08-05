@@ -83,6 +83,7 @@ And define Alertmanager notifications by email:
         auth_username: 'tomail@domain.com'
         auth_identity: 'tomail@domain.com'
         auth_password: 'password'
+        send_resolved: true
 ```
 
 Under the grafana header, add some plugins:
