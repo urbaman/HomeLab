@@ -21,6 +21,8 @@ Proxmox (Hypervisor)
     - [x] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
     - [x] Redis and Redis Prometheus-Grafana monitoring
     - [x] NextCloud (FileServer) and Prometheus-Grafana monitoring
+        - [ ] Nextcloud apps https://www.ionos.com/digitalguide/server/tools/nextcloud-apps/
+        - [ ] Other nextcloud apps https://www.tecmint.com/nextcloud-apps/amp/
     - [ ] Plex (MediaServer) https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html
         - [ ] With Sonarr, Radarr, Transmission, Jackett https://greg.jeanmart.me/2020/04/13/self-host-your-media-center-on-kubernetes-wi/
     - [ ] Vaultwarden https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment
