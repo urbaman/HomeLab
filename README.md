@@ -41,7 +41,7 @@ https://github.com/awesome-selfhosted/awesome-selfhosted
 ### Appunti per how-to da seguire:
 - Flash H310: https://fohdeesha.com/docs/H310.html
 - Generale: https://www.kreaweb.be/diy-home-server-introduction/
-- GPU distribuita: https://drive.google.com/drive/folders/15hGRYQGB69pES2GyUR9Q2zHVvEAVHxDa
+- GPU distribuita: https://drive.google.com/drive/folders/15hGRYQGB69pES2GyUR9Q2zHVvEAVHxDa https://3os.org/infrastructure/proxmox/gpu-passthrough/pgu-passthrough-to-vm/#linux-virtual-machine-gpu-passthrough-configuration
 - Post-install: https://opensourcelibs.com/lib/xshok-proxmox, https://opensourcelibs.com/lib/proxmox-zfs-postinstall
 - Risorse varie: https://opensourcelibs.com/lib/awesome-proxmox-ve
 - Ceph: https://blog.miniserver.it/proxmox/come-fare-un-cluster-proxmox-con-ceph/
