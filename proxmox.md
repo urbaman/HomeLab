@@ -10,16 +10,31 @@ for vmid in {102..120};do qm move-disk $vmid scsi0 local-zfs --delete;done
 
 ### From 3 to 1 nodes
 
-Stop the nodes, then:
+On all nodes:
 
 ```bash
-pvecm expected 1
+systemctl stop pve-cluster
+systemctl stop corosync
 ```
 
-### From 1 to 3 nodes
+Start the cluster filesystem again in local mode:
 
 ```bash
-pvecm expected 3
+pmxcfs -l
 ```
 
-Then start the nodes.
+Delete the corosync configuration files:
+
+```bash
+rm /etc/pve/corosync.conf
+rm /etc/corosync/*
+```
+
+You can now start the filesystem again as normal service:
+
+```bash
+killall pmxcfs
+systemctl start pve-cluster
+```
+
+Stop the nodes.
