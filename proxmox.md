@@ -6,7 +6,9 @@
 for vmid in {102..120};do qm move-disk $vmid scsi0 local-zfs --delete;done
 ```
 
-## From 3 to 1 nodes
+## Managing the summer-winter heat/consume
+
+### From 3 to 1 nodes
 
 Stop the nodes, then:
 
@@ -14,7 +16,7 @@ Stop the nodes, then:
 pvecm expected 1
 ```
 
-## From 1 to 3 nodes
+### From 1 to 3 nodes
 
 ```bash
 pvecm expected 3
