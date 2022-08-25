@@ -102,7 +102,7 @@ Change /etc/postfix/main.cf to include/change these lines:
 ```bash
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
-myhostname=k8cp1.urbaman.it
+myhostname=host.domain.com
 
 smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
 biff = no
@@ -122,7 +122,7 @@ inet_interfaces = loopback-only
 recipient_delimiter = +
 
 #Relay
-relayhost = [smtp.urbaman.it]:587
+relayhost = [smtp.domain.com]:587
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -139,7 +139,7 @@ Be sure there are no dupes as the main.cf may have smtp_sasl_security_options = 
 Create an /etc/postfix/sasl_passwd file with:
 
 ```bash
-[smtp.gmail.com]:587    testmehere@gmail.com:PASSWD
+[smtp.domain.com]:587    testmehere@gmail.com:PASSWD
 ```
 
 run
@@ -379,7 +379,9 @@ Once you are done, save the changes and exit the configuration file. That's abou
 
 Finally, to enable automatic upgrades , edit the 20auto-upgrades file as shown.
 
+```bash
 sudo vi /etc/apt/apt.conf.d/20auto-upgrades
+```
 
 By default, the file has two lines as shown.
 
