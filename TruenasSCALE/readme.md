@@ -71,3 +71,9 @@ Set the hostnames db to the IPs/hostnames of the TruenasSCALE ecosystem (Truenas
 Go to Storage and define your Pools.
 
 GO to System Setitngs, Advances, and move the System Dataset to the boot-pool
+
+### Alert system
+
+Go top right to the alerts icon, open settings, Email. Insert the desired settngs, test, save.
+
+Go top right to the alerts icon, open settings, Alert Services. Edit the email service to add the go-to mail.
