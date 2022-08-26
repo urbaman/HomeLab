@@ -32,6 +32,22 @@ Remember to set a simple password to start
 
 Go to Credentials/Local Users and set password and mail for root
 
+### System Settings/General
+
+#### Localization
+
+Change what needs to be changed (language, keyboard, timezone, date format...)
+
+#### GUI
+
+Set HTTP->HTTPS redirect, and Show Console Messages if you want.
+
+### System Settings/General
+
+#### SSH
+
+Modify SSH settings to enable root login, set it to Run Automatically and Start it.
+
 ### Network
 
 #### Interfaces
@@ -50,3 +66,8 @@ Set the default gateway.
 
 Set the hostnames db to the IPs/hostnames of the TruenasSCALE ecosystem (TruenasSCALEs, truecommand, AD - Nethserver, Gluster interfaces)
 
+### Pools
+
+Go to Storage and define your Pools.
+
+GO to System Setitngs, Advances, and move the System Dataset to the boot-pool
