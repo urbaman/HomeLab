@@ -77,3 +77,7 @@ GO to System Setitngs, Advances, and move the System Dataset to the boot-pool
 Go top right to the alerts icon, open settings, Email. Insert the desired settngs, test, save.
 
 Go top right to the alerts icon, open settings, Alert Services. Edit the email service to add the go-to mail.
+
+### Dashboard
+
+Having everything set up, go to the dashboard to make it show what and how you want it to show.
