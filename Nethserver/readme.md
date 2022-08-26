@@ -8,4 +8,4 @@ AD
 
 IP: 10.0.50.26
 
-domain: AD.URBAMAN.it
+domain: AD.URBAMAN.IT
