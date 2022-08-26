@@ -42,7 +42,7 @@ Change what needs to be changed (language, keyboard, timezone, date format...)
 
 Set HTTP->HTTPS redirect, and Show Console Messages if you want.
 
-### System Settings/General
+### System Settings/Services
 
 #### SSH
 
