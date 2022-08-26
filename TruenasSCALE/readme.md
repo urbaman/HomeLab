@@ -10,10 +10,43 @@
 
 10.0.50.24 truecommand.urbaman.it
 
+## AD - Nethserver
+
+10.0.50.25 ad.urbaman.it
+
 ## Gluster
 
-10.0.70.21
+10.0.70.21 gluster1.urbaman.it
 
-10.0.70.22
+10.0.70.22 gluster2.urbaman.it
 
-10.0.70.23
+10.0.70.23 gluster3.urbaman.it
+
+## Install TruenasSCALE (x3)
+
+Remember to set a simple password to start
+
+## Post-install
+
+### User
+
+Go to Credentials/Local Users and set password and mail for root
+
+### Network
+
+#### Interfaces
+
+You need at least two interfaces for clustering, best on two different VLANs.
+
+Go to Network, set interfaces one by one. Leave DHCP on the first one (for truenas) if you need, you'll need a fixed IP on the second one.
+
+#### Global Configuration
+
+Set hostname, domain. Additional domain should be your AD domain if different.
+
+Set nameservers, set the first to the Domain Controller, the second to the real DNS server if different.
+
+Set the default gateway.
+
+Set the hostnames db to the IPs/hostnames of the TruenasSCALE ecosystem (TruenasSCALEs, truecommand, AD - Nethserver, Gluster interfaces)
+
