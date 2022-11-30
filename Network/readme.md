@@ -21,3 +21,5 @@ VLAN60 10.0.60.0 (pfSync)
 VLAN70 10.0.70.0 (Gluster Internal - Storage)
 
 VLAN100 10.0.100.0 (Management - IDRACs)
+
+![Network Diagram](network.drawio.svg)
