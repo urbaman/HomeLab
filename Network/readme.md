@@ -44,4 +44,6 @@ VLAN70 10.0.70.0 (Gluster Internal - Storage)
 
 VLAN100 10.0.100.0 (Management - IDRACs,Pve,TrueNAS management,K8s management,...) only from VLAN10 PCs
 
+## Network Diagram
+
 ![Network Diagram](network.drawio.svg)
