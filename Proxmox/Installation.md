@@ -74,7 +74,7 @@ Log in to Proxmox and browse to your PVE. Then select System → Network and dou
 
 ## Configuring E-mail alerts using GMail
 
-Follow [this excellent article(https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/)] on how to set up e-mail alerts on your Proxmox VE server.
+Follow [this excellent article](https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/) on how to set up e-mail alerts on your Proxmox VE server.
 
 ### Configuring E-mail alerts using another e-mail provider 
 
