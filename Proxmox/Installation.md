@@ -64,7 +64,9 @@ Log in to Proxmox and browse to your PVE. Then select Shell.
 
 Enther the command : 
 
+```bash
 apt install ifupdown2 -y
+```
 
 ## Activating network interfaces
 
@@ -81,28 +83,46 @@ Follow [this excellent article](https://geekistheway.com/2021/03/07/configuring-
 Log in to Proxmox and browse to your PVE. Then select Shell.
 
 Install the required packages :
-
+```bash
 apt update && apt install -y libsasl2-modules
+```
+
 Configure a relay account :
 
+```bash
 echo "[mailserver]:port username:password" > /etc/postfix/sasl_passwd
+```
+
 Replace mailserver, port, username and password with your own values.
 
 Create a hash from the sasl_passwd file :
 
+```bash
 postmap /etc/postfix/sasl_passwd
+```
+
 Secure your sasl_passwd files :
 
+```bash
 chown root:root /etc/postfix/sasl_passwd*
 chmod 0600 /etc/postfix/sasl_passwd*
+```
+
 Configure postfix to use the relay account :
 
+```bash
 nano /etc/postfix/main.cf
+```
+
 Delete the line :
 
+```bash
 relayhost =
+```
+
 Add the lines :
 
+```bash
 relayhost = [mailserver.somecompany.com]:587
 # enable SASL authentication
 smtp_sasl_auth_enable = yes
@@ -114,9 +134,16 @@ smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_use_tls = yes
 # where to find CA certificates
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
 Restart the postfix service :
 
+```bash
 systemctl restart postfix
+```
+
 Test your new configuration :
 
+```bash
 echo "My first test message" | mail -s "Proxmox alert test" somebody@somewhere.com
+```
