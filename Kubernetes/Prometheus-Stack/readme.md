@@ -13,10 +13,10 @@ kubectl edit cm kube-proxy -n kube-system
 And reload kube-proxy deployment
 
 ```bash
-kubectl delete pod -n kube-ysstem kubepod1 kubepod2 ...
+kubectl delete pod -n kube-system kubepod1 kubepod2 ...
 ```
 
-On every control-panel, change bind adreess to 0.0.0.0:
+On every control-panel, change bind address to 0.0.0.0:
 
 ```bash
 sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
@@ -100,7 +100,7 @@ They will then be managed through the grafana config map:
 kubectl edit cm -n monitoring kube-prometheus-stack-grafana
 ```
 
-Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezione in the dashboards.
+Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezone in the dashboards.
 
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
@@ -265,7 +265,7 @@ kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etc
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ```
 
-## Exposing Grafana:
+## Exposing Grafana
 
 ```bash
 kubectl patch svc "$APP_INSTANCE_NAME-grafana" \

@@ -1,8 +1,9 @@
 # Cisco Switch 3172TQ
 
-## Cisco Switch firt settings
+## Cisco Switch first settings
 
 Use only those that fit your needs.
+
 ### Connect to the device via console
 
 Use a terminal emulation software such as PuTTY and connect to the console of the switch. You will get the initial command prompt “Switch>”
@@ -22,6 +23,7 @@ Switch(config)#
 Switch(config)# hostname access-switch1
 access-switch1(config)#
 ```
+
 ### Set the Switch domain
 
 ```bash
