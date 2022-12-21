@@ -12,7 +12,7 @@ Then, check where the following script gives a "1" result with the cable connect
 for i in $( ls /sys/class/net ); do echo -n $i: ; cat /sys/class/net/$i/carrier; done
 ```
 
-Go to ```bash/etc/systemd/network``` and create some "n-interface-rename.link" files (where <n> is < 99 and <interface> is the interface old name for reference), one for each interface to rename, mapping the MAC address with an interface name. Be aware to use completely new names to avoid overlap.
+Go to ```/etc/systemd/network``` and create some "n-interface-rename.link" files (where 'n' is < 99 and 'interface' is the interface old name for reference), one for each interface to rename, mapping the MAC address with an interface name. Be aware to use completely new names to avoid overlap.
 
 ```bash
 [Match]
@@ -32,4 +32,4 @@ MACAddress=00:a0:de:63:7a:e6
 Name=lan10
 ```
 
-Then, rename the interfaces in ```bash/etc/network/interfaces``` and reload with ```bashifreload -a```
+Then, rename the interfaces in ```/etc/network/interfaces``` and reload with ```ifreload -a```
