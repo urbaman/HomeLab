@@ -12,6 +12,8 @@ Then, check where the following script gives a "1" result with the cable connect
 for i in $( ls /sys/class/net ); do echo -n $i: ; cat /sys/class/net/$i/carrier; done
 ```
 
+## Rename the interfaces (did not work...)
+
 Go to ```/etc/systemd/network``` and create some "n-interface-rename.link" files (where 'n' is < 99 and 'interface' is the interface old name for reference), one for each interface to rename, mapping the MAC address with an interface name. Be aware to use completely new names to avoid overlap.
 
 ```bash
