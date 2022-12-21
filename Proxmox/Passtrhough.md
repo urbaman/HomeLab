@@ -17,13 +17,19 @@ GRUB_CMDLINE_LINUX_DEFAULT
 Change it to
 
 ```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt"
 ```
 
 Now update grub
 
 ```bash
 update-grub
+```
+
+If the command says the bootloader is systemd-boot, then append the ```intel_iommu=on iommu=pt``` to ```/etc/kernel/cmdline``` and run
+
+```bash
+proxmox-boot-tool refresh
 ```
 
 Reboot and check if the IOMMU is enabled
