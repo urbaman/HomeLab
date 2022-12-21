@@ -32,4 +32,4 @@ MACAddress=00:a0:de:63:7a:e6
 Name=lan10
 ```
 
-Then, rename the interfaces in ```/etc/network/interfaces``` and reload with ```ifreload -a```
+Then, rename the interfaces in ```/etc/network/interfaces``` and reboot.
