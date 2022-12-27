@@ -1,4 +1,4 @@
-# Dell Openmanage Installation
+# Dell Openmanage Installation (not working)
 
 We will keep Openmanage to 10300 version, actually last compatible to Debian 11 (Proxmox)
 
