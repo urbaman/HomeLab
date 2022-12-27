@@ -175,6 +175,12 @@ chown root:root /etc/postfix/smtp_header_checks*
 chmod 0600 /etc/postfix/smtp_header_checks*
 ```
 
+Add to main.cf:
+
+```bash
+smtp_header_checks = pcre:/etc/postfix/smtp_header_checks
+```
+
 ```bash
 systemctl restart postfix
 ```
