@@ -147,3 +147,40 @@ Test your new configuration :
 ```bash
 echo "My first test message" | mail -s "Proxmox alert test" somebody@somewhere.com
 ```
+
+Customize the from header:
+
+```bash
+apt install postfix-pcre
+```
+
+```bash
+nano /etc/postfix/smtp_header_checks
+```
+
+```bash
+/^From:.*/ REPLACE From: HOSTNAME-alert <HOSTNAME-alert@something.com>
+```
+
+Create a hash from the smtp_header_checks file
+
+```bash
+postmap /etc/postfix/smtp_header_checks
+```
+
+Secure your sasl_passwd files :
+
+```bash
+chown root:root /etc/postfix/smtp_header_checks*
+chmod 0600 /etc/postfix/smtp_header_checks*
+```
+
+```bash
+systemctl restart postfix
+```
+
+Test your new configuration :
+
+```bash
+echo "My first test message" | mail -s "Proxmox alert test" somebody@somewhere.com
+```
