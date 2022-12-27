@@ -1,16 +1,12 @@
 # Proxmox installation
 
-I choose to install Proxmox in ZFS Raid 1 mirror on the 2 Crucial MX500 500 GB SATA SSD drives connected directly to the SUPERMICRO X10SRi-F motherboard. I did not want to occupy the whole drives but only use a 64 GB partition. The rest of the SSD drives will be used to run the VMs.
+I choose to install Proxmox in ZFS Raid 1 mirror on the 2 Samsung 960 GB Nvme SSD drives on the front bay.
 
-I downloaded the latest ISO Installer and flashed it to an USB drive using Etcher.
+I downloaded the latest ISO Installer, started the IDRAC virtual console, enabled the virtual media and added the ISO to the virtual CD-ROM, and it booted from there.
 
-Booting your server from the USB drive, you’ll get the welcome screen. Select the first option.
-
-On the next screen, select zfs (Raid 1). Then click Deselect All and select as Harddisk  0 and Harddisk 1 both internaly installed SSD’s.
+On the next screen, select zfs (Raid 1). Then click Deselect All and select as Harddisk 0 and Harddisk 1 both Samsung Nvme SSDs.
 
 Click on Advanced Options.
-
-Set the compression to lz4. Then reduce the hdsize to about 80% of the SSD size. This way you enable overprovisioning. In my case, I use 400 GB of the available 500 GB.
 
 Click OK and then Next.
 
