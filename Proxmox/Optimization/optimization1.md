@@ -1,3 +1,4 @@
+```bash
 #!/usr/bin/env bash
 ################################################################################
 # This is property of eXtremeSHOK.com
@@ -935,3 +936,4 @@ date >> /etc/extremeshok
 ## Script Finish
 echo -e '\033[1;33m Finished....please restart the system \033[0m'
 echo "Optimisations by https://eXtremeSHOK.com"
+```
