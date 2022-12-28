@@ -3,7 +3,7 @@
 To add ipmitools to Proxmox (debian 11), let's install it and see some commands:
 
 ```bash
-apt install ipmitool freeipmi-tools freeipmi-bmc-watchdog freeipmi-ipmidetect lm-sensors fancontrol read-edid i2c-tools python-smbus
+apt install ipmitool freeipmi-tools freeipmi-bmc-watchdog freeipmi-ipmidetect lm-sensors fancontrol read-edid i2c-tools
  ```
 
 Query Dell's Third-Party PCIe card based default system fan response:
