@@ -38,8 +38,6 @@ ipmitool raw 0x30 0xce 0x00 0x16 0x05 0x00 0x00 0x00 0x05 0x00 0x00 0x00 0x00
 
 ## iDRAC Setting Fan Speed on Poweredge R730xd with IPMI (should work with others but commands will vary with device names
 
-Reference: [https://gist.github.com/mdpuma/8972079b7da52afef15cc039039ff818](https://gist.github.com/mdpuma/8972079b7da52afef15cc039039ff818)
-
 _Note when you change fan settings, give it a few seconds to happen, it isn't quite instant
 get list of devices.  Also "lanplus" is a specification, not your local interface name, so leave it as lanplus._
 
