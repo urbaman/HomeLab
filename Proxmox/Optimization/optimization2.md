@@ -1,3 +1,4 @@
+```bash
 #!/bin/bash
 
 ###### CONFIG SECTION ######
@@ -303,3 +304,4 @@ echo "Updating initramfs - This will take some time..."
 update-initramfs -u -k all > /dev/null 2>&1
 
 echo "Proxmox postinstallation finished!"
+```
