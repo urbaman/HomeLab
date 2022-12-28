@@ -6,7 +6,7 @@ Prepare the system, setting the apt sources to ubuntu focal (jammy not yet compa
 
 ```bash
 apt-get install ca-certificates apt-transport-https
-echo "deb https://linux.dell.com/repo/community/openmanage/10300/focal foacal main" | sudo tee -a /etc/apt/sources.list.d/omsa.list
+echo "deb https://linux.dell.com/repo/community/openmanage/10300/focal foacal main" | tee -a /etc/apt/sources.list.d/omsa.list
 wget https://linux.dell.com/repo/pgp_pubkeys/0x1285491434D8786F.asc
 apt-key add 0x1285491434D8786F.asc
 ```
