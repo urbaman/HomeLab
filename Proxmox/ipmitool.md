@@ -74,3 +74,15 @@ ipmitool -I lanplus -H 192.168.16.2 -U sysadmin -P ******** raw 0x30 0x30 0x02 0
 ```bash
 ipmitool -I lanplus -H 192.168.16.2 -U sysadmin -P ******** raw 0x30 0x30 0x01 0x01
 ```
+
+Check CPU1 temp
+
+```bash
+ipmitool -I lanplus -H 192.168.16.2 -U sysadmin -P ******** sdr elist | grep "Temp" | grep "3.1" | cut -c 39-40
+```
+
+Check CPU2 temp
+
+```bash
+ipmitool -I lanplus -H 192.168.16.2 -U sysadmin -P ******** sdr elist | grep "Temp" | grep "3.2" | cut -c 39-40
+```
