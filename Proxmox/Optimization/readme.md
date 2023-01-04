@@ -1,6 +1,6 @@
 # Optimization scripts
 
-## powertop
+## Powertop
 
 apt install powertop
 
@@ -18,5 +18,23 @@ ExecStart=/usr/sbin/powertop --auto-tune
 WantedBy=multi-user.target
 
 systemctl enable powetop
+systemctl start powertop
 
 ## CPU governor
+
+apt install linux-cpupower
+
+nano /etc/systemd/system/cpupower.service
+
+[Unit]
+Description=CPU powersave
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/cpupower -c all frequency-set -g ondemand
+
+[Install]
+WantedBy=multi-user.target
+
+systemctl enable cpupower
+systemctl start cpupower
