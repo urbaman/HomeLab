@@ -30,6 +30,7 @@ systemctl start powertop
 ```bash
 apt install linux-cpupower
 nano /etc/systemd/system/cpupower.service
+```
 
 ```bash
 [Unit]
