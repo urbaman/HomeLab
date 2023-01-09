@@ -1,6 +1,6 @@
 # General OS Optimizations
 
-Thanks to Extremeshock (https://github.com/extremeshok/xshok-proxmox)[Ciao] among the others
+Thanks to [Extremeshock](https://github.com/extremeshok/xshok-proxmox) among the others
 
 ## Powertop
 
