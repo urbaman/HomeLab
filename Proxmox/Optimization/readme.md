@@ -111,7 +111,7 @@ apt install axel build-essential curl dialog dnsutils dos2unix git gnupg-agent g
 ```bash
 apt install lynis
 lynis audit system
-```bash
+```
 
 ### Install and configure zfs autosnapshot (12x5min, 24xh, 7xd, 4xw, 3xm)
 
@@ -123,14 +123,14 @@ sed -i 's|--keep=[0-9]*|--keep=24|g' /etc/cron.hourly/zfs-auto-snapshot
 sed -i 's|--keep=[0-9]*|--keep=7|g' /etc/cron.daily/zfs-auto-snapshot
 sed -i 's|--keep=[0-9]*|--keep=4|g' /etc/cron.weekly/zfs-auto-snapshot
 sed -i 's|--keep=[0-9]*|--keep=3|g' /etc/cron.monthly/zfs-auto-snapshot
-```bash
+```
 
 ### Install and configure ksmtuned
 
 ```bash
 apt install ksmtuned
 vi /etc/ksmtuned.conf
-```bash
+```
 
 Set KSM_SLEEP_MSEC and KSM_THRES_COEF as follos:
 
