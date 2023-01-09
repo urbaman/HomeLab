@@ -1,5 +1,7 @@
 # General OS Optimizations
 
+Thanks to Extremeshock https://github.com/extremeshok/xshok-proxmox among the others
+
 ## Powertop
 
 ```bash
@@ -460,3 +462,9 @@ options zfs l2arc_write_max=524288000
 options zfs zfs_txg_timeout=60
 EOF
 ```
+
+### Propagate the settings
+
+update-initramfs -u -k all
+pve-efiboot-tool refresh
+apt autoremove && apt autoclean
