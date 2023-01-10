@@ -274,3 +274,43 @@ crontab -e
 ```bash
 */5 * * * * /usr/sbin/fanmanager
 ```
+
+We will also set the old speed at 0 during boot in /etc/fanspeedcontrol/fanspeed.old so the script starts properly on first run
+
+```bash
+nano /usr/sbin/fanmanager_boot
+```
+
+```bash
+#!/bin/bash
+
+# Define variables and set old speed to 0
+oldspeedfile=/etc/fanspeedcontrol/fanspeed.old
+oldspeed=$(cat $oldspeedfile)
+sed -i "s/$oldspeed/0/g" $oldspeedfile
+```
+
+```bash
+chmod +x /usr/sbin/fanmanager_boot
+nano /etc/systemd/system/fanmanager_boot.service
+```
+
+```bash
+[Unit]
+
+Description=Fan Manager to set old speed to 0
+
+After=default.target
+
+[Service]
+
+ExecStart=/usr/sbin/fanmanager_boot
+
+[Install]
+
+WantedBy=default.target
+```
+
+```bash
+systemctl enable fanmanager_boot
+```
