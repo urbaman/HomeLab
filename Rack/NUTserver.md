@@ -1,21 +1,32 @@
-NUT UPS Server
+# NUT UPS Server
+
 plug in ups
 
+```bash
 lsusb
+```
 
 should see something like
 
+```bash
 Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
 Bus 001 Device 019: ID 09ae:2012 Tripp Lite
 Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```bash
+
+
+```bash
 sudo apt update
 sudo apt install nut nut-client nut-server
 sudo nut-scanner -U
+```
+
 should see something like
 
 tripp lite
 
+```bash
 [nutdev1]
         driver = "usbhid-ups"
         port = "auto"
@@ -24,8 +35,11 @@ tripp lite
         product = "Tripp Lite UPS"
         vendor = "Tripp Lite"
         bus = "001"
+```
+
 apc 1500
 
+```bash
 [nutdev1]
         driver = "usbhid-ups"
         port = "auto"
@@ -35,8 +49,11 @@ apc 1500
         serial = "3xxxxxxxxxxx"
         vendor = "Tripp Lite"
         bus = "001"
+```
+
 apc 850
 
+```bash
 [nutdev3]
         driver = "usbhid-ups"
         port = "auto"
@@ -46,8 +63,14 @@ apc 850
         serial = "3xxxxxxxxxxx"
         vendor = "American Power Conversion"
         bus = "001"
-sudo nano /etc/nut/ups.conf
+```bash
 
+
+```bash
+sudo nano /etc/nut/ups.conf
+```
+
+```bash
 pollinterval = 1
 maxretry = 3
 
@@ -73,29 +96,52 @@ maxretry = 3
     vendorid = 051d
     productid = 0002
     serial = 3xxxxxxxxx
-sudo nano /etc/nut/upsmon.conf
+```
 
+
+```bash
+sudo nano /etc/nut/upsmon.conf
+```
+
+```bash
 MONITOR tripplite@localhost 1 admin secret master
 MONITOR apc-modem@localhost 1 admin secret master
 MONITOR apc-network@localhost 1 admin secret master
-sudo nano /etc/nut/upsd.conf
+```
 
+```bash
+sudo nano /etc/nut/upsd.conf
+```
+
+```bash
 local host
 
 LISTEN 127.0.0.1 3493 
 all interface
 
 LISTEN 0.0.0.0 3493 
-sudo nano /etc/nut/nut.conf
+```
 
+```bash
+sudo nano /etc/nut/nut.conf
+```
+
+```bash
 MODE=netserver
 sudo nano /etc/nut/upsd.users
+```
 
+```bash
 [monuser]
   password = secret
   admin master
-sudo nano /etc/udev/rules.d/99-nut-ups.rules
 
+
+```bash
+sudo nano /etc/udev/rules.d/99-nut-ups.rules
+```
+
+```bash
 SUBSYSTEM!="usb", GOTO="nut-usbups_rules_end"
 
 # TrippLite
@@ -103,21 +149,25 @@ SUBSYSTEM!="usb", GOTO="nut-usbups_rules_end"
 ACTION=="add|change", SUBSYSTEM=="usb|usb_device", SUBSYSTEMS=="usb|usb_device", ATTR{idVendor}=="09ae", ATTR{idProduct}=="2012", MODE="664", GROUP="nut", RUN+="/sbin/upsdrvctl stop; /sbin/upsdrvctl start"
 
 LABEL="nut-usbups_rules_end"
-reboot (because it’s easy)
+```
 
-or
-
+```bash
 sudo service nut-server restart
 sudo service nut-client restart
 sudo systemctl restart nut-monitor
 sudo upsdrvctl stop
 sudo upsdrvctl start
+```
+
 APC UPS 950 va
 
 query device by USB bus
 
+```bash
 lsusb -D /dev/bus/usb/001/057
+```
 
+```bash
 Device Descriptor:
   bLength                18
   bDescriptorType         1
@@ -174,22 +224,34 @@ Device Descriptor:
           Usage Type               Data
         wMaxPacketSize     0x0008  1x 8 bytes
         bInterval             100
-NUT CGI Server
+```
+
+
+## NUT CGI Server
+
+```bash
 sudo apt install apache2 nut-cgi
-
 sudo nano /etc/nut/hosts.conf
+```
 
+```bash
 MONITOR tripplite@localhost "Tripp Lite 1500VA SmartUPS - Rack"
 MONITOR apc-modem@localhost "APC 850 VA - Wall"
 MONITOR apc-network@localhost "APC Back-UPS XS 1500 - Rack"
+```
 
+```bash
 sudo a2enmod cgi
-
 sudo systemctl restart apache2
-
 sudo nano /etc/nut/upsset.conf
+```
 
+```bash
 I_HAVE_SECURED_MY_CGI_DIRECTORY
+```
+
 visit
 
+```bash
 http://your.ip.adddress/cgi-bin/nut/upsstats.cgi
+```
