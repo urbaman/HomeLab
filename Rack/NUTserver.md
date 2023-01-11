@@ -134,7 +134,7 @@ sudo nano /etc/nut/upsd.users
 [monuser]
   password = secret
   admin master
-
+```
 
 ```bash
 sudo nano /etc/udev/rules.d/99-nut-ups.rules
