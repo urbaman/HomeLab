@@ -127,6 +127,9 @@ sudo nano /etc/nut/nut.conf
 
 ```bash
 MODE=netserver
+```
+
+```bash
 sudo nano /etc/nut/upsd.users
 ```
 
