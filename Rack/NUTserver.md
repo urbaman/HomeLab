@@ -13,7 +13,7 @@ Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
 Bus 001 Device 019: ID 09ae:2012 Tripp Lite
 Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-```bash
+```
 
 
 ```bash
@@ -63,8 +63,7 @@ apc 850
         serial = "3xxxxxxxxxxx"
         vendor = "American Power Conversion"
         bus = "001"
-```bash
-
+```
 
 ```bash
 sudo nano /etc/nut/ups.conf
