@@ -23,7 +23,7 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-systemctl enable powetop
+systemctl enable powertop
 systemctl start powertop
 ```
 
