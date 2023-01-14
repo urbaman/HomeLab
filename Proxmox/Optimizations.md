@@ -67,7 +67,7 @@ echo -e "Acquire::ForceIPv4 \"true\";\\n" > /etc/apt/apt.conf.d/99-xs-force-ipv4
 ### Add debian non-free repositories
 
 ```bash
-nano /etc/apt/spources.list
+nano /etc/apt/sources.list
 ```
 
 Add ```non-free``` to the debian repositories
