@@ -86,13 +86,13 @@ apt update && apt dist-upgrade
 ### Purge unwanted packages
 
 ```bash
-purge ntp openntpd systemd-timesyncd
+apt purge ntp openntpd systemd-timesyncd
 ```
 
 ### Install fixes for APT
 
 ```bash
-install apt-transport-https debian-archive-keyring ca-certificates curl
+apt install apt-transport-https debian-archive-keyring ca-certificates curl
 apt update && apt dist-upgrade
 ```
 
