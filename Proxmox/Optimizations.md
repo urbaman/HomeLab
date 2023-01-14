@@ -197,7 +197,7 @@ EOF
 ### Optimizations for sysctl
 
 ```bash
-nano /etc/modiles
+nano /etc/modules
 ```
 
 add the following lines
