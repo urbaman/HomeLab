@@ -351,7 +351,7 @@ EOF
 ```
 
 ```bash
-systemclt restart logrotate
+systemctl restart logrotate
 ```
 
 ### Optimize journald
