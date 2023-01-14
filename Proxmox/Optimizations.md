@@ -282,7 +282,6 @@ net.ipv4.tcp_sack=1
 net.ipv4.tcp_slow_start_after_idle=0
 net.ipv4.tcp_syn_retries=3
 net.ipv4.tcp_synack_retries = 2
-net.ipv4.tcp_tw_recycle = 0
 net.ipv4.tcp_tw_reuse = 0
 net.ipv4.tcp_wmem=8192 65536 16777216
 net.netfilter.nf_conntrack_generic_timeout = 60
