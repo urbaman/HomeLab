@@ -208,7 +208,7 @@ ip_conntrack
 ```
 
 ```bash
-nano /etc/yssctl.conf
+nano /etc/sysctl.conf
 ```
 
 ```bash
