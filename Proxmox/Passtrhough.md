@@ -46,7 +46,10 @@ DMAR: IOMMU enabled
 
 Now edit the vfio.conf file
 
+```bash
 nano /etc/modules
+```
+
 Add the following lines
 
 ```bash
