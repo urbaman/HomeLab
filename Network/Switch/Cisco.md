@@ -82,12 +82,24 @@ access-switch1(config)#
 change-password OLD_PASSWORD, NEW-PASSWORD, CONFIRM-PASSWORD
 ```
 
+### Set up DNS look up
+
+```bash
+access-switch1# config t
+access-switch1(config)# vrf context management
+access-switch1(config)# ip domain-name mycompany.com
+access-switch1(config)# ip name-server 172.68.0.10     
+access-switch1(config)# ip domain-lookup
+```
+
 ### Setup ntp for clock suncronization
 
 ```bash
-ntp server 193.204.114.232
-ntp server 193.204.114.233
 feature ntp
+ntp server 0.it.pool.ntp.org prefer use-vrf management
+ntp server 1.it.pool.ntp.org use-vrf management
+ntp server 2.it.pool.ntp.org use-vrf management
+ntp server 3.it.pool.ntp.org use-vrf management
 ```
 
 ### Set the Timezone
@@ -104,25 +116,26 @@ clock summer-time CET 4 Sun Mar 02:00 4 Sun Oct 03:00
 
 ### Assign IP address to the switch for management
 
-Management IP is assigned to Vlan 1 by default
+Management IP is assigned to mgmt by default
 
 ```bash
-access-switch1(config)# interface vlan 1
+access-switch1(config)# interface mgmt0
 access-switch1(config-if)# ip address 10.1.1.200 255.255.255.0
 access-switch1(config-if)# exit
-access-switch1(config)#
 ```
 
 ### Assign default gateway to the switch
 
 ```bash
-access-switch1(config)# ip default-gateway 10.1.1.254
+access-switch1(config)# vrf context management
+access-switch1(config-vrf)# ip route 0.0.0.0/0 10.0.1.1
+access-switch1(config-vrf)# exit
 ```
 
 ### Disable unneeded ports on the switch
 
 ```bash
-access-switch1(config)# interface range fa 0/25-48
+access-switch1(config)# interface 0/25-48
 access-switch1(config-if-range)# shutdown
 access-switch1(config-if-range)# exit
 access-switch1(config)#
@@ -151,14 +164,14 @@ access-switch1(config-vlan)# exit
 #### Now assign the physical ports to each VLAN. Ports 1-2 are assigned to VLAN2 and ports 3-4 to VLAN3
 
 ```bash
-access-switch1(config)# interface range fa 0/1-2
+access-switch1(config)# interface 0/1-2
 access-switch1(config-if-range)# switchport mode access
 access-switch1(config-if-range)# switchport access vlan 2
 access-switch1(config-if-range)# exit
 ```
 
 ```bash
-access-switch1(config)# interface range fa 0/3-4
+access-switch1(config)# interface fa 0/3-4
 access-switch1(config-if-range)# switchport mode access
 access-switch1(config-if-range)# switchport access vlan 3
 access-switch1(config-if-range)# exit
@@ -168,7 +181,7 @@ access-switch1(config-if-range)# exit
 
 ```bash
 access-switch1(config)# exit
-access-switch1# wr
+access-switch1# copy running-config startup-config
 ```
 
 The above command to save the configuration can also be accomplished with  copy run start
