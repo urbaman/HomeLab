@@ -108,6 +108,16 @@ apt install zfsutils-linux proxmox-backup-restore-image chrony
 apt install axel build-essential curl dialog dnsutils dos2unix git gnupg-agent grc htop iftop iotop iperf ipset iptraf mlocate msr-tools nano net-tools software-properties-common sshpass tmux unzip vim vim-nox wget whois zip
 ```
 
+### Disable VIM VISUAL mode
+
+```bash
+nano /root/.vimrc
+```
+
+```bash
+set mouse-=a
+```
+
 ### Install and run lynis for security audit
 
 ```bash
