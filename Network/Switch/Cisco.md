@@ -199,3 +199,13 @@ access-switch1# show vlan  # Displays all vlan numbers, names, ports associated 
 access-switch1# show interface status  # Displays status of interfaces, speed, duplex etc
 access-switch1# show mac address-table  # Displays current MAC address table and which MAC address is learned on each interface
 ```
+
+### Set MTU to 9218
+
+```bash
+policy-map type network-qos jumbo
+  class type network-qos class-default
+          mtu 9216
+system qos
+  service-policy type network-qos jumbo
+```
