@@ -177,6 +177,16 @@ access-switch1(config-if-range)# switchport access vlan 3
 access-switch1(config-if-range)# exit
 ```
 
+### Set MTU to 9218
+
+```bash
+policy-map type network-qos jumbo
+  class type network-qos class-default
+          mtu 9216
+system qos
+  service-policy type network-qos jumbo
+```
+
 ### Save the configuration
 
 ```bash
@@ -198,14 +208,4 @@ access-switch1# show interfaces  # Displays the configuration of all interfaces 
 access-switch1# show vlan  # Displays all vlan numbers, names, ports associated with each vlan etc
 access-switch1# show interface status  # Displays status of interfaces, speed, duplex etc
 access-switch1# show mac address-table  # Displays current MAC address table and which MAC address is learned on each interface
-```
-
-### Set MTU to 9218
-
-```bash
-policy-map type network-qos jumbo
-  class type network-qos class-default
-          mtu 9216
-system qos
-  service-policy type network-qos jumbo
 ```
