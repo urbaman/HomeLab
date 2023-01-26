@@ -177,12 +177,12 @@ access-switch1(config-if-range)# switchport access vlan 3
 access-switch1(config-if-range)# exit
 ```
 
-### Set MTU to 9218
+### Set MTU to 9000 (max for pfSense)
 
 ```bash
 policy-map type network-qos jumbo
   class type network-qos class-default
-          mtu 9216
+          mtu 9000
 system qos
   service-policy type network-qos jumbo
 ```
