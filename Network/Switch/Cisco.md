@@ -141,13 +141,13 @@ access-switch1(config-if-range)# exit
 access-switch1(config)#
 ```
 
-### Configure Layer2 VLANs and assign ports to the them
+### Configure Layer3 VLANs and assign ports to the them
 
 By default, all physical ports of the switch belong to the native VLAN1. One of the most important functions of an Ethernet switch is to segment the network into multiple Layer2 VLANs (with each VLAN belonging to a different Layer3 subnet).
 
-In order to do the above Layer2 segmentation you need to create additional VLANs from the default VLAN1 and then assign physical ports to these new vlans. Let’s create two new vlans (VLAN2 and VLAN3) and assign two ports to each one.
+In order to do the above Layer3 segmentation you need to create additional VLANs from the default VLAN1 and then assign physical ports to these new vlans. Let’s create two new vlans (VLAN2 and VLAN3) and assign two ports to each one.
 
-#### First create the Layer2 VLANs on the switch
+#### First create the Layer2 and Layer3 VLANs on the switch, assigning the VLANs
 
 ```bash
 access-switch1(config)# vlan 2
@@ -159,6 +159,18 @@ access-switch1(config-vlan)# exit
 access-switch1(config)# vlan 3
 access-switch1(config-vlan)# name STUDENTS
 access-switch1(config-vlan)# exit
+```
+
+```bash
+interface vlan 2
+ip address 192.168.2.1 255.255.255.0
+exit
+```
+
+```bash
+interface vlan 3
+ip address 192.168.3.1 255.255.255.0
+exit
 ```
 
 #### Now assign the physical ports to each VLAN. Ports 1-2 are assigned to VLAN2 and ports 3-4 to VLAN3
@@ -175,6 +187,27 @@ access-switch1(config)# interface fa 0/3-4
 access-switch1(config-if-range)# switchport mode access
 access-switch1(config-if-range)# switchport access vlan 3
 access-switch1(config-if-range)# exit
+```
+
+### Create Link Aggregations (LACP)
+
+```bash
+interface Eth1/5-6
+channel-group 1 mode active
+exit
+interface port1
+switchport mode access
+switchport access vlan 2
+exit
+```
+
+### Create Trunks
+
+```bash
+interface port-channel1
+switchport mode trunk
+switchport trunk allowed vlan 2,3
+exit
 ```
 
 ### Set MTU to 9000 (max for pfSense)
