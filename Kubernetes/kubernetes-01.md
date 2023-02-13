@@ -410,7 +410,9 @@ Once you are done, save the changes and exit the configuration file. That's abou
 
 Finally, to enable automatic upgrades , edit the 20auto-upgrades file as shown.
 
+```bash
 sudo vi /etc/apt/apt.conf.d/20auto-upgrades
+```
 
 By default, the file has two lines as shown.
 
