@@ -27,9 +27,54 @@ ubuntu (ALL)=ALL NOPASSWD:ALL
 sudo timedatectl set-timezone Europe/Rome
 ```
 
-## install and setup whatever else you want (docker, kubernetes, ...)
+## Install and setup whatever else you want (postfix, unattended-updates, docker, kubernetes, ...)
 
 Do it.
+
+## Create script to run at first boot, to customize postfix and other mail settings to the new desired settings
+
+```bash
+nano /usr/sbin/mailcustomize
+```
+
+```bash
+#!/bin/bash
+
+#Define the variables
+HOST=$(hostname | tr '[:lower:]' '[:upper:]')
+
+#Set alias mail for root
+sed -i "s/ubuntu@domain.com/$1/g" /etc/aliases
+newaliases
+#Set custom FROM for mails
+sed -i "s/UBUNTU/$HOST/g" /etc/postfix/smtp_header_checks
+postmap /etc/postfix/smtp_header_checks
+
+service postfix restart
+
+#Set mailto for unattended-upgrades
+sed -i "s/ubuntu@domain.com/$1/g" /etc/apt/apt.conf.d/50unattended-upgrades
+service unattended-upgrades restart
+```
+
+```bash
+chmod +x /usr/sbin/mailcustomize
+```
+
+
+The script runs with just one input variable, the mail to assign to the root as alias. All mails will be forwarded to that address.
+
+## Setup ssh keys to be used between clones
+
+```bash
+ssh-keygen
+```
+
+Copy the content of the public key to .ssh/authorized_keys
+
+```bash
+cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+```
 
 ## Write a script to run at boot to resize the disk
 
