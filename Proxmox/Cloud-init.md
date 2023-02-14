@@ -31,7 +31,7 @@ sudo timedatectl set-timezone Europe/Rome
 
 Do it.
 
-## Create script to run at first boot, to customize postfix and other mail settings to the new desired settings
+## Create script to run at new template creation, to customize postfix and other mail settings to the new desired settings (mailto)
 
 ```bash
 nano /usr/sbin/mailcustomize
@@ -46,9 +46,6 @@ HOST=$(hostname | tr '[:lower:]' '[:upper:]')
 #Set alias mail for root
 sed -i "s/ubuntu@domain.com/$1/g" /etc/aliases
 newaliases
-#Set custom FROM for mails
-sed -i "s/UBUNTU/$HOST/g" /etc/postfix/smtp_header_checks
-postmap /etc/postfix/smtp_header_checks
 
 service postfix restart
 
@@ -61,8 +58,37 @@ service unattended-upgrades restart
 chmod +x /usr/sbin/mailcustomize
 ```
 
-
 The script runs with just one input variable, the mail to assign to the root as alias. All mails will be forwarded to that address.
+
+## Set script to run at boot to customize FROM mails to HOST
+
+```bash
+sudo vi /usr/sbin/mailsetfrom
+```
+
+```bash
+#!/bin/bash
+
+#Define the variables
+HOST=$(hostname | tr '[:lower:]' '[:upper:]')
+
+#Set custom FROM for mails
+sed -i "s/UBUNTU/$HOST/g" /etc/postfix/smtp_header_checks
+postmap /etc/postfix/smtp_header_checks
+service postfix restart
+```
+
+```bash
+sudo chmod +x /usr/sbin/mailsetfrom
+sudo crontab -e
+```
+
+add
+
+```bash
+@reboot /usr/sbin/mailsetfrom > /dev/null 2>&1
+```
+
 
 ## Setup ssh keys to be used between clones
 
