@@ -12,7 +12,7 @@ apt install keepalived haproxy
 
 ```bash
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
-sudo echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
+echo "net.ipv4.ip_nonlocal_bind = 1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
