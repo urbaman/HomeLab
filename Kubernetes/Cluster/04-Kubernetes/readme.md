@@ -207,6 +207,10 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
+## Make it a template
+
+It's a perfect time to make it a template from which we can create both control panes and workers.
+
 ## Set up the etcd cluster
 
 Follow these instructions to set up the etcd cluster.
