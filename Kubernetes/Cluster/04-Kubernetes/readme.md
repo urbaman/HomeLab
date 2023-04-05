@@ -299,7 +299,7 @@ kubectl create -f custom-resources.yaml
 The, intstall the calicoctl to manage Calico.
 
 ```bash
-kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calicoctl.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
