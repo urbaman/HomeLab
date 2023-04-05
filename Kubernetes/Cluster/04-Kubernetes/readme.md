@@ -248,6 +248,7 @@ kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
   podSubnet: "172.16.0.0/12" # change this (see below)
+  serviceSubnet: "10.10.0.0/16" # change this (see below)
 etcd:
   external:
     endpoints:
@@ -290,7 +291,7 @@ kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1
 curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/custom-resources.yaml -O
 ```
 
-If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR).
+If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR to match kubeadm podSubnet above).
 
 ```bash
 kubectl create -f custom-resources.yaml
