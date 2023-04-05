@@ -5,7 +5,7 @@ Install the metrics server for autoscaling purposes.
 First, download the high availability version of the yaml manifest to deploy two instances of metrics server in HA.
 
 ```bash
-wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
+wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
 ```
 
 Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
