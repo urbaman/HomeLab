@@ -282,9 +282,6 @@ Package files:
  500 https://apt.kubernetes.io kubernetes-xenial/main amd64 Packages
      release o=kubernetes-xenial,a=kubernetes-xenial,n=kubernetes-xenial,l=kubernetes-xenial,c=main,b=amd64
      origin apt.kubernetes.io
- 500 https://baltocdn.com/helm/stable/debian all/main amd64 Packages
-     release a=all,n=all,c=main,b=amd64
-     origin baltocdn.com
  500 https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
      release o=Docker,a=jammy,l=Docker CE,c=stable,b=amd64
      origin download.docker.com
