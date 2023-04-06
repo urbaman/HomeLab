@@ -4,6 +4,8 @@
 
 Members of the Helm community have contributed a Helm package for Apt. This package is generally up to date.
 
+> Beware: this repo is not usable in unattended-upgrades, it's best to use snap even if the package is generally less up to date
+
 ```bash
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
 sudo apt-get install apt-transport-https --yes
