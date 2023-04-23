@@ -152,7 +152,8 @@ iface vmbr5 inet manual
         bridge-stp off
         bridge-fd 0
         bridge-vlan-aware yes
-        bridge-vids 10 20 30 40 50 60 70 80 100
+        bridge-vids 1 10 20 30 40 50 60 70 80 100
+        bridge-pvid 1
         mtu 9000
 #trunk
 
