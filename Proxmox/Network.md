@@ -31,151 +31,157 @@ for i in $( ls /sys/class/net ); do echo -n $i: ; cat /sys/class/net/$i/carrier;
 auto lo
 iface lo inet loopback
 
-auto eno2
-iface eno2 inet manual
-#wan0
-
-auto eno1
 iface eno1 inet manual
-        mtu 9000
-#vlan10 - LAN
+#wan
 
-auto eno4
-iface eno4 inet manual
-        mtu 9000
-#bond-vlan30 Ceph Storage
+auto vmbr0
+iface vmbr0 inet static
+	address 192.168.1.111/24
+	gateway 192.168.1.1
+	bridge-ports eno1
+	bridge-stp off
+	bridge-fd 0
+#wan
 
-auto eno3
+iface eno2 inet manual
+        mtu 9000
+#bond0 - vlan30 - CephStorage
+
 iface eno3 inet manual
         mtu 9000
-#bond-vlan30 - Ceph Storage
+#bond0 - vlan30 - CephStorage
 
-auto enp5s0f3
+iface eno4 inet manual
+        mtu 9000
+#bond0 - vlan30 - CephStorage
+
 iface enp5s0f3 inet manual
         mtu 9000
-#vlan50 - VMs LAN
+#bond1 - vlan70 - TruenasStorage
 
-auto enp5s0f2
 iface enp5s0f2 inet manual
         mtu 9000
-#bond-vlan70 Shared Storage
+#bond1 - vlan70 - TruenasStorage
 
-auto enp5s0f1
 iface enp5s0f1 inet manual
         mtu 9000
-#bond-vlan70 Shared Storage
+#bond1 - vlan70 - TruenasStorage
 
-auto enp5s0f0
 iface enp5s0f0 inet manual
         mtu 9000
-#bond-trunk
+#bond2 - vlan90 - k8sStorage
 
-auto enp129s0f1
-iface enp129s0f1 inet manual
+iface enp141s0f0 inet manual
         mtu 9000
-#bond-trunk
+#bond2 - vlan90 - k8sStorage
 
-auto enp129s0f0
+iface enp141s0f1 inet manual
+        mtu 9000
+#bond2 - vlan90 - k8sStorage
+
+iface enp141s0f2 inet manual
+        mtu 9000
+#bond3 - trunk
+
+iface enp141s0f3 inet manual
+        mtu 9000
+#bond3 - trunk
+
 iface enp129s0f0 inet manual
         mtu 9000
-#vlan100 - Management
+#bond3 - trunk
+
+iface enp129s0f1 inet manual
+        mtu 9000
+#bond3 - trunk
 
 auto bond0
 iface bond0 inet manual
-        bond-slaves eno3 eno4
+        bond-slaves eno2 eno3 eno4
         bond-miimon 100
         bond-mode 802.3ad
         bond-xmit-hash-policy layer2+3
         mtu 9000
-#vlan30 - Ceph Storage
+#vlan30 - CephStorage
 
 auto bond1
 iface bond1 inet manual
-        bond-slaves enp5s0f1 enp5s0f2
+        bond-slaves enp5s0f3 enp5s0f2 enp5s0f1
         bond-miimon 100
         bond-mode 802.3ad
         bond-xmit-hash-policy layer2+3
         mtu 9000
-#vlan70 - Shared Storage
+#vlan70 - TruenasStorage
 
 auto bond2
 iface bond2 inet manual
-        bond-slaves enp129s0f1 enp5s0f0
+        bond-slaves enp5s0f0 enp141s0f0 enp141s0f1
+        bond-miimon 100
+        bond-mode 802.3ad
+        bond-xmit-hash-policy layer2+3
+        mtu 9000
+#vlan90 - K8sStorage
+
+auto bond3
+iface bond3 inet manual
+        bond-slaves enp141s0f2 enp141s0f3 enp129s0f1 enp129s0f0
         bond-miimon 100
         bond-mode 802.3ad
         bond-xmit-hash-policy layer2+3
         mtu 9000
 #trunk
 
-auto vmbr0
-iface vmbr0 inet manual
-        bridge-ports eno2
-        bridge-stp off
-        bridge-fd 0
-
 auto vmbr1
 iface vmbr1 inet manual
-        bridge-ports eno1
-        bridge-stp off
-        bridge-fd 0
-        mtu 9000
-#vlan 10 - LAN
-
-auto vmbr2
-iface vmbr2 inet manual
         address 10.0.30.11/24
         bridge-ports bond0
         bridge-stp off
         bridge-fd 0
         mtu 9000
-#vlan30 - Ceph Storage
+#vlan30 - CephStorage
 
-auto vmbr3
-iface vmbr3 inet manual
-        bridge-ports enp5s0f3
-        bridge-stp off
-        bridge-fd 0
-        mtu 9000
-#vlan50 - VMs LAN
-
-auto vmbr4
-iface vmbr4 inet manual
+auto vmbr2
+iface vmbr2 inet manual
         bridge-ports bond1
         bridge-stp off
         bridge-fd 0
         mtu 9000
-#vlan70 - Shared Storage
+#vlan30 - TruenssStorage
 
-auto vmbr5
-iface vmbr5 inet manual
+auto vmbr3
+iface vmbr3 inet manual
         bridge-ports bond2
         bridge-stp off
         bridge-fd 0
+        mtu 9000
+#vlan30 - K8sStorage
+
+auto vmbr4
+iface vmbr4 inet manual
+        bridge-ports bond3
+        bridge-stp off
+        bridge-fd 0
         bridge-vlan-aware yes
-        bridge-vids 1 10 20 30 40 50 60 70 80 100
+        bridge-vids 1 10 20 30 40 50 60 70 80 90 100
         bridge-pvid 1
         mtu 9000
 #trunk
 
-auto vmbr5.20
-iface vmbr5.20 inet static
+auto vmbr4.20
+iface vmbr4.20 inet static
         address 10.0.20.11/24
         mtu 9000
-#vlan20 - Proxmox Cluster
+#vlan20 - ProxmoxCluster
 
-auto vmbr5.40
-iface vmbr5.40 inet static
-        address 10.0.40.11/24
+auto vmbr4.80
+iface vmbr4.80 inet static
+        address 10.0.80.11/24
         mtu 9000
-#vlan40 - Ceph Public
+#vlan80 - ProxmoxMigration
 
-auto vmbr6
-iface vmbr6 inet manual
+auto vmbr4.100
+iface vmbr4.100 inet static
         address 10.0.100.11/24
-        gateway 10.0.100.3
-        bridge-ports enp129s0f0
-        bridge-stp off
-        bridge-fd 0
         mtu 9000
 #vlan100 - Management
 ```
