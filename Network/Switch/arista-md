@@ -1,0 +1,50 @@
+# Arista switches
+
+## Enter the configuration status
+
+localhost>enable
+localhost#config
+
+## Saving the configuration
+
+localhost(config)#copy running-config startup-config
+
+## Add admin password
+
+localhost(config)#username admin secret pxq123
+
+## Default route and management IP
+
+localhost(config)#ip route 0.0.0.0/0 192.0.2.1
+localhost(config)#interface management 1
+localhost(config-if-Ma1)#ip address 192.0.2.8/24
+localhost(config)#exit
+
+## Envoronment management
+
+### Show environment
+
+localhost>show environment [all, cooling [detail], power [detail], temperature [module name] [detail]]
+
+### Fan speed management
+
+localhost(config)#environment fan-speed override [percent 30-100, auto]
+
+## Switch hostname, FQDN and name-server
+
+localhost(config)#hostname [hostname]
+hostname(config)#ip domain-name [domain.com]
+hostname(config)#ip name-server [xx.xx.xx.xx]
+
+## Clock management
+
+hostname(config)#show clock
+hostname(config)#closck timezone [timezone, eg Europe/Rome]
+hostname(config)#clock set [date, eg 08:15:24 14 Jan 2013]
+hostname(config)#ntp server [server] [prefer]
+
+## Third party transceivers
+
+hostname(config)#bash touch /mnt/flash/enable3px
+
+## Ports management
