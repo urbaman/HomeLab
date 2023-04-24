@@ -177,7 +177,7 @@ auto vmbr4.40
 iface vmbr4.40 inet static
         address 10.0.40.11/24
         mtu 9000
-#vlan20 - CephPublic
+#vlan40 - CephPublic
 
 auto vmbr4.80
 iface vmbr4.80 inet static
