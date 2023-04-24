@@ -173,6 +173,12 @@ iface vmbr4.20 inet static
         mtu 9000
 #vlan20 - ProxmoxCluster
 
+auto vmbr4.40
+iface vmbr4.40 inet static
+        address 10.0.40.11/24
+        mtu 9000
+#vlan20 - CephPublic
+
 auto vmbr4.80
 iface vmbr4.80 inet static
         address 10.0.80.11/24
