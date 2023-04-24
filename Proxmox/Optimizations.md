@@ -2,6 +2,18 @@
 
 Thanks to [Extremeshock](https://github.com/extremeshok/xshok-proxmox) among the others
 
+## Update smartd database
+
+```bash
+update-smart-drivedb
+```
+
+## Install speedtest-cli
+
+```bash
+apt install speedtest-cli
+```
+
 ## Powertop
 
 ```bash
