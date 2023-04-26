@@ -3,8 +3,8 @@
 Get the yaml file to customize:
 
 ```bash
-latest=$(curl -s https://api.github.com/repos/weaveworks/kured/releases | jq -r .[0].tag_name)
-wget "https://github.com/weaveworks/kured/releases/download/$latest/kured-$latest-dockerhub.yaml"
+latest=$(curl -s https://api.github.com/repos/kubereboot/kured/releases | jq -r '.[0].tag_name')
+wget "https://github.com/kubereboot/kured/releases/download/$latest/kured-$latest-dockerhub.yaml"
 ```
 
 Let's customize the following arguments, then apply the yaml:
