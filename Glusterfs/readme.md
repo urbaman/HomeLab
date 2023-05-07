@@ -1,4 +1,8 @@
-# Tentativo
+# Clutered storage - Gluster on ZFS
+
+## On all nodes
+
+### zpools creation
 
 ```
 sudo apt install zfsutils-linux
@@ -14,8 +18,10 @@ sudo zpool create new-pool mirror /dev/sdb /dev/sdc
 
 ```
 sudo zpool create HDD5T mirror /dev/sdb /dev/sdc
-sudo zpool create SDD5T mirror /dev/sdd /dev/sde
+sudo zpool create SDD2T mirror /dev/sdd /dev/sde
 ```
+
+### Gluster installation
 
 ```
 sudo apt install glusterfs-server
@@ -23,56 +29,28 @@ sudo systemctl enable glusterd
 sudo systemctl start glusterd
 ```
 
+## On first node
+
+### Set up gluster cluster
+
 ```
 sudo gluster peer probe gluster2.urbaman.it
 sudo gluster peer probe gluster3.urbaman.it
 sudo gluster peer status
 ```
 
-```
-sudo apt install nfs-ganesha-gluster
-sudo mv /etc/ganesha/ganesha.conf /etc/ganesha/ganesha.conf.org
-sudo vi /etc/ganesha/ganesha.conf
-```
+### Set up Gluster replicated volumes
+
+We create two volumes. Having three nodes, for better resiliency we create distributed volumes with replica 3 (euqal to nodes number)
 
 ```
-# create new
-NFS_CORE_PARAM {
-    # possible to mount with NFSv3 to NFSv4 Pseudo path
-    mount_path_pseudo = true;
-    # NFS protocol
-    Protocols = 3,4;
-}
-EXPORT_DEFAULTS {
-    # default access mode
-    Access_Type = RW;
-}
-EXPORT {
-    # uniq ID
-    Export_Id = 101;
-    # mount path of Gluster Volume
-    Path = "/HDD5T";
-    FSAL {
-        # any name
-        name = GLUSTER;
-        # hostname or IP address of this Node
-        hostname="gluster1.urbaman.it";
-        # Gluster volume name
-        volume="HDD5T";
-    }
-    # config for root Squash
-    Squash="No_root_squash";
-    # NFSv4 Pseudo path
-    Pseudo="/HDD5T";
-    # allowed security options
-    SecType = "sys";
-}
-LOG {
-    # default log level
-    Default_Log_Level = WARN;
-}
+sudo gluster volume create HDD5T replica 3 gluster1.urbaman.it:/HDD5T11 gluster1.urbaman.it:/HDD5T12 gluster2.urbaman.it:/HDD5T21 gluster2.urbaman.it:/HDD5T22 gluster3.urbaman.it:/HDD5T31 gluster3.urbaman.it:/HDD5T32
+sudo gluster volume create SDD2T replica 3 gluster1.urbaman.it:/SDD2T11 gluster1.urbaman.it:/SDD2T12 gluster2.urbaman.it:/SDD2T21 gluster2.urbaman.it:/SDD2T22 gluster3.urbaman.it:/SDD2T31 gluster3.urbaman.it:/SDD2T32
 ```
 
+To check the volumes:
+
 ```
-sudo systemctl restart nfs-ganesha
+sudo gluster volume status
+sudo gluster volume info
 ```
