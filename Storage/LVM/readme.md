@@ -82,7 +82,7 @@ If we need to resize one of the disks (maybe we are using a Virtual Machine), le
 
 ```
 growpart /dev/sdX Y #only if used a partition, e.g. /dev/sda3 goes to growpart /dev/sda 3
-pvresize /dev/sdX
+pvresize /dev/sdX(Y)
 lvextend -l +100%FREE /dev/vg1/lv1
 resize2fs /dev/vg1/lv1
 ```
@@ -97,5 +97,7 @@ sudo vgs -S vgname=lvm_tutorial -o vg_free
 
 We should see the size of the new disk as free space in the volume
 
+```
 sudo lvresize -l +100%FREE vg1/lv1
 sudo resize2fs /dev/vg1/lv1
+```
