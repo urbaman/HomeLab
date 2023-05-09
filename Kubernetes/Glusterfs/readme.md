@@ -1,5 +1,9 @@
 # Storage (GlusterFS)
 
+## Having a cluster running
+
+Follow a guide, mine's [here](https://github.com/urbaman/HomeLab/tree/main/Storage/Glusterfs)
+
 ## glusterfs-client
 
 Fist you need to install the glusterfs-client package on your nodes. The client is used by the kubernetes scheduler to create the gluster volumes.
