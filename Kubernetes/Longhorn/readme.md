@@ -49,7 +49,7 @@ Check that all nodes are running and scheduling, and that the storage space is a
 
 ### With PV
 
-Create a volume from the Longhorn UI named test-volume, then create the PV, PVC and POD
+Create a volume from the Longhorn UI named test-volume, then create the PV (beware to use the volume name in volumeHandle), PVC and POD
 
 ```
 apiVersion: v1
@@ -70,7 +70,7 @@ spec:
     volumeAttributes:
       numberOfReplicas: '3'
       staleReplicaTimeout: '2880'
-    volumeHandle: existing-longhorn-volume
+    volumeHandle: test-volume
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
