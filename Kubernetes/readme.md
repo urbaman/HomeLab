@@ -14,8 +14,8 @@ Here is the Cluster infrastructure we will deploy
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
 | nfs1.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 1                  | 10.0.50.21, 10.0.70.21 (gluster storage) |
-| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 2                  | 10.0.50.22, 10.0.70.21 (gluster storage) |
-| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 3                  | 10.0.50.23, 10.0.70.21 (gluster storage) |
+| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 2                  | 10.0.50.22, 10.0.70.22 (gluster storage) |
+| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 3                  | 10.0.50.23, 10.0.70.23 (gluster storage) |
 | k8cp1.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51, 10.0.90.51 (longhorn storage) |
 | k8cp2.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52, 10.0.90.52 (longhorn storage) |
 | k8cp3.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53, 10.0.90.53 (longhorn storage) |
