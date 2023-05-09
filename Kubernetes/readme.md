@@ -45,6 +45,7 @@ Here are the detailed steps to deploy our homelab cluster
 1. [Helm](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Helm)
 2. [Metallb LoadBalancer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metallb)
 3. [Storage with Glusterfs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Glusterfs)
+4. [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
 4. [Storage with longhorn](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Longhorn)
 5. [Cloudflare Operator (DynDNS, DNS)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cloudflare-Operator)
 6. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
