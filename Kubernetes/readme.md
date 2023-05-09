@@ -8,8 +8,7 @@ Here is the Cluster infrastructure we will deploy
 - 3x workers: k8w1, k8w2, k8w3
 - 3x etcd cluster: etcd1, etce2, etcd3
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
-- 3x glusterfs cluster: truenas1, truenas2, truenas3
-- 1x glusterfs clusater manager: truecommand
+- 3x glusterfs cluster: nfs1, nfs22, nfs3
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
@@ -46,14 +45,15 @@ Here are the detailed steps to deploy our homelab cluster
 1. [Helm](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Helm)
 2. [Metallb LoadBalancer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metallb)
 3. [Storage with Glusterfs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Glusterfs)
-4. [Cloudflare Operator (DynDNS, DNS)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cloudflare-Operator)
-5. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
-6. [Monitoring external services (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
-7. [Traefik for ingress and proxy](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Traefik)
-8. [Kubernetes Dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Dashboard)
-9. [Metrics Server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics-Server)
-10. [Portainer managing dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Portainer)
-11. [Kured for automatic reboots](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Kured)
+4. Storage with longhorn
+5. [Cloudflare Operator (DynDNS, DNS)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cloudflare-Operator)
+6. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
+7. [Monitoring external services (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
+8. [Traefik for ingress and proxy](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Traefik)
+9. [Kubernetes Dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Dashboard)
+10. [Metrics Server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics-Server)
+11. [Portainer managing dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Portainer)
+12. [Kured for automatic reboots](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Kured)
 
 ### Deploying the services
 
