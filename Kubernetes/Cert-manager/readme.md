@@ -52,6 +52,29 @@ spec:
             key: api-token
 ```
 
+### Certificate creation
+
+Let's create our wildcard certificate.
+
+```
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: urbaman-wildcard
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - urbaman.it
+  - '*.urbaman.it'
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: urbaman-wildcard-certificate
+```
+
 ## Promheteus monitoring
 
 Deploy the following PodMonitor, after havign added the cert-manager namespace to the kube-prometheus-stack deployment
