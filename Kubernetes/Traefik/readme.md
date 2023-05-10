@@ -1,6 +1,8 @@
 # Traefik
 
-## Create the glusterfs endpoints in the traefik namespace
+## Gluster for storage (use Longhorn instead, not needed for HA through cert-manager)
+
+### Create the glusterfs endpoints in the traefik namespace
 
 ```yaml
 apiVersion: v1
@@ -29,7 +31,7 @@ spec:
   - port: 1
 ```
 
-## Create the path in the glusterfs volume (from a node in the glusterfs cluster)
+### Create the path in the glusterfs volume (from a node in the glusterfs cluster)
 
 ```bash
 cd /cluster/HDD5T
@@ -38,13 +40,13 @@ cd k8sstorage
 mkdir traefik-ssl
 ```
 
-### Give the directory the right ownership
+#### Give the directory the right ownership
 
 ```bash
 chown 65532:65532 /cluster/HDD5T/k8sstorage/traefik-ssl
 ```
 
-## Create the pv and the pvc
+### Create the pv and the pvc
 
 ```bash
 apiVersion: v1
@@ -82,6 +84,45 @@ spec:
     volumeName: traefik-ssl-volume
 ```
 
+## Longhorn (not needed for HA through cert-manager)
+
+### Create the pv and the pvc
+
+```bash
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: traefik-ssl-pv
+spec:
+  capacity:
+    storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: longhorn
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: '3'
+      staleReplicaTimeout: '2880'
+    volumeHandle: traefik-ssl-volume
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-ssl-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: traefik-ssl-pv
+  storageClassName: longhorn
+```
+
 ## Get the helm chart
 
 ```bash
@@ -89,7 +130,7 @@ helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
 ```
 
-## Modify the values to see the persistent volume claim
+## Modify the values to see the persistent volume claim (Only for no HA with Treafik's cert managing)
 
 ```bash
 helm show values traefik/traefik > traefik.yaml
@@ -160,7 +201,7 @@ ingressClass:
   isDefaultClass: true
 ```
 
-Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
+(Only for no HA with Treafik's cert managing) Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
 
 ```bash
 deployment:
@@ -178,7 +219,7 @@ deployment:
           mountPath: /ssl-certs
 ```
 
-## Create SSL certs for your domains (Cloudflare DNS challenge for production OR pebble for test/dev)
+## Create SSL certs for your domains (Cloudflare DNS challenge for production OR pebble for test/dev) - (Only for no HA with Treafik's cert managing)
 
 Create a secret with your own Cloudlfare email and API Key:
 
