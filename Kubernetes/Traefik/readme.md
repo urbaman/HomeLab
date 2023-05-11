@@ -130,12 +130,12 @@ helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
 ```
 
-## Modify the values to see the persistent volume claim (Only for no HA with Treafik's cert managing)
-
 ```bash
 helm show values traefik/traefik > traefik.yaml
 vi traefik.yaml
 ```
+
+## Modify the values to see the persistent volume claim (Only for no HA with Treafik's cert managing)
 
 Go to the persistence section, turn it to true, uncomment the existingClaim line and set it to the claim above.
 
