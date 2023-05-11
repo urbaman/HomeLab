@@ -196,7 +196,7 @@ metadata:
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - alertmanager.urbaman.it
+  - longhorn.urbaman.it
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:

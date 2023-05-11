@@ -649,7 +649,7 @@ spec:
     - kind: Rule
       match: Host(`alertmanager.urbaman.it`)
       services:
-      - name: kube-alertmanager-stack-alertmanager
+      - name: kube-prometheus-stack-alertmanager
         port: 9090
         serversTransport: monitoring-alertmanager-transport
       middlewares:
@@ -672,7 +672,7 @@ spec:
     - kind: Rule
       match: Host(`alertmanager.urbaman.it`)
       services:
-      - name: kube-alertmanager-stack-alertmanager
+      - name: kube-prometheus-stack-alertmanager
         port: 9090
       middlewares:
         - name: monitoring-alertmanager-https-redirect
