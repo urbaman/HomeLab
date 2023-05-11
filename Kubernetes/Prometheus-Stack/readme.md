@@ -268,6 +268,7 @@ kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ## Exposing services with Traefik and cert-manager
 
 ### Grafana (admin prom-operator)
+
 ```bash
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -374,9 +375,9 @@ spec:
     - kind: Rule
       match: Host(`grafana.urbaman.it`)
       services:
-	    - name: kube-prometheus-stack-grafana
-	      port: 80
-	      serversTransport: monitoring-grafana-transport
+      - name: kube-prometheus-stack-grafana
+        port: 80
+        serversTransport: monitoring-grafana-transport
       middlewares:
         - name: monitoring-grafana-basic-auth
         - name: monitoring-grafana-security
@@ -403,3 +404,276 @@ spec:
         - name: monitoring-grafana-https-redirect
 ```
 
+### Prometheus (admin prom-operator)
+
+```bash
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-urbaman
+  namespace: monitoring
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - prometheus.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: prometheus-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-prometheus-basic-auth
+  namespace: monitoring
+spec:
+  basicAuth:
+    secret: monitoring-prometheus-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-prometheus-https-redirect
+  namespace: monitoring
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-prometheus-security
+  namespace: monitoring
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: monitoring-prometheus-transport
+  namespace: monitoring
+spec:
+  serverName: prometheus
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: monitoring-prometheus-tlsoptions
+  namespace: monitoring
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-prometheus-basic-auth
+  namespace: monitoring
+data:
+  users: |
+    YWRtaW46JGFwcjEkSVBqUU96bmYkWkhDSWp2UmdTNFd4bXBUZnVVakhMMQoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-prometheus-websecure
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`prometheus.urbaman.it`)
+      services:
+      - name: kube-prometheus-stack-prometheus
+        port: 9090
+        serversTransport: monitoring-prometheus-transport
+      middlewares:
+        - name: monitoring-prometheus-basic-auth
+        - name: monitoring-prometheus-security
+  tls:
+    secretName: prometheus-urbaman
+    options:
+      name: monitoring-prometheus-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-prometheus-web
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`prometheus.urbaman.it`)
+      services:
+      - name: kube-prometheus-stack-prometheus
+        port: 9090
+      middlewares:
+        - name: monitoring-prometheus-https-redirect
+```
+
+### Alertmanager (admin prom-operator)
+
+```bash
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alertmanager-urbaman
+  namespace: monitoring
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - alertmanager.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: alertmanager-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-alertmanager-basic-auth
+  namespace: monitoring
+spec:
+  basicAuth:
+    secret: monitoring-alertmanager-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-alertmanager-https-redirect
+  namespace: monitoring
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-alertmanager-security
+  namespace: monitoring
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: monitoring-alertmanager-transport
+  namespace: monitoring
+spec:
+  serverName: alertmanager
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: monitoring-alertmanager-tlsoptions
+  namespace: monitoring
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-alertmanager-basic-auth
+  namespace: monitoring
+data:
+  users: |
+    YWRtaW46JGFwcjEkSVBqUU96bmYkWkhDSWp2UmdTNFd4bXBUZnVVakhMMQoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-alertmanager-websecure
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`alertmanager.urbaman.it`)
+      services:
+      - name: kube-alertmanager-stack-alertmanager
+        port: 9090
+        serversTransport: monitoring-alertmanager-transport
+      middlewares:
+        - name: monitoring-alertmanager-basic-auth
+        - name: monitoring-alertmanager-security
+  tls:
+    secretName: alertmanager-urbaman
+    options:
+      name: monitoring-alertmanager-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-alertmanager-web
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`alertmanager.urbaman.it`)
+      services:
+      - name: kube-alertmanager-stack-alertmanager
+        port: 9090
+      middlewares:
+        - name: monitoring-alertmanager-https-redirect
+```
