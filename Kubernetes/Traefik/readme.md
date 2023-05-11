@@ -456,3 +456,58 @@ spec:
       name: tlsoptions
       namespace: dev
 ```
+
+## High availability (with cert-manager)
+
+To reach high availability we need an external tool for SSL cert management (cert-manager is the one we choose)
+
+In the values.yaml file, add/change theese values to reach high availability, do not execute the changes for TLS management, as indicated:
+
+```
+# We want an highly available Traefik
+# Use a Deployment with nodeAffinity spreading our Pods across nodes
+# We could also use a DaemonSet to have an instance par node
+deployment:
+  replicas: 3
+
+# Using affinity from Traefik default values example
+# This pod anti-affinity forces the scheduler to put traefik pods
+# on nodes where no other traefik pods are scheduled.
+# It should be used when hostNetwork: true to prevent port conflicts
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - topologyKey: failure-domain.beta.kubernetes.io/zone
+      labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values: 
+          - traefik
+
+# Automatically redirect http to https
+# Not required but handy
+ports:
+  web:
+    redirectTo: websecure
+```
+
+Then, create the certificates with cert-manager and add them to the IngressRoute:
+
+```
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`whoami.example.com`)
+      kind: Rule
+      services:
+        - name: whoami
+          port: 80
+  tls:
+    secretName: whoami
+```
