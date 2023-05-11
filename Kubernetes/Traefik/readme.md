@@ -150,6 +150,8 @@ persistence:
   size: 128Mi
 ```
 
+## Other changes and settings
+
 Go to the ports section, and set to true both the metrics and the traefik (dashboard) expose settings. Also add a redirect from web to websecure and the default tls resolver:
 
 ```bash
@@ -201,7 +203,9 @@ ingressClass:
   isDefaultClass: true
 ```
 
-(Only for no HA with Treafik's cert managing) Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
+## SSL certs permisisons check (Only for no HA with Treafik's cert managing)
+
+Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
 
 ```bash
 deployment:
