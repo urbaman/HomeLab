@@ -265,9 +265,9 @@ kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etc
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ```
 
-## Exposing services
+## Exposing services with Traefik and cert-manager
 
-### Grafana (admin prom-manager)
+### Grafana (admin prom-operator)
 ```bash
 apiVersion: cert-manager.io/v1
 kind: Certificate
