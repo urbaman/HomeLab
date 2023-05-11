@@ -265,10 +265,141 @@ kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etc
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ```
 
-## Exposing Grafana
+## Exposing services
 
+### Grafana (admin prom-manager)
 ```bash
-kubectl patch svc "$APP_INSTANCE_NAME-grafana" \
-  --namespace "$NAMESPACE" \
-  -p '{"spec": {"type": "LoadBalancer"}}'
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-urbaman
+  namespace: monitoring
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - grafana.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: grafana-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-grafana-basic-auth
+  namespace: monitoring
+spec:
+  basicAuth:
+    secret: monitoring-grafana-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-grafana-https-redirect
+  namespace: monitoring
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-grafana-security
+  namespace: monitoring
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: monitoring-grafana-transport
+  namespace: monitoring
+spec:
+  serverName: grafana
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: monitoring-grafana-tlsoptions
+  namespace: monitoring
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-grafana-basic-auth
+  namespace: monitoring
+data:
+  users: |
+    YWRtaW46JGFwcjEkSVBqUU96bmYkWkhDSWp2UmdTNFd4bXBUZnVVakhMMQoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-grafana-websecure
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`grafana.urbaman.it`)
+      services:
+	    - name: kube-prometheus-stack-grafana
+	      port: 80
+	      serversTransport: monitoring-grafana-transport
+      middlewares:
+        - name: monitoring-grafana-basic-auth
+        - name: monitoring-grafana-security
+  tls:
+    secretName: grafana-urbaman
+    options:
+      name: monitoring-grafana-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-grafana-web
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`grafana.urbaman.it`)
+      services:
+      - name: kube-prometheus-stack-grafana
+        port: 80
+      middlewares:
+        - name: monitoring-grafana-https-redirect
 ```
+
