@@ -178,10 +178,11 @@ ports:
     port: 8443
     protocol: TCP
     tls:
-      certResolver: "cloudflare" # Or "pebble" if you so choose
+      certResolver: "cloudflare" # Only for non HA, set to "pebble" if you so choose
       domains: []
       enabled: true
       options: ""
+      secret: secret-name # add this for HA settings, with the secret containing the cert-manager certificate for the traefik host to reach
 ```
 
 Enable the dashboard ingress route:
@@ -192,6 +193,8 @@ ingressRoute:
     annotations: {}
     enabled: true
     labels: {}
+    tls:
+      secret: secret-name # add this for HA settings, with the secret containing the cert-manager certificate for the traefik host to reach
 ```
 
 Enable the ingressClass, set it to default:
