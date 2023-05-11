@@ -461,7 +461,7 @@ spec:
 
 To reach high availability we need an external tool for SSL cert management (cert-manager is the one we choose)
 
-In the values.yaml file, add/change theese values to reach high availability, do not execute the changes for TLS management, as indicated:
+In the traefik.yaml values file, add/change theese values to reach high availability, do not execute the changes for TLS management, as indicated:
 
 ```
 # We want an highly available Traefik
