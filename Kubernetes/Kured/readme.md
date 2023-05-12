@@ -47,7 +47,7 @@ Flags:
 
 I will set the following arguments:
 
-```bash
+```yaml
       --alert-filter-regexp=^RebootRequired$
       --end-time=17:00
       --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
@@ -63,4 +63,56 @@ To check for prometheus alerts (not checking kured's alerts), reboot between 9 a
 
 ```bash
 kubectl apply -f "kured-$latest-dockerhub.yaml"
+```
+
+## Prometheus monitoring
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kured
+  namespace: kube-system
+  labels:
+    name: kured
+spec:
+  ports:
+    - name: metrics
+      port: 8088
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    name: kured
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kured-sm
+  namespace: monitoring
+  labels:
+    app: kured
+    name: kured
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 60s
+    targetPort: 8080
+    path: /metrics
+    scrapeTimeout: 30s
+  jobLabel: kured
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      name: kured
+```
+
+Import the kured Grafana dashboard, fix the datasource id to match "prometheus" and the namespace variable to match "kube-system", then copy the json content to a grafana-kured.json file.
+
+```bash
+kubectl create configmap grafana-dashboard-kured --from-file=grafana-kured.json
+kubectl label configmap grafana-dashboard-kured grafana_dashboard="1"
 ```

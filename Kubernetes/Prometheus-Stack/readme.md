@@ -37,7 +37,7 @@ helm repo update
 helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
 ```
 
-```bash
+```yaml
   namespaces:
     releaseNamespace: true
     additional:
@@ -54,14 +54,14 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
 
 Disable the internal etcd scraping:
 
-```bash
+```yaml
 kubeEtcd:
   enabled: false
 ```
 
 And define Alertmanager notifications by email:
 
-```bash
+```yaml
     route:
       group_by: ['namespace']
       group_wait: 30s
@@ -88,7 +88,7 @@ And define Alertmanager notifications by email:
 
 Under the grafana header, add some plugins:
 
-```bash
+```yaml
     plugins:
       - grafana-piechart-panel
       - grafana-clock-panel
@@ -116,7 +116,7 @@ kubectl get kube-prometheus-stack -n monitoring prometheus-kube-prometheus-prome
 
 Near the end you'll find something like:
 
-```bash
+```yaml
   serviceMonitorSelector:
     matchLabels:
       release: kube-prometheus-stack
@@ -128,7 +128,7 @@ In here, ```release: kube-prometheus-stack``` is the label to add to the Service
 
 Remember to set the metrics port expose setting to true when installing Traefik, then create the following Service Monitor:
 
-```bash
+```yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -180,14 +180,14 @@ helm get values -n monitoring prometheus -a -o yaml > prom.yaml
 
 Set kubeEtcd enabled: false
 
-```bash
+```yaml
 kubeEtcd:
   enabled: false
 ```
 
 Set secrets (find it under prometheusSpec)
 
-```bash
+```yaml
   prometheusSpec:
     secrets: ["etcd-client-cert"]
 ```
@@ -200,7 +200,7 @@ helm upgrade -f prom.yaml prometheus prometheus-community/kube-prometheus-stack 
 
 Now create Endpoints, Service and Service Monitor:
 
-```bash
+```yaml
 apiVersion: v1
 kind: Endpoints
 metadata:
@@ -269,7 +269,7 @@ kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 
 ### Grafana (admin prom-operator)
 
-```bash
+```yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -406,7 +406,7 @@ spec:
 
 ### Prometheus (admin prom-operator)
 
-```bash
+```yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -543,7 +543,7 @@ spec:
 
 ### Alertmanager (admin prom-operator)
 
-```bash
+```yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
