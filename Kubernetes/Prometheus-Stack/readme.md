@@ -379,7 +379,6 @@ spec:
         port: 80
         serversTransport: monitoring-grafana-transport
       middlewares:
-        - name: monitoring-grafana-basic-auth
         - name: monitoring-grafana-security
   tls:
     secretName: grafana-urbaman
