@@ -2,11 +2,15 @@
 
 ## Install prometheus pushgateway on kubernetes
 
+```bash
 helm show values prometheus-community/prometheus-pushgateway > push.yaml
+```
 
 Define the namespace to monitoring, and the servicemonitor to true.
 
+```bash
 helm install prometheus-pushgateway prometheus-community/prometheus-pushgateway --values push.yaml -n monitoring
+```
 
 Then, create the ingressroute
 
@@ -143,3 +147,14 @@ spec:
       middlewares:
         - name: monitoring-pushgateway-https-redirect
 ```
+
+## Proxmox Backup Server exporter
+
+Install the Proxmox Backup Server Exporter from https://github.com/rare-magma/pbs-exporter
+
+**Note:** you'll probably need to tweak it a little bit to make it properly source the conf file.
+{: .note}
+
+## Add grafana Dashboard
+
+Get it here: https://grafana.com/grafana/dashboards/18740-proxmox-backup-server/
