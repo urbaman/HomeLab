@@ -138,7 +138,7 @@ helm install --namespace monitoring --create-namespace kube-prometheus-stack pro
 Take a look at the helm values of the prometheus-stack implementation:
 
 ```bash
-kubectl get kube-prometheus-stack -n monitoring prometheus-kube-prometheus-prometheus -o yaml
+helm get values -n monitoring kube-prometheus-stack -a -o yaml > prom.yaml
 ```
 
 Near the end you'll find something like:
