@@ -100,7 +100,34 @@ They will then be managed through the grafana config map:
 kubectl edit cm -n monitoring kube-prometheus-stack-grafana
 ```
 
-Finally, set the ```defaultDashboardsTimezone: browser``` to get the right timezone in the dashboards.
+Set the ```defaultDashboardsTimezone: browser``` to get the right timezone in the dashboards.
+
+Finally, set the storage specs for dynamic persistent storage:
+
+```yaml
+alertmanager:
+  alertmanagerSpec:
+    storage:
+     volumeClaimTemplate:
+       spec:
+         storageClassName: longhorn
+         accessModes: ["ReadWriteOnce"]
+         resources:
+           requests:
+             storage: 50Gi
+prometheus:
+  prometheusSpec:    
+    storageSpec: 
+     volumeClaimTemplate:
+       spec:
+         storageClassName: longhorn
+         accessModes: ["ReadWriteOnce"]
+         resources:
+           requests:
+             storage: 50Gi
+```
+
+And install:
 
 ```bash
 helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
