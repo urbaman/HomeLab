@@ -73,6 +73,8 @@ And define Alertmanager notifications by email:
         matchers:
           - alertname =~ "InfoInhibitor|Watchdog"
       - receiver: 'mail'
+        matchers:
+          - alertname =~ "InfoInhibitor|Watchdog"
     receivers:
     - name: 'null'
     - name: 'mail'
