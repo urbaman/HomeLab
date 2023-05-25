@@ -401,7 +401,7 @@ Then you can set an ingressroute to the service as an internal service.
 
 Add a security middleware and a TLSoptions object, add them to the IngressRoute
 
-```
+```yaml
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -470,7 +470,7 @@ To reach high availability we need an external tool for SSL cert management (cer
 
 In the traefik.yaml values file, add/change theese values to reach high availability, do not execute the changes for TLS management, as indicated:
 
-```
+```yaml
 # We want an highly available Traefik
 # Use a Deployment with nodeAffinity spreading our Pods across nodes
 # We could also use a DaemonSet to have an instance par node
@@ -501,7 +501,7 @@ ports:
 
 Then, create the certificates with cert-manager and add them to the IngressRoute:
 
-```
+```yaml
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -521,7 +521,7 @@ spec:
 
 ## ingressRoute for the Traefik Dashboard (complete example)
 
-```
+```yaml
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:

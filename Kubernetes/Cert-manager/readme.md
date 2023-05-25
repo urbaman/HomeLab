@@ -2,14 +2,14 @@
 
 ## Install Cert-manager
 
-```
+```bash
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 ```
 ## Let's Encrypt through Cloudflare DNS Challenge
 
 Create a secret with Cloudflare API Token (all domains)
 
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -21,7 +21,7 @@ stringData:
 
 Then create the ClusterIssuer as follows.
 
-```
+```yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -56,7 +56,7 @@ spec:
 
 Let's create our wildcard certificate.
 
-```
+```yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -79,7 +79,7 @@ spec:
 
 Deploy the following PodMonitor, after havign added the cert-manager namespace to the kube-prometheus-stack deployment
 
-```
+```yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -103,9 +103,10 @@ spec:
     - port: http-metrics
       honorLabels: true
 ```
+
 Search and add the cert-manager grafana dashboard
 
-```
+```bash
 kubectl create configmap grafana-dashboard-cert-manager --from-file=grafana-cm.json
 kubectl label configmap grafana-dashboard-cert-manager grafana_dashboard="1"
 ```
