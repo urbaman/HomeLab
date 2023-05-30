@@ -10,7 +10,7 @@ wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/
 
 Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
 
-```bash
+```yaml
       containers:
       - args:
         - --cert-dir=/tmp
@@ -23,11 +23,13 @@ Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
 
 Also add the ```--enable-aggregator-routing=true``` flag to the apiserver configuration, so that requests sent to Metrics Server are load balanced between the 2 instances.
 
+On all control planes:
+
 ```bash
 sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
 
-```bash
+```yaml
   containers:
   - command:
     - kube-apiserver
