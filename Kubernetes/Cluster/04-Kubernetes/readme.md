@@ -355,3 +355,39 @@ By default, your cluster will not schedule Pods on the control plane nodes for s
 kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule-
 ```
+
+## Upgrading the cluster
+
+On the first control plane:
+
+```bash
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-00 && \
+sudo apt-mark hold kubeadm
+kubeadm version
+kubeadm upgrade plan
+sudo kubeadm upgrade apply v1.xx.y
+kubectl drain <node> --ignore-daemonsets
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-00 kubectl=1.xx.y-00 && \
+sudo apt-mark hold kubelet kubectl
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon <node>
+```
+
+On all other nodes
+
+```bash
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-00 && \
+sudo apt-mark hold kubeadm
+sudo kubeadm upgrade node
+kubectl drain <node> --ignore-daemonsets
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-00 kubectl=1.xx.y-00 && \
+sudo apt-mark hold kubelet kubectl
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon <node>
+```
