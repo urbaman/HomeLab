@@ -47,6 +47,7 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - default
       - kube-node-lease
       - kube-public
+      - longhorn-system
       - metallb-system
       - tigera-operator
       - traefik

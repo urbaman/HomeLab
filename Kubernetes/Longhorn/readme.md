@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-wget https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
+wget https://raw.githubusercontent.com/longhorn/longhorn/v1.4.2/deploy/longhorn.yaml
 ```
 
 Edit the settings adding needed lines to the longhorn-default-setting ConfigMap

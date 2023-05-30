@@ -4,7 +4,7 @@
 
 Multus plugin allows to add a second network interface to the pods, and can be associated to a different physical interface on the nodes (you need same interface on all the nodes)
 
-```
+```bash
 kubectl create -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
 ```
 
@@ -12,7 +12,7 @@ kubectl create -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-
 
 Multus can't manage different IPs for pods on different nodes, leading to IP incompatibilities. Whereabouts is the solution.
 
-```
+```bash
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/whereabouts/master/doc/crds/daemonset-install.yaml
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/whereabouts/master/doc/crds/whereabouts.cni.cncf.io_ippools.yaml
 kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/whereabouts/master/doc/crds/whereabouts.cni.cncf.io_overlappingrangeipreservations.yaml
@@ -20,7 +20,7 @@ kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/whereabo
 
 We are ready to create the Network Attached Definition for the second network (the first and default is the one for the default CNI installed - Calico for us). We chose a 10.90.x.x network, associated to eth1 interface on the nodes, with ipam l2 plugin.
 
-```
+```bash
 cat <<EOF | kubectl create -f -
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
@@ -47,7 +47,7 @@ EOF
 
 To check the installation, we install two test pods on different nodes, and see if they correctly get the IPs on the new interface and if they talk to each other.
 
-```
+```bash
 cat <<EOF | kubectl create -f -
 apiVersion: v1
 kind: Pod
@@ -78,13 +78,13 @@ spec:
 EOF
 ```
 
-```
+```bash
 kubectl exec -it samplepod -- ip a
 ```
 
 Output:
 
-```
+```bash
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -105,13 +105,13 @@ Output:
        valid_lft forever preferred_lft forever
 ```
 
-```
+```bash
 kubectl exec -it samplepod2 -- ip a
 ```
 
 Output:
 
-```
+```bash
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -132,25 +132,25 @@ Output:
        valid_lft forever preferred_lft forever
 ```
 
-```
+```bash
 kubectl exec -it samplepod -- ping 10.90.0.102
 ```
 
 Output:
 
-```
+```bash
 PING 10.90.0.102 (10.90.0.102) 56(84) bytes of data.
 64 bytes from 10.90.0.102: icmp_seq=1 ttl=64 time=0.684 ms
 64 bytes from 10.90.0.102: icmp_seq=2 ttl=64 time=0.661 ms
 ```
 
-```
+```bash
 kubectl exec -it samplepod2 -- ping 10.90.0.101
 ```
 
 Output:
 
-```
+```bash
 PING 10.90.0.101 (10.90.0.101) 56(84) bytes of data.
 64 bytes from 10.90.0.101: icmp_seq=1 ttl=64 time=0.614 ms
 64 bytes from 10.90.0.101: icmp_seq=2 ttl=64 time=0.653 ms

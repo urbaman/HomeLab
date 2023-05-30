@@ -14,7 +14,7 @@ kubectl edit configmap -n kube-system kube-proxy
 
 and set:
 
-```bash
+```yaml
 mode: "ipvs"
 ipvs:
   strictARP: true
@@ -41,7 +41,7 @@ kubectl apply -f - -n kube-system
 To install MetalLB, apply the manifest:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.3/config/manifests/metallb-native.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
 ```
 
 ## Configuring L2 configuration
@@ -54,7 +54,7 @@ In order to advertise the IP coming from an IPAddressPool, an L2Advertisement in
 
 For example, the following configuration gives MetalLB control over IPs from 10.0.50.100 to 10.0.50.199 (free ip range on the same network of the k8s cluster hosts, so that che services will be accessible on that network), and configures Layer 2 mode:
 
-```bash
+```yaml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -75,7 +75,7 @@ Setting no IPAddressPool selector in an L2Advertisement instance is interpreted 
 
 So in case there are specialized IPAddressPools, and only some of them must be advertised via L2, the list of IPAddressPools we want to advertise the IPs from must be declared (alternative, a label selector can be used).
 
-```bash
+```yaml
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
@@ -90,7 +90,7 @@ spec:
 
 After implementing the prometheus-stack (see below), get the prometheus-operator.yaml file from the github project, add the label ```release: kube-prometheus-stack``` to both the Pod Monitors and apply.
 
-```bash
+```yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -155,7 +155,7 @@ subjects:
     namespace: monitoring
 ```
 
-Install the grafana dashboar, download the json from grafana, create the configmap in the monitoring namespace and label it.
+Install the grafana dashboard, download the json from grafana, create the configmap in the monitoring namespace and label it.
 
 ```bash
 kubectl create configmap grafana-dashboard-metallb -n monitoring --from-file=/path_to/metallb_dashboard.json
