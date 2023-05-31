@@ -20,10 +20,10 @@ On every control-panel, change bind address to 0.0.0.0:
 
 ```bash
 sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
-sudo vi /etc/kubernetes/manifests/kube-control-manager.yaml
+sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
 ```
 
-Then kill each scheduler and each control manager pods in the kube-system namespace
+Then check the controller manager and scheduler pods, they should restart as soon as the system recognize the changed manifests, if not manually delete each scheduler and each controller manager pods in the kube-system namespace to make them load the new settings.
 
 ```bash
 kubectl delete pod <pod-name> -n kube-system
@@ -43,10 +43,10 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
     additional:
       - calico-apiserver
       - calico-system
-      - cloudflare-operator
       - default
       - kube-node-lease
       - kube-public
+      - kube-system
       - longhorn-system
       - metallb-system
       - tigera-operator
@@ -92,9 +92,9 @@ And define Alertmanager notifications by email:
 Under the grafana header, add some plugins:
 
 ```yaml
-    plugins:
-      - grafana-piechart-panel
-      - grafana-clock-panel
+  plugins:
+    - grafana-piechart-panel
+    - grafana-clock-panel
 ```
 
 They will then be managed through the grafana config map:
@@ -191,9 +191,10 @@ kubectl label configmap grafana-dashboard-traefik grafana_dashboard="1"
 Copy the etcd certs to a tmp folder:
 
 ```bash
-mkdir /tmp/etcd-monitor
-cp /etc/kubernetes/pki/apiserver-etcd* /tmp/etcd-monitor
-cp /etc/kubernetes/pki/etcd/* /tmp/etcd-monitor
+sudo mkdir /tmp/etcd-monitor
+sudo cp /etc/kubernetes/pki/apiserver-etcd* /tmp/etcd-monitor
+sudo cp /etc/kubernetes/pki/etcd/* /tmp/etcd-monitor
+sudo chown ubuntu:ubuntu /tmp/etcd-monitor/*
 ```
 
 And create a secret:
@@ -205,7 +206,7 @@ kubectl create secret generic etcd-client-cert -n monitoring --from-file=/tmp/et
 Now, disable the internal etcd cluster scraping, and add the secret:
 
 ```bash
-helm get values -n monitoring prometheus -a -o yaml > prom.yaml
+helm get values -n monitoring kube-prometheus-stack -a -o yaml > prom.yaml
 ```
 
 Set kubeEtcd enabled: false
@@ -225,7 +226,7 @@ Set secrets (find it under prometheusSpec)
 And upgrade the helm implementation
 
 ```bash
-helm upgrade -f prom.yaml prometheus prometheus-community/kube-prometheus-stack -n monitoring
+helm upgrade -f prom.yaml kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
 ```
 
 Now create Endpoints, Service and Service Monitor:
@@ -288,7 +289,7 @@ spec:
 
 And apply it with kubectl.
 
-Finally, add a grafana dashboard for etcd on grafana, set trhe datasource, get the json, create a configmap from it and label it.
+Finally, add a grafana dashboard for etcd on grafana, set the datasource, get the json, create a configmap from it and label it.
 
 ```bash
 kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etcd-cluster.json
