@@ -48,7 +48,7 @@ chown 65532:65532 /cluster/HDD5T/k8sstorage/traefik-ssl
 
 ### Create the pv and the pvc
 
-```bash
+```yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -88,7 +88,7 @@ spec:
 
 ### Create the pv and the pvc
 
-```bash
+```yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -139,7 +139,7 @@ vi traefik.yaml
 
 Go to the persistence section, turn it to true, uncomment the existingClaim line and set it to the claim above.
 
-```bash
+```yaml
 persistence:
   accessMode: ReadWriteMany
   annotations: {}
@@ -154,7 +154,7 @@ persistence:
 
 Go to the ports section, and set to true both the metrics and the traefik (dashboard) expose settings. Also add a redirect from web to websecure and the default tls resolver:
 
-```bash
+```yaml
 ports:
   metrics:
     expose: true
@@ -187,7 +187,7 @@ ports:
 
 Enable the dashboard ingress route:
 
-```bash
+```yaml
 ingressRoute:
   dashboard:
     annotations: {}
@@ -199,7 +199,7 @@ ingressRoute:
 
 Enable the ingressClass, set it to default:
 
-```bash
+```yaml
 ingressClass:
   enabled: true
   fallbackApiVersion: ""
@@ -210,7 +210,7 @@ ingressClass:
 
 Finally go to the deployment section, and add the following initContainer to properly manage certificates permissions in case of errors (it will probably not run and break traefik's start process):
 
-```bash
+```yaml
 deployment:
   additionalContainers: []
   additionalVolumes: []
@@ -230,7 +230,7 @@ deployment:
 
 Create a secret with your own Cloudlfare email and API Key:
 
-```bash
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -244,7 +244,7 @@ stringData:
 
 Also in the traefik vales yaml file, add the following additionalArguments (choose only one resolver), the env settings and the volume settings (volume only for pebble certResolver)
 
-```bash
+```yaml
 additionalArguments:
 # DNS Challenge
 # Cloudflare
@@ -254,7 +254,7 @@ additionalArguments:
   - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
 ```
 
-```bash
+```yaml
 env:
 # Only for Pebble letsencrypt challenge, comment or delete for others
 - name: LEGO_CA_CERTIFICATES
@@ -302,7 +302,7 @@ dXNlcm5hbWU6JGFwcjEkLmtMR05oTzAkcnZVZTZBY0k3R2dyRHlFbkI0d2J2LwoK
 
 Customize and apply the following yaml file (this is for the k8s dashboard previously exposed, can point to any exposed service):
 
-```bash
+```yaml
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -368,7 +368,7 @@ spec:
 
 You first need to define endpoitns and service
 
-```bash
+```yaml
 kind: Endpoints
 apiVersion: v1
 metadata:
@@ -468,7 +468,7 @@ spec:
 
 To reach high availability we need an external tool for SSL cert management (cert-manager is the one we choose)
 
-In the traefik.yaml values file, add/change theese values to reach high availability, do not execute the changes for TLS management, as indicated:
+In the traefik.yaml values file, add/change these values to reach high availability, do not execute the changes for TLS management, as indicated:
 
 ```yaml
 # We want an highly available Traefik
@@ -637,4 +637,4 @@ spec:
           name: api@internal
       middlewares:
         - name: traefik-dashboard-https-redirect
-``` 
+```

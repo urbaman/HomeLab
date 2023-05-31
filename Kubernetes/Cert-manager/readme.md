@@ -3,8 +3,9 @@
 ## Install Cert-manager
 
 ```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
 ```
+
 ## Let's Encrypt through Cloudflare DNS Challenge
 
 Create a secret with Cloudflare API Token (all domains)
@@ -77,7 +78,7 @@ spec:
 
 ## Promheteus monitoring
 
-Deploy the following PodMonitor, after havign added the cert-manager namespace to the kube-prometheus-stack deployment
+Deploy the following PodMonitor, after having added the cert-manager namespace to the kube-prometheus-stack deployment
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1
