@@ -4,7 +4,7 @@ To deploy Portainer, get the yaml manifest:
 
 wget <https://raw.githubusercontent.com/portainer/k8s/master/deploy/manifests/portainer/portainer.yaml>
 
-Add a persistent volume and a persistent volume claim to the manifest just after the service account (needs to be after the namespace creation, before the actual deploy creation), and reference the claim in the volume definition:
+Add a persistent volume and a persistent volume claim to the manifest just after the service account (needs to be after the namespace creation, before the actual deploy creation), here we create it on glusterfs, you can do it on longhorn or any other storage solution, and reference the claim in the volume definition:
 
 ```yaml
 ---

@@ -59,7 +59,7 @@ I will set the following arguments:
 
 Be aware to put your proper url to the prometheus service in the `--prometheus-url=` flag.
 
-To check for prometheus alerts (not checking kured's alerts), reboot between 9 and 17 in weekdays, Europe/Rome timezone, send notifications by email.
+To check for prometheus alerts (not checking kured's alerts), reboot between 10 and 17 in weekdays, Europe/Rome timezone, send notifications by email.
 
 ```bash
 kubectl apply -f "kured-$latest-dockerhub.yaml"
