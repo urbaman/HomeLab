@@ -10,18 +10,18 @@ From the shell:
 apt install python3 python3-pip
 pip3 install prometheus-pve-exporter
 vi /etc/prometheus/pve.yml
-```bash
+```
 
 ```bash
 default:
     user: user@pve
     password: your_password_here
     verify_ssl: false
-```bash
+```
 
 ```bash
 vi /etc/systemd/system/prometheus-pve-exporter.service
-```bash
+```
 
 ```bash
 [Unit]
@@ -34,13 +34,13 @@ ExecStart=/usr/local/bin/pve_exporter /etc/prometheus/pve.yml
 
 [Install]
 WantedBy=multi-user.target
-```bash
+```
 
 ```bash
 systemctl daemon-reload
 systemctl start prometheus-pve-exporter
 systemctl enable prometheus-pve-exporter
-```bash
+```
 
 Check going to http:<PVE_NODE_IP/HOST>:9221/pve?target=<IP_OF_A_PVE_NODE>
 

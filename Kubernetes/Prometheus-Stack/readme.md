@@ -43,6 +43,7 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
     additional:
       - calico-apiserver
       - calico-system
+      - cert-manager
       - default
       - kube-node-lease
       - kube-public
