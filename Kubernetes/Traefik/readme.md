@@ -86,7 +86,7 @@ spec:
 
 ## Longhorn (not needed for HA through cert-manager)
 
-### Create the pv and the pvc
+### Create the pv and the pvc for Longhorn
 
 ```yaml
 apiVersion: v1

@@ -4,7 +4,6 @@
 
 Once Helm has been set up correctly, add the repo as follows:
 
-
 ```bash
 helm repo add uptime-kuma https://dirsigler.github.io/uptime-kuma-helm
 ```
