@@ -142,6 +142,29 @@ defaults
     timeout check           10s
 
 #---------------------------------------------------------------------
+# Prometheus exporter frontend
+#---------------------------------------------------------------------
+frontend prometheus
+   bind *:8404
+   option http-use-htx
+   http-request use-service prometheus-exporter if { path /metrics }
+   stats enable
+   stats uri /stats
+   stats refresh 10s
+
+#---------------------------------------------------------------------
+# Haproxy stats
+#---------------------------------------------------------------------
+listen stats
+   bind :9000
+   stats enable
+   mode http
+   stats uri /stats
+   stats hide-version
+   stats show-node
+   stats auth admin:haproxyadmin
+
+#---------------------------------------------------------------------
 # apiserver frontend which proxys to the control plane nodes
 #---------------------------------------------------------------------
 frontend apiserver
@@ -159,9 +182,9 @@ backend apiserver
     mode tcp
     option ssl-hello-chk
     balance     roundrobin
-        server k8cp1 k8cp1.urbaman.it:6443 check
-        server k8cp2 k8cp2.urbaman.it:6443 check
-        server k8cp3 k8cp3.urbaman.it:6443 check
+        server k8cp1 k8cp1.domain.com:6443 check
+        server k8cp2 k8cp2.domain.com:6443 check
+        server k8cp3 k8cp3.domain.com:6443 check
 
 #---------------------------------------------------------------------
 # etcd frontend which proxys to the etcd nodes
@@ -181,9 +204,9 @@ backend etcd
     mode tcp
     option ssl-hello-chk
     balance     roundrobin
-        server etcd1 etcd1.urbaman.it:2379 check
-        server etcd2 etcd2.urbaman.it:2379 check
-        server etcd3 etcd3.urbaman.it:2379 check
+        server etcd1 etcd1.domain.com:2379 check
+        server etcd2 etcd2.domain.com:2379 check
+        server etcd3 etcd3.domain.com:2379 check
 ```
 
 Restart haproxy
@@ -197,3 +220,5 @@ And check connection from another machine
 ```bash
 nc -v 10.0.50.64 6443
 ```
+
+Also, check statistics from each haproxy node, pointing your browser to http://haproxy(n).domain.com:9000/stats
