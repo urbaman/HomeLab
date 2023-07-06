@@ -103,3 +103,19 @@ hostname(config-if-[EtX, PoX])#switchport trunk allowed vlan add [x; x-y; x,y; x
 hostname(config-if-[EtX, PoX])#switchport trunk native vlan X
 ```
 
+# SNMP
+
+## Define a view with all possible content
+
+```bash
+hostname(config)#snmp-server view snmpv3 .1 included
+hostname(config)#snmp-server view snmpv3 system included
+hostname(config)#snmp-server view snmpv3 iso included
+```
+
+## Define a group and a user with access to the view
+
+```bash
+hostname(config)#snmp-server group snmpview v3 priv read snmpv3
+hostname(config)#snmp-server user snmp snmpview v3 auth sha P@ssW0rd priv aes P@ssW0rD1
+```
