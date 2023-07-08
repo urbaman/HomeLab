@@ -1,0 +1,2447 @@
+{
+    "__elements": [],
+    "__inputs": [
+        {
+            "description": "",
+            "label": "InfluxDB (grafana-01)",
+            "name": "DS_INFLUXDB_(GRAFANA-01)",
+            "pluginId": "influxdb",
+            "pluginName": "InfluxDB",
+            "type": "datasource"
+        }
+    ],
+    "__requires": [
+        {
+            "id": "flant-statusmap-panel",
+            "name": "Statusmap",
+            "type": "panel",
+            "version": "0.4.2"
+        },
+        {
+            "id": "grafana",
+            "name": "Grafana",
+            "type": "grafana",
+            "version": "8.4.0"
+        },
+        {
+            "id": "grafana-clock-panel",
+            "name": "Clock",
+            "type": "panel",
+            "version": "1.3.0"
+        },
+        {
+            "id": "graph",
+            "name": "Graph (old)",
+            "type": "panel",
+            "version": ""
+        },
+        {
+            "id": "influxdb",
+            "name": "InfluxDB",
+            "type": "datasource",
+            "version": "1.0.0"
+        },
+        {
+            "id": "stat",
+            "name": "Stat",
+            "type": "panel",
+            "version": ""
+        },
+        {
+            "id": "table-old",
+            "name": "Table (old)",
+            "type": "panel",
+            "version": ""
+        }
+    ],
+    "annotations": {
+        "list": [
+            {
+                "$$hashKey": "object:208",
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            }
+        ]
+    },
+    "description": "SNMP Based Dashboard to Monitor Dell Hosts via iDRAC - by ilovepancakes95",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "gnetId": 12106,
+    "graphTooltip": 0,
+    "id": null,
+    "iteration": 1658758215522,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 182,
+            "panels": [],
+            "title": "iDRAC Summary",
+            "type": "row"
+        },
+        {
+            "clockType": "24 hour",
+            "countdownSettings": {
+                "endCountdownTime": "2020-04-10T22:05:00.000Z",
+                "endText": "00:00:00"
+            },
+            "datasource": "Prometheus",
+            "dateSettings": {
+                "dateFormat": "YYYY-MM-DD",
+                "fontSize": "20px",
+                "fontWeight": "normal",
+                "showDate": false
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 2,
+                "x": 0,
+                "y": 1
+            },
+            "id": 213,
+            "links": [],
+            "mode": "time",
+            "options": {
+                "bgColor": "",
+                "clockType": "24 hour",
+                "countdownSettings": {
+                    "endCountdownTime": "2022-05-16T03:26:04-04:00",
+                    "endText": "00:00:00"
+                },
+                "countupSettings": {
+                    "beginCountupTime": "2022-05-16T03:26:04-04:00",
+                    "beginText": "00:00:00"
+                },
+                "dateSettings": {
+                    "dateFormat": "YYYY-MM-DD",
+                    "fontSize": "20px",
+                    "fontWeight": "normal",
+                    "locale": "",
+                    "showDate": false
+                },
+                "mode": "time",
+                "refresh": "sec",
+                "timeSettings": {
+                    "fontSize": "12px",
+                    "fontWeight": "normal"
+                },
+                "timezone": "",
+                "timezoneSettings": {
+                    "fontSize": "12px",
+                    "fontWeight": "normal",
+                    "showTimezone": false,
+                    "zoneFormat": "offsetAbbv"
+                }
+            },
+            "pluginVersion": "1.3.0",
+            "refreshSettings": {
+                "syncWithDashboard": false
+            },
+            "timeSettings": {
+                "customFormat": "HH:mm:ss",
+                "fontSize": "32px",
+                "fontWeight": "normal"
+            },
+            "timezoneSettings": {
+                "fontSize": "12px",
+                "fontWeight": "normal",
+                "showTimezone": false,
+                "zoneFormat": "offsetAbbv"
+            },
+            "title": "Local Time",
+            "type": "grafana-clock-panel"
+        },
+        {
+            "columns": [],
+            "datasource": "Prometheus",
+            "fontSize": "100%",
+            "gridPos": {
+                "h": 6,
+                "w": 10,
+                "x": 2,
+                "y": 1
+            },
+            "hideTimeOverride": false,
+            "id": 119,
+            "interval": "",
+            "pageSize": 25,
+            "repeatDirection": "h",
+            "showHeader": true,
+            "sort": {
+                "col": 1,
+                "desc": false
+            },
+            "styles": [
+                {
+                    "$$hashKey": "object:23610",
+                    "alias": "",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "Time",
+                    "thresholds": [],
+                    "type": "hidden",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:23611",
+                    "alias": "System Name",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "link": true,
+                    "linkTargetBlank": true,
+                    "linkTooltip": "Launch iDRAC Web Interface",
+                    "linkUrl": "${__cell_2:raw}",
+                    "mappingType": 1,
+                    "pattern": "system-name",
+                    "preserveFormat": false,
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:23612",
+                    "alias": "Service Tag",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "system-servicetag",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:23613",
+                    "alias": "Power State",
+                    "align": "center",
+                    "colorMode": "cell",
+                    "colors": [
+                        "#C4162A",
+                        "#FA6400",
+                        "#37872D"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "power-state",
+                    "thresholds": [
+                        "2.9",
+                        "3.9"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:23697",
+                            "text": "Other",
+                            "value": "1"
+                        },
+                        {
+                            "$$hashKey": "object:23698",
+                            "text": "Unknown",
+                            "value": "2"
+                        },
+                        {
+                            "$$hashKey": "object:23699",
+                            "text": "Off",
+                            "value": "3"
+                        },
+                        {
+                            "$$hashKey": "object:23700",
+                            "text": "On",
+                            "value": "4"
+                        }
+                    ]
+                },
+                {
+                    "$$hashKey": "object:23614",
+                    "alias": "Global Status",
+                    "align": "center",
+                    "colorMode": "cell",
+                    "colors": [
+                        "#E0B400",
+                        "#37872D",
+                        "#C4162A"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "system-globalstatus",
+                    "thresholds": [
+                        "2.9",
+                        "3.9"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:23721",
+                            "text": "Other",
+                            "value": "1"
+                        },
+                        {
+                            "$$hashKey": "object:23722",
+                            "text": "Unknown",
+                            "value": "2"
+                        },
+                        {
+                            "$$hashKey": "object:23723",
+                            "text": "Non-Critical Failure",
+                            "value": "4"
+                        },
+                        {
+                            "$$hashKey": "object:23724",
+                            "text": "Critical Failure",
+                            "value": "5"
+                        },
+                        {
+                            "$$hashKey": "object:23725",
+                            "text": "Non-Recoverable Failure",
+                            "value": "6"
+                        },
+                        {
+                            "$$hashKey": "object:23726",
+                            "text": "OK",
+                            "value": "3"
+                        }
+                    ]
+                },
+                {
+                    "$$hashKey": "object:23615",
+                    "alias": "Uptime",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 1,
+                    "mappingType": 1,
+                    "pattern": "system-uptime",
+                    "thresholds": [],
+                    "type": "number",
+                    "unit": "s"
+                },
+                {
+                    "$$hashKey": "object:23616",
+                    "alias": "System Model",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "system-model",
+                    "preserveFormat": false,
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:9602",
+                    "alias": "iDRAC URL",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "link": false,
+                    "mappingType": 1,
+                    "pattern": "idrac-url",
+                    "thresholds": [],
+                    "type": "hidden",
+                    "unit": "short"
+                }
+            ],
+            "timeFrom": "1m",
+            "title": "System Overview",
+            "transform": "table",
+            "type": "table-old"
+        },
+        {
+            "cards": {
+                "cardHSpacing": 10,
+                "cardMinWidth": 5,
+                "cardVSpacing": 10
+            },
+            "color": {
+                "cardColor": "#b4ff00",
+                "colorScale": "sqrt",
+                "colorScheme": "interpolateGnYlRd",
+                "defaultColor": "#757575",
+                "exponent": 0.5,
+                "mode": "discrete",
+                "thresholds": [
+                    {
+                        "$$hashKey": "object:2501",
+                        "color": "#FF780A",
+                        "tooltip": "Other",
+                        "value": "1"
+                    },
+                    {
+                        "$$hashKey": "object:2508",
+                        "color": "#E0B400",
+                        "tooltip": "Unknown",
+                        "value": "2"
+                    },
+                    {
+                        "$$hashKey": "object:2512",
+                        "color": "#37872D",
+                        "tooltip": "OK",
+                        "value": "3"
+                    },
+                    {
+                        "$$hashKey": "object:2519",
+                        "color": "rgba(224, 47, 68, 0.81)",
+                        "tooltip": "Non-Critical Fail",
+                        "value": "4"
+                    },
+                    {
+                        "$$hashKey": "object:2526",
+                        "color": "rgba(196, 22, 42, 0.68)",
+                        "tooltip": "Critical Fail",
+                        "value": "5"
+                    },
+                    {
+                        "$$hashKey": "object:2530",
+                        "color": "#1F60C4",
+                        "tooltip": "Non-Recoverable Fail",
+                        "value": "6"
+                    }
+                ]
+            },
+            "datasource": "Prometheus",
+            "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 1
+            },
+            "highlightCards": true,
+            "id": 524,
+            "interval": "",
+            "legend": {
+                "show": true
+            },
+            "nullPointMode": "as empty",
+            "pageSize": 15,
+            "seriesFilterIndex": -1,
+            "statusmap": {
+                "ConfigVersion": "v1"
+            },
+            "title": "Global Status Map",
+            "tooltip": {
+                "extraInfo": "",
+                "freezeOnClick": true,
+                "items": [],
+                "show": true,
+                "showExtraInfo": false,
+                "showItems": false
+            },
+            "type": "flant-statusmap-panel",
+            "useMax": true,
+            "usingPagination": false,
+            "xAxis": {
+                "show": true
+            },
+            "yAxis": {
+                "maxWidth": -1,
+                "minWidth": -1,
+                "show": true
+            },
+            "yAxisSort": "metrics",
+            "yLabel": {
+                "delimiter": "",
+                "labelTemplate": "",
+                "usingSplitLabel": false
+            }
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "match": "null",
+                                "result": {
+                                    "text": "N/A"
+                                }
+                            },
+                            "type": "special"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 2,
+                "x": 0,
+                "y": 4
+            },
+            "id": 179,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "# of iDRACs",
+            "type": "stat"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 7
+            },
+            "id": 4,
+            "panels": [],
+            "repeat": "idrac_host",
+            "title": "$idrac_host",
+            "type": "row"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "decimals": 1,
+                    "mappings": [
+                        {
+                            "options": {
+                                "match": "null",
+                                "result": {
+                                    "text": "N/A"
+                                }
+                            },
+                            "type": "special"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 0,
+                "y": 8
+            },
+            "id": 6,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "System Uptime",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "OK"
+                                },
+                                "4": {
+                                    "text": "Non-Critical Fail"
+                                },
+                                "5": {
+                                    "text": "Critical Fail"
+                                },
+                                "6": {
+                                    "text": "Non-Recoverable Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#FA6400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 2,
+                "y": 8
+            },
+            "id": 9,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Global Status",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "Off"
+                                },
+                                "4": {
+                                    "text": "On"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#C4162A",
+                                "value": null
+                            },
+                            {
+                                "color": "#FA6400",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 4,
+                "y": 8
+            },
+            "id": 2,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Power State",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "match": "null",
+                                "result": {
+                                    "text": "N/A"
+                                }
+                            },
+                            "type": "special"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 6,
+                "y": 8
+            },
+            "id": 8,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Service Tag",
+            "type": "stat"
+        },
+        {
+            "aliasColors": {
+                "System Watts": "rgb(91, 151, 235)"
+            },
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "links": []
+                },
+                "overrides": []
+            },
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 6,
+                "w": 8,
+                "x": 8,
+                "y": 8
+            },
+            "hiddenSeries": false,
+            "id": 147,
+            "legend": {
+                "avg": false,
+                "current": true,
+                "max": true,
+                "min": true,
+                "show": true,
+                "total": false,
+                "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "options": {
+                "alertThreshold": true
+            },
+            "percentage": false,
+            "pluginVersion": "8.4.0",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [
+                {
+                    "colorMode": "warning",
+                    "fill": false,
+                    "line": true,
+                    "op": "gt",
+                    "value": 1600,
+                    "yaxis": "left"
+                },
+                {
+                    "colorMode": "critical",
+                    "fill": true,
+                    "line": true,
+                    "op": "gt",
+                    "value": 1974,
+                    "yaxis": "left"
+                }
+            ],
+            "timeRegions": [],
+            "title": "System Watts",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "format": "watt",
+                    "logBase": 1,
+                    "show": true
+                },
+                {
+                    "format": "short",
+                    "logBase": 1,
+                    "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false
+            }
+        },
+        {
+            "aliasColors": {
+                "CPU 1 Temp": "rgb(91, 151, 235)",
+                "CPU 2 Temp": "rgb(90, 161, 80)"
+            },
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "decimals": 0,
+            "fieldConfig": {
+                "defaults": {
+                    "links": []
+                },
+                "overrides": []
+            },
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 7,
+                "w": 8,
+                "x": 16,
+                "y": 8
+            },
+            "hiddenSeries": false,
+            "id": 35,
+            "legend": {
+                "avg": true,
+                "current": true,
+                "max": true,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+                "alertThreshold": true
+            },
+            "percentage": false,
+            "pluginVersion": "8.4.0",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+                {
+                    "alias": "CPU 1 Temp",
+                    "yaxis": 1
+                },
+                {
+                    "alias": "CPU 2 Temp",
+                    "yaxis": 1
+                }
+            ],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [
+                {
+                    "colorMode": "warning",
+                    "fill": false,
+                    "line": true,
+                    "op": "gt",
+                    "value": 70,
+                    "yaxis": "left"
+                },
+                {
+                    "colorMode": "critical",
+                    "fill": true,
+                    "fillColor": "rgba(50, 116, 217, 0.2)",
+                    "line": true,
+                    "lineColor": "rgba(31, 96, 196, 0.6)",
+                    "op": "gt",
+                    "value": 84,
+                    "yaxis": "left"
+                }
+            ],
+            "timeRegions": [],
+            "title": "CPU Temp",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "decimals": 0,
+                    "format": "celsius",
+                    "logBase": 1,
+                    "show": true
+                },
+                {
+                    "format": "short",
+                    "logBase": 1,
+                    "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false
+            }
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "OK"
+                                },
+                                "4": {
+                                    "text": "Non-Critical Fail"
+                                },
+                                "5": {
+                                    "text": "Critical Fail"
+                                },
+                                "6": {
+                                    "text": "Non-Recoverable Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#FA6400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 0,
+                "y": 10
+            },
+            "id": 444,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "PSU Status",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Predictive Fail"
+                                },
+                                "2": {
+                                    "text": "Failed"
+                                },
+                                "4": {
+                                    "text": "OK"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#E0B400",
+                                "value": null
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 1.9
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 2,
+                "y": 10
+            },
+            "id": 90,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "CMOS Battery",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Unknown"
+                                },
+                                "2": {
+                                    "text": "Ready"
+                                },
+                                "3": {
+                                    "text": "Failed"
+                                },
+                                "4": {
+                                    "text": "Degraded"
+                                },
+                                "5": {
+                                    "text": "Missing"
+                                },
+                                "6": {
+                                    "text": "Charging"
+                                },
+                                "7": {
+                                    "text": "Below Threshold"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#E0B400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 2.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 4,
+                "y": 10
+            },
+            "id": 91,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "RAID Battery",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "match": "null",
+                                "result": {
+                                    "text": "N/A"
+                                }
+                            },
+                            "type": "special"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 6,
+                "y": 10
+            },
+            "id": 21,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "BIOS Version",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "OK"
+                                },
+                                "4": {
+                                    "text": "Non-Critical Fail"
+                                },
+                                "5": {
+                                    "text": "Critical Fail"
+                                },
+                                "6": {
+                                    "text": "Non-Recoverable Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#FA6400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 0,
+                "y": 12
+            },
+            "id": 405,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Storage Status",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "OK"
+                                },
+                                "4": {
+                                    "text": "Non-Critical Fail"
+                                },
+                                "5": {
+                                    "text": "Critical Fail"
+                                },
+                                "6": {
+                                    "text": "Non-Recoverable Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#FA6400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 2,
+                "y": 12
+            },
+            "id": 406,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "RAM Status",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "Other"
+                                },
+                                "2": {
+                                    "text": "Unknown"
+                                },
+                                "3": {
+                                    "text": "OK"
+                                },
+                                "4": {
+                                    "text": "Non-Critical Fail"
+                                },
+                                "5": {
+                                    "text": "Critical Fail"
+                                },
+                                "6": {
+                                    "text": "Non-Recoverable Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#FA6400",
+                                "value": null
+                            },
+                            {
+                                "color": "#37872D",
+                                "value": 2.9
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 4,
+                "y": 12
+            },
+            "id": 407,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Thermal Status",
+            "type": "stat"
+        },
+        {
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [
+                        {
+                            "options": {
+                                "1": {
+                                    "text": "No Breach"
+                                },
+                                "2": {
+                                    "text": "Current Breach"
+                                },
+                                "3": {
+                                    "text": "Prior Breach"
+                                },
+                                "4": {
+                                    "text": "Sensor Fail"
+                                }
+                            },
+                            "type": "value"
+                        }
+                    ],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "#299c46",
+                                "value": null
+                            },
+                            {
+                                "color": "#C4162A",
+                                "value": 1.9
+                            },
+                            {
+                                "color": "#E0B400",
+                                "value": 3.9
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 2,
+                "w": 2,
+                "x": 6,
+                "y": 12
+            },
+            "id": 93,
+            "links": [],
+            "maxDataPoints": 100,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.0",
+            "title": "Intrusion",
+            "type": "stat"
+        },
+        {
+            "columns": [],
+            "datasource": "Prometheus",
+            "fontSize": "90%",
+            "gridPos": {
+                "h": 3,
+                "w": 7,
+                "x": 0,
+                "y": 14
+            },
+            "id": 649,
+            "links": [],
+            "pluginVersion": "6.7.2",
+            "showHeader": true,
+            "sort": {
+                "col": 0,
+                "desc": true
+            },
+            "styles": [
+                {
+                    "$$hashKey": "object:3422",
+                    "alias": "Time",
+                    "align": "auto",
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "pattern": "Time",
+                    "type": "hidden"
+                },
+                {
+                    "$$hashKey": "object:4195",
+                    "alias": "OS Name",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "system-osname",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:4214",
+                    "alias": "OS Version",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "system-osversion",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                }
+            ],
+            "title": "OS Information",
+            "transform": "timeseries_to_rows",
+            "type": "table-old"
+        },
+        {
+            "columns": [],
+            "datasource": "Prometheus",
+            "fontSize": "100%",
+            "gridPos": {
+                "h": 19,
+                "w": 9,
+                "x": 7,
+                "y": 14
+            },
+            "id": 332,
+            "links": [],
+            "pageSize": 16,
+            "pluginVersion": "6.6.2",
+            "showHeader": true,
+            "sort": {
+                "col": 2,
+                "desc": true
+            },
+            "styles": [
+                {
+                    "$$hashKey": "object:1966",
+                    "alias": "Time",
+                    "align": "auto",
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "pattern": "Time",
+                    "type": "hidden"
+                },
+                {
+                    "$$hashKey": "object:1967",
+                    "alias": "Entry #",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 0,
+                    "mappingType": 1,
+                    "pattern": "log-number",
+                    "thresholds": [],
+                    "type": "hidden",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:1968",
+                    "alias": "Date & Time",
+                    "align": "center",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "MM/DD/YY h:mm:ss a",
+                    "link": false,
+                    "mappingType": 1,
+                    "pattern": "log-dates",
+                    "thresholds": [],
+                    "type": "date",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:1969",
+                    "alias": "Entry",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "log-entry",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:1970",
+                    "alias": "Severity",
+                    "align": "",
+                    "colorMode": "value",
+                    "colors": [
+                        "#E0B400",
+                        "#37872D",
+                        "#C4162A"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 0,
+                    "mappingType": 1,
+                    "pattern": "log-severity",
+                    "thresholds": [
+                        "2.9",
+                        "3.9"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:2037",
+                            "text": "Other",
+                            "value": "1"
+                        },
+                        {
+                            "$$hashKey": "object:2038",
+                            "text": "Unknown",
+                            "value": "2"
+                        },
+                        {
+                            "$$hashKey": "object:2039",
+                            "text": "OK",
+                            "value": "3"
+                        },
+                        {
+                            "$$hashKey": "object:2040",
+                            "text": "Non-Critical",
+                            "value": "4"
+                        },
+                        {
+                            "$$hashKey": "object:2041",
+                            "text": "Critical",
+                            "value": "5"
+                        },
+                        {
+                            "$$hashKey": "object:2042",
+                            "text": "Non-Recoverable",
+                            "value": "6"
+                        }
+                    ]
+                }
+            ],
+            "timeFrom": "1m",
+            "title": "System Log Entries",
+            "transform": "table",
+            "type": "table-old"
+        },
+        {
+            "aliasColors": {
+                "Exhaust Temp": "rgb(90, 161, 80)",
+                "Inlet Temp": "rgb(91, 151, 235)"
+            },
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "decimals": 0,
+            "fieldConfig": {
+                "defaults": {
+                    "links": []
+                },
+                "overrides": []
+            },
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 6,
+                "w": 8,
+                "x": 16,
+                "y": 15
+            },
+            "hiddenSeries": false,
+            "id": 52,
+            "legend": {
+                "avg": true,
+                "current": true,
+                "max": true,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+                "alertThreshold": true
+            },
+            "percentage": false,
+            "pluginVersion": "8.4.0",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [
+                {
+                    "colorMode": "warning",
+                    "fill": false,
+                    "line": true,
+                    "op": "gt",
+                    "value": 42,
+                    "yaxis": "left"
+                },
+                {
+                    "colorMode": "critical",
+                    "fill": true,
+                    "line": true,
+                    "op": "gt",
+                    "value": 47,
+                    "yaxis": "left"
+                }
+            ],
+            "timeRegions": [],
+            "title": "Air Temp",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "decimals": 0,
+                    "format": "celsius",
+                    "logBase": 1,
+                    "show": true
+                },
+                {
+                    "format": "short",
+                    "logBase": 1,
+                    "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false
+            }
+        },
+        {
+            "columns": [],
+            "datasource": "Prometheus",
+            "fontSize": "100%",
+            "gridPos": {
+                "h": 16,
+                "w": 7,
+                "x": 0,
+                "y": 17
+            },
+            "id": 298,
+            "showHeader": true,
+            "sort": {
+                "col": 0,
+                "desc": true
+            },
+            "styles": [
+                {
+                    "$$hashKey": "object:15372",
+                    "alias": "Time",
+                    "align": "auto",
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "pattern": "Time",
+                    "type": "hidden"
+                },
+                {
+                    "$$hashKey": "object:15373",
+                    "alias": "Disk Name",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "disks-name",
+                    "preserveFormat": false,
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:15374",
+                    "alias": "Status",
+                    "align": "left",
+                    "colorMode": "cell",
+                    "colors": [
+                        "#37872D",
+                        "#C4162A",
+                        "#8F3BB8"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "mappingType": 1,
+                    "pattern": "disks-state",
+                    "thresholds": [
+                        "3.9",
+                        "7.9"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:15435",
+                            "text": "Unknown",
+                            "value": "1"
+                        },
+                        {
+                            "$$hashKey": "object:15436",
+                            "text": "Ready",
+                            "value": "2"
+                        },
+                        {
+                            "$$hashKey": "object:15437",
+                            "text": "Online",
+                            "value": "3"
+                        },
+                        {
+                            "$$hashKey": "object:15438",
+                            "text": "Foreign",
+                            "value": "4"
+                        },
+                        {
+                            "$$hashKey": "object:15439",
+                            "text": "Offline",
+                            "value": "5"
+                        },
+                        {
+                            "$$hashKey": "object:15440",
+                            "text": "Blocked",
+                            "value": "6"
+                        },
+                        {
+                            "$$hashKey": "object:15441",
+                            "text": "Failed",
+                            "value": "7"
+                        },
+                        {
+                            "$$hashKey": "object:15442",
+                            "text": "Non-Raid",
+                            "value": "8"
+                        },
+                        {
+                            "$$hashKey": "object:15443",
+                            "text": "Removed",
+                            "value": "9"
+                        },
+                        {
+                            "$$hashKey": "object:15444",
+                            "text": "Read-Only",
+                            "value": "10"
+                        }
+                    ]
+                },
+                {
+                    "$$hashKey": "object:15375",
+                    "alias": "Predictive Fail Alarm",
+                    "align": "center",
+                    "colorMode": "row",
+                    "colors": [
+                        "rgba(245, 54, 54, 0)",
+                        "#C4162A",
+                        "#C4162A"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "disks-predictivefail",
+                    "thresholds": [
+                        "0.8",
+                        "0.9"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:15471",
+                            "text": "No",
+                            "value": "0"
+                        },
+                        {
+                            "$$hashKey": "object:15472",
+                            "text": "YES",
+                            "value": "1"
+                        }
+                    ]
+                },
+                {
+                    "$$hashKey": "object:15376",
+                    "alias": "Capacity",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 0,
+                    "mappingType": 1,
+                    "pattern": "disks-capacity",
+                    "thresholds": [],
+                    "type": "number",
+                    "unit": "decmbytes"
+                }
+            ],
+            "title": "Physical Disk Status",
+            "transform": "table",
+            "type": "table-old"
+        },
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "Prometheus",
+            "fieldConfig": {
+                "defaults": {
+                    "links": []
+                },
+                "overrides": []
+            },
+            "fill": 0,
+            "fillGradient": 0,
+            "gridPos": {
+                "h": 6,
+                "w": 8,
+                "x": 16,
+                "y": 21
+            },
+            "hiddenSeries": false,
+            "id": 70,
+            "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+                "alertThreshold": true
+            },
+            "percentage": false,
+            "pluginVersion": "8.4.0",
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "thresholds": [
+                {
+                    "$$hashKey": "object:1180",
+                    "colorMode": "warning",
+                    "fill": false,
+                    "line": true,
+                    "op": "lt",
+                    "value": 960,
+                    "yaxis": "left"
+                },
+                {
+                    "$$hashKey": "object:1181",
+                    "colorMode": "critical",
+                    "fill": true,
+                    "line": true,
+                    "op": "lt",
+                    "value": 720,
+                    "yaxis": "left"
+                }
+            ],
+            "timeRegions": [],
+            "title": "Fan Speed",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "$$hashKey": "object:1152",
+                    "decimals": 0,
+                    "format": "none",
+                    "label": "RPM",
+                    "logBase": 1,
+                    "show": true
+                },
+                {
+                    "$$hashKey": "object:1153",
+                    "format": "short",
+                    "logBase": 1,
+                    "show": true
+                }
+            ],
+            "yaxis": {
+                "align": false
+            }
+        },
+        {
+            "columns": [],
+            "datasource": "Prometheus",
+            "fontSize": "100%",
+            "gridPos": {
+                "h": 6,
+                "w": 8,
+                "x": 16,
+                "y": 27
+            },
+            "id": 564,
+            "showHeader": true,
+            "sort": {
+                "col": 1,
+                "desc": false
+            },
+            "styles": [
+                {
+                    "$$hashKey": "object:556",
+                    "alias": "Time",
+                    "align": "auto",
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "pattern": "Time",
+                    "type": "hidden"
+                },
+                {
+                    "$$hashKey": "object:3334",
+                    "alias": "Name",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "nic-name",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:3385",
+                    "alias": "Vendor",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "mappingType": 1,
+                    "pattern": "nic-vendor",
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                },
+                {
+                    "$$hashKey": "object:3434",
+                    "alias": "Status",
+                    "align": "auto",
+                    "colorMode": "cell",
+                    "colors": [
+                        "#37872D",
+                        "rgba(224, 180, 0, 0)",
+                        "#C4162A"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "mappingType": 1,
+                    "pattern": "nic-status",
+                    "thresholds": [
+                        "1.9",
+                        "2.1"
+                    ],
+                    "type": "string",
+                    "unit": "short",
+                    "valueMaps": [
+                        {
+                            "$$hashKey": "object:3875",
+                            "text": "Connected",
+                            "value": "1"
+                        },
+                        {
+                            "$$hashKey": "object:3877",
+                            "text": "Disconnected",
+                            "value": "2"
+                        },
+                        {
+                            "$$hashKey": "object:3893",
+                            "text": "Driver Bad",
+                            "value": "3"
+                        },
+                        {
+                            "$$hashKey": "object:3909",
+                            "text": "Driver Disabled",
+                            "value": "4"
+                        },
+                        {
+                            "$$hashKey": "object:3911",
+                            "text": "Initalizing",
+                            "value": "10"
+                        },
+                        {
+                            "$$hashKey": "object:3941",
+                            "text": "Resetting",
+                            "value": "11"
+                        },
+                        {
+                            "$$hashKey": "object:3957",
+                            "text": "Closing",
+                            "value": "12"
+                        },
+                        {
+                            "$$hashKey": "object:3959",
+                            "text": "Not Ready",
+                            "value": "13"
+                        }
+                    ]
+                },
+                {
+                    "$$hashKey": "object:3459",
+                    "alias": "Current MAC Address",
+                    "align": "auto",
+                    "colors": [
+                        "rgba(245, 54, 54, 0.9)",
+                        "rgba(237, 129, 40, 0.89)",
+                        "rgba(50, 172, 45, 0.97)"
+                    ],
+                    "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                    "decimals": 2,
+                    "link": false,
+                    "mappingType": 1,
+                    "pattern": "nic-current_mac",
+                    "preserveFormat": false,
+                    "sanitize": false,
+                    "thresholds": [],
+                    "type": "string",
+                    "unit": "short"
+                }
+            ],
+            "timeFrom": "1m",
+            "title": "Network Interfaces",
+            "transform": "table",
+            "type": "table-old"
+        }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 35,
+    "style": "dark",
+    "tags": [
+        "idrac",
+        "telegraf",
+        "snmp"
+    ],
+    "templating": {
+        "list": [
+            {
+                "current": {},
+                "datasource": "Prometheus",
+                "definition": "SHOW TAG VALUES FROM \"idrac-hosts\" WITH KEY=\"system-name\"",
+                "hide": 0,
+                "includeAll": true,
+                "label": "iDRAC Host",
+                "multi": true,
+                "name": "idrac_host",
+                "options": [],
+                "query": "label_values(idrac_hosts,system_name)",
+                "refresh": 2,
+                "regex": "",
+                "skipUrlSync": false,
+                "sort": 3,
+                "tagValuesQuery": "",
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+            }
+        ]
+    },
+    "time": {
+        "from": "now-3h",
+        "to": "now"
+    },
+    "timepicker": {
+        "hidden": false,
+        "refresh_intervals": [
+            "5s",
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+        ]
+    },
+    "timezone": "",
+    "title": "iDRAC - Host Stats",
+    "uid": "O19gr0jZk",
+    "version": 131,
+    "weekStart": ""
+}

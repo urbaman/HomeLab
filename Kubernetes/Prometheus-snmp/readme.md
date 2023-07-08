@@ -1,12 +1,5 @@
-# snmp v3 example
+# Prometheus snmp exporter for Arista Switch and Dell IDRAC
 
-Cisco:
- version: 3
- auth:
- username: snmpUser
- password: yourPassword
- auth_protocol: SHA
- priv_protocol: DES
- security_level: authPriv
- priv_password: privacyPassword
- walk:
+Use the given snmp.yml and the given dashboards.
+
+Switch dashboard: 15297
