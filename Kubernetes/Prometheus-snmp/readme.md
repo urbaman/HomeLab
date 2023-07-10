@@ -2,4 +2,4 @@
 
 Use the given snmp.yml and the given dashboards.
 
-Switch dashboard: 15297
+Switch dashboard: use the given json
