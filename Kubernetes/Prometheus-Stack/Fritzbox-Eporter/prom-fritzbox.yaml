@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-fritzbox-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-fritzbox-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-fritzbox-exporter 
+        release: kube-prometheus-stack
+    spec:
+      containers:
+      - name: prometheus-fritzbox-exporter
+        image: ghcr.io/sberk42/fritzbox_exporter/fritzbox_exporter:latest
+        imagePullPolicy: Always
+        env:
+        - name: USERNAME
+          value: "username"
+        - name: PASSWORD
+          value: "password"
+        - name: GATEWAY_URL
+          value: "http://192.168.1.1:49000"
+        - name: LISTEN_ADDRESS
+          value: "0.0.0.0:9042"
+        ports:
+          - name: metrics
+            containerPort: 9042
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-fritzbox-exporter
+  namespace: monitoring
+  labels:
+    app: prometheus-fritzbox-exporter
+    release: kube-prometheus-stack
+spec:
+  selector:
+    app: prometheus-fritzbox-exporter 
+  ports:
+  - name: metrics
+    port: 9042
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-fritzbox-exporter
+  namespace: monitoring
+  labels:
+    app: prometheus-fritzbox-exporter
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    targetPort: 9042
+    path: /metrics
+  jobLabel: fritzbox
+  selector:
+    matchLabels:
+      app: prometheus-fritzbox-exporter
+

@@ -25,4 +25,4 @@ kubectl create configmap grafana-dashboard-arista-switch --from-file=grafana-ari
 kubectl label configmap grafana-dashboard-arista-switch grafana_dashboard="1"
 kubectl create configmap grafana-dashboard-dell-idrac --from-file=grafana-idrac.json
 kubectl label configmap grafana-dashboard-dell-idrac grafana_dashboard="1"
-```bash
+```
