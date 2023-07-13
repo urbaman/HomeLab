@@ -20,7 +20,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 12579,
   "graphTooltip": 2,
-  "id": 48,
+  "id": 49,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -947,6 +947,7 @@
             "uid": "prometheus"
           },
           "dsType": "prometheus",
+          "editorMode": "code",
           "expr": "gateway_connection_status{connection=\"Physical Link\"}",
           "groupBy": [
             {
@@ -957,10 +958,11 @@
             }
           ],
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{interface}}",
           "measurement": "fritzbox_value",
           "orderByTime": "ASC",
           "policy": "default",
+          "range": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2548,7 +2550,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -2579,6 +2581,6 @@
   "timezone": "",
   "title": "FRITZ!Box Status",
   "uid": "000000013",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
