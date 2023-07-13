@@ -3,6 +3,7 @@
 ## Generate your snmp.yml
 
 Use the promethueus snmp exporter generator to produce your custom snmp.yml file
+See the MIB files for Dell IDRAC and Arista Switch, eventually use yours.
 
 ## Create two configmaps from the snmp.yml file
 
