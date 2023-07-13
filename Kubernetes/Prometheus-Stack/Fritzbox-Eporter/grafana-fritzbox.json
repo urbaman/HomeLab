@@ -2545,7 +2545,12 @@
   "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "fritzbox",
+    "modem",
+    "router",
+    "network"
+  ],
   "templating": {
     "list": []
   },
@@ -2581,6 +2586,6 @@
   "timezone": "",
   "title": "FRITZ!Box Status",
   "uid": "000000013",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
