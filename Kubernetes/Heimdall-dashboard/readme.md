@@ -30,7 +30,6 @@ Create a certificate for heimdall.domain.com with cert-manager
 Create the deployment, service and traefik ingress.
 
 **Note:** I had to add the dnsConfig to properly resolve the app library URL in the yaml, and also change a `${var}` php variable to `{$var}` in a php file inside the pod to make it properly work.
-{: .note}
 
 ```yaml
 apiVersion: apps/v1
