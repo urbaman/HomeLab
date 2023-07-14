@@ -29,6 +29,9 @@ Create a certificate for heimdall.domain.com with cert-manager
 
 Create the deployment, service and traefik ingress.
 
+**Note:** I had to add the dnsConfig to properly resolve the app library URL in the yaml, and also change a `${var}` php variable to `{$var}` in a php file inside the pod to make it properly work.
+{: .note}
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -58,9 +61,9 @@ spec:
           claimName: heimdall-pvc # < pvc name we created in the previous yaml
       - name: heimdall-ssl
         secret:
-          secretName: heimdall-mydomain-tls # < the name ssl certificate, will be created in the ingress yaml
+          secretName: heimdall-domain # < the name ssl certificate, will be created in the ingress yaml
       containers:
-      - image: ghcr.io/linuxserver/heimdall # < the name of the docker image we will use
+      - image: ghcr.io/linuxserver/heimdall:latest # < the name of the docker image we will use
         name: heimdall                      # < name of container
         imagePullPolicy: Always             # < always use the latest image when creating container/pod
         env:                                # < the environment variables required (see container documentation)
@@ -81,6 +84,10 @@ spec:
          - mountPath: /config               # < mount location in the container
            name: heimdall-volume              # < volumelabel configured earlier in the yaml file
            subPath: config                  # < subfolder in the nfs share to be mounted
+      dnsConfig:                            # to properly resolve the app library URL
+        options:
+          - name: ndots
+            value: "1"
 ---
 apiVersion: v1
 kind: Service
@@ -184,16 +191,16 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`heimdall.urbaman.it`)
+      match: Host(`heimdall.domain.com`)
       services:
         - name: heimdall-service
           port: https-443
-            # serversTransport: traefik-dashboard-transport
+          serversTransport: traefik-heimdall-transport
       middlewares:
         - name: traefik-heimdall-basic-auth
         - name: traefik-heimdall-security
   tls:
-    secretName: heimdall-urbaman
+    secretName: heimdall-domain
     options:
       name: traefik-heimdall-tlsoptions
 ---
@@ -207,7 +214,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`heimdall.urbaman.it`)
+      match: Host(`heimdall.urbaman.com`)
       services:
         - name: heimdall-service
           port: http-80
