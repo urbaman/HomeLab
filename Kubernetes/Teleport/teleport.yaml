@@ -241,7 +241,7 @@ operator:
 # WARNING: the PSP won't be deployed for Kubernetes 1.23 and higher.
 # Please read https://goteleport.com/docs/deploy-a-cluster/helm-deployments/migration-kubernetes-1-25-psp/
 podSecurityPolicy:
-  enabled: true
+  enabled: false
 
 # Labels is a map of key-value pairs about this cluster
 labels: {}
@@ -276,7 +276,7 @@ createProxyToken: true
 podMonitor:
   # Whether the chart should deploy a PodMonitor.
   # Disabled by default as it requires the PodMonitor CRD to be installed.
-  enabled: false
+  enabled: true
   # additionalLabels to put on the PodMonitor.
   # This is used to be selected by a specific prometheus instance.
   # Defaults to {prometheus: default} which seems to be the common default prometheus selector
@@ -425,7 +425,7 @@ tls:
   # Name of an existing secret to use which contains a TLS keypair. Will automatically set the https_keypairs section in teleport.yaml.
   # Create the secret in the same namespace as Teleport using `kubectl create secret tls my-tls-secret --cert=/path/to/cert/file --key=/path/to/key/file`
   # See https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets for more information.
-  existingSecretName: ""
+  existingSecretName: teleport-urbaman
   # (optional) Name of an existing secret to use which contains a CA or trust bundle in x509 PEM format.
   # Useful for building trust when using intermediate certificate authorities.
   # This will automatically set the SSL_CERT_FILE environment variable to trust the CA.
