@@ -23,6 +23,8 @@ Proxmox (Hypervisor)
     - [x] Proxmox monitoring (Prometheus-Grafana)
     - [x] Proxmox Backup monitoring (Prometheus-Grafana)
     - [x] Haproxy monitoring
+    - [x] Dell Idrac Monitoring
+    - [x] Arista switch monitoring
     - [x] Uptimekuma
     - [x] Kured
     - [x] Heimdall
