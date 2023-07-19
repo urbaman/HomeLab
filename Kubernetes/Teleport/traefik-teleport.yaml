@@ -1,24 +1,4 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: teleport-domain
-  namespace: teleport-cluster
-spec:
-  # Certificate will be valid for these domain names
-  dnsNames:
-  - teleport.domain.com
-  - *.teleport.domain.com
-  # Reference our issuer
-  # As it's a ClusterIssuer, it can be in a different namespace
-  issuerRef:
-    kind: ClusterIssuer
-    name: cert-manager-acme-issuer
-  # Secret that will be created with our certificate and private keys
-  secretName: teleport-domain
----
-apiVersion: traefik.
-
-containo.us/v1alpha1
+apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-teleport-cluster-basic-auth
