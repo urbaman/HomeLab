@@ -13,10 +13,10 @@
 #
 # Warning: The clusterName cannot be changed during a Teleport cluster's lifespan.
 # If you need to change it, you must redeploy a completely new cluster.
-clusterName: "teleport.urbaman.it"
+clusterName: "teleport.domain.com"
 
 # Name for this kubernetes cluster to be used by teleport users.
-kubeClusterName: "k8cp.urbaman.it"
+kubeClusterName: "k8cp.domain.com"
 
 ##################################################
 # Values that you may need to change.
@@ -296,7 +296,7 @@ persistence:
   enabled: true
   # Leave blank to automatically create a PersistentVolumeClaim for Teleport storage.
   # If you would like to use a pre-existing PersistentVolumeClaim, put its name here.
-  existingClaimName: teleport-cluster-pvc
+  existingClaimName: teleport-pvc
   # Size of persistent volume to request when created by Teleport.
   # Ignored if existingClaimName is provided.
   volumeSize: 10Gi
@@ -425,7 +425,7 @@ tls:
   # Name of an existing secret to use which contains a TLS keypair. Will automatically set the https_keypairs section in teleport.yaml.
   # Create the secret in the same namespace as Teleport using `kubectl create secret tls my-tls-secret --cert=/path/to/cert/file --key=/path/to/key/file`
   # See https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets for more information.
-  existingSecretName: teleport-urbaman
+  existingSecretName: teleport-domain 
   # (optional) Name of an existing secret to use which contains a CA or trust bundle in x509 PEM format.
   # Useful for building trust when using intermediate certificate authorities.
   # This will automatically set the SSL_CERT_FILE environment variable to trust the CA.
@@ -457,7 +457,7 @@ log:
   # Available log levels are: DEBUG, INFO, WARNING, ERROR.
   # The default is INFO, which is recommended in production.
   # DEBUG is useful during first-time setup or to see more detailed logs for debugging.
-  level: INFO
+  level: INFO 
   # Log output
   # Use a file path to log to disk: e.g. '/var/lib/teleport/teleport.log'
   # Other supported values: 'stdout', 'stderr' and 'syslog'
@@ -601,4 +601,3 @@ probeTimeoutSeconds: 1
 #
 # This should be greater than 30 seconds as pods are waiting 30 seconds in a preStop hook.
 terminationGracePeriodSeconds: 60
-

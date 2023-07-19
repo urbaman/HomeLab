@@ -1,127 +1,55 @@
 # Teleport Cluster
 
-```yaml
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: teleport-urbaman
-  namespace: teleport-cluster
-spec:
-  # Certificate will be valid for these domain names
-  dnsNames:
-  - teleport.urbaman.it
-  - *.teleport.urbaman.it
-  # Reference our issuer
-  # As it's a ClusterIssuer, it can be in a different namespace
-  issuerRef:
-    kind: ClusterIssuer
-    name: cert-manager-acme-issuer
-  # Secret that will be created with our certificate and private keys
-  secretName: teleport-urbaman
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-teleport-cluster-basic-auth
-  namespace: teleport-cluster
-spec:
-  basicAuth:
-    secret: traefik-teleport-cluster-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-teleport-cluster-https-redirect
-  namespace: teleport-cluster
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-teleport-cluster-security
-  namespace: teleport-cluster
-spec:
-  headers:
-    frameDeny: true
-    sslRedirect: true
-    browserXssFilter: true
-    contentTypeNosniff: true
-    stsIncludeSubdomains: true
-    stsPreload: true
-    stsSeconds: 31536000
----
-apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: traefik-teleport-cluster-transport
-  namespace: teleport-cluster
-spec:
-  serverName: traefik
-  insecureSkipVerify: true
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: TLSOption
-metadata:
-  name: traefik-teleport-cluster-tlsoptions
-  namespace: teleport-cluster
-spec:
-  minVersion: VersionTLS12
-  cipherSuites:
-    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
-    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-    - TLS_AES_256_GCM_SHA384
-    - TLS_AES_128_GCM_SHA256
-    - TLS_CHACHA20_POLY1305_SHA256
-    - TLS_FALLBACK_SCSV
-  curvePreferences:
-    - CurveP521
-    - CurveP384
-  sniStrict: false
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-teleport-cluster-websecure
-  namespace: teleport-cluster
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`teleport.domain.com`)
-      services:
-        - name: teleport-cluster
-          port: tls
-          serversTransport: traefik-teleport-cluster-transport
-      middlewares:
-        - name: traefik-teleport-cluster-security
-  tls:
-    secretName: teleport-urbaman
-    options:
-      name: traefik-teleport-cluster-tlsoptions
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-teleport-cluster-web
-  namespace: teleport-cluster
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`teleport.urbaman.com`)
-      services:
-        - name: teleport-service
-          port: no-tls
-      middlewares:
-        - name: traefik-teleport-cluster-https-redirect
+## Preparation
+
+- Create a namespace and label it.
+
+```bash
+kubectl create namespace teleport-cluster
+kubectl label namespace teleport-cluster 'pod-security.kubernetes.io/enforce=baseline'
 ```
+
+- Create a volume (teleport), pv (teleport-pv) and pvc (teleport-pvc) on longhorn (or any other persistent storage solution)
+- Add the helm repo.
+
+```bash
+helm repo add teleport https://charts.releases.teleport.dev
+```
+
+## Install the teleport-cluster
+
+```bash
+helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-loadbalancer.yaml
+```
+
+## Create a user
+
+Create a user superadmin with all of the roles
+
+```bash
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor
+```
+
+Go to the shown link to generate the password and the MFA, you'll login and see the kubernetes cluster as accessible.
+
+You'll need to install the teleport package (shipped with teleport, tsh, tctl) to access from a local machine (see documentation for reference)
+
+## Add servers for ssh access
+
+Go to the Servers tab on the GUI, add a server, launch the shown script on the server.
+
+When adding kubernetes nodes, the script will fail on the node(s) on which the teleport-cluster pods are running. In this case, cordon and drain the node and run the script again, then uncordon back the node.
+
+## Add webapps
+
+To add webapps, it's preferable to proxy them through Traefik internally, even if they are external to the kubernetes cluster.
+
+### Install the teleport-kube-agent with the needed apps
+
+Deploy the kube-agent after having added the apps to the config (see examples in the yaml file)
+
+```bash
+helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-agent.yaml
+```
+
+You should see the apps appearing and accessible from the GUI.
