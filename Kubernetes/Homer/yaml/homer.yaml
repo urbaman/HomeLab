@@ -1,0 +1,228 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homer
+  labels:
+    name: homer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: homer-pv
+  namespace: homer
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: '6'
+      staleReplicaTimeout: '2880'
+    volumeHandle: homer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homer-pvc
+  namespace: homer
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: homer-pv
+  storageClassName: longhorn
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homer-domain
+  namespace: homer
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - homer.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: homer-domain
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homer        # < name of the deployment
+  namespace: homer   # < namespace where place the deployment and pods
+  labels:
+    app: homer          # < label for tagging and reference
+spec:
+  replicas: 1           # < number of pods to deploy
+  selector:
+    matchLabels:
+      app: homer
+  strategy:
+    rollingUpdate:
+      maxSurge: 0       # < The number of pods that can be created above the desired amount of pods during an update
+      maxUnavailable: 1 # < The number of pods that can be unavailable during the update process
+    type: RollingUpdate # < New pods are added gradually, and old pods are terminated gradually
+  template:
+    metadata:
+      labels:
+        app: homer
+    spec:
+      volumes:
+      - name: homer-volume  # < linkname of the volume for the pvc
+        persistentVolumeClaim:
+          claimName: homer-pvc # < pvc name we created in the previous yaml
+      containers:
+        - image: b4bz/homer # < the name of the docker image we will use
+          name: homer                         # < name of container
+          imagePullPolicy: Always             # < always use the latest image when creating container/pod
+          env:
+            - name:  TZ                       # -- Set the container timezone
+              value: Europe/Rome
+          ports:                              # < the ports required (see container documentation)
+           - containerPort: 8080
+             name: http-8080
+             protocol: TCP
+          volumeMounts:                       # < the volume mount in the container. Look at the relation volumelabel->pvc->pv
+           - mountPath: /www/assets           # < mount location in the container
+             name: homer-volume               # < volumelabel configured earlier in the yaml file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homer-service    # < name of the service
+  namespace: homer       # < namespace where place the deployment and pods
+spec:
+  selector:
+    app: homer           # < reference to the deployment (connects with this deployment)
+  ports:
+    - name: http-8080
+      protocol: TCP
+      port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-homer-basic-auth
+  namespace: homer
+spec:
+  basicAuth:
+    secret: traefik-homer-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-homer-https-redirect
+  namespace: homer
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-homer-security
+  namespace: homer
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-homer-transport
+  namespace: homer
+spec:
+  serverName: homer 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-homer-tlsoptions
+  namespace: homer
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-homer-basic-auth
+  namespace: homer
+data:
+  users: |
+    YWRtaW46JGFwcjEkR1VRTmlISlUkWkY2bkZuMHl2T3RLWnNWSG5ITmM4LgoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-homer-websecure
+  namespace: homer 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`homer.domain.com`)
+      services:
+        - name: homer-service
+          port: 8080
+            #          serversTransport: traefik-homer-transport
+      middlewares:
+        - name: traefik-homer-basic-auth
+        - name: traefik-homer-security
+  tls:
+    secretName: homer-domain
+    options:
+      name: traefik-homer-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-homer-web
+  namespace: homer
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`homer.domain.com`)
+      services:
+        - name: homer-service
+          port: 8080
+      middlewares:
+        - name: traefik-homer-https-redirect
