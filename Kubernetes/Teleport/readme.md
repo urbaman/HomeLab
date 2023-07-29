@@ -56,11 +56,27 @@ Go to the Servers tab on the GUI, add a server, launch the shown script on the s
 
 When adding kubernetes nodes, the script will fail on the node(s) on which the teleport-cluster pods are running. In this case, cordon and drain the node and run the script again, then uncordon back the node.
 
+You can re-add the server when re-installing teleport.
+
+- Stop the teleport service on the server
+- Delete the /var/lib/teleport directrory
+- generate a token and put it in /etc/teleport.yaml
+
+```bash
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl token add --roles=node
+```
+
 ### Add webapps
 
 To add webapps, it's preferable to proxy them through Traefik internally, even if they are external to the kubernetes cluster, then add them to Teleport.
 
 #### Install the teleport-kube-agent with the needed apps
+
+Create a token and use it in the yaml file.
+
+```bash
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl token add --roles=app
+```
 
 Deploy the kube-agent after having added the apps to the config (see examples in the yaml file)
 
