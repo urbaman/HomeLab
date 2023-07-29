@@ -56,6 +56,8 @@ Go to the Servers tab on the GUI, add a server, launch the shown script on the s
 
 When adding kubernetes nodes, the script will fail on the node(s) on which the teleport-cluster pods are running. In this case, cordon and drain the node and run the script again, then uncordon back the node.
 
+## Re-aservers to a new teleport server
+
 You can re-add the server when re-installing teleport.
 
 - Stop the teleport service on the server
@@ -85,3 +87,7 @@ helm install teleport-kube-agent teleport/teleport-kube-agent --namespace telepo
 ```
 
 You should see the apps appearing and accessible from the GUI.
+
+## Reinstall the apps
+
+If you need to re-add the apps to a new teleport server, generate a new token, delete the token and the state secrets in the teleport-agent namespace, then re-create the token secret with a base64 version of the token, and then delete the pod to restart it. 
