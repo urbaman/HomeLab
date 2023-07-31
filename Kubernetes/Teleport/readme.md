@@ -55,16 +55,31 @@ Go to the Servers tab on the GUI, add a server, launch the shown script on the s
 
 When adding kubernetes nodes, the script will fail on the node(s) on which the teleport-cluster pods are running. In this case, cordon and drain the node and run the script again, then uncordon back the node.
 
-## Re-aservers to a new teleport server
+## Re-add servers to a new teleport server
 
 You can re-add the server when re-installing teleport.
 
 - Stop the teleport service on the server
 - Delete the /var/lib/teleport directrory
-- generate a token and put it in /etc/teleport.yaml
+- Generate a token for the server (roles=node)
 
 ```bash
 kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl token add --roles=node
+```
+
+- Stop the teleport daemon and delete the `/var/lib/teleport` directory, then put the new token in `/etc/teleport.yaml` and restart the daemon
+
+```bash
+sudo systemctl stop teleport
+sudo rm -rf /var/lib/teleport
+sudo vi /etc/teleport.yaml
+sudo systemctl restart teleport
+```
+
+- Then, you probably need to add the ssh users to your user (comma separated, put all of the logins, not only the new ones):
+
+```bash
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users update admin --set-logins root,ubuntu
 ```
 
 ### Add webapps
@@ -89,4 +104,4 @@ You should see the apps appearing and accessible from the GUI.
 
 ## Reinstall the apps
 
-If you need to re-add the apps to a new teleport server, generate a new token, delete the token and the state secrets in the teleport-agent namespace, then re-create the token secret with a base64 version of the token, and then delete the pod to restart it. 
+If you need to re-add the apps to a new teleport server, generate a new token, delete the token and the state secrets in the teleport-agent namespace, then re-create the token secret with a base64 version of the token, and then delete the pod to restart it.
