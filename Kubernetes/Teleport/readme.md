@@ -19,7 +19,6 @@ helm repo add teleport https://charts.releases.teleport.dev
 - Create a certmanager certificate for both teleport.domain.com and *.teleport.domain.com
 
 ```bash
-helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-clusterip.yaml
 kubectl apply -f sslcert-teleport.yaml
 ```
 
