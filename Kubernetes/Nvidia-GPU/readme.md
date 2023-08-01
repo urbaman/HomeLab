@@ -39,7 +39,7 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 Here you see `ERROR:root:aplay command not found` because the GPU also has an integrated sound chip, but we do not care about it. We also see that the driver version 535 is the recommended one, so we install it:
 
 ```bash
-sudo apt install nvidia-headless-525-server nvidia-utils-525-server libnvidia-encode-525-server
+sudo apt install nvidia-headless-535-server nvidia-utils-535-server libnvidia-encode-535-server
 ```
 
 After the installation, reboot the machine again to apply the drivers, then check the installation:
