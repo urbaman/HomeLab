@@ -53,13 +53,13 @@ timedatectl set-timezone "Europe/Rome"
 
 ### postfix for sending mail
 
-#### Instll packages:
+#### Instll packages
 
 ```bash
 sudo apt install postfix mailutils libsasl2-modules postfix-pcre
 ```
 
-#### setup postfix logs:
+#### setup postfix logs
 
 ```bash
 sudo touch /var/log/mail.log
@@ -689,6 +689,7 @@ Finally, let’s ensure that all the nodes are participating in the cluster.
 ```bash
 etcdctl --endpoints https://10.0.0.60:2379 --cert /etc/etcd/server.crt --cacert /etc/etcd/etcd-ca.crt --key /etc/etcd/server.key member list
 ```
+
 Congratulations! You now have a secure, distributed, highly available etcd cluster that’s ready for a production-grade K3s cluster environment.
 
 ## 2) kubernetes
@@ -970,7 +971,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-### Apply the CNI plugin of your choice.
+### Apply the CNI plugin of your choice
 
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
@@ -1042,4 +1043,49 @@ By default, your cluster will not schedule Pods on the control plane nodes for s
 ```bash
 kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule-
+```
+
+## Cluster Upgrade
+
+### All nodes, update kubeadm
+
+```bash
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.27.x-00 && \
+sudo apt-mark hold kubeadm
+```
+
+### First Control plane, upgrade
+
+Check the upgrade to see if it's safe:
+
+```bash
+kubeadm upgrade plan
+```
+
+Execute:
+
+```bash
+sudo kubeadm upgrade apply v1.27.x
+```
+
+### All other nodes, upgrade the node
+
+```bash
+sudo kubeadm upgrade node
+```
+
+## All nodes, upgrade kubelet and kubectl
+
+```bash
+kubectl drain <node-to-drain> --ignore-daemonsets --delete-emptydir-data
+
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.27.x-00 kubectl=1.27.x-00 && \
+sudo apt-mark hold kubelet kubectl
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+kubectl uncordon <node-to-uncordon>
 ```
