@@ -28,8 +28,10 @@ Proxmox (Hypervisor)
     - [x] Uptimekuma
     - [x] Kured
     - [x] Heimdall
+    - [x] Homer
     - [x] Datree
     - [x] Teleport (still not behind Traefik)
+    - [x] Nvidia GPU plugin
     - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
     - [ ] Redis and Redis Prometheus-Grafana monitoring
     - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
