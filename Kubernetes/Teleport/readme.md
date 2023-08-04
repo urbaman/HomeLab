@@ -102,6 +102,15 @@ helm install teleport-kube-agent teleport/teleport-kube-agent --namespace telepo
 
 You should see the apps appearing and accessible from the GUI.
 
+#### Change the apps config (adding or modifying apps)
+
+Edit the relative config map, and rollout restart the statefulset:
+
+```bash
+kubectl edit cm -n teleport-agent teleport-kube-agent
+kubectl rollout restart statefulset -n teleport-agent teleport-kube-agent
+```
+
 ## Reinstall the apps
 
 If you need to re-add the apps to a new teleport server, generate a new token, delete the token and the state secrets in the teleport-agent namespace, then re-create the token secret with a base64 version of the token, and then delete the pod to restart it.

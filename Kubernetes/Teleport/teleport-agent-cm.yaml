@@ -1,0 +1,196 @@
+apiVersion: v1
+data:
+  teleport.yaml: |
+    app_service:
+      apps:
+      - name: alertmanager
+        uri: https://alertmanager.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: prometheus
+        uri: https://prometheus.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: grafana
+        uri: https://grafana.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+        rewrite:
+          headers:
+          - "Origin: https://grafana.urbaman.it"
+          - "Host: grafana.urbaman.it"
+      - name: pushgateway
+        uri: https://pushgateway.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: uptimekuma
+        uri: https://uptimekuma.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: haproxy1
+        uri: https://haproxy1.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: haproxy2
+        uri: https://haproxy2.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: haproxy3
+        uri: https://haproxy3.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: traefik
+        uri: https://traefik.urbaman.it
+        labels:
+          env: management
+          context: k8s
+      - name: portainer
+        uri: https://portainer.urbaman.it
+        labels:
+          env: management
+          context: k8s
+      - name: k8dashboard
+        uri: https://k8dashboard.urbaman.it
+        labels:
+          env: management
+          context: k8s
+      - name: longhorn
+        uri: https://longhorn.urbaman.it
+        labels:
+          env: storage
+          context: k8s
+      - name: landscape1
+        uri: https://landscape1.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: netbox
+        uri: https://netbox.urbaman.it
+        labels:
+          env: sourceoftruth
+          context: homelab
+      - name: heimdall
+        uri: https://heimdall.urbaman.it
+        labels:
+          env: dashboard
+          context: homelab
+      - name: homer
+        uri: https://homer.urbaman.it
+        labels:
+          env: dashboard
+          context: homelab
+      - name: pvenode1
+        uri: https://pvenode1.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: pvenode2
+        uri: https://pvenode2.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: pvenode3
+        uri: https://pvenode3.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: proxmoxbackup1
+        uri: https://pbs1.urbaman.it:8007
+        labels:
+          env: backup
+          context: homelab
+      - name: idrac-cjp1xq2
+        uri: https://idrac-cjp1xq2.urbaman.it
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+        rewrite:
+          headers:
+          - "Origin: https://idrac-cjp1xq2.urbaman.it"
+          - "Host: idrac-cjp1xq2.urbaman.it"
+      - name: idrac2
+        uri: https://idrac2.urbaman.it
+        labels:
+          env: management
+          context: homelab
+      - name: idrac3
+        uri: https://idrac3.urbaman.it
+        labels:
+          env: management
+          context: homelab
+      - name: openmanage1
+        uri: https://10.0.100.11:1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: openmanage2
+        uri: https://10.0.100.12:1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: openmanage3
+        uri: https://10.0.100.13.1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: pfsense1
+        uri: https://pfsense1.urbaman.it
+        labels:
+          env: firewall
+          context: homelab
+      - name: pfsense2
+        uri: https://pfsense2.urbaman.it
+        labels:
+          env: firewall
+          context: homelab
+      enabled: true
+    auth_service:
+      enabled: false
+    db_service:
+      enabled: false
+    kubernetes_service:
+      enabled: false
+    proxy_service:
+      enabled: false
+    ssh_service:
+      enabled: false
+    teleport:
+      join_params:
+        method: token
+        token_name: /etc/teleport-secrets/auth-token
+      log:
+        format:
+          extra_fields:
+          - timestamp
+          - level
+          - component
+          - caller
+          output: text
+        output: stderr
+        severity: INFO
+      proxy_server: teleport.urbaman.it:443
+    version: v3
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: teleport-kube-agent
+    meta.helm.sh/release-namespace: teleport-agent
+  creationTimestamp: "2023-07-19T00:51:56Z"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: teleport-kube-agent
+  namespace: teleport-agent
+  resourceVersion: "23211079"
+  uid: 6dd0c409-7d93-43f1-bc5c-d45867fa499b
