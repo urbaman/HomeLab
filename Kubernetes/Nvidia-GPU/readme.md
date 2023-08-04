@@ -84,18 +84,36 @@ Then, configure containerd to use it as the default low-level runtime. Edit the 
 ```bash
 version = 2
 [plugins]
+[...]
   [plugins."io.containerd.grpc.v1.cri"]
+[...]
     [plugins."io.containerd.grpc.v1.cri".containerd]
       default_runtime_name = "nvidia"
+      disable_snapshot_annotations = true
+      discard_unpacked_layers = false
+      ignore_rdt_not_enabled_errors = false
+      no_pivot = false
+      snapshotter = "overlayfs"
 
       [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+          base_runtime_spec = ""
+          cni_conf_dir = ""
+          cni_max_conf_num = 0
+          container_annotations = []
+          pod_annotations = []
           privileged_without_host_devices = false
           runtime_engine = ""
+          runtime_path = ""
           runtime_root = ""
           runtime_type = "io.containerd.runc.v2"
+
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
             BinaryName = "/usr/bin/nvidia-container-runtime"
+            CriuImagePath = ""
+            CriuPath = ""
+            CriuWorkPath = ""
+            IoGid = 0
 ```
 
 And restart containerd.
