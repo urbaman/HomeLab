@@ -28,8 +28,10 @@ Proxmox (Hypervisor)
     - [x] Uptimekuma
     - [x] Kured
     - [x] Heimdall
+    - [x] Homer
     - [x] Datree
     - [x] Teleport (still not behind Traefik)
+    - [x] Nvidia GPU plugin
     - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
     - [ ] Redis and Redis Prometheus-Grafana monitoring
     - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
@@ -44,11 +46,6 @@ Proxmox (Hypervisor)
     - [ ] UrBackup (Backup)
 
 https://github.com/awesome-selfhosted/awesome-selfhosted
-
-### Server specs:
-- Disco(i) per OS (3x250GB - raidz)
-- Disco(i) per VMs (3x1 tera - raidz)
-- Disco(i) per TrueNas con HBA in IT mode (3x4 tera - raidz)
 
 ### Appunti per how-to da seguire:
 - Flash H310: https://fohdeesha.com/docs/H310.html

@@ -12,21 +12,21 @@ Here is the Cluster infrastructure we will deploy
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
-| nfs1.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 1                  | 10.0.50.21, 10.0.70.21 (gluster storage) |
-| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 2                  | 10.0.50.22, 10.0.70.22 (gluster storage) |
-| nfs.urbaman.it, gluster1.urbaman.it | 4   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 3                  | 10.0.50.23, 10.0.70.23 (gluster storage) |
-| k8cp1.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51, 10.0.90.51 (longhorn storage) |
-| k8cp2.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52, 10.0.90.52 (longhorn storage) |
-| k8cp3.urbaman.it       | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53, 10.0.90.53 (longhorn storage) |
-| k8w1.urbaman.it        | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.54, 10.0.90.54 (longhorn storage) |
-| k8w2.urbaman.it        | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.55, 10.0.90.55 (longhorn storage) |
-| k8w3.urbaman.it        | 8   | 32GB | 16BG (OS), 2x32GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.56, 10.0.90.56 (longhorn storage) |
-| ectd1.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
-| etcd2.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
-| etcd3.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |
-| haproxy1.urbaman.it    | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
-| haproxy2.urbaman.it    | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
-| haproxy3.urbaman.it    | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
+| nfs1.urbaman.it, gluster1.urbaman.it | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 1                  | 10.0.50.21, 10.0.70.21 (gluster storage) |
+| nfs2.urbaman.it, gluster2.urbaman.it | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 2                  | 10.0.50.22, 10.0.70.22 (gluster storage) |
+| nfs3.urbaman.it, gluster3.urbaman.it | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 3                  | 10.0.50.23, 10.0.70.23 (gluster storage) |
+| k8cp1.urbaman.it       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51, 10.0.90.51 (longhorn storage) |
+| k8cp2.urbaman.it       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52, 10.0.90.52 (longhorn storage) |
+| k8cp3.urbaman.it       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53, 10.0.90.53 (longhorn storage) |
+| k8w1.urbaman.it        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.54, 10.0.90.54 (longhorn storage) |
+| k8w2.urbaman.it        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.55, 10.0.90.55 (longhorn storage) |
+| k8w3.urbaman.it        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.56, 10.0.90.56 (longhorn storage) |
+| ectd1.urbaman.it       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
+| etcd2.urbaman.it       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
+| etcd3.urbaman.it       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |
+| haproxy1.urbaman.it    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
+| haproxy2.urbaman.it    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
+| haproxy3.urbaman.it    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
 | k8cp.urbaman.it, nfs.urbaman.it | N/A | N/A  | N/A                      | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
 
 ## Cluster deployment
@@ -44,22 +44,28 @@ Here are the detailed steps to deploy our homelab cluster
 
 1. [Helm](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Helm)
 2. [Metallb LoadBalancer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metallb)
-3. [Storage with Glusterfs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Glusterfs)
-4. [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
+3. [Metrics Server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics-Server)
+4. [Storage with Glusterfs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Glusterfs)
+5. [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
 4. [Storage with longhorn](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Longhorn)
 5. [Cloudflare Operator (DynDNS, DNS)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cloudflare-Operator)
 6. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
-7. [Monitoring external services (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
+7. [Monitoring external services 1 (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
 7. [Monitoring external services 2 (Proxmox Backup Server)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Backup-Monitoring)
-8. [Cert Manager for SSL certs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cert-manager)
+8. [Monitoring external services 3 (Haproxy)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Haproxy-Monitoring)
+9. [Cert Manager for SSL certs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cert-manager)
 8. [Traefik for ingress and proxy](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Traefik)
 9. [Kubernetes Dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Dashboard)
 10. [Metrics Server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Metrics-Server)
 11. [Portainer managing dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Portainer)
 12. [Kured for automatic reboots](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Kured)
-12. [Datree secure the cluster and avoid misconfigurations](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Datree)
-12. [Uptime Kuma for service uptime monitoring](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Uptimekuma)
+13. [Datree secure the cluster and avoid misconfigurations](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Datree)
+14. [Uptime Kuma for service uptime monitoring](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Uptimekuma)
+15. [Teleport for external access](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Teleport)
+16. [Nvidia GPU plugin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nvidia-GPU)
 
 ### Deploying the services
 
-1. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
+1. [Heimdall homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Heimdall-dashboard)
+2. [Homer homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homer)
+3. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
