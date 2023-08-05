@@ -64,7 +64,7 @@ You can re-add the server when re-installing teleport.
 - Generate a token for the server (roles=node)
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl token add --roles=node
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl tokens add --type=node
 ```
 
 - Stop the teleport daemon and delete the `/var/lib/teleport` directory, then put the new token in `/etc/teleport.yaml` and restart the daemon
@@ -91,7 +91,7 @@ To add webapps, it's preferable to proxy them through Traefik internally, even i
 Create a token and use it in the yaml file.
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl token add --roles=app
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl tokens add --type=app
 ```
 
 Deploy the kube-agent after having added the apps to the config (see examples in the yaml file)
