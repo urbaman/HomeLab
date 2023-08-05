@@ -22,7 +22,7 @@ sudo certbot certonly \
   -d host.domain.com
 ```
 
-We are ready to modify landscape's apache2 vhost config file
+We are ready to modify apache's vhost config file
 
 ```bash
 vi /etc/apache2/sites-available/host.domain.com
