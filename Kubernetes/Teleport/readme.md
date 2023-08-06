@@ -9,7 +9,7 @@ kubectl create namespace teleport-cluster
 kubectl label namespace teleport-cluster 'pod-security.kubernetes.io/enforce=baseline'
 ```
 
-- Create a volume (teleport), pv (teleport-pv) and pvc (teleport-pvc) on longhorn (or any other persistent storage solution)
+- Create a volume (teleport-cluster-auth), pv (teleport-cluster-auth-pv) and pvc (teleport-cluster-auth-pvc) on longhorn (or any other persistent storage solution)
 - Add the helm repo.
 
 ```bash
@@ -24,13 +24,13 @@ kubectl apply -f sslcert-teleport.yaml
 
 ## Installation
 
-### Option 1: Install the teleport-cluster with LoadBalance IP, no Traefik (working)
+### Option 1: Install the teleport-cluster with LoadBalance IP, no Traefik
 
 ```bash
 helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-loadbalancer.yaml
 ```
 
-### Option 2: Install the teleport-cluster with ClusterIP IP and Traefik (webapps not working at the moment)
+### Option 2: Install the teleport-cluster with ClusterIP IP and Traefik
 
 ```bash
 helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-clusterip.yaml

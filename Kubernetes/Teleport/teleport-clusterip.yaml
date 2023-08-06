@@ -296,7 +296,7 @@ persistence:
   enabled: true
   # Leave blank to automatically create a PersistentVolumeClaim for Teleport storage.
   # If you would like to use a pre-existing PersistentVolumeClaim, put its name here.
-  existingClaimName: teleport-pvc
+  existingClaimName: teleport-cluster-auth-pvc
   # Size of persistent volume to request when created by Teleport.
   # Ignored if existingClaimName is provided.
   volumeSize: 10Gi
