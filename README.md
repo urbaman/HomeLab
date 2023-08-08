@@ -30,8 +30,9 @@ Proxmox (Hypervisor)
     - [x] Heimdall
     - [x] Homer
     - [x] Datree
-    - [x] Teleport (still not behind Traefik)
+    - [x] Teleport
     - [x] Nvidia GPU plugin
+    - [ ] Livesync for Obsidian (through couchdb cluster)
     - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
     - [ ] Redis and Redis Prometheus-Grafana monitoring
     - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
