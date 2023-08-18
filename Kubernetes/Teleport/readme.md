@@ -84,7 +84,7 @@ kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl us
 
 ### Add webapps
 
-To add webapps, it's preferable to proxy them through Traefik internally, even if they are external to the kubernetes cluster, then add them to Teleport.
+Be aware of an issue with app names when Teleport is behind Traefik, at least with the Traefik ingress we use (still to be resolved): never use names with numbers (0-9) or - 8dash) sign (see for example haproxy, pfsense, k8dashboard or pnenode in our example config map)
 
 #### Install the teleport-kube-agent with the needed apps
 
