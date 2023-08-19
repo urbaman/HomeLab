@@ -1,29 +1,29 @@
-# Clutered storage - Gluster on ZFS
+# Clustered storage - Gluster on ZFS
 
 ## On all nodes
 
 ### zpools creation
 
-```
+```bash
 sudo apt install zfsutils-linux
 ```
 
-```
+```bash
 sudo fdisk -l
 ```
 
-```
+```bash
 sudo zpool create new-pool mirror /dev/sdb /dev/sdc
 ```
 
-```
+```bash
 sudo zpool create HDD5T mirror /dev/sdb /dev/sdc
 sudo zpool create SDD2T mirror /dev/sdd /dev/sde
 ```
 
 ### Gluster installation
 
-```
+```bash
 sudo apt install glusterfs-server
 sudo systemctl enable glusterd
 sudo systemctl start glusterd
@@ -33,9 +33,9 @@ sudo systemctl start glusterd
 
 ### Set up gluster cluster
 
-```
-sudo gluster peer probe gluster2.urbaman.it
-sudo gluster peer probe gluster3.urbaman.it
+```bash
+sudo gluster peer probe gluster2.domain.com
+sudo gluster peer probe gluster3.domain.com
 sudo gluster peer status
 ```
 
@@ -43,14 +43,39 @@ sudo gluster peer status
 
 We create two volumes. Having three nodes, for better resiliency we create distributed volumes with replica 3 (euqal to nodes number)
 
-```
-sudo gluster volume create HDD5T replica 3 gluster1.urbaman.it:/HDD5T11 gluster1.urbaman.it:/HDD5T12 gluster2.urbaman.it:/HDD5T21 gluster2.urbaman.it:/HDD5T22 gluster3.urbaman.it:/HDD5T31 gluster3.urbaman.it:/HDD5T32
-sudo gluster volume create SDD2T replica 3 gluster1.urbaman.it:/SDD2T11 gluster1.urbaman.it:/SDD2T12 gluster2.urbaman.it:/SDD2T21 gluster2.urbaman.it:/SDD2T22 gluster3.urbaman.it:/SDD2T31 gluster3.urbaman.it:/SDD2T32
+```bash
+sudo gluster volume create HDD5T replica 3 gluster1.domain.com:/HDD5T11 gluster1.domain.com:/HDD5T12 gluster2.domain.com:/HDD5T21 gluster2.domain.com:/HDD5T22 gluster3.domain.com:/HDD5T31 gluster3.domain.com:/HDD5T32
+sudo gluster volume create SDD2T replica 3 gluster1.domain.com:/SDD2T11 gluster1.domain.com:/SDD2T12 gluster2.domain.com:/SDD2T21 gluster2.domain.com:/SDD2T22 gluster3.domain.com:/SDD2T31 gluster3.domain.com:/SDD2T32
 ```
 
 To check the volumes:
 
-```
+```bash
 sudo gluster volume status
 sudo gluster volume info
 ```
+
+## Mount at boot with systemd mount units
+
+Edit a file named after the mount path.
+
+>**_NOTE:_** Don’t use a dash - in your path because a dash refer to a new branch on the folder tree and this will break the naming of the mount/automount file
+>
+>- Invalid /data/home-backup
+>- Valid /data/home_backup
+>- Valid /data/home\x2dbackup
+>
+>To get the correct name for a mount filename when you use dashes in your folder-naming
+>
+>```bash
+>systemd-escape -p --suffix=mount "/data/home-backup"
+>data/home\x2dbackup.mount
+>```
+>
+>For automount
+>
+>```bash
+>systemd-escape -p --suffix=automount "/data/home-backup"
+>data/home\x2dbackup.automount
+>```
+

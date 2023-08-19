@@ -9,10 +9,10 @@ Follow a guide, mine's [here](https://github.com/urbaman/HomeLab/tree/main/Stora
 Fist you need to install the glusterfs-client package on your nodes. The client is used by the kubernetes scheduler to create the gluster volumes.
 
 ```bash
-$ sudo apt install gluster-client
+sudo apt install gluster-client
 ```
 
-## Discovering GlusterFS in Kubernetes:
+## Discovering GlusterFS in Kubernetes
 
 GlusterFS cluster should be discovered in the Kubernetes cluster. To do that, you need to add an Endpoints object that points to the servers of the GlusterFS cluster.
 
@@ -45,11 +45,11 @@ spec:
   - port: 1
 ```
 
-## Using GlusterFS in Kubernetes:
+## Using GlusterFS in Kubernetes
 
 Create the desired path in the glusterfs volume (HDD5T/path/... in my situation)
 
-### Method 1 — Connecting to GlusterFS directly with Pod manifest:
+### Method 1 — Connecting to GlusterFS directly with Pod manifest
 
 To connect to the GlusterFS volume directly with Pod manifest, use the GlusterfsVolumeSource in the Pod. Here is an example (create the path in the glusterfs volume - HDD5T in my situation):
 
@@ -76,7 +76,7 @@ spec:
         readOnly: no
 ```
 
-### Method 2 — Connecting using the PersistentVolume resource:
+### Method 2 — Connecting using the PersistentVolume resource
 
 To create the PersistentVolume object for the GlusterFS volume, use the following manifest. The storage size does not take any effect. Be sure to name the claim you'll bind it to.
 
