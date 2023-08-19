@@ -57,7 +57,7 @@ sudo gluster volume info
 
 ## Mount at boot with systemd mount units
 
-Edit a file named after the mount path.
+Edit a file named after the mount path: `mounthpath.mount`.
 
 >**_NOTE:_** Don’t use a dash - in your path because a dash refer to a new branch on the folder tree and this will break the naming of the mount/automount file
 >
@@ -79,3 +79,23 @@ Edit a file named after the mount path.
 >data/home\x2dbackup.automount
 >```
 
+```bash
+[Unit]
+Description=Mount glusterfs volumename
+
+[Mount]
+What=thisserverfullhostname:/volumename
+Where=/mountpath
+Type=glusterfs
+Options=_netdev,auto
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then, reload systemd daemon and start the unit.
+
+```bash
+sudo systemd daemon-reload
+sudo systemd start mountpath.mount
+```
