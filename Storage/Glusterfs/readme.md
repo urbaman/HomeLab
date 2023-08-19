@@ -93,9 +93,10 @@ Options=_netdev,auto
 WantedBy=multi-user.target
 ```
 
-Then, reload systemd daemon and start the unit.
+Then, reload systemd daemon, enable and start the unit.
 
 ```bash
 sudo systemd daemon-reload
+sudo systemd enable mountpath.mount
 sudo systemd start mountpath.mount
 ```
