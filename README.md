@@ -17,7 +17,7 @@ Proxmox (Hypervisor)
 - [x] Gluseterfs cluster
 - [x] 3x haproxy for HA implementations
 - [x] 3x etcd cluster for kubernetes
-- [x] 3x ccontrol planes, 3x worker nodes kubernetes cluster
+- [x] 3x control planes, 3x worker nodes kubernetes cluster
   - [x] Metallb Loadbalancer
   - [x] Multus multinetwork
   - [x] Longhorn storage
@@ -33,9 +33,11 @@ Proxmox (Hypervisor)
   - [x] Kured
   - [x] Heimdall
   - [x] Homer
-  - [x] Datree
+  - [ ] Datree (deprecated)
   - [x] Teleport
   - [x] Nvidia GPU plugin
+  - [ ] Glusterfs via Kadalu
+  - [ ] NFS via NFS subdir provisioner
   - [ ] Livesync for Obsidian (through couchdb cluster)
   - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
   - [ ] Redis and Redis Prometheus-Grafana monitoring
