@@ -1,4 +1,6 @@
-# Proxmox installation
+# Proxmox installation and post-installation
+
+## Installation
 
 I choose to install Proxmox in ZFS Raid 1 mirror on the 2 Samsung 960 GB Nvme SSD drives on the front bay.
 
@@ -38,7 +40,7 @@ Remove the USB drive during reboot.
 
 When all goes well, the system will reboot and start Proxmox VE. If not, see the section PROXMOX Boot problem below.
 
-# Proxmox Log in
+## Proxmox Log in
 
 Open a browser and go to the URL mentioned during the installation process.
 
@@ -52,33 +54,34 @@ You’ll see your datacenter welcome screen showing the installed Proxmox VE nod
 
 Click on your Proxmox VE node to check its current status.
 
-# Post installation
+## Post installation
 
-## Enabling applying network configuration without reboot
+### Enabling applying network configuration without reboot
 
 Log in to Proxmox and browse to your PVE. Then select Shell.
 
-Enther the command : 
+Enther the command:
 
 ```bash
 apt install ifupdown2 -y
 ```
 
-## Activating network interfaces
+### Activating network interfaces
 
 In case your motherboard has multiple NICs, not all network interfaces will be activated by default. The primary network interface, the one specified during installation, will of course be activated. All other NICs will stay deactivated in case they don't recieve an IP address during boot time.
 
 Log in to Proxmox and browse to your PVE. Then select System → Network and double-click a deactivated network device. Enter an valid IP address and click the Autostart option. Then click OK. Do the same for all other deactivated NICs. Then click the Apply Configuration button.
 
-## Configuring E-mail alerts using GMail
+### Configuring E-mail alerts using GMail
 
 Follow [this excellent article](https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/) on how to set up e-mail alerts on your Proxmox VE server.
 
-### Configuring E-mail alerts using another e-mail provider 
+#### Configuring E-mail alerts using another e-mail provider
 
 Log in to Proxmox and browse to your PVE. Then select Shell.
 
-Install the required packages :
+Install the required packages:
+
 ```bash
 apt update && apt install -y libsasl2-modules
 ```
@@ -185,4 +188,25 @@ Test your new configuration :
 
 ```bash
 echo "My first test message" | mail -s "Proxmox alert test" somebody@somewhere.com
+```
+
+### Eliminate the "no subscription" popup
+
+```bash
+cp /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak
+vi /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+```
+
+Search for `No valid subcription`, then comment all of the if test and substitute with `false`:
+
+```js
+//                  if (res === null || res === undefined || !res || res
+//                      .data.status.toLowerCase() !== 'active') {
+                    if (false) {
+```
+
+Save and restart pveproxy.
+
+```bash
+systemctl restart pveproxy
 ```

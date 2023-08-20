@@ -128,6 +128,7 @@ nano /root/.vimrc
 
 ```bash
 set mouse-=a
+syntax on
 ```
 
 ### Install and run lynis for security audit
