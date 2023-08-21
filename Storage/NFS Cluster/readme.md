@@ -12,7 +12,6 @@ Follow [this link](https://www.server-world.info/en/note?os=Ubuntu_22.04&p=pacem
 ## Requirements
 
 1. Glusterfs cluster (on the same machines): [Gluster](https://github.com/urbaman/HomeLab/tree/main/Storage/Glusterfs)
-2. iSCSI Target (different machine), iSCSI initiators (the same machines): [iSCSI Target](https://github.com/urbaman/HomeLab/tree/main/Storage/iSCSI)
 
 ## Install and setup the cluster
 
@@ -130,7 +129,7 @@ node02.srv.world: Successfully destroyed cluster
 node01.srv.world: Successfully destroyed cluster
 ```
 
-## Setup the fencing device using iSCSI (working?)
+## Setup the fencing device using iSCSI (working? -> No)
 
 ### On all Cluster Nodes, Install SCSI Fence Agent
 
@@ -260,131 +259,121 @@ Daemon Status:
 sudo pcs cluster start node01.srv.world
 ```
 
+## Fencing through diskless SBD and software watchdog
+
+### Install softdog module
+
+```bash
+sudo echo "softdog" >> /etc/modules
+```
+
+Check if softdog is blacklisted
+
+```bash
+grep blacklist /lib/modprobe.d/* /etc/modprobe.d/* |grep softdog
+```
+
+If there's any result, comment or delete the `blacklist softdog` line(s), then enable and check softdog
+
+```bash
+sudo modprobe softdog
+sudo lsmod | grep softdog
+softdog                16384  0
+ls -l /dev/watchdog*
+
+crw-rw---- 1 postgres postgres  10, 130 Sep 11 12:53 /dev/watchdog
+crw------- 1 root     root     245,   0 Sep 11 12:53 /dev/watchdog0
+```
+
+### Install and setup SBD
+
+Prepare the cluster properties
+
+```bash
+sudo pcs property set stonith-watchdog-timeout=35
+```
+
+Install the sbd package
+
+```bash
+sudo apt install sbd
+```
+
+Open the file `/etc/sysconfig/sbd` and use the following entries:
+
+```bash
+SBD_PACEMAKER=yes
+SBD_STARTMODE=always
+SBD_DELAY_START=no
+SBD_WATCHDOG_DEV=/dev/watchdog
+SBD_WATCHDOG_TIMEOUT=35
+```
+
+> **Important**: SBD_WATCHDOG_TIMEOUT for diskless SBD and QDevice
+>If you use QDevice with diskless SBD, the SBD_WATCHDOG_TIMEOUT value must be greater than QDevice's sync_timeout value, or SBD will time out and fail to start.
+>
+>The default value for sync_timeout is 30 seconds. Therefore, set SBD_WATCHDOG_TIMEOUT to a greater value, such as 35.
+
+```bash
+systemctl enable sbd
+sudo pcs cluster stop --all
+sudo pcs cluster start --all
+sudo pcs property | grep have-watchdog
+ have-watchdog: true
+```
+
 ## Setup Cluster resources (VIP, NFS server)
 
 ### On all Cluster Nodes, Install NFS tools
 
 sudo apt -y install nfs-kernel-server nfs-common
 
-### On a Node add NFS resource
+### Prepare the NFS filesystem
 
-#### Current status
+On the (one of the) shared volume(s), create the NFS directories needed by the cluster:
 
-sudo pcs status
-Cluster name: ha_cluster
-Cluster Summary:
-  * Stack: corosync
-  * Current DC: node01.srv.world (version 2.1.2-ada5c3b36e2) - partition with quorum
-  * Last updated: Thu Sep 15 01:52:09 2022
-  * Last change:  Thu Sep 15 01:52:02 2022 by root via cibadmin on node01.srv.world
-  * 2 nodes configured
-  * 2 resource instances configured
+```bash
+sudo mkdir /HDD5T/nfsshare
+sudo mkdir /HDD5T/nfsshare/exports
+sudo mkdir /HDD5T/nfsshare/exports/HDD5T
+```
 
-Node List:
-  * Online: [ node01.srv.world node02.srv.world ]
+And add eventually one for every other gluster volume:
 
-Full List of Resources:
-  * scsi-shooter        (stonith:fence_scsi):    Started node01.srv.world
-  * Resource Group: ha_group:
-    * lvm_ha    (ocf:heartbeat:LVM-activate):    Started node01.srv.world
+```bash
+sudo mkdir /HDD5T/nfsshare/exports/SDD2T
+```
 
-Daemon Status:
-  corosync: active/enabled
-  pacemaker: active/enabled
-  pcsd: active/enabled
+In this case, we also need to mount of the other volumes in the relative mount position.
 
-#### Create a directory for NFS filesystem
+```bash
+sudo vi /etc/systemd/system/HDD5T-nfsshare-exports-SDD2T.mount
+```
 
-sudo mkdir /home/nfs-share
+```bash
+[Unit]
+Description=Mount glusterfs HDD5T/nfsshare/exports/SDD2T
 
-#### Set nfsserver resource
+[Mount]
+What=thisserverfullhostname:/volumename
+Where=/mountpath
+Type=glusterfs
+Options=_netdev,auto
 
-[nfs_daemon] : any name
-[nfs_shared_infodir=***] : specify a directory that NFS server related files are located
+[Install]
+WantedBy=multi-user.target
+```
 
-sudo pcs resource create nfs_daemon ocf:heartbeat:nfsserver nfs_shared_infodir=/home/nfs-share/nfsinfo nfs_no_notify=true --group ha_group
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable HDD5T-nfsshare-exports-SDD2T.mount
+```
 
-#### Set IPaddr2 resource (VIP for client access)
+Finally, define the NFS filesystem permissions.
 
-sudo pcs resource create nfs_vip ocf:heartbeat:IPaddr2 ip=10.0.0.60 cidr_netmask=24 --group ha_group
-sudo pcs status
-Cluster name: ha_cluster
-Cluster Summary:
-  * Stack: corosync
-  * Current DC: node02.srv.world (version 2.1.2-ada5c3b36e2) - partition with quorum
-  * Last updated: Thu Sep 15 04:13:57 2022
-  * Last change:  Thu Sep 15 04:13:45 2022 by root via cibadmin on node01.srv.world
-  * 2 nodes configured
-  * 5 resource instances configured
+```bash
+sudo chown -R nobody:nogroup /HDD5T/nfsshare/exports
+sudo chmod -R 775 /HDD5T/nfsshare/exports
+```
 
-Node List:
-  * Online: [ node01.srv.world node02.srv.world ]
-
-Full List of Resources:
-  * scsi-shooter        (stonith:fence_scsi):    Started node01.srv.world
-  * Resource Group: ha_group:
-    * lvm_ha    (ocf:heartbeat:LVM-activate):    Started node01.srv.world
-    * nfs_share (ocf:heartbeat:Filesystem):      Started node01.srv.world
-    * nfs_daemon        (ocf:heartbeat:nfsserver):       Started node01.srv.world
-    * nfs_vip   (ocf:heartbeat:IPaddr2):         Started node01.srv.world
-
-Daemon Status:
-  corosync: active/enabled
-  pacemaker: active/enabled
-  pcsd: active/enabled
-
-### On an active Node NFS filesystem mounted, set exportfs setting.
-#### create a directory for exportfs
-
-sudo mkdir -p /home/nfs-share/nfs-root/share01
-
-#### set exportfs resource
-
-[nfs_root] : any name
-[clientspec=*** options=*** directory=***] : exports setting
-[fsid=0] : root point on NFSv4
-
-sudo pcs resource create nfs_root ocf:heartbeat:exportfs clientspec=10.0.0.0/255.255.255.0 options=rw,sync,no_root_squash directory=/home/nfs-share/nfs-root fsid=0 --group ha_group
-
-#### set exportfs resource
-
-sudo pcs resource create nfs_share01 ocf:heartbeat:exportfs clientspec=10.0.0.0/255.255.255.0 options=rw,sync,no_root_squash directory=/home/nfs-share/nfs-root/share01 fsid=1 --group ha_group
-sudo pcs status
-Cluster name: ha_cluster
-Cluster Summary:
-  * Stack: corosync
-  * Current DC: node02.srv.world (version 2.1.2-ada5c3b36e2) - partition with quorum
-  * Last updated: Thu Sep 15 04:15:02 2022
-  * Last change:  Thu Sep 15 04:14:55 2022 by root via cibadmin on node02.srv.world
-  * 2 nodes configured
-  * 7 resource instances configured
-
-Node List:
-  * Online: [ node01.srv.world node02.srv.world ]
-
-Full List of Resources:
-  * scsi-shooter        (stonith:fence_scsi):    Started node01.srv.world
-  * Resource Group: ha_group:
-    * lvm_ha    (ocf:heartbeat:LVM-activate):    Started node01.srv.world
-    * nfs_share (ocf:heartbeat:Filesystem):      Started node01.srv.world
-    * nfs_daemon        (ocf:heartbeat:nfsserver):       Started node01.srv.world
-    * nfs_vip   (ocf:heartbeat:IPaddr2):         Started node01.srv.world
-    * nfs_root  (ocf:heartbeat:exportfs):        Started node01.srv.world
-    * nfs_share01       (ocf:heartbeat:exportfs):        Started node01.srv.world
-
-Daemon Status:
-  corosync: active/enabled
-  pacemaker: active/enabled
-  pcsd: active/enabled
-
-sudo showmount -e
-Export list for node01.srv.world:
-/home/nfs-share/nfs-root         10.0.0.0/255.255.255.0
-/home/nfs-share/nfs-root/share01 10.0.0.0/255.255.255.0
-
-### Verify settings to access to virtual IP address with NFS from any client computer.
-
-root@client:~# mount -t nfs4 10.0.0.60:share01 /mnt
-root@client:~# df -hT /mnt
-Filesystem         Type  Size  Used Avail Use% Mounted on
-10.0.0.60:/share01 nfs4  9.8G  512K  9.3G   1% /mnt
+### 
