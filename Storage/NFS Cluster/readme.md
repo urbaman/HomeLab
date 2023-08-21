@@ -1,7 +1,9 @@
 # NFS cluster with corosync and pacemaker
 
 [Kubernetes](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/04-Kubernetes)
+
 ```bash
+
 ```
 
 Follow [this link](https://www.server-world.info/en/note?os=Ubuntu_22.04&p=pacemaker&f=1)
@@ -14,7 +16,7 @@ Follow [this link](https://www.server-world.info/en/note?os=Ubuntu_22.04&p=pacem
 
 ## Install and setup the cluster
 
-### On all Nodes, Install Pacemaker and configure some settings.
+### On all Nodes, Install Pacemaker and configure some settings
 
 ```bash
 sudo apt -y install pacemaker pcs resource-agents
@@ -32,7 +34,7 @@ Retype new password:
 passwd: all authentication tokens updated successfully.
 ```
 
-### On a Node, Configure basic Cluster settings.
+### On a Node, Configure basic Cluster settings
 
 #### Authorize among nodes
 
@@ -136,9 +138,10 @@ node01.srv.world: Successfully destroyed cluster
 sudo apt -y install fence-agents-base
 ```
 
-### Configure Fencing on a Node.
+### Configure Fencing on a Node
 
-[sda] of the example below is the storage from ISCSI target.
+[sda] of the example below is the storage from iSCSI target.
+
 #### Confirm disk ID
 
 ```bash
@@ -259,11 +262,11 @@ sudo pcs cluster start node01.srv.world
 
 ## Setup Cluster resources (VIP, NFS server)
 
-### On all Cluster Nodes, Install NFS tools.
+### On all Cluster Nodes, Install NFS tools
 
 sudo apt -y install nfs-kernel-server nfs-common
 
-### On a Node add NFS resource.
+### On a Node add NFS resource
 
 #### Current status
 
