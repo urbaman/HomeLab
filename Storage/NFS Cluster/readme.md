@@ -376,4 +376,23 @@ sudo chown -R nobody:nogroup /HDD5T/nfsshare/exports
 sudo chmod -R 775 /HDD5T/nfsshare/exports
 ```
 
-### 
+### Add the NFS server resource
+
+```bash
+sudo pcs resource create nfs_server ocf:heartbeat:nfsserver nfs_shared_infodir=/HDD5T/nfsshare/nfsinfo nfs_no_notify=true --group nfs_group
+```
+
+### Add the VIP resource
+
+sudo pcs resource create nfs_vip ocf:heartbeat:IPaddr2 ip=VIP cidr_netmask=24 --group nfs_group
+
+### Add the NFS exports (the root and the real exports)
+
+Use the same values in clientspec, directory, options and fsid that you would use in the normal NFS `/etc/exports` file.
+To expose the same export to different ips/cidrs, simply add a resource for every occurrence, setting the clientspec accordingly.
+
+```bash
+sudo pcs resource create nfs_export_root ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,root_squash,all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports fsid=0 --group nfs_group
+sudo pcs resource create nfs_export_hdd5t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,root_squash,all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/HDD5T fsid=1 --group nfs_group
+sudo pcs resource create nfs_export_sdd2t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,root_squash,all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/SDD2T fsid=2 --group nfs_group
+```
