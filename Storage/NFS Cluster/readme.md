@@ -1,14 +1,5 @@
 # NFS cluster with corosync and pacemaker
 
-[Kubernetes](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/04-Kubernetes)
-
-```bash
-
-```
-
-Follow [this link](https://www.server-world.info/en/note?os=Ubuntu_22.04&p=pacemaker&f=1)
-... and [this](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_high_availability_clusters/assembly_configuring-active-passive-nfs-server-in-a-cluster-configuring-and-managing-high-availability-clusters)
-
 ## Requirements
 
 1. Glusterfs cluster (on the same machines): [Gluster](https://github.com/urbaman/HomeLab/tree/main/Storage/Glusterfs)
