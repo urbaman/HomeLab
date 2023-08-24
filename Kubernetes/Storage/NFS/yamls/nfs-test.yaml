@@ -1,0 +1,67 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: demo-claim-hdd5t
+spec:
+  storageClassName: hdd5t-nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Mi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod-hdd5t
+spec:
+  containers:
+  - name: test-pod-hdd5t
+    image: busybox:latest
+    command:
+      - "/bin/sh"
+    args:
+      - "-c"
+      - "touch /mnt/SUCCESS && sleep 600"
+    volumeMounts:
+      - name: nfs-pvc-hdd5t
+        mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc-hdd5t
+      persistentVolumeClaim:
+        claimName: demo-claim-hdd5t
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: demo-claim-sdd2t
+spec:
+  storageClassName: sdd2t-nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Mi
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod-sdd2t
+spec:
+  containers:
+  - name: test-pod-sdd2t
+    image: busybox:latest
+    command:
+      - "/bin/sh"
+    args:
+      - "-c"
+      - "touch /mnt/SUCCESS && sleep 600"
+    volumeMounts:
+      - name: nfs-pvc-sdd2t
+        mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc-sdd2t
+      persistentVolumeClaim:
+        claimName: demo-claim-sdd2t
