@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: gluster-cluster
+  labels:
+    app: gluster-cluster
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: 10.0.50.24
+    nodeName: gluster-cluster
+  ports:
+  - name: gluster-cluster
+    port: 9713
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gluster-cluster
+  labels:
+    app: gluster-cluster
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: gluster-cluster
+    port: 9713
+    targetPort: 9713
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: gluster-cluster
+  namespace: monitoring
+  labels:
+    app: gluster-cluster
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    port: gluster-cluster
+    scheme: http
+    path: "/metrics"
+  jobLabel: gluster-cluster
+  selector:
+    matchLabels:
+      app: gluster-cluster

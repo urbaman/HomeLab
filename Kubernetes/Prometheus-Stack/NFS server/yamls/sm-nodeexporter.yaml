@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: nfs-cluster
+  labels:
+    app: nfs-cluster
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: 10.0.50.24
+    nodeName: nfs-cluster
+  ports:
+  - name: nfs-cluster
+    port: 9100
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-cluster
+  labels:
+    app: nfs-cluster
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: nfs-cluster
+    port: 9100
+    targetPort: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nfs-cluster
+  namespace: monitoring
+  labels:
+    app: nfs-cluster
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    port: nfs-cluster
+    scheme: http
+    path: "/metrics"
+  jobLabel: nfs-cluster
+  selector:
+    matchLabels:
+      app: nfs-cluster
