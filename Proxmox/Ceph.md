@@ -43,18 +43,26 @@ Enjoy!
 
 ### Renaming a pool
 
+```bash
 ceph osd pool rename OLD NEW
+```
 
 ### Renaming a CephFS
 
+```bash
 ceph fs rename Cephfs_SAS900MB Cephfs_SAS900GB --yes-i-really-mean-it
+```
 
 ### Renaming OSDs class
 
+```bash
 ceph osd crush class rename OLD NEW
+```
 
 ### Renaming a crush rule
 
 Create the new class, change the class to the new one on the pools, delete the old class
 
+```bash
 ceph osd crush rule rm OLD
+```
