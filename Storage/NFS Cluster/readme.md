@@ -388,7 +388,15 @@ sudo pcs resource create nfs_export_hdd5t ocf:heartbeat:exportfs clientspec=10.0
 sudo pcs resource create nfs_export_sdd2t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,root_squash,all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/SDD2T fsid=2 --group nfs_group
 ```
 
-### Set static ports to NFS secondary services
+### Update resource parameters
+
+```bash
+sudo pcs resource update nfs_export_root ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,no_root_squash,no_all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports fsid=0 --group nfs_group
+sudo pcs resource update nfs_export_hdd5t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,no_root_squash,no_all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/HDD5T fsid=1 --group nfs_group
+sudo pcs resource update nfs_export_sdd2t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,no_root_squash,no_all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/SDD2T fsid=2 --group nfs_group
+```
+
+## Set static ports to NFS secondary services
 
 Edit /etc/default/nfe.conf and add specific ports (maybe from 3265 to 3268) to lockd (same ports on port and udp port, 32768), mountd (32767) and statd (port 32766, outgoing-port 32765).
 

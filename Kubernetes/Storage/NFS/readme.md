@@ -38,6 +38,8 @@ helm install -n nfs-provisioning --create-namespace second-nfs-subdir-external-p
     --set storageClass.provisionerName=k8s-sigs.io/second-nfs-subdir-external-provisioner
 ```
 
+If you do not need the archive function, add `--set storageClass.archiveOnDelete=false` to the parameters (remembering the `\` to add a line)
+
 Verify the storage classes (will not be default if you already have a default sc)
 
 ```bash
