@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: ceph-cluster
+  labels:
+    app: ceph
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: 10.0.100.11
+    nodeName: cephnode1
+  - ip: 10.0.100.12
+    nodeName: cephnode2
+  - ip: 10.0.100.13
+    nodeName: cephnode3
+  ports:
+  - name: ceph
+    port: 9283
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-cluster
+  labels:
+    app: ceph
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: ceph
+    port: 9283
+    targetPort: 9283
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ceph-cluster
+  namespace: monitoring
+  labels:
+    app: ceph
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 15s
+    port: ceph
+    scheme: http
+    path: "/metrics"
+  jobLabel: ceph-cluster
+  selector:
+    matchLabels:
+      app: ceph
