@@ -29,6 +29,9 @@ Proxmox (Hypervisor)
   - [x] Haproxy monitoring
   - [x] Dell Idrac Monitoring
   - [x] Arista switch monitoring
+  - [x] Ceph monitoring
+  - [x] Glusterfs monitoring
+  - [x] NFS monitoring
   - [x] Uptimekuma
   - [x] Kured
   - [x] Heimdall
@@ -36,8 +39,15 @@ Proxmox (Hypervisor)
   - [ ] Datree (deprecated)
   - [x] Teleport
   - [x] Nvidia GPU plugin
-  - [ ] Glusterfs via Kadalu
-  - [ ] NFS via NFS subdir provisioner
+  - [x] NFS via NFS subdir provisioner
+  - [ ] node feature discovery
+  - [ ] reloader
+  - [ ] k8TZ (to set a default timezone for the cluster)
+  - [ ] Kyverno
+  - [ ] Cilium+Hubble
+  - [ ] Authelia+lldap
+  - [ ] CloudnativePG
+  - [ ] kubelet-csr-approver
   - [ ] Livesync for Obsidian (through couchdb cluster)
   - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
   - [ ] Redis and Redis Prometheus-Grafana monitoring
@@ -46,11 +56,24 @@ Proxmox (Hypervisor)
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
   - [ ] Plex (MediaServer) <https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html>
     - [ ] With Sonarr, Radarr, Transmission, Jackett <https://greg.jeanmart.me/2020/04/13/self-host-your-media-center-on-kubernetes-wi/>
+    - [ ] Tautulli, all other "rr": autobrr, sonarr, radarr, transmission, jackett, bazarr, omegabrr, overseerr, plex-auto-languages, plex-meta-manager, prowlarr, readarr, recyclarr, sabnzbd, unpackerr, wizarr
   - [ ] Boing shared computing
   - [ ] Vaultwarden <https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment>
+  - [ ] the lounge
+  - [ ] actualbudget
   - [ ] Authelia? <https://www.authelia.com/integration/kubernetes/introduction/>
   - [ ] Guacamole? <https://github.com/thomas-illiet/k8s-guacamole>
   - [ ] UrBackup (Backup)
+  - [ ] miniflux
+  - [ ] obsidian crouchdb
+  - [ ] shlink
+  - [ ] nut management
+  - [ ] paperless
+  - [ ] Stirling PDF
+  - [ ] Reactive Resume
+  - [ ] Firefly III
+  - [ ] Flatnotes
+  - [ ] IT-tools
 
 <https://github.com/awesome-selfhosted/awesome-selfhosted>
 
