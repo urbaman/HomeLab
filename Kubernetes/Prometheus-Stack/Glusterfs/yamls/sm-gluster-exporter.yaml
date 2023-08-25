@@ -43,6 +43,68 @@ spec:
     port: gluster-cluster
     scheme: http
     path: "/metrics"
+    relabelings:
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs1"
+      targetLabel: "hostname"
+      replacement: "gluster1"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs2"
+      targetLabel: "hostname"
+      replacement: "gluster2"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs3"
+      targetLabel: "hostname"
+      replacement: "gluster3"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster1.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster1"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster2.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster2"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster3.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster3"
+    metricRelabelings:
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs1"
+      targetLabel: "hostname"
+      replacement: "gluster1"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs2"
+      targetLabel: "hostname"
+      replacement: "gluster2"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "nfs3"
+      targetLabel: "hostname"
+      replacement: "gluster3"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster1.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster1"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster2.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster2"
+    - action: replace
+      sourceLabels: [hostname]
+      regex: "gluster3.domain.com"
+      targetLabel: "hostname"
+      replacement: "gluster3"
   jobLabel: gluster-cluster
   selector:
     matchLabels:
