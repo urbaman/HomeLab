@@ -715,6 +715,7 @@ grafana:
   plugins:
     - grafana-piechart-panel
     - grafana-clock-panel
+    - vonage-status-panel
 
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##
@@ -1632,14 +1633,29 @@ prometheusOperator:
     additional:
       - calico-apiserver
       - calico-system
-      - cloudflare-operator
+      - cert-manager
+      - cloudflared
+      - datree
       - default
+      - heimdall
+      - homer
       - kube-node-lease
       - kube-public
+      - kube-system
+      - kubernetes-dashboard
+      - kubescape
+      - longhorn-system
       - metallb-system
+      - monitoring
+      - nfs-provisioning
+      - nvidia-device-plugin
+      - portainer
+      - teleport-agent
+      - teleport-cluster
       - tigera-operator
       - traefik
-      - portainer
+      - traefik-external
+
   ## Namespaces not to scope the interaction of the Prometheus Operator (deny list).
   ##
   denyNamespaces: []

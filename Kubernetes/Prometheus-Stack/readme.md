@@ -44,14 +44,27 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - calico-apiserver
       - calico-system
       - cert-manager
+      - cloudflared
+      - datree
       - default
+      - heimdall
+      - homer
       - kube-node-lease
       - kube-public
       - kube-system
+      - kubernetes-dashboard
+      - kubescape
       - longhorn-system
       - metallb-system
+      - monitoring
+      - nfs-provisioning
+      - nvidia-device-plugin
+      - portainer
+      - teleport-agent
+      - teleport-cluster
       - tigera-operator
       - traefik
+      - traefik-external
 ```
 
 Disable the internal etcd scraping:
@@ -96,6 +109,7 @@ Under the grafana header, add some plugins:
   plugins:
     - grafana-piechart-panel
     - grafana-clock-panel
+    - vonage-status-panel
 ```
 
 They will then be managed through the grafana config map:
@@ -104,7 +118,7 @@ They will then be managed through the grafana config map:
 kubectl edit cm -n monitoring kube-prometheus-stack-grafana
 ```
 
-Set the ```defaultDashboardsTimezone: browser``` to get the right timezone in the dashboards.
+Set the `defaultDashboardsTimezone: browser` to get the right timezone in the dashboards.
 
 Finally, set the storage specs for dynamic persistent storage:
 
