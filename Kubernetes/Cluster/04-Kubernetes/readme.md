@@ -362,7 +362,7 @@ On the first control plane:
 
 ```bash
 sudo apt-mark unhold kubeadm && \
-sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-00 && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-* && \
 sudo apt-mark hold kubeadm
 kubeadm version
 kubeadm upgrade plan
@@ -372,7 +372,7 @@ kubeadm upgrade plan
 sudo kubeadm upgrade apply v1.xx.y
 kubectl drain <node> --ignore-daemonsets
 sudo apt-mark unhold kubelet kubectl && \
-sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-00 kubectl=1.xx.y-00 && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-* kubectl=1.xx.y-* && \
 sudo apt-mark hold kubelet kubectl
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
@@ -383,12 +383,12 @@ On all other nodes
 
 ```bash
 sudo apt-mark unhold kubeadm && \
-sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-00 && \
+sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-* && \
 sudo apt-mark hold kubeadm
 sudo kubeadm upgrade node
 kubectl drain <node> --ignore-daemonsets
 sudo apt-mark unhold kubelet kubectl && \
-sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-00 kubectl=1.xx.y-00 && \
+sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-* kubectl=1.xx.y-* && \
 sudo apt-mark hold kubelet kubectl
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
