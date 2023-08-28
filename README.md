@@ -42,7 +42,7 @@ Proxmox (Hypervisor)
   - [x] NFS via NFS subdir provisioner
   - [ ] node feature discovery
   - [ ] reloader
-  - [ ] k8TZ (to set a default timezone for the cluster)
+  - [x] k8TZ (to set a default timezone for the cluster)
   - [ ] Kyverno
   - [ ] Cilium+Hubble
   - [ ] Authelia+lldap
