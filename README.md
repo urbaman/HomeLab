@@ -41,7 +41,7 @@ Proxmox (Hypervisor)
   - [x] Nvidia GPU plugin
   - [x] NFS via NFS subdir provisioner
   - [x] node feature discovery
-  - [ ] reloader
+  - [x] reloader
   - [x] k8TZ (to set a default timezone for the cluster)
   - [ ] Kyverno
   - [ ] Cilium+Hubble
