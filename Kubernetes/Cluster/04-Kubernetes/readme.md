@@ -287,8 +287,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/custom-resources.yaml -O
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml -O
 ```
 
 If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR to match kubeadm podSubnet above).
@@ -297,10 +297,10 @@ If you wish to customize the Calico install, customize the downloaded custom-res
 kubectl create -f custom-resources.yaml
 ```
 
-The, intstall the calicoctl to manage Calico.
+Then, intstall the calicoctl to manage Calico.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calicoctl.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
