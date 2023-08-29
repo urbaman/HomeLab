@@ -310,7 +310,7 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 calicoctl create -f - < my_manifest.yaml
 ```
 
-#### Enable ebpf mode
+#### Enable ebpf mode (not working)
 
 Create a configmap with informations on the cluster service:
 
@@ -341,6 +341,10 @@ kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nod
 kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF", "hostPorts":null}}}'
 calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
 ```
+
+### Add second netwotk with multus and wereabouts
+
+See [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
 
 ## Steps for the rest of the control plane nodes
 
