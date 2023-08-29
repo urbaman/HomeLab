@@ -44,7 +44,7 @@ Proxmox (Hypervisor)
   - [x] reloader
   - [x] k8TZ (to set a default timezone for the cluster)
   - [ ] Kyverno
-  - [ ] Cilium+Hubble
+  - [ ] Cilium+Hubble (?)
   - [ ] Authelia+lldap
   - [ ] CloudnativePG
   - [ ] kubelet-csr-approver
