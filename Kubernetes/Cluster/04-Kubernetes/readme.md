@@ -310,6 +310,38 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 calicoctl create -f - < my_manifest.yaml
 ```
 
+#### Enable ebpf mode
+
+Create a configmap with informations on the cluster service:
+
+```bash
+kubectl cluster-info
+vi tigera-config-map.yaml
+```
+
+```yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kubernetes-services-endpoint
+  namespace: tigera-operator
+data:
+  KUBERNETES_SERVICE_HOST: '<API server host>'
+  KUBERNETES_SERVICE_PORT: '<API server port>'
+```
+
+```bash
+kubectl apply -f tigera-config-map.yaml
+```
+
+Then disable kubeproxy and enable ebpf
+
+```bash
+kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
+kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF", "hostPorts":null}}}'
+calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
+```
+
 ## Steps for the rest of the control plane nodes
 
 The steps are the same as for the stacked etcd setup:
@@ -352,7 +384,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
 
 ```bash
-kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule-
 ```
 
