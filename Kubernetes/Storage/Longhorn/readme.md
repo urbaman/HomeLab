@@ -1,9 +1,19 @@
 # Longhorn kubernetes storage solution
 
+## Environment check
+
+Download and run the environment check
+
+```bash
+wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh
+sudo chown +x environment_check.sh
+./environment_check.sh
+```
+
 ## Installation
 
 ```bash
-wget https://raw.githubusercontent.com/longhorn/longhorn/v1.4.2/deploy/longhorn.yaml
+wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
 ```
 
 Edit the settings adding needed lines to the longhorn-default-setting ConfigMap
@@ -17,15 +27,46 @@ metadata:
   labels:
     app.kubernetes.io/name: longhorn
     app.kubernetes.io/instance: longhorn
-    app.kubernetes.io/version: v1.4.1
+    app.kubernetes.io/version: v1.5.1
 data:
   default-setting.yaml: |-
-    default-data-path: /longhorn/storage/
-    storage-network: default/ipvlan-conf
+    default-data-path: /longhorn/storage/ # this is the path where the primary storage is mounted
+    storage-network: default/ipvlan-conf # this is the name of the multus network-attachment-definition
     default-replica-count: 6
 ```
 
-Eventually set the nomber of replicas in the StorageClass, then install.
+Eventually set the number of replicas in the StorageClass, then install.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-storageclass
+  namespace: longhorn-system
+  labels:
+    app.kubernetes.io/name: longhorn
+    app.kubernetes.io/instance: longhorn
+    app.kubernetes.io/version: v1.5.1
+data:
+  storageclass.yaml: |
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: longhorn
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: "Delete"
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: "3"
+      staleReplicaTimeout: "30"
+      fromBackup: ""
+      fsType: "ext4"
+      dataLocality: "disabled"
+```
+
 
 ```bash
 kubectl apply -f longhorn.yaml
@@ -36,7 +77,7 @@ kubectl apply -f longhorn.yaml
 From your client with kubectl installed:
 
 ```bash
-kubectl port-forward -n longhiorn-system service/longhorn-frontend :80
+kubectl port-forward -n longhorn-system service/longhorn-frontend :80
 ```
 
 Go to <http://IP-OF-A-K8S-CONTROL-PANEL:PORT-SHOWN-IN-OUTPUT>
@@ -154,35 +195,6 @@ spec:
   - name: volv
     persistentVolumeClaim:
       claimName: longhorn-volv-pvc
-```
-
-## Prometheus
-
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: longhorn-prometheus-servicemonitor
-  namespace: monitoring
-  labels:
-    name: longhorn-prometheus-servicemonitor
-    release: kube-prometheus-stack
-spec:
-  selector:
-    matchLabels:
-      app: longhorn-manager
-  namespaceSelector:
-    matchNames:
-    - longhorn-system
-  endpoints:
-  - port: manager
-```
-
-Import a suitable grafana dashboard (Longhorn Example is ok), get the json definition and create the json definition file.
-
-```bash
-kubectl create configmap grafana-dashboard-longhorn --from-file=grafana-longhorn.json
-kubectl label configmap grafana-dashboard-longhorn grafana_dashboard="1"
 ```
 
 ## Exposing the dashboard with Traefik
