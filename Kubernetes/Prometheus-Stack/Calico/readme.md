@@ -1,4 +1,4 @@
- # Apply patches to enable the metrics
+# Apply patches to enable the metrics
 
 ```bash
 kubectl patch felixconfiguration default --type merge --patch '{"spec":{"prometheusMetricsEnabled": true}}'
