@@ -10,10 +10,10 @@ kubectl edit cm kube-proxy -n kube-system
     metricsBindAddress: 0.0.0.0:10249
 ```
 
-And reload kube-proxy deployment
+And reload the kube-proxy daemonset
 
 ```bash
-kubectl delete pod -n kube-system kubepod1 kubepod2 ...
+kubectl rollout restart daemonset -n kube-system kube-proxy
 ```
 
 On every control-panel, change bind address to 0.0.0.0:
@@ -128,6 +128,8 @@ alertmanager:
   alertmanagerSpec:
     storage:
      volumeClaimTemplate:
+       metadata:
+         name: alertmanager-pvc
        spec:
          storageClassName: longhorn
          accessModes: ["ReadWriteOnce"]
@@ -138,6 +140,8 @@ prometheus:
   prometheusSpec:    
     storageSpec: 
      volumeClaimTemplate:
+       metadata:
+         name: prometheus-pvc
        spec:
          storageClassName: longhorn
          accessModes: ["ReadWriteOnce"]
