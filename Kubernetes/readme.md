@@ -50,7 +50,7 @@ Here are the detailed steps to deploy our homelab cluster
 6. [Storage with longhorn](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Longhorn)
 7. [Cloudflare Operator (DynDNS, DNS - deprecated)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cloudflare-Operator)
 8. [Monitoring with Prometheus-stack (Prometheus, Grafana)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack)
-9.  [Monitoring external services 1 (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
+9. [Monitoring external services 1 (Proxmox)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Monitoring)
 10. [Monitoring external services 2 (Proxmox Backup Server)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Proxmox-Backup-Monitoring)
 11. [Monitoring external services 3 (Haproxy)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Haproxy-Monitoring)
 12. [Cert Manager for SSL certs](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cert-manager)
