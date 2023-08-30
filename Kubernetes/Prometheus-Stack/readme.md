@@ -45,8 +45,8 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - calico-system
       - cert-manager
       - cloudflared
-      - datree
       - default
+      - gpu-feature-discovery
       - heimdall
       - homer
       - kube-node-lease
@@ -58,6 +58,7 @@ helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
       - metallb-system
       - monitoring
       - nfs-provisioning
+      - node-feature-discovery
       - nvidia-device-plugin
       - portainer
       - teleport-agent
