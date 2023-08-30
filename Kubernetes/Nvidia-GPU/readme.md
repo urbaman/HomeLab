@@ -130,7 +130,7 @@ helm repo update
 helm show values nvdp/nvidia-device-plugin > nvidia-device-plugin.yaml
 ```
 
-Change values where you want (remember to set the gdf subchart `enabled: true` to let the plugin only enable GPU capable nodes), then install the repo:
+Change values where you want (remember to set the gfd subchart `enabled: true` to let the plugin only enable GPU capable nodes), then install the repo:
 
 ```bash
 helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin.yaml
