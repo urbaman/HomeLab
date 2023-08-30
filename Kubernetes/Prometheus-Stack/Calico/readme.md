@@ -9,6 +9,8 @@ kind: Service
 metadata:
   name: felix-metrics-svc
   namespace: calico-system
+  labels:
+    k8s-app: calico-node
 spec:
   clusterIP: None
   selector:
@@ -24,6 +26,8 @@ kind: Service
 metadata:
   name: typha-metrics-svc
   namespace: calico-system
+  labels:
+    k8s-app: calico-typha
 spec:
   clusterIP: None
   selector:
@@ -61,6 +65,7 @@ metadata:
   namespace: calico-system
   labels:
     release: kube-prometheus-stack
+    k8s-app: calico-node
 spec:
   jobLabel: felix-metrics
   namespaceSelector:
@@ -81,7 +86,7 @@ metadata:
   namespace: calico-system
   labels:
     release: kube-prometheus-stack
-    app: typha-metrics-svc
+    k8s-app: calico-typha
 spec:
   jobLabel: typha-metrics
   selector:
