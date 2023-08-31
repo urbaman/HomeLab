@@ -36,6 +36,7 @@ Proxmox (Hypervisor)
   - [x] Kured
   - [x] Heimdall
   - [x] Homer
+  - [ ] [Gethomepage](https://gethomepage.dev)
   - [ ] Datree (deprecated)
   - [x] Teleport
   - [x] Nvidia GPU plugin
