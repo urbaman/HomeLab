@@ -273,6 +273,54 @@ env:
       name: cloudflare-dnschallenge-credentials
 ```
 
+## Enable access logs
+
+```yaml
+logs:
+  general:
+    # -- By default, the logs use a text format (common), but you can
+    # also ask for the json format in the format option
+    # format: json
+    # By default, the level is set to ERROR.
+    # -- Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+    level: ERROR
+  access:
+    # -- To enable access logs
+    enabled: true
+    ## By default, logs are written using the Common Log Format (CLF) on stdout.
+    ## To write logs in JSON, use json in the format option.
+    ## If the given format is unsupported, the default (CLF) is used instead.
+    # format: json
+    # filePath: "/var/log/traefik/access.log
+    ## To write the logs in an asynchronous fashion, specify a bufferingSize option.
+    ## This option represents the number of log lines Traefik will keep in memory before writing
+    ## them to the selected output. In some cases, this option can greatly help performances.
+    # bufferingSize: 100
+    ## Filtering
+    # -- https://docs.traefik.io/observability/access-logs/#filtering
+    filters: {}
+      # statuscodes: "200,300-302"
+      # retryattempts: true
+      # minduration: 10ms
+    fields:
+      general:
+        # -- Available modes: keep, drop, redact.
+        defaultmode: keep
+        # -- Names of the fields to limit.
+        names: {}
+          ## Examples:
+          # ClientUsername: drop
+      headers:
+        # -- Available modes: keep, drop, redact.
+        defaultmode: keep
+        # -- Names of the headers to limit.
+        names: {}
+          ## Examples:
+          # User-Agent: redact
+          # Authorization: drop
+          # Content-Type: keep
+```
+
 ## Install
 
 ```bash
@@ -608,7 +656,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`) || PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+      match: Host(`traefik.domain.com`)
       services:
         - kind: TraefikService
           name: api@internal
@@ -631,7 +679,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`) || PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+      match: Host(`traefik.domain.com`)
       services:
         - kind: TraefikService
           name: api@internal
