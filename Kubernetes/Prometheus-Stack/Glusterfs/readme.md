@@ -19,3 +19,8 @@ kubectl apply -f sm-gluster-exporter.yaml
 ```
 
 ## Install the Grafana dashboard
+
+```bash
+kubectl create configmap grafana-dashboard-glusterfs --from-file=grafana-glusterfs.json
+kubectl label configmap grafana-dashboard-glusterfs grafana_dashboard="1"
+```
