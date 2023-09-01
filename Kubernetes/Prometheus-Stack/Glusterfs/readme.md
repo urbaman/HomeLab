@@ -2,6 +2,8 @@
 
 ## Install the exporter
 
+In all of the Glusterfs nodes, do
+
 ```bash
 sudo curl -fsSL https://github.com/kadalu/gluster-metrics-exporter/releases/latest/download/install.sh | sudo bash -x
 sudo systemctl enable gluster-metrics-exporter
