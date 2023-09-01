@@ -38,7 +38,7 @@ metadata:
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - uptimekuma.urbaman.it
+  - uptimekuma.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
@@ -114,7 +114,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`uptimekuma.urbaman.it`)
+  - match: Host(`uptimekuma.domain.com`)
     kind: Rule
     services:
     - name: uptime-kuma
@@ -136,7 +136,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`uptimekuma.urbaman.it`)
+  - match: Host(`uptimekuma.domain.com`)
     kind: Rule
     services:
     - name: uptime-kuma
@@ -144,48 +144,3 @@ spec:
     middlewares:
       - name: uptimekuma-https-redirect
 ```
-
-## Create the Prometheus Service Monitor
-
-Create a secret with the basic auth base64 username and password, then the service monitor
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: uptime-kuma-basic-auth
-  namespace: monitoring
-data:
-  username: <base64 username>
-  password: <base64 password>
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: uptimekuma-sm
-  namespace: monitoring
-  labels:
-    release: kube-prometheus-stack
-spec:
-  jobLabel: uptimekuma
-  namespaceSelector:
-    matchNames:
-    - monitoring
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: uptime-kuma
-      app.kubernetes.io/name: uptime-kuma
-  endpoints:
-  - port: http
-    interval: 15s
-    path: '/metrics'
-    basicAuth: # Only needed if authentication is enabled (default)
-      username:
-        name: uptime-kuma-basic-auth
-        key: username
-      password:
-        name: uptime-kuma-basic-auth
-        key: password
-```
-
-Then, import and define the grafana dashboard.
