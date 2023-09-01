@@ -58,11 +58,11 @@ metadata:
   namespace: monitoring
 subsets:
 - addresses:
-  - ip: 10.0.10.11
+  - ip: 10.0.100.11
     nodeName: pvenode1
-  - ip: 10.0.10.12
+  - ip: 10.0.100.12
     nodeName: pvenode2
-  - ip: 10.0.10.13
+  - ip: 10.0.100.13
     nodeName: pvenode3
   ports:
   - name: pve
@@ -105,3 +105,8 @@ spec:
 ```
 
 Then, add the dashboard to grafana and create the configmap.
+
+```bash
+kubectl create configmap grafana-dashboard-proxmox --from-file=proxmox-grafana.json
+kubectl label configmap grafana-dashboard-proxmox grafana_dashboard="1"
+```

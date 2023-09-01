@@ -6,7 +6,7 @@
 helm show values prometheus-community/prometheus-pushgateway > push.yaml
 ```
 
-Define the namespace to monitoring, the Service Monitor to true and add the release=kube-prometheus-stack to the Service Monitor.
+Define the namespace to monitoring, the Service Monitor to true and add the release=kube-prometheus-stack additional label to the Service Monitor.
 
 ```bash
 helm install prometheus-pushgateway prometheus-community/prometheus-pushgateway --values push.yaml -n monitoring
@@ -157,4 +157,7 @@ Install the Proxmox Backup Server Exporter from https://github.com/rare-magma/pb
 
 ## Add grafana Dashboard
 
-Get it here: https://grafana.com/grafana/dashboards/18740-proxmox-backup-server/
+```bash
+kubectl create configmap grafana-dashboard-proxmox-bs --from-file=pbs-grafana.json
+kubectl label configmap grafana-dashboard-proxmox-bs grafana_dashboard="1"
+```
