@@ -150,7 +150,7 @@ spec:
 
 ## Proxmox Backup Server exporter
 
-Install the Proxmox Backup Server Exporter from https://github.com/rare-magma/pbs-exporter
+Install the Proxmox Backup Server Exporter from [here](https://github.com/rare-magma/pbs-exporter)
 
 **Note:** you'll probably need to tweak it a little bit to make it properly source the conf file.
 {: .note}
