@@ -7,11 +7,11 @@ metadata:
   namespace: monitoring
 subsets:
 - addresses:
-  - ip: 10.0.100.11
+  - ip: xx.xx.xx.xx #IP of pvenode1
     nodeName: cephnode1
-  - ip: 10.0.100.12
+  - ip: xx.xx.xx.xx #IP of pvenode2
     nodeName: cephnode2
-  - ip: 10.0.100.13
+  - ip: xx.xx.xx.xx #IP of pvenode3
     nodeName: cephnode3
   ports:
   - name: ceph
