@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: haproxy2-service
+  labels:
+    app: haproxy2-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: 10.0.50.62
+    nodeName: haproxy2-service
+  ports:
+  - name: stats
+    port: 9000
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy2-service
+  labels:
+    app: haproxy2-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: stats
+    port: 9000
+    targetPort: 9000

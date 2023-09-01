@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: haproxy3-service
+  labels:
+    app: haproxy3-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: 10.0.50.63
+    nodeName: haproxy3-service
+  ports:
+  - name: stats
+    port: 9000
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy3-service
+  labels:
+    app: haproxy3-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: stats
+    port: 9000
+    targetPort: 9000
