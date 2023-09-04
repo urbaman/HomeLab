@@ -10,6 +10,19 @@ helm show values jameswynn/homepage > gethomepage-values.yaml
 helm upgrade --install gethomepage --create-namespace --namespace=gethomepage jameswynn/homepage -f gethomepage-values.yaml
 ```
 
+Eventually, delete and recreate the configmap with your settings:
+
+```bash
+kubectl delete cm -n gethomepage gethomepage
+kubectl apply -f gethomepage-cm.yaml
+```
+
+To save your settings:
+
+```bash
+kubectl get cm -n gethomepage gethomepage -o yaml > gethomepage-cm.yaml
+```
+
 ## Apply the traefik ingress route
 
 ```bash

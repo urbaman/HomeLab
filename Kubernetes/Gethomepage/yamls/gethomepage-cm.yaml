@@ -1,0 +1,194 @@
+apiVersion: v1
+data:
+  bookmarks.yaml: |
+    - Deployment notes:
+      - Github:
+        - abbr: HL
+          href: https://github.com/urbaman/HomeLab
+  docker.yaml: ""
+  kubernetes.yaml: |
+    mode: default
+  services.yaml: |
+    - Media:
+      - My First Service:
+          description: Homepage is awesome
+          href: http://localhost/
+          icon: mdi-multimedia-#0328fc
+    - Kubernetes:
+      - Dashboard:
+          description: Kubernetes Dashboard
+          href: https://k8dashboard.urbaman.it
+          icon: kubernetes-dashboard.svg
+      - Traefik:
+          description: Traefik Dashboard
+          href: https://traefik.urbaman.it
+          icon: traefik.svg
+          widget:
+            type: traefik
+            url: http://traefik.urbaman.it
+            username: admin
+            password: traefikadmin
+      - Longhorn:
+          description: Longhorn Dashboard
+          href: https://longhorn.urbaman.it
+          icon: longhorn.svg
+      - Portainer:
+          description: Portainer Management UI
+          href: https://portainer.urbaman.it
+          icon: portainer.svg
+    - Monitoring:
+      - Grafana:
+          description: Grafana dashboards
+          href: https://grafana.urbaman.it
+          icon: grafana.svg
+          widget:
+            type: grafana
+            url: https://grafana.urbaman.it
+            username: admin
+            password: prom-operator
+      - Prometheus:
+          description: Prometheus DB
+          href: https://prometheus.urbaman.it
+          icon: prometheus.svg
+          widget:
+            type: prometheus
+            url: https://prometheus.urbaman.it
+      - Alertmanager:
+          description: Alertmanager alert management
+          href: https://alertmanager.urbaman.it
+          icon: prometheus.svg
+      - Pushgateway:
+          description: Pushgateway metrics
+          href: https://pushgateway.urbaman.it
+          icon: prometheus.svg
+      - Uptime-Kuma:
+          description: Utime-Kuma service status check
+          href: https://uptimekuma.urbaman.it
+          icon: uptime-kuma.svg
+          widget:
+            type: uptimekuma
+            url: https://uptimekuma.urbaman.it
+            slug: statuspage
+      - Haproxy1:
+          description: Haproxy1 stats
+          href: https://haproxy1.stats.urbaman.it/stats
+          icon: haproxy.svg
+      - Haproxy2:
+          description: Haproxy2 stats
+          href: https://haproxy2.stats.urbaman.it/stats
+          icon: haproxy.svg
+      - Haproxy3:
+          description: Haproxy3 stats
+          href: https://haproxy3.stats.urbaman.it/stats
+          icon: haproxy.svg
+    - Management:
+      - Proxmox Cluster:
+          description: Proxmox VE Cluster
+          href: https://pvenode1.urbaman.it:8006
+          icon: proxmox.svg
+          widget:
+            type: proxmox
+            url: https://pvenode1.urbaman.it:8006
+            username: api-ro-user@pam!gethomepage
+            password: 3c81a243-7638-43db-a7d9-70afd1d49e3a
+      - Proxmox Backup Server:
+          description: Proxmox Backup Server
+          href: https://pbs1.urbaman.it:8007
+          icon: proxmox.svg
+          widget:
+            type: proxmoxbackupserver
+            url: https://pbs1.urbaman.it:8007
+            username: api-ro-user@pbs!gethomepage
+            password: a5e091f6-27ec-4a00-8b76-eb25157a15c4
+      - Landscape1:
+          description: Landscape server management UI
+          href: https://landscape1.urbaman.it
+          icon: ubuntu.svg
+      - Landscape2:
+          description: Landscape server management UI
+          href: https://landscape2.urbaman.it
+          icon: ubuntu.svg
+      - iDRAC1:
+          description: iDRAC Dell Server management
+          href: https://10.0.100.21
+          icon: dell.svg
+      - iDRAC2:
+          description: iDRAC Dell Server management
+          href: https://10.0.100.22
+          icon: dell.svg
+      - iDRAC3:
+          description: iDRAC Dell Server management
+          href: https://10.0.100.23
+          icon: dell.svg
+      - Openmanage1:
+          description: Openmanage Dell Server management
+          href: https://pvenode1.urbaman.it:1311
+          icon: dell.svg
+      - Openmanage2:
+          description: Openmanage Dell Server management
+          href: https://pvenode2.urbaman.it:1311
+          icon: dell.svg
+      - Openmanage3:
+          description: Openmanage Dell Server management
+          href: https://pvenode3.urbaman.it:1311
+          icon: dell.svg
+      - Netbox:
+          description: Netbox SoT management
+          href: https://netbox.urbaman.it
+          icon: netbox.svg
+    - Network management:
+      - pfSense1:
+          description: pfSense networking
+          href: https://pfsense1.urbaman.it
+          icon: pfsense.svg
+          widget:
+            type: pfsense
+            url: http://pfsense1.urbaman.it
+            username: admin
+            password: dryMfRVXgT4zoyI9
+            wan: vtnet0
+      - pfSense2:
+          description: pfSense networking
+          href: https://pfsense2.urbaman.it
+          icon: pfsense.svg
+          widget:
+            type: pfsense
+            url: http://pfsense2.urbaman.it
+            username: admin
+            password: dryMfRVXgT4zoyI9
+            wan: vtnet0
+  settings.yaml: |
+    title: My Homelab Homepage
+    headerStyle: boxed
+    language: it
+    providers:
+      longhorn:
+        url: https://longhorn.urbaman.it
+  widgets.yaml: "- logo:\n    icon: mdi-home-outline-#0328fc\n- resources:\n    backend:
+    resources\n    cpu: true\n    expanded: true\n    memory: true\n- kubernetes:\n
+    \   cluster:\n      show: true\n      cpu: true\n      memory: true\n      showLabel:
+    true\n      label: \"cluster\"\n    nodes:\n      show: true\n      cpu: true\n
+    \     memory: true\n      showLabel: true\n- longhorn:\n      expanded: true\n
+    \     total: true\n      labels: true\n      nodes: true\n- openmeteo:\n    label:
+    Anzola dell'Emilia\n    latitude: 44.5473\n    longitude: 11.1956\n    timezone:
+    Europe/Rome\n    units: metric \n    cache: 5\n- datetime:\n    text_size: xl\n
+    \   format:\n      dateStyle: long\n      timeStyle: long\n      hourCycle: h23\n-
+    search:\n    provider: google\n    target: _blank\n"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"bookmarks.yaml":"- Deployment notes:\n  - Github:\n    - abbr: HL\n      href: https://github.com/urbaman/HomeLab\n","docker.yaml":"","kubernetes.yaml":"mode: default\n","services.yaml":"- Media:\n  - My First Service:\n      description: Homepage is awesome\n      href: http://localhost/\n      icon: mdi-multimedia\n- Kubernetes:\n  - Dashboard:\n      description: Kubernetes Dashboard\n      href: https://k8dashboard.urbaman.it\n      icon: kubernetes-dashboard.png\n  - Traefik:\n      description: Traefik Dashboard\n      href: https://traefik.urbaman.it\n      icon: traefik.png\n      widget:\n        type: traefik\n        url: http://traefik.urbaman.it\n        username: admin\n        password: traefikadmin\n  - Longhorn:\n      description: Longhorn Dashboard\n      href: https://longhorn.urbaman.it\n      icon: longhorn.png\n  - Portainer:\n      description: Portainer Management UI\n      href: https://portainer.urbaman.it\n      icon: portainer.png\n- Monitoring:\n  - Grafana:\n      description: Grafana dashboards\n      href: https://grafana.urbaman.it\n      icon: grafana.png\n      widget:\n        type: grafana\n        url: https://grafana.urbaman.it\n        username: admin\n        password: prom-operator\n  - Prometheus:\n      description: Prometheus DB\n      href: https://prometheus.urbaman.it\n      icon: prometheus.png\n      widget:\n        type: prometheus\n        url: https://prometheus.urbaman.it\n  - Alertmanager:\n      description: Alertmanager alert management\n      href: https://alertmanager.urbmaan.it\n      icon: alertmanager.png\n  - Pushgateway:\n      description: Pushgateway metrics\n      href: https://pushgateway.urbaman.it\n      icon: prometheus.png\n  - Uptime-Kuma:\n      description: Utime-Kuma service status check\n      href: https://uptimekuma.urbaan.it\n      icon: uptime-kuma.png\n      widget:\n        type: uptimekuma\n        url: https://uptimekuma.urbaman.it\n        slug: statuspage\n  - Haproxy1:\n      description: Haproxy1 stats\n      href: https://haproxy1.stats.urbaman.it/stats\n      icon: haproxy.png\n  - Haproxy2:\n      description: Haproxy2 stats\n      href: https://haproxy2.stats.urbaman.it/stats\n      icon: haproxy.png\n  - Haproxy3:\n      description: Haproxy3 stats\n      href: https://haproxy3.stats.urbaman.it/stats\n      icon: haproxy.png\n- Management:\n  - Proxmox Cluster:\n      description: Proxmox VE Cluster\n      href: https://pvenode1.urbaman.it:8006\n      icon: proxmox.png\n      widget:\n        type: proxmox\n        url: https://pvenode1.urbaman.it:8006\n        username: api-ro-user@pam!gethomepage\n        password: 3c81a243-7638-43db-a7d9-70afd1d49e3a\n  - Proxmox Backup Server:\n      description: Proxmox Backup Server\n      href: https://pbs1.urbaman.it:8007\n      icon: proxmox.png\n      widget:\n        type: proxmoxbackupserver\n        url: https://pbs1.urbaman.it:8007\n        username: api-ro-user@pbs!gethomepage\n        password: a5e091f6-27ec-4a00-8b76-eb25157a15c4\n  - Landscape1:\n      description: Landscape server management UI\n      href: https://landscape1.urbaman.it\n      icon: ubuntu.png\n  - Landscape2:\n      description: Landscape server management UI\n      href: https://landscape2.urbaman.it\n      icon: ubuntu.png\n  - iDRAC1:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.21\n      icon: dell.png\n  - iDRAC2:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.22\n      icon: dell.png\n  - iDRAC3:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.23\n      icon: dell.png\n  - Openmanage1:\n      description: Openmanage Dell Server management\n      href: https://pvenode1.urbaman.it:1311\n      icon: dell.png\n  - Openmanage2:\n      description: Openmanage Dell Server management\n      href: https://pvenode2.urbaman.it:1311\n      icon: dell.png\n  - Openmanage3:\n      description: Openmanage Dell Server management\n      href: https://pvenode3.urbaman.it:1311\n      icon: dell.png\n  - Netbox:\n      description: Netbox SoT management\n      href: https://netbox.urbaman.it\n      icon: netbox.png\n- Network management:\n  - pfSense1:\n      description: pfSense networking\n      href: https://pfsense1.urbaman.it\n      icon: pfsense.png\n      widget:\n        type: pfsense\n        url: http://pfsense1.urbaman.it\n        username: admin\n        password: dryMfRVXgT4zoyI9\n        wan: vtnet0\n  - pfSense2:\n      description: pfSense networking\n      href: https://pfsense2.urbaman.it\n      icon: pfsense.png\n      widget:\n        type: pfsense\n        url: http://pfsense2.urbaman.it\n        username: admin\n        password: dryMfRVXgT4zoyI9\n        wan: vtnet0\n","settings.yaml":"title: My Homelab Homepage\nheaderStyle: boxed\nlanguage: it\nproviders:\n  longhorn:\n    url: https://longhorn.urbaman.it\n","widgets.yaml":"- logo:\n    icon: mdi-home-outline\n- resources:\n    backend: resources\n    cpu: true\n    expanded: true\n    memory: true\n- kubernetes:\n    cluster:\n      show: true\n      cpu: true\n      memory: true\n      showLabel: true\n      label: \"cluster\"\n    nodes:\n      show: true\n      cpu: true\n      memory: true\n      showLabel: true\n- longhorn:\n      expanded: true\n      total: true\n      labels: true\n      nodes: true\n- openmeteo:\n    label: Anzola dell'Emilia\n    latitude: 44.5473\n    longitude: 11.1956\n    timezone: Europe/Rome\n    units: metric \n    cache: 5\n- datetime:\n    text_size: xl\n    format:\n      dateStyle: long\n      timeStyle: long\n      hourCycle: h23\n- search:\n    provider: google\n    target: _blank\n"},"kind":"ConfigMap","metadata":{"annotations":{"meta.helm.sh/release-name":"gethomepage","meta.helm.sh/release-namespace":"gethomepage"},"labels":{"app.kubernetes.io/instance":"gethomepage","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"homepage","app.kubernetes.io/version":"v0.6.10","helm.sh/chart":"homepage-1.2.1"},"name":"gethomepage","namespace":"gethomepage"}}
+    meta.helm.sh/release-name: gethomepage
+    meta.helm.sh/release-namespace: gethomepage
+  creationTimestamp: "2023-09-04T16:41:45Z"
+  labels:
+    app.kubernetes.io/instance: gethomepage
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: homepage
+    app.kubernetes.io/version: v0.6.10
+    helm.sh/chart: homepage-1.2.1
+  name: gethomepage
+  namespace: gethomepage
+  resourceVersion: "33975210"
+  uid: b7f7b51f-a4d5-4b3a-be07-8dfd0cfcbee1
