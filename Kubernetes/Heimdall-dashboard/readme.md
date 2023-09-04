@@ -17,9 +17,9 @@ Create a dedicated DNS entry heimdall.domain.com both on the external DNS (Cloud
 
 Create a volume, persistent volume and claim on longhorn, in the heimdall namespace, 1Gi of storage, ReadWriteMany as accessMode, Retain as ReclaimPolicy
 
-Volume name: heimdall
-Persistent Volume name: heimdall-pv
-Persistent Volume Claim name: heimdall-pvc
+- Volume name: heimdall
+- Persistent Volume name: heimdall-pv
+- Persistent Volume Claim name: heimdall-pvc
 
 ### SSL cert
 
