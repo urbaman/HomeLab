@@ -1,5 +1,7 @@
 # Gethomepage installation
 
+![Screenshot](https://github.com/urbaman/HomeLab/blob/main/Kubernetes/Gethomepage/images/gethomepage.png?raw=true)
+
 ## Install through helm chart
 
 ```bash
