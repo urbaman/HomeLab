@@ -61,7 +61,7 @@ Proxmox (Hypervisor)
   - [ ] Boing shared computing
   - [ ] Vaultwarden <https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment>
   - [ ] the lounge
-  - [ ] actualbudget
+  - [x] actualbudget
   - [ ] Authelia? <https://www.authelia.com/integration/kubernetes/introduction/>
   - [ ] Guacamole? <https://github.com/thomas-illiet/k8s-guacamole>
   - [ ] UrBackup (Backup)

@@ -1,0 +1,190 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: actual-budget
+  labels:
+    name: actual-budget
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual-budget
+  namespace: actual-budget
+  labels:
+    app: actual-budget
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: actual-budget
+  template:
+    metadata:
+      labels:
+        app: actual-budget
+    spec:
+      containers:
+        - name: actual-budget
+          image: actualbudget/actual-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5006
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/user-files
+              name: actual-data
+      volumes:
+        - name: actual-data
+          persistentVolumeClaim:
+            claimName: actual-budget-pvc
+---
+kind: Service
+metadata:
+  name: actual-budget
+  namespace: actual-budget
+  labels:
+    app: actual-budget
+apiVersion: v1
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5006
+      targetPort: http
+  selector:
+    app: actual-budget
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: budget-urbaman
+  namespace: actual-budget
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - budget.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: budget-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: actual-budget-basic-auth
+  namespace: actual-budget
+spec:
+  basicAuth:
+    secret: actual-budget-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: actual-budget-https-redirect
+  namespace: actual-budget
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: actual-budget-security
+  namespace: actual-budget
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: actual-budget-transport
+  namespace: actual-budget
+spec:
+  serverName: actual-budget
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: actual-budget-tlsoptions
+  namespace: actual-budget
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: actual-budget-basic-auth
+  namespace: actual-budget
+data:
+  users: |
+    YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: actual-budget-websecure
+  namespace: actual-budget
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`budget.domain.com`)
+      services:
+        - name: actual-budget
+          port: 5006
+          serversTransport: actual-budget-transport
+      middlewares:
+#        - name: actual-budget-basic-auth
+        - name: actual-budget-security
+  tls:
+    secretName: budget-urbaman
+    options:
+      name: actual-budget-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: actual-budget-web
+  namespace: actual-budget
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`budget.domain.com`)
+      services:
+        - name: actual-budget
+          port: 5006
+      middlewares:
+        - name: actual-budget-https-redirect
