@@ -66,7 +66,6 @@ Proxmox (Hypervisor)
   - [ ] Guacamole? <https://github.com/thomas-illiet/k8s-guacamole>
   - [ ] UrBackup (Backup)
   - [ ] miniflux
-  - [ ] obsidian crouchdb
   - [ ] shlink
   - [ ] nut management
   - [ ] paperless
