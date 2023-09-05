@@ -79,6 +79,11 @@ app_service:
     labels:
       env: sourceoftruth
       context: homelab
+  - name: gethomepage
+    uri: https://gethomepage.urbaman.it
+    labels:
+      env: dashboard
+      context: homelab
   - name: heimdall
     uri: https://heimdall.domain.com
     labels:
