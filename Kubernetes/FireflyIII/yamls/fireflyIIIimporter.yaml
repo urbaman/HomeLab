@@ -1,0 +1,181 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fireflyIIIimporter
+  namespace: fireflyIII
+  labels:
+    app: fireflyIIIimporter
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fireflyIIIimporter
+  template:
+    metadata:
+      labels:
+        app: fireflyIIIimporter
+    spec:
+      containers:
+        - name: fireflyIIIimporter
+          image: fireflyiii/data-importer:latest
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: FIREFLY_III_ACCESS_TOKEN
+            value: "CHANGEME"
+          - name: FIREFLY_III_URL
+            value: "CHANGEME" # could be internal service (fireflyIII) to avoid internet
+          ports:
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+---
+kind: Service
+metadata:
+  name: fireflyIIIimporter
+  namespace: fireflyIII
+  labels:
+    app: fireflyIIIimporter
+apiVersion: v1
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8081
+      targetPort: http
+  selector:
+    app: fireflyIIIimporter
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fireflyIIIimporter-urbaman
+  namespace: fireflyIII
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - fireflyIIIimporter.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: fireflyIIIimporter-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: fireflyIIIimporter-basic-auth
+  namespace: fireflyIII
+spec:
+  basicAuth:
+    secret: fireflyIII-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: fireflyIIIimporter-https-redirect
+  namespace: fireflyIII
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: fireflyIIIimporter-security
+  namespace: fireflyIII
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: fireflyIIIimporter-transport
+  namespace: fireflyIII
+spec:
+  serverName: fireflyIIIimporter
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: fireflyIIIimporter-tlsoptions
+  namespace: fireflyIII
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fireflyIIIimporter-basic-auth
+  namespace: fireflyIII
+data:
+  users: |
+    YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fireflyIIIimporter-websecure
+  namespace: fireflyIII
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`fireflyIIIimporter.domain.com`)
+      services:
+        - name: fireflyIIIimporter
+          port: 80
+          serversTransport: fireflyIIIimporter-transport
+      middlewares:
+#        - name: fireflyIIIimporter-basic-auth
+        - name: fireflyIIIimporter-security
+  tls:
+    secretName: fireflyIIIimporter-urbaman
+    options:
+      name: fireflyIIIimporter-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fireflyIIIimporter-web
+  namespace: fireflyIII
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`fireflyIIIimporter.domain.com`)
+      services:
+        - name: fireflyIIIimporter
+          port: 80
+      middlewares:
+        - name: fireflyIIIimporter-https-redirect
