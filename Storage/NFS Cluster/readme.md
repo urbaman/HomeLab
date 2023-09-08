@@ -375,7 +375,9 @@ sudo pcs resource create nfs_server ocf:heartbeat:nfsserver nfs_shared_infodir=/
 
 ### Add the VIP resource
 
+```bash
 sudo pcs resource create nfs_vip ocf:heartbeat:IPaddr2 ip=VIP cidr_netmask=24 --group nfs_group
+```
 
 ### Add the NFS exports (the root and the real exports)
 
