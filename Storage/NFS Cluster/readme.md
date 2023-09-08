@@ -350,7 +350,7 @@ What=thisserverfullhostname:/volumename
 Where=/mountpath
 Type=glusterfs
 Options=_netdev,auto
- 
+
 [Install]
 WantedBy=multi-user.target
 ```
