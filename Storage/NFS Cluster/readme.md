@@ -290,7 +290,7 @@ Install the sbd package
 sudo apt install sbd
 ```
 
-Open the file `/etc/sysconfig/sbd` and use the following entries:
+Open the file `/etc/default/sbd` and use the following entries:
 
 ```bash
 SBD_PACEMAKER=yes
