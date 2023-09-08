@@ -21,6 +21,15 @@ sudo zpool create HDD5T mirror /dev/sdb /dev/sdc
 sudo zpool create SDD2T mirror /dev/sdd /dev/sde
 ```
 
+### Zpool import
+
+Check available pools, then import them
+
+```bash
+sudo zpool import
+sudo zpool import pool1 pool2
+```
+
 ### Gluster installation
 
 ```bash
