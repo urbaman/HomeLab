@@ -53,6 +53,7 @@ Proxmox (Hypervisor)
   - [x] Postgresql cluster and monitoring
   - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
   - [ ] Redis and Redis Prometheus-Grafana monitoring
+  - [x] Dbgate for multi-db client
   - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
     - [ ] Nextcloud apps <https://www.ionos.com/digitalguide/server/tools/nextcloud-apps/>
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
