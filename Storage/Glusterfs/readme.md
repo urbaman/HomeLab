@@ -109,3 +109,14 @@ sudo systemd daemon-reload
 sudo systemd enable mountpath.mount
 sudo systemd start mountpath.mount
 ```
+
+## Disk substitution
+
+Substitute the disk, check the zpools and fdisk to find the disk without a pool or the pool without a disk, recreate the zpool or add the disk to the pool missing it, then reset the gluster brick if faulty:
+
+```bash
+sudo fdisk -l
+sudo zpool status
+sudo zpool create new-pool mirror /dev/sdb /dev/sdc
+sudo gluster volume reset-brick HDD5T gluster1.domain.com:/HDD5T12 gluster1.domain.com:/HDD5T12 commit force
+```
