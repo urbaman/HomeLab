@@ -50,6 +50,7 @@ Proxmox (Hypervisor)
   - [ ] CloudnativePG
   - [ ] kubelet-csr-approver
   - [ ] Livesync for Obsidian (through couchdb cluster)
+  - [x] Postgresql cluster and monitoring
   - [ ] MySQL (MariaDB) and MySQL Prometheus-Grafana monitoring
   - [ ] Redis and Redis Prometheus-Grafana monitoring
   - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
