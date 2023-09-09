@@ -20,3 +20,4 @@ Access the postgresql-postgresql-ha-pgpool service on port 5432 (eventually thro
 ```bash
 kubectl port-forward -n postgresql service/postgresql-postgresql-ha-pgpool :5432
 ```
+You can also use the service dns inside the cluster: postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local
