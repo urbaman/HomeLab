@@ -11,7 +11,7 @@ helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metr
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany}--set primary.livenessProbe.initialDelaySeconds=480 --set primary.readinessProbe.initialDelaySeconds=120 --set primary.startupProbe.initialDelaySeconds=480
+helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=480 --set primary.readinessProbe.initialDelaySeconds=120 --set primary.startupProbe.initialDelaySeconds=480
 ```
 
 ## Connection
