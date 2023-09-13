@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: proxysql
+  namespace: mariadb
+  labels:
+    app: proxysql
+spec:
+  replicas: 3
+  serviceName: proxysqlcluster
+  selector:
+    matchLabels:
+      app: proxysql
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: proxysql
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: proxysql/proxysql:2.4.1
+        name: proxysql
+        volumeMounts:
+        - name: proxysql-config
+          mountPath: /etc/proxysql.cnf
+          subPath: proxysql.cnf
+        - name: proxysql-data
+          mountPath: /var/lib/proxysql
+          subPath: data
+        ports:
+        - containerPort: 6033
+          name: proxysql-mysql
+        - containerPort: 6032
+          name: proxysql-admin
+      volumes:
+      - name: proxysql-config
+        configMap:
+          name: proxysql-configmap
+  volumeClaimTemplates:
+  - metadata:
+      name: proxysql-data
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: proxysql
+  name: proxysql
+  namespace: mariadb
+spec:
+  ports:
+  - name: proxysql-mysql
+    port: 6033
+    protocol: TCP
+    targetPort: 6033
+  - name: proxysql-admin
+    port: 6032
+    protocol: TCP
+    targetPort: 6032
+  selector:
+    app: proxysql
+  type: ClusterIP

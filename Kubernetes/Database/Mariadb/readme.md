@@ -30,3 +30,19 @@ kubectl port-forward -n mariadb service/mariadb-primary :3306
 ```
 
 You can also use the service dns inside the cluster: mariadb-primary.mariadb.svc.cluster.local
+
+## Proxysql for read/write split
+
+Add a monitoring user ro mysql:
+
+```sql
+CREATE USER 'monitor'@'%' IDENTIFIED BY 'monitor';
+GRANT USAGE, REPLICATION CLIENT ON *.* TO 'monitor'@'%';
+```
+
+Rename the proxysql-mariadb.cnf file to proxysql.cnf
+
+```bash
+kubectl create configmap -n mariadb proxysql-configmap --from-file=proxysql.cnf
+kubectl apply -f proxysql-mariadb.yaml
+```

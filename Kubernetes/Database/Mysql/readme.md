@@ -29,3 +29,19 @@ kubectl port-forward -n mysql service/mysql-primary :3306
 ```
 
 You can also use the service dns inside the cluster: mysql.mysql-primary.svc.cluster.local
+
+## Proxysql for read/write split
+
+Add a monitoring user ro mysql:
+
+```sql
+CREATE USER 'monitor'@'%' IDENTIFIED BY 'monitor';
+GRANT USAGE, REPLICATION CLIENT ON *.* TO 'monitor'@'%';
+```
+
+Rename the proxysql-mysql.cnf file to proxysql.cnf
+
+```bash
+kubectl create configmap -n mysql proxysql-configmap --from-file=proxysql.cnf
+kubectl apply -f proxysql-mysql.yaml
+```
