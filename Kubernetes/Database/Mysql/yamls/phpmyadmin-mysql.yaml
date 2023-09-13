@@ -1,82 +1,81 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbgate
-  namespace: dbgate
+  name: phpmyadmin
+  namespace: mysql
   labels:
-    app: dbgate
+    app: phpmyadmin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dbgate
+      app: phpmyadmin
   template:
     metadata:
       labels:
-        app: dbgate
+        app: phpmyadmin
     spec:
       containers:
-        - name: dbgate
-          image: dbgate/dbgate:latest
+        - name: phpmyadmin
+          image: phpmyadmin/phpmyadmin
           ports:
-            - containerPort: 3000
-              name: http
-          volumeMounts:
-           - mountPath: /root/.dbgate
-             name: dbgate-data
-      volumes:
-      - name: dbgate-data
-        persistentVolumeClaim:
-          claimName: dbgate-pvc
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: proxysql.mysql.svc.cluster.local
+            - name: PMA_PORT
+              value: "6033"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql-root-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: dbgate
-  name: dbgate
-  namespace: dbgate
+  name: phpmyadmin
+  namespace: mysql
 spec:
-  ports:
-  - name: http
-    port: 3000
-    protocol: TCP
-    targetPort: http
+  type: ClusterIP
   selector:
-    app: dbgate
-  type: ClusterIP 
+    app: phpmyadmin
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dbgate-domain
-  namespace: dbgate
+  name: mysql-domain
+  namespace: mysql
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - dbgate.domain.com
+  - mysql.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: dbgate-domain
-  ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-spec:
-  basicAuth:
-    secret: traefik-dbgate-basic-auth
+  secretName: mysql-domain
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-https-redirect
-  namespace: dbgate
+  name: traefik-mysql-basic-auth
+  namespace: mysql
+spec:
+  basicAuth:
+    secret: traefik-mysql-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-mysql-https-redirect
+  namespace: mysql
 spec:
   redirectScheme:
     scheme: https
@@ -85,8 +84,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-security
-  namespace: dbgate
+  name: traefik-mysql-security
+  namespace: mysql
 spec:
   headers:
     frameDeny: true
@@ -100,17 +99,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-dbgate-transport
-  namespace: dbgate
+  name: traefik-mysql-transport
+  namespace: mysql
 spec:
-  serverName: dbgate 
+  serverName: mysql 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-dbgate-tlsoptions
-  namespace: dbgate
+  name: traefik-mysql-tlsoptions
+  namespace: mysql
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -130,51 +129,41 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-data:
-  users: |
-    YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-websecure
-  namespace: dbgate 
+  name: traefik-mysql-websecure
+  namespace: mysql 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`mysql.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
-            #          serversTransport: traefik-dbgate-transport
+        - name: phpmyadmin
+          port: 80
+            #          serversTransport: traefik-mysql-transport
       middlewares:
-        - name: traefik-dbgate-basic-auth
-        - name: traefik-dbgate-security
+        - name: traefik-mysql-security
   tls:
-    secretName: dbgate-domain
+    secretName: mysql-domain
     options:
-      name: traefik-dbgate-tlsoptions
+      name: traefik-mysql-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-web
-  namespace: dbgate
+  name: traefik-mysql-web
+  namespace: mysql
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`mysql.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
+        - name: phpmyadmin
+          port: 80
       middlewares:
-        - name: traefik-dbgate-https-redirect
+        - name: traefik-mysql-https-redirect

@@ -1,82 +1,81 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbgate
-  namespace: dbgate
+  name: phpmyadmin
+  namespace: mariadb
   labels:
-    app: dbgate
+    app: phpmyadmin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dbgate
+      app: phpmyadmin
   template:
     metadata:
       labels:
-        app: dbgate
+        app: phpmyadmin
     spec:
       containers:
-        - name: dbgate
-          image: dbgate/dbgate:latest
+        - name: phpmyadmin
+          image: phpmyadmin/phpmyadmin
           ports:
-            - containerPort: 3000
-              name: http
-          volumeMounts:
-           - mountPath: /root/.dbgate
-             name: dbgate-data
-      volumes:
-      - name: dbgate-data
-        persistentVolumeClaim:
-          claimName: dbgate-pvc
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: proxysql.mariadb.svc.cluster.local
+            - name: PMA_PORT
+              value: "6033"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb
+                  key: mariadb-root-password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: dbgate
-  name: dbgate
-  namespace: dbgate
+  name: phpmyadmin
+  namespace: mariadb
 spec:
-  ports:
-  - name: http
-    port: 3000
-    protocol: TCP
-    targetPort: http
+  type: ClusterIP
   selector:
-    app: dbgate
-  type: ClusterIP 
+    app: phpmyadmin
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dbgate-domain
-  namespace: dbgate
+  name: mariadb-domain
+  namespace: mariadb
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - dbgate.domain.com
+  - mariadb.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: dbgate-domain
-  ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-spec:
-  basicAuth:
-    secret: traefik-dbgate-basic-auth
+  secretName: mariadb-domain
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-https-redirect
-  namespace: dbgate
+  name: traefik-mariadb-basic-auth
+  namespace: mariadb
+spec:
+  basicAuth:
+    secret: traefik-mariadb-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-mariadb-https-redirect
+  namespace: mariadb
 spec:
   redirectScheme:
     scheme: https
@@ -85,8 +84,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-security
-  namespace: dbgate
+  name: traefik-mariadb-security
+  namespace: mariadb
 spec:
   headers:
     frameDeny: true
@@ -100,17 +99,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-dbgate-transport
-  namespace: dbgate
+  name: traefik-mariadb-transport
+  namespace: mariadb
 spec:
-  serverName: dbgate 
+  serverName: mariadb 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-dbgate-tlsoptions
-  namespace: dbgate
+  name: traefik-mariadb-tlsoptions
+  namespace: mariadb
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -130,51 +129,41 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-data:
-  users: |
-    YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-websecure
-  namespace: dbgate 
+  name: traefik-mariadb-websecure
+  namespace: mariadb 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`mariadb.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
-            #          serversTransport: traefik-dbgate-transport
+        - name: phpmyadmin
+          port: 80
+            #          serversTransport: traefik-mariadb-transport
       middlewares:
-        - name: traefik-dbgate-basic-auth
-        - name: traefik-dbgate-security
+        - name: traefik-mariadb-security
   tls:
-    secretName: dbgate-domain
+    secretName: mariadb-domain
     options:
-      name: traefik-dbgate-tlsoptions
+      name: traefik-mariadb-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-web
-  namespace: dbgate
+  name: traefik-mariadb-web
+  namespace: mariadb
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`mariadb.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
+        - name: phpmyadmin
+          port: 80
       middlewares:
-        - name: traefik-dbgate-https-redirect
+        - name: traefik-mariadb-https-redirect
