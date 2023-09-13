@@ -46,3 +46,9 @@ Rename the proxysql-mariadb.cnf file to proxysql.cnf
 kubectl create configmap -n mariadb proxysql-configmap --from-file=proxysql.cnf
 kubectl apply -f proxysql-mariadb.yaml
 ```
+
+## Phpmyadmin for management
+
+```bash
+kubectl apply -f phpmyadmin-mariadb.sql
+```

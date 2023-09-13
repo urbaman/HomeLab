@@ -45,3 +45,9 @@ Rename the proxysql-mysql.cnf file to proxysql.cnf
 kubectl create configmap -n mysql proxysql-configmap --from-file=proxysql.cnf
 kubectl apply -f proxysql-mysql.yaml
 ```
+
+## Phpmyadmin for management
+
+```bash
+kubectl apply -f phpmyadmin-mysql.sql
+```
