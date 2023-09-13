@@ -1,17 +1,17 @@
 # Mysql db
 
-## Installation - Replica cluster (not working)
+## Installation - Replica cluster
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=480 --set primary.readinessProbe.initialDelaySeconds=120 --set secondary.livenessProbe.initialDelaySeconds=480 --set secondary.readinessProbe.initialDelaySeconds=120 --set primary.startupProbe.initialDelaySeconds=480 --set secondary.startupProbe.initialDelaySeconds=480
+helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=600 --set primary.readinessProbe.initialDelaySeconds=600 --set secondary.livenessProbe.initialDelaySeconds=600 --set secondary.readinessProbe.initialDelaySeconds=600 --set primary.startupProbe.initialDelaySeconds=600 --set secondary.startupProbe.initialDelaySeconds=600
 ```
 
 ## Installation - standalone
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=480 --set primary.readinessProbe.initialDelaySeconds=120 --set primary.startupProbe.initialDelaySeconds=480
+helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=480 --set primary.readinessProbe.initialDelaySeconds=480 --set primary.startupProbe.initialDelaySeconds=480
 ```
 
 ## Connection
