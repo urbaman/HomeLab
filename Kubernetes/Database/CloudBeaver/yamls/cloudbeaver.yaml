@@ -1,82 +1,82 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbgate
-  namespace: dbgate
+  name: cloudbeaver
+  namespace: cloudbeaver
   labels:
-    app: dbgate
+    app: cloudbeaver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dbgate
+      app: cloudbeaver
   template:
     metadata:
       labels:
-        app: dbgate
+        app: cloudbeaver
     spec:
       containers:
-        - name: dbgate
-          image: dbgate/dbgate:latest
+        - name: cloudbeaver
+          image: dbeaver/cloudbeaver:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 8978
               name: http
           volumeMounts:
-           - mountPath: /root/.dbgate
-             name: dbgate-data
+           - mountPath: /opt/cloudbeaver/workspace
+             name: cloudbeaver-data
       volumes:
-      - name: dbgate-data
+      - name: cloudbeaver-data
         persistentVolumeClaim:
-          claimName: dbgate-pvc
+          claimName: cloudbeaver-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: dbgate
-  name: dbgate
-  namespace: dbgate
+    app: cloudbeaver
+  name: cloudbeaver
+  namespace: cloudbeaver
 spec:
   ports:
   - name: http
-    port: 3000
+    port: 8978
     protocol: TCP
     targetPort: http
   selector:
-    app: dbgate
+    app: cloudbeaver
   type: ClusterIP 
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dbgate-domain
-  namespace: dbgate
+  name: cloudbeaver-domain
+  namespace: cloudbeaver
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - dbgate.domain.com
+  - cloudbeaver.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: dbgate-domain
+  secretName: cloudbeaver-domain
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
+  name: traefik-cloudbeaver-basic-auth
+  namespace: cloudbeaver
 spec:
   basicAuth:
-    secret: traefik-dbgate-basic-auth
+    secret: traefik-cloudbeaver-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-https-redirect
-  namespace: dbgate
+  name: traefik-cloudbeaver-https-redirect
+  namespace: cloudbeaver
 spec:
   redirectScheme:
     scheme: https
@@ -85,8 +85,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-security
-  namespace: dbgate
+  name: traefik-cloudbeaver-security
+  namespace: cloudbeaver
 spec:
   headers:
     frameDeny: true
@@ -100,17 +100,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-dbgate-transport
-  namespace: dbgate
+  name: traefik-cloudbeaver-transport
+  namespace: cloudbeaver
 spec:
-  serverName: dbgate 
+  serverName: cloudbeaver 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-dbgate-tlsoptions
-  namespace: dbgate
+  name: traefik-cloudbeaver-tlsoptions
+  namespace: cloudbeaver
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -133,8 +133,8 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
+  name: traefik-cloudbeaver-basic-auth
+  namespace: cloudbeaver
 data:
   users: |
     YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
@@ -142,39 +142,39 @@ data:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-websecure
-  namespace: dbgate 
+  name: traefik-cloudbeaver-websecure
+  namespace: cloudbeaver 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`cloudbeaver.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
-            #          serversTransport: traefik-dbgate-transport
+        - name: cloudbeaver
+          port: 8978
+          serversTransport: traefik-cloudbeaver-transport
       middlewares:
-        - name: traefik-dbgate-basic-auth
-        - name: traefik-dbgate-security
+        - name: traefik-cloudbeaver-basic-auth
+        - name: traefik-cloudbeaver-security
   tls:
-    secretName: dbgate-domain
+    secretName: cloudbeaver-domain
     options:
-      name: traefik-dbgate-tlsoptions
+      name: traefik-cloudbeaver-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-web
-  namespace: dbgate
+  name: traefik-cloudbeaver-web
+  namespace: cloudbeaver
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`cloudbeaver.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
+        - name: cloudbeaver
+          port: 8978
       middlewares:
-        - name: traefik-dbgate-https-redirect
+        - name: traefik-cloudbeaver-https-redirect
