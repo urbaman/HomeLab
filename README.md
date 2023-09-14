@@ -53,7 +53,7 @@ Proxmox (Hypervisor)
   - [x] Postgresql cluster with pgadmin and monitoring
   - [x] MySQL replica cluster with Proxysql and Phpmyadmin; MySQL Prometheus-Grafana monitoring
   - [x] Mariadb replica cluster with Proxysql and Phpmyadmin; Mariadb Prometheus-Grafana monitoring
-  - [ ] Redis and Redis Prometheus-Grafana monitoring
+  - [x] Redis and Redis Prometheus-Grafana monitoring
   - [x] Dbgate for multi-db client
   - [x] Cloudbeaver for multi-db client
   - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
