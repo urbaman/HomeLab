@@ -28,7 +28,7 @@ Access the mysql service on port 5432 (eventually through kubectl proxy) with us
 kubectl port-forward -n mysql service/mysql-primary :3306
 ```
 
-You can also use the service dns inside the cluster: mysql.mysql-primary.svc.cluster.local
+You can also use the service dns inside the cluster: mysql-primary.mysql.svc.cluster.local
 
 ## Proxysql for read/write split
 
