@@ -47,6 +47,8 @@ kubectl create configmap -n mariadb proxysql-configmap --from-file=proxysql.cnf
 kubectl apply -f proxysql-mariadb.yaml
 ```
 
+Now connect through the proxysql service or proxysql.mariadb.svc.cluster.local
+
 ## Phpmyadmin for management
 
 ```bash

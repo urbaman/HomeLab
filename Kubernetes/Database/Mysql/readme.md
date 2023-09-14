@@ -46,6 +46,8 @@ kubectl create configmap -n mysql proxysql-configmap --from-file=proxysql.cnf
 kubectl apply -f proxysql-mysql.yaml
 ```
 
+Now connect through the proxysql service or proxysql.mysql.svc.cluster.local
+
 ## Phpmyadmin for management
 
 ```bash
