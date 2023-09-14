@@ -32,6 +32,7 @@ mysql_variables=
     commands_stats=true
     sessions_sort=true
     connect_retries_on_failure=10
+    set_query_lock_on_hostgroup=0
 }
 
 mysql_servers =
