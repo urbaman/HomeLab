@@ -1,82 +1,94 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pgadmin-secret
+  namespace: postgresql
+type: Opaque
+data:
+  pgadmin-default-password: c2VjcmV0cGFzc3dvcmQ= # This is "secretpassword", change to your password
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dbgate
-  namespace: dbgate
-  labels:
-    app: dbgate
+  name: pgadmin
+  namespace: postgresql
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: dbgate
+   matchLabels:
+    app: pgadmin
+  replicas: 1
   template:
     metadata:
       labels:
-        app: dbgate
+        app: pgadmin
     spec:
       containers:
-        - name: dbgate
-          image: dbgate/dbgate:latest
+        - name: pgadmin4
+          image: dpage/pgadmin4
+          env:
+           - name: PGADMIN_DEFAULT_EMAIL
+             value: "posgresqladmin@domain.com"
+           - name: PGADMIN_DEFAULT_PASSWORD
+             valueFrom:
+               secretKeyRef:
+                 name: pgadmin-secret
+                 key: pgadmin-default-password
+           - name: PGADMIN_PORT
+             value: "80"
           ports:
-            - containerPort: 3000
-              name: http
-          volumeMounts:
-           - mountPath: /root/.dbgate
-             name: dbgate-data
-      volumes:
-      - name: dbgate-data
-        persistentVolumeClaim:
-          claimName: dbgate-pvc
+            - containerPort: 80
+              name: pgadmin-port
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  name: pgadmin
+  namespace: postgresql
   labels:
-    app: dbgate
-  name: dbgate
-  namespace: dbgate
+    app: pgadmin
 spec:
-  ports:
-  - name: http
-    port: 3000
-    protocol: TCP
-    targetPort: http
   selector:
-    app: dbgate
+   app: pgadmin
   type: ClusterIP
+  ports:
+   - port: 80
+     name: pgadmin-port
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dbgate-domain
-  namespace: dbgate
+  name: pgadmin-domain
+  namespace: postgresql
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - dbgate.domain.com
+  - pgadmin.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: dbgate-domain
+  secretName: pgadmin-domain
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
+  name: traefik-pgadmin-basic-auth
+  namespace: postgresql
 spec:
   basicAuth:
-    secret: traefik-dbgate-basic-auth
+    secret: traefik-pgadmin-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-https-redirect
-  namespace: dbgate
+  name: traefik-pgadmin-https-redirect
+  namespace: postgresql
 spec:
   redirectScheme:
     scheme: https
@@ -85,8 +97,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dbgate-security
-  namespace: dbgate
+  name: traefik-pgadmin-security
+  namespace: postgresql
 spec:
   headers:
     frameDeny: true
@@ -100,17 +112,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-dbgate-transport
-  namespace: dbgate
+  name: traefik-pgadmin-transport
+  namespace: postgresql
 spec:
-  serverName: dbgate 
+  serverName: pgadmin 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-dbgate-tlsoptions
-  namespace: dbgate
+  name: traefik-pgadmin-tlsoptions
+  namespace: postgresql
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -130,51 +142,41 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-data:
-  users: |
-    YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-websecure
-  namespace: dbgate 
+  name: traefik-pgadmin-websecure
+  namespace: postgresql 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`pgadmin.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
-            #          serversTransport: traefik-dbgate-transport
+        - name: pgadmin
+          port: 80
+          serversTransport: traefik-pgadmin-transport
       middlewares:
-        - name: traefik-dbgate-basic-auth
-        - name: traefik-dbgate-security
+        - name: traefik-pgadmin-security
   tls:
-    secretName: dbgate-domain
+    secretName: pgadmin-domain
     options:
-      name: traefik-dbgate-tlsoptions
+      name: traefik-pgadmin-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dbgate-web
-  namespace: dbgate
+  name: traefik-pgadmin-web
+  namespace: postgresql
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`dbgate.domain.com`)
+      match: Host(`pgadmin.domain.com`)
       services:
-        - name: dbgate
-          port: 3000
+        - name: pgadmin
+          port: 80
       middlewares:
-        - name: traefik-dbgate-https-redirect
+        - name: traefik-pgadmin-https-redirect

@@ -20,4 +20,13 @@ Access the postgresql-postgresql-ha-pgpool service on port 5432 (eventually thro
 ```bash
 kubectl port-forward -n postgresql service/postgresql-postgresql-ha-pgpool :5432
 ```
+
 You can also use the service dns inside the cluster: postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local
+
+## Pgadmin
+
+Change the password in the secret, change the domains in the certificate and ingressroutes, then apply the yaml.
+
+```bash
+kubectl apply -n pgadmin.yaml
+```
