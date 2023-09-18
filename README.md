@@ -77,7 +77,7 @@ Proxmox (Hypervisor)
   - [ ] Reactive Resume
   - [ ] Firefly III
   - [ ] Flatnotes
-  - [ ] IT-tools
+  - [x] IT-tools
 
 <https://github.com/awesome-selfhosted/awesome-selfhosted>
 

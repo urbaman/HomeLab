@@ -1,0 +1,183 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: it-tools
+  labels:
+    name: it-tools
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: it-tools-urbaman
+  namespace: it-tools
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - it-tools.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: it-tools-urbaman
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-tools        # < name of the deployment
+  namespace: it-tools   # < namespace where place the deployment and pods
+  labels:
+    app: it-tools          # < label for tagging and reference
+spec:
+  replicas: 1           # < number of pods to deploy
+  selector:
+    matchLabels:
+      app: it-tools
+  strategy:
+    rollingUpdate:
+      maxSurge: 0       # < The number of pods that can be created above the desired amount of pods during an update
+      maxUnavailable: 1 # < The number of pods that can be unavailable during the update process
+    type: RollingUpdate # < New pods are added gradually, and old pods are terminated gradually
+  template:
+    metadata:
+      labels:
+        app: it-tools
+    spec:
+      containers:
+        - image: corentinth/it-tools:latest # < the name of the docker image we will use
+          name: it-tools                         # < name of container
+          imagePullPolicy: Always
+          ports:                              # < the ports required (see container documentation)
+           - containerPort: 80
+             name: http-80
+             protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-tools-service    # < name of the service
+  namespace: it-tools       # < namespace where place the deployment and pods
+spec:
+  selector:
+    app: it-tools           # < reference to the deployment (connects with this deployment)
+  ports:
+    - name: http-80
+      protocol: TCP
+      port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-it-tools-basic-auth
+  namespace: it-tools
+spec:
+  basicAuth:
+    secret: traefik-it-tools-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-it-tools-https-redirect
+  namespace: it-tools
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-it-tools-security
+  namespace: it-tools
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-it-tools-transport
+  namespace: it-tools
+spec:
+  serverName: it-tools 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-it-tools-tlsoptions
+  namespace: it-tools
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-it-tools-basic-auth
+  namespace: it-tools
+data:
+  users: |
+    <htpasswd -nb username password | base64>
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-it-tools-websecure
+  namespace: it-tools 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`it-tools.urbaman.it`)
+      services:
+        - name: it-tools-service
+          port: 80
+          serversTransport: traefik-it-tools-transport
+      middlewares:
+        - name: traefik-it-tools-basic-auth
+        - name: traefik-it-tools-security
+  tls:
+    secretName: it-tools-urbaman
+    options:
+      name: traefik-it-tools-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-it-tools-web
+  namespace: it-tools
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`it-tools.urbaman.it`)
+      services:
+        - name: it-tools-service
+          port: 80
+      middlewares:
+        - name: traefik-it-tools-https-redirect
