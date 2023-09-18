@@ -11,7 +11,7 @@ helm install couchdb couchdb/couchdb --set persistentVolume.enabled=true --set c
 Get the password for the admin user
 
 ```bash
-kubectl get secret -n couchdb couchdb -o go-template='{{ .data.adminPassword }}' | base64 -d
+kubectl get secret -n couchdb couchdb-couchdb -o go-template='{{ .data.adminPassword }}' | base64 -d
 ```
 
 Connect to the Fauxton GUI to check the cluster and begin using it: [http://couchdb-couchdb.couchdb.svc.cluster.local:5984/_utils/#/](http://couchdb-couchdb.couchdb.svc.cluster.local:5984/_utils/#/)
