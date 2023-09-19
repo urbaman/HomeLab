@@ -30,7 +30,7 @@ You can also use the service dns inside the cluster: postgresql-postgresql-ha-pg
 ```bash
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-postgresql -o jsonpath="{.data.repmgr-password}" | base64 -d
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-pgpool -o jsonpath="{.data.admin-password}" | base64 -d
-helm upgrade postgresql bitnami/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set persistence.storageClass=longhorn --set persistence.size=15Gi --set persistence.accessModes={"ReadWriteMany} --set pgpool.customUsers.usernames="user01,user02" --set pgpool.customUsers.passwords="pwd01,pwd02" --set postgresql.password=<postres password> --set postgresql.repmgrPassword=<repmgr-password> --set pgpool.adminPassword=<pgpool admin password>
+helm upgrade postgresql bitnami/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set persistence.storageClass=longhorn --set persistence.size=15Gi --set persistence.accessModes={"ReadWriteMany"} --set pgpool.customUsers.usernames="user01,user02" --set pgpool.customUsers.passwords="pwd01,pwd02" --set postgresql.password=<postres password> --set postgresql.repmgrPassword=<repmgr-password> --set pgpool.adminPassword=<pgpool admin password>
 ```
 
 ## Pgadmin
