@@ -21,9 +21,6 @@ spec:
   csi:
     driver: driver.longhorn.io
     fsType: ext4
-    volumeAttributes:
-      numberOfReplicas: '6'
-      staleReplicaTimeout: '2880'
     volumeHandle: homer
 ---
 apiVersion: v1
