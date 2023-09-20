@@ -5,9 +5,8 @@
 Download and run the environment check
 
 ```bash
-wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh
-sudo chown +x environment_check.sh
-./environment_check.sh
+sudo apt install kubectl jq nfs-common -y
+curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh | bash
 ```
 
 ## Installation
