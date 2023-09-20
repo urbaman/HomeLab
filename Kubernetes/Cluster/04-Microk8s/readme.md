@@ -8,7 +8,7 @@ sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
 microk8s status --wait-ready
 ```
-
+## Not working properly
 From an external etcd node, copy the certificates on the control planes
 
 ```bash

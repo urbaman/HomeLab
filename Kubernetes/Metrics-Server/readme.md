@@ -21,7 +21,7 @@ Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
         - --kubelet-insecure-tls
 ```
 
-Also add the ```--enable-aggregator-routing=true``` flag to the apiserver configuration, so that requests sent to Metrics Server are load balanced between the 2 instances.
+Also add the `--enable-aggregator-routing=true` flag to the apiserver configuration, so that requests sent to Metrics Server are load balanced between the 2 instances.
 
 On all control planes:
 
