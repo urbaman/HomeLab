@@ -1,0 +1,280 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: s-pdf
+  labels:
+    name: s-pdf
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s-pdf-config-pv
+  namespace: s-pdf
+spec:
+  capacity:
+    storage: 10Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: s-config-pdf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s-pdf-config-pvc
+  namespace: s-pdf
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Mi
+  volumeName: s-pdf-config-pv
+  storageClassName: longhorn
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: s-pdf-data-pv
+  namespace: s-pdf
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: s-data-pdf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s-pdf-data-pvc
+  namespace: s-pdf
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: s-pdf-data-pv
+  storageClassName: longhorn
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: s-pdf-urbaman
+  namespace: s-pdf
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - s-pdf.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: s-pdf-urbaman
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s-pdf        # < name of the deployment
+  namespace: s-pdf   # < namespace where place the deployment and pods
+  labels:
+    app: s-pdf          # < label for tagging and reference
+spec:
+  replicas: 1           # < number of pods to deploy
+  selector:
+    matchLabels:
+      app: s-pdf
+  strategy:
+    rollingUpdate:
+      maxSurge: 0       # < The number of pods that can be created above the desired amount of pods during an update
+      maxUnavailable: 1 # < The number of pods that can be unavailable during the update process
+    type: RollingUpdate # < New pods are added gradually, and old pods are terminated gradually
+  template:
+    metadata:
+      labels:
+        app: s-pdf
+    spec:
+      volumes:
+      - name: s-pdf-config  # < linkname of the volume for the pvc
+        persistentVolumeClaim:
+          claimName: s-pdf-config-pvc # < pvc name we created in the previous yaml
+      - name: s-pdf-data  # < linkname of the volume for the pvc
+        persistentVolumeClaim:
+          claimName: s-pdf-data-pvc # < pvc name we created in the previous yaml
+      containers:
+        - image: frooodle/s-pdf # < the name of the docker image we will use
+          name: s-pdf                         # < name of container
+          imagePullPolicy: Always             # < always use the latest image when creating container/pod
+          env:
+            - name:  DOCKER_ENABLE_SECURITY
+              value: "true" # or false
+            - name:  SECURITY_ENABLELOGIN
+              value: "true" #or false
+            - name:  SECURITY_CSRFDISABLED
+              value: "true" #or false
+            - name:  SYSTEM_DEFAULTLOCALE
+              value: it_IT # or fr_FR or de_DE
+            - name:  UI_APPNAME
+              value: HomelabPDF
+            - name:  UI_HOMEDESCRIPTION
+              value: Homelab PDF tools
+            - name:  UI_APPNAMENAVBAR
+              value: HomelabPDF Tools
+            - name:  SYSTEM_MAXFILESIZE
+              value: "10000" # Set the maximum file size in MB
+            - name:  METRICS_ENABLED
+              value: "true"
+            - name:  SYSTEM_GOOGLEVISIBILITY
+              value: false # or true
+          ports:                              # < the ports required (see container documentation)
+           - containerPort: 8080
+             name: http-8080
+             protocol: TCP
+          volumeMounts:                       # < the volume mount in the container. Look at the relation volumelabel->pvc->pv
+           - mountPath: /configs           # < mount location in the container
+             name: s-pdf-config               # < volumelabel configured earlier in the yaml file                       # < the volume mount in the container. Look at the relation volumelabel->pvc->pv
+           - mountPath: /usr/share/tesseract-ocr/4.00/tessdata           # < mount location in the container
+             name: s-pdf-data               # < volumelabel configured earlier in the yaml file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-pdf-service    # < name of the service
+  namespace: s-pdf       # < namespace where place the deployment and pods
+spec:
+  selector:
+    app: s-pdf           # < reference to the deployment (connects with this deployment)
+  ports:
+    - name: http-8080
+      protocol: TCP
+      port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-s-pdf-basic-auth
+  namespace: s-pdf
+spec:
+  basicAuth:
+    secret: traefik-s-pdf-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-s-pdf-https-redirect
+  namespace: s-pdf
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-s-pdf-security
+  namespace: s-pdf
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-s-pdf-transport
+  namespace: s-pdf
+spec:
+  serverName: s-pdf 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-s-pdf-tlsoptions
+  namespace: s-pdf
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-s-pdf-basic-auth
+  namespace: s-pdf
+data:
+  users: |
+    <htpasswd -nb admin password | base64>
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-s-pdf-websecure
+  namespace: s-pdf 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`s-pdf.urbaman.it`)
+      services:
+        - name: s-pdf-service
+          port: 8080
+            #          serversTransport: traefik-s-pdf-transport
+      middlewares:
+        - name: traefik-s-pdf-basic-auth
+        - name: traefik-s-pdf-security
+  tls:
+    secretName: s-pdf-urbaman
+    options:
+      name: traefik-s-pdf-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-s-pdf-web
+  namespace: s-pdf
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`s-pdf.urbaman.it`)
+      services:
+        - name: s-pdf-service
+          port: 8080
+      middlewares:
+        - name: traefik-s-pdf-https-redirect

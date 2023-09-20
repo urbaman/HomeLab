@@ -73,7 +73,7 @@ Proxmox (Hypervisor)
   - [ ] shlink
   - [ ] nut management
   - [ ] paperless
-  - [ ] Stirling PDF
+  - [x] Stirling PDF
   - [ ] Reactive Resume
   - [ ] Firefly III
   - [ ] Flatnotes

@@ -93,6 +93,7 @@ Here are the detailed steps to deploy our homelab cluster
 2. [Homer homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homer)
 3. [it-tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/It-tools)
 4. [Gethomepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Gethomepage)
-5. [Actual Budget](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
+5. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
+6. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
 6. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
 7. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)

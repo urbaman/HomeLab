@@ -2,8 +2,7 @@
 
 ## Preparation
 
-Create a Longhorn Volume, and the required homer.domain.com  DNS entry (we use cloudflare)
-
+Create a Longhorn Volume, and the required homer.domain.com DNS entry both internally (we use pfSense) and externally (we use cloudflare)
 ## Deploy
 
 Run the yaml file to deploy Homer.
