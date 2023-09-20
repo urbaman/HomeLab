@@ -1060,7 +1060,7 @@ sudo apt-mark hold kubeadm
 Check the upgrade to see if it's safe:
 
 ```bash
-kubeadm upgrade plan
+sudo kubeadm upgrade plan
 ```
 
 Execute:
