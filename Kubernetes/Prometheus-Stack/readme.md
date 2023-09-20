@@ -128,11 +128,9 @@ alertmanager:
   alertmanagerSpec:
     storage:
      volumeClaimTemplate:
-       metadata:
-         name: alertmanager-pvc
        spec:
          storageClassName: longhorn
-         accessModes: ["ReadWriteOnce"]
+         accessModes: ["ReadWriteMany"]
          resources:
            requests:
              storage: 50Gi
@@ -140,11 +138,9 @@ prometheus:
   prometheusSpec:    
     storageSpec: 
      volumeClaimTemplate:
-       metadata:
-         name: prometheus-pvc
        spec:
          storageClassName: longhorn
-         accessModes: ["ReadWriteOnce"]
+         accessModes: ["ReadWriteMany"]
          resources:
            requests:
              storage: 50Gi
@@ -173,6 +169,8 @@ Near the end you'll find something like:
 ```
 
 In here, ```release: kube-prometheus-stack``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
+
+Update: the serviceMonitorSelector is not defined anymore, but the release label works.
 
 ### Example: Traefik (see more below for Traefik implementation)
 
