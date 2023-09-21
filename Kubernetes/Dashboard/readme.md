@@ -11,13 +11,20 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/a
 ```bash
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm repo update
-helm show values kubernetes-dashboard/kubernetes-dashboard > dashboard-values.yaml
 ```
 
-Enable the metrics scraper, then save the values and install the chart
+Enable the metrics scraper, disable nginx, cert-manager and ingress, then save the values and install the chart
 
 ```bash
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+helm show values kubernetes-dashboard/kubernetes-dashboard > dashboard-values.yaml
+vi dashboard-values.yaml
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard -f dashboard-values.yaml
+```
+
+Or give the settings to helm
+
+```bash
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard  --set=app.ingress.enabled=false --set=nginx.enabled=false --set=cert-manager.enabled=false
 ```
 
 ## Creating sample user
