@@ -96,6 +96,7 @@ version = 2
       snapshotter = "overlayfs"
 
       [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+      
         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
           base_runtime_spec = ""
           cni_conf_dir = ""
