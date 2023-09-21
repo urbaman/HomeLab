@@ -6,24 +6,6 @@ metadata:
     name: s-pdf
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: s-pdf-config-pv
-  namespace: s-pdf
-spec:
-  capacity:
-    storage: 10Mi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn
-  csi:
-    driver: driver.longhorn.io
-    fsType: ext4
-    volumeHandle: s-config-pdf
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: s-pdf-config-pvc
@@ -34,26 +16,7 @@ spec:
   resources:
     requests:
       storage: 10Mi
-  volumeName: s-pdf-config-pv
   storageClassName: longhorn
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: s-pdf-data-pv
-  namespace: s-pdf
-spec:
-  capacity:
-    storage: 5Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn
-  csi:
-    driver: driver.longhorn.io
-    fsType: ext4
-    volumeHandle: s-data-pdf
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -66,13 +29,12 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: s-pdf-data-pv
   storageClassName: longhorn
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: s-pdf-urbaman
+  name: urbaman-s-pdf
   namespace: s-pdf
 spec:
   # Certificate will be valid for these domain names
@@ -84,7 +46,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: s-pdf-urbaman
+  secretName: urbaman-s-pdf
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -230,15 +192,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-s-pdf-basic-auth
-  namespace: s-pdf
-data:
-  users: |
-    <htpasswd -nb admin password | base64>
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -253,12 +206,11 @@ spec:
       services:
         - name: s-pdf-service
           port: 8080
-            #          serversTransport: traefik-s-pdf-transport
+          serversTransport: traefik-s-pdf-transport
       middlewares:
-        - name: traefik-s-pdf-basic-auth
         - name: traefik-s-pdf-security
   tls:
-    secretName: s-pdf-urbaman
+    secretName: urbaman-s-pdf
     options:
       name: traefik-s-pdf-tlsoptions
 ---
