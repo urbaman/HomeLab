@@ -185,18 +185,6 @@ ports:
       secret: secret-name # add this for HA settings, with the secret containing the cert-manager certificate for the traefik host to reach
 ```
 
-Enable the dashboard ingress route:
-
-```yaml
-ingressRoute:
-  dashboard:
-    annotations: {}
-    enabled: true
-    labels: {}
-    tls:
-      secret: secret-name # add this for HA settings, with the secret containing the cert-manager certificate for the traefik host to reach
-```
-
 Enable the ingressClass, set it to default:
 
 ```yaml
@@ -665,7 +653,7 @@ spec:
         - name: traefik-dashboard-basic-auth
         - name: traefik-dashboard-security
   tls:
-    secretName: traefik-urbaman
+    secretName: urbaman-traefik
     options:
       name: traefik-dashboard-tlsoptions
 ---
