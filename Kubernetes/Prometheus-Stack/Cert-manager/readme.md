@@ -1,31 +1,6 @@
 # Monitoring Cert Manager
 
-Deploy the following PodMonitor, after having added the cert-manager namespace to the kube-prometheus-stack deployment
-
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
-metadata:
-  name: cert-manager
-  namespace: cert-manager
-  labels:
-    app: cert-manager
-    app.kubernetes.io/name: cert-manager
-    app.kubernetes.io/instance: cert-manager
-    app.kubernetes.io/component: controller
-    release: kube-prometheus-stack
-spec:
-  jobLabel: app.kubernetes.io/name
-  selector:
-    matchLabels:
-      app: cert-manager
-      app.kubernetes.io/name: cert-manager
-      app.kubernetes.io/instance: cert-manager
-      app.kubernetes.io/component: controller
-  podMetricsEndpoints:
-    - port: tcp-prometheus-servicemonitor
-      honorLabels: true
-```
+Deploy the PodMonitor with the prom-certmanager.yaml file, after having added the cert-manager namespace to the kube-prometheus-stack-operator deployment
 
 Search and add the cert-manager grafana dashboard
 
