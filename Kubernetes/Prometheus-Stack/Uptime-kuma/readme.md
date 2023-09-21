@@ -2,7 +2,13 @@
 
 ## Create the Prometheus Service Monitor
 
-Create a secret with the basic auth base64 username and password, then the service monitor
+Create a secret with the basic auth base64 username and password for uptime-kuma, then the service monitor
+
+
+```bash
+echo -n "<username>" | base64
+echo -n "<password>" | base64
+```
 
 ```bash
 kubectl apply -f sm-ukuma.yaml
