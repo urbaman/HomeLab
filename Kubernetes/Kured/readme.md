@@ -48,7 +48,7 @@ Flags:
 I will set the following arguments:
 
 ```yaml
-      --alert-filter-regexp=^RebootRequired$
+      --alert-filter-regexp=^(RebootRequired|Watchdog)$
       --end-time=17:00
       --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
       --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
@@ -59,8 +59,10 @@ I will set the following arguments:
 
 Be aware to put your proper url to the prometheus service in the `--prometheus-url=` flag.
 
-To check for prometheus alerts (not checking kured's alerts), reboot between 10 and 17 in weekdays, Europe/Rome timezone, send notifications by email.
+The selected values set kured to check for prometheus alerts (not checking kured's alerts), reboot between 10 and 17 in weekdays, Europe/Rome timezone, send notifications by email.
 
 ```bash
 kubectl apply -f "kured-$latest-dockerhub.yaml"
 ```
+
+Set unattended-upgrades not to reboot.

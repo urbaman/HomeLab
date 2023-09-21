@@ -3,7 +3,7 @@
 ## Install Cert-manager
 
 ```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
 ```
 
 Or via helm
@@ -25,68 +25,16 @@ Set the installCRDs=true to install the CRDs (best method)
 
 Create a secret with Cloudflare API Token (all domains)
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudflare-api-token-secret
-type: Opaque
-stringData:
-  api-token: <API Token>
-```
+API Token recommended settings:
 
-Then create the ClusterIssuer as follows.
+- Permissions:
+  - Zone - DNS - Edit
+  - Zone - Zone - Read
+- Zone Resources:
+  - Include - All Zones
 
-```yaml
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: cert-manager-acme-issuer
-  # Important: use the same namespace as Cert Manager deployment
-  # Otherwise Cert Manager won't be able to find related elements
-  namespace: cert-manager
-spec:
-  acme:
-    # Email on which you'll receive notification for our certificates (expiration and such)
-    email: mail@domain.com
-    # Name of the secret under which to store the secret key used by acme
-    # This secret is managed by ClusterIssuer resource, you don't have to create it yourself
-    privateKeySecretRef:
-      name: cert-manager-acme-private-key
-    # ACME server to use
-    # Specify https://acme-v02.api.letsencrypt.org/directory for production
-    # Staging server issues staging certificate which won't be trusted by most external parties but can be used for development purposes
-    # server: https://acme-staging-v02.api.letsencrypt.org/directory
-    server: https://acme-v02.api.letsencrypt.org/directory for production
-    # Solvers define how to validate you're the owner of the domain for which to issue certificate
-    # We use DNS-01 challenge with Cloudflare by providing related Cloudflare credentials (API Token) 
-    solvers:
-    - dns01:
-        cloudflare:
-          apiTokenSecretRef:
-            name: cloudflare-api-token-secret
-            key: api-token
-```
+Set the token and the email in the `cert-manager-issuer-cfdns01.yaml` file, then apply.
 
 ### Certificate creation
 
-Let's create our wildcard certificate.
-
-```yaml
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: urbaman-wildcard
-spec:
-  # Certificate will be valid for these domain names
-  dnsNames:
-  - urbaman.it
-  - '*.urbaman.it'
-  # Reference our issuer
-  # As it's a ClusterIssuer, it can be in a different namespace
-  issuerRef:
-    kind: ClusterIssuer
-    name: cert-manager-acme-issuer
-  # Secret that will be created with our certificate and private keys
-  secretName: urbaman-wildcard-certificate
-```
+Let's create our wildcard certificate using the `cert.yaml` template.

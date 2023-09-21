@@ -1,25 +1,34 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: k8dashboard-domain
-  namespace: kubernetes-dashboard
+  name: pushgateway-urbaman
+  namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - k8dashboard.domain.com
+  - pushgateway.urbaman.it
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: k8dashboard-domain
+  secretName: pushgateway-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: k8dashboard-https-redirect
-  namespace: kubernetes-dashboard
+  name: monitoring-pushgateway-basic-auth
+  namespace: monitoring
+spec:
+  basicAuth:
+    secret: monitoring-pushgateway-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-pushgateway-https-redirect
+  namespace: monitoring
 spec:
   redirectScheme:
     scheme: https
@@ -28,8 +37,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: k8dashboard-security
-  namespace: kubernetes-dashboard
+  name: monitoring-pushgateway-security
+  namespace: monitoring
 spec:
   headers:
     frameDeny: true
@@ -43,17 +52,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: k8dashboard-transport
-  namespace: kubernetes-dashboard
+  name: monitoring-pushgateway-transport
+  namespace: monitoring
 spec:
-  serverName: k8dashboard
+  serverName: pushgateway
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: k8dashboard-tlsoptions
-  namespace: kubernetes-dashboard
+  name: monitoring-pushgateway-tlsoptions
+  namespace: monitoring
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -73,41 +82,50 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: v1
+kind: Secret
 metadata:
-  name: k8dashboard-websecure
-  namespace: kubernetes-dashboard
-spec:
-  entryPoints:
-    - websecure
-  routes:
-  - match: Host(`k8dashboard.domain.com`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard
-      port: 443 
-      serversTransport: k8dashboard-transport
-    middlewares:
-      - name: k8dashboard-security
-  tls:
-    secretName: k8dashboard-domain
-    options:
-      name: k8dashboard-tlsoptions
+  name: monitoring-pushgateway-basic-auth
+  namespace: monitoring
+data:
+  users: |
+    YWRtaW46JGFwcjEkSVBqUU96bmYkWkhDSWp2UmdTNFd4bXBUZnVVakhMMQoK
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: k8dashboard-web
-  namespace: kubernetes-dashboard
+  name: monitoring-pushgateway-websecure
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`pushgateway.urbaman.it`)
+      services:
+      - name: prometheus-pushgateway
+        port: 9091
+        serversTransport: monitoring-pushgateway-transport
+      middlewares:
+        - name: monitoring-pushgateway-security
+  tls:
+    secretName: pushgateway-urbaman
+    options:
+      name: monitoring-pushgateway-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-pushgateway-web
+  namespace: monitoring
 spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`k8dashboard.domain.com`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard
-      port: 443 
-    middlewares:
-      - name: k8dashboard-https-redirect
+    - kind: Rule
+      match: Host(`pushgateway.urbaman.it`)
+      services:
+      - name: prometheus-pushgateway
+        port: 9091
+      middlewares:
+        - name: monitoring-pushgateway-https-redirect

@@ -1089,3 +1089,22 @@ sudo systemctl restart kubelet
 
 kubectl uncordon <node-to-uncordon>
 ```
+
+## Delete the cluster and uninstall kubernetes
+
+On all nodes but the first:
+
+```bash
+sudo kubeadm reset
+sudo apt remove -y --allow-change-held-packages kubectl kubeadm kubelet containerd.io --purge && sudo apt autoremove -y --purge && sudo rm -rf /etc/kubernetes && sudo rm -rf /etc/cni && sudo rm -rf /opt/cni
+```
+
+On the first node:
+
+```bash
+kubectl delete node <node1> <node2> ... <nodeN>
+sudo kubeadm reset
+sudo apt remove -y --allow-change-held-packages kubectl kubeadm kubelet containerd.io --purge && sudo apt autoremove -y --purge && sudo rm -rf /etc/kubernetes && sudo rm -rf /etc/cni && sudo rm -rf /opt/cni
+sudo reboot
+sudo rm -rf /var/lib/kubelet
+```

@@ -219,7 +219,7 @@ Copy the following files from any etcd node in the etcd cluster to the first con
 Copy etcd certs to first control panel
 
 ```bash
-export CONTROL_PLANE="ubuntu@10.0.50.31"
+export CONTROL_PLANE="ubuntu@10.0.50.51"
 scp /etc/etcd/etcd-ca.crt "${CONTROL_PLANE}":/home/ubuntu/ca.crt
 scp /etc/etcd/server.crt "${CONTROL_PLANE}":/home/ubuntu/apiserver-etcd-client.crt
 scp /etc/etcd/server.key "${CONTROL_PLANE}":/home/ubuntu/apiserver-etcd-client.key
@@ -230,6 +230,7 @@ Replace the value of CONTROL_PLANE with the user@host of the first control-plane
 On the first control panel, copy the files to the following locations:
 
 ```bash
+sudo mkdir /etc/kubernetes/pki
 sudo mkdir /etc/kubernetes/pki/etcd
 sudo cp ca.crt /etc/kubernetes/pki/etcd/
 sudo cp apiserver-etcd-client.crt /etc/kubernetes/pki/
