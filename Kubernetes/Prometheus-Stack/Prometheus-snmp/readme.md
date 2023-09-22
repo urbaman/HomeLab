@@ -7,12 +7,16 @@ See the MIB files for Dell IDRAC and Arista Switch, eventually use yours.
 
 ## Create two configmaps from the snmp.yml file
 
+Set the username and passwords (both passwords) for both the modules in `snmp.yml` file
+
 ```bash
 kubectl create configmap prometheus-snmp-exporter-idrac -n monitoring --from-file snmp.yml
 kubectl create configmap prometheus-snmp-exporter-arista-switch -n monitoring --from-file snmp.yml
 ```
 
 ## Deploy the given snmp exporters (customizing the yaml files to your needs)
+
+Set the IPs to the devices in both files
 
 ```bash
 helm install prometheus-snmp-exporter-idrac prometheus-community/prometheus-snmp-exporter -f snmp-exporter-idrac.yaml -n monitoring
