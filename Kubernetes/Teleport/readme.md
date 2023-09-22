@@ -42,7 +42,7 @@ kubectl apply -f traefik-teleport.yaml
 Create a user superadmin with all of the roles
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu
 ```
 
 Go to the shown link to generate the password and the MFA, you'll login and see the kubernetes cluster as accessible.
