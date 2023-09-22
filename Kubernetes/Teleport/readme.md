@@ -94,7 +94,7 @@ Create a token and use it in the yaml file.
 kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl tokens add --type=app
 ```
 
-Deploy the kube-agent after having added the apps to the config (see examples in the yaml file)
+Deploy the teleport-kube-agent after having added the token, the ca-pin and the apps to the config (see examples in the yaml file)
 
 ```bash
 helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-agent.yaml
