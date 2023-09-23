@@ -1,4 +1,17 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: gethomepage
+    meta.helm.sh/release-namespace: gethomepage
+  labels:
+    app.kubernetes.io/instance: gethomepage
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: homepage
+    app.kubernetes.io/version: v0.6.10
+    helm.sh/chart: homepage-1.2.1
+  name: gethomepage
+  namespace: gethomepage
 data:
   bookmarks.yaml: |
     - Deployment notes:
@@ -7,13 +20,32 @@ data:
           href: https://github.com/urbaman/HomeLab
   docker.yaml: ""
   kubernetes.yaml: |
-    mode: default
+    mode: cluster
   services.yaml: |
     - Media:
       - My First Service:
           description: Homepage is awesome
           href: http://localhost/
           icon: mdi-multimedia-#0328fc
+    - Domotica:
+      - Homeassistant:
+          descrizione: Homeassistant GUI
+          href: https://gbr9fd34i4pxi02t8wr3fo1bagtcd5j0.ui.nabu.casa/lovelace/default_view
+          icon: home-assistant.svg
+    - Strumenti:
+      - It-tools:
+          description: It tools collection
+          href: https://it-tools.domain.com
+          icon: it-tools.svg
+      - S-PDF:
+          description: PDF tools collection
+          href: https://s-pdf.domain.com
+          icon: stirling-pdf.svg
+    - Finanza:
+      - Actual-Budget:
+          descrizione: Actual-budget budgeting
+          href: https://budget.domain.com/
+          icon: mdi-finance-#83B81A
     - Kubernetes:
       - Dashboard:
           description: Kubernetes Dashboard
@@ -26,7 +58,7 @@ data:
           widget:
             type: traefik
             url: http://traefik.domain.com
-            username: user
+            username: username
             password: password
       - Longhorn:
           description: Longhorn Dashboard
@@ -36,6 +68,11 @@ data:
           description: Portainer Management UI
           href: https://portainer.domain.com
           icon: portainer.svg
+          widget:
+            type: portainer
+            url: https://portainer.domain.com:9443
+            env: 1
+            key: ptr_portainertoken
     - Monitoring:
       - Grafana:
           description: Grafana dashboards
@@ -44,7 +81,7 @@ data:
           widget:
             type: grafana
             url: https://grafana.domain.com
-            username: user
+            username: username
             password: password
       - Prometheus:
           description: Prometheus DB
@@ -81,16 +118,49 @@ data:
           description: Haproxy3 stats
           href: https://haproxy3.stats.domain.com/stats
           icon: haproxy.svg
+      - Groundcover:
+          description: Kubernetes observability
+          href: https://www.groundcover.com/
+          icon: mdi-cloud-search-#326CE5
+      -Kubescape:
+          description: Kubernetes security
+          href: https://cloud.armosec.io/dashboard
+          icon: mdi-server-security-#FF0000
     - Management:
-      - Proxmox Cluster:
+      - Teleport:
+          descrizione: Teleport tunneling
+          href: https://teleport.domain.com/
+          icon: teleport.svg
+      - Proxmox Cluster Node1:
           description: Proxmox VE Cluster
           href: https://pvenode1.domain.com:8006
           icon: proxmox.svg
           widget:
             type: proxmox
             url: https://pvenode1.domain.com:8006
-            username: tokenname
-            password: tokensecret
+            username: username
+            password: secret
+            node: pvenode1
+      - Proxmox Cluster Node2:
+          description: Proxmox VE Cluster
+          href: https://pvenode2.domain.com:8006
+          icon: proxmox.svg
+          widget:
+            type: proxmox
+            url: https://pvenode2.domain.com:8006
+            username: username
+            password: secret
+            node: pvenode2
+      - Proxmox Cluster Node3:
+          description: Proxmox VE Cluster
+          href: https://pvenode3.domain.com:8006
+          icon: proxmox.svg
+          widget:
+            type: proxmox
+            url: https://pvenode3.domain.com:8006
+            username: username
+            password: secret
+            node: pvenode3
       - Proxmox Backup Server:
           description: Proxmox Backup Server
           href: https://pbs1.domain.com:8007
@@ -98,8 +168,8 @@ data:
           widget:
             type: proxmoxbackupserver
             url: https://pbs1.domain.com:8007
-            username: tokenname
-            password: tokensecret
+            username: username
+            password: secret
       - Landscape1:
           description: Landscape server management UI
           href: https://landscape1.domain.com
@@ -110,15 +180,15 @@ data:
           icon: ubuntu.svg
       - iDRAC1:
           description: iDRAC Dell Server management
-          href: https://xx.xx.xx.x1
+          href: https://10.0.100.21
           icon: dell.svg
       - iDRAC2:
           description: iDRAC Dell Server management
-          href: https://xx.xx.xx.x2
+          href: https://10.0.100.22
           icon: dell.svg
       - iDRAC3:
           description: iDRAC Dell Server management
-          href: https://xx.xx.xx.x3
+          href: https://10.0.100.23
           icon: dell.svg
       - Openmanage1:
           description: Openmanage Dell Server management
@@ -136,6 +206,31 @@ data:
           description: Netbox SoT management
           href: https://netbox.domain.com
           icon: netbox.svg
+    - Database:
+      - Mysql:
+          description: Mysql PhpMyAdmin
+          href: https://mysql.domain.com
+          icon: mysql.svg
+      - Mariadb:
+          description: Mariadb PhpMyAdmin
+          href: https://mariadb.domain.com
+          icon: mariadb.svg
+      - Cloudbeaver:
+          description: Cloudbeaver client
+          href: https://cloudbeaver.domain.com
+          icon: cloudbeaver.svg
+      - Dbgate:
+          description: Dbgate client
+          href: https://dbgate.domain.com
+          icon: si-database
+      - PgAdmin:
+          description: PgAdmin client
+          href: https://pgadmin.domain.com
+          icon: pgadmin.svg
+      - Couchdb:
+          description: Couchdb Fauxton GUI
+          href: https://couchdb.domain.com/_utils/#/
+          icon: si-apachecouchdb-#E42528
     - Network management:
       - pfSense1:
           description: pfSense networking
@@ -143,9 +238,10 @@ data:
           icon: pfsense.svg
           widget:
             type: pfsense
+            fields: ["load", "memory", "wanStatus", "disk"]
             url: http://pfsense1.domain.com
-            username: user
-            password: password
+            username: username
+            password: secret
             wan: vtnet0
       - pfSense2:
           description: pfSense networking
@@ -153,9 +249,10 @@ data:
           icon: pfsense.svg
           widget:
             type: pfsense
+            fields: ["load", "memory", "wanStatus", "disk"]
             url: http://pfsense2.domain.com
-            username: user
-            password: password
+            username: username
+            password: secret
             wan: vtnet0
   settings.yaml: |
     title: My Homelab Homepage
@@ -164,28 +261,44 @@ data:
     providers:
       longhorn:
         url: https://longhorn.domain.com
-  widgets.yaml: "- logo:\n    icon: mdi-home-outline-#0328fc\n- resources:\n    backend:
-    resources\n    cpu: true\n    expanded: true\n    memory: true\n- kubernetes:\n
-    \   cluster:\n      show: true\n      cpu: true\n      memory: true\n      showLabel:
-    true\n      label: \"cluster\"\n    nodes:\n      show: true\n      cpu: true\n
-    \     memory: true\n      showLabel: true\n- longhorn:\n      expanded: true\n
-    \     total: true\n      labels: true\n      nodes: true\n- openmeteo:\n    label:
-    Anzola dell'Emilia\n    latitude: 44.5473\n    longitude: 11.1956\n    timezone:
-    Europe/Rome\n    units: metric \n    cache: 5\n- datetime:\n    text_size: xl\n
-    \   format:\n      dateStyle: long\n      timeStyle: long\n      hourCycle: h23\n-
-    search:\n    provider: google\n    target: _blank\n"
-kind: ConfigMap
-metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","data":{"bookmarks.yaml":"- Deployment notes:\n  - Github:\n    - abbr: HL\n      href: https://github.com/urbaman/HomeLab\n","docker.yaml":"","kubernetes.yaml":"mode: default\n","services.yaml":"- Media:\n  - My First Service:\n      description: Homepage is awesome\n      href: http://localhost/\n      icon: mdi-multimedia\n- Kubernetes:\n  - Dashboard:\n      description: Kubernetes Dashboard\n      href: https://k8dashboard.domain.com\n      icon: kubernetes-dashboard.png\n  - Traefik:\n      description: Traefik Dashboard\n      href: https://traefik.domain.com\n      icon: traefik.png\n      widget:\n        type: traefik\n        url: http://traefik.domain.com\n        username: admin\n        password: traefikadmin\n  - Longhorn:\n      description: Longhorn Dashboard\n      href: https://longhorn.domain.com\n      icon: longhorn.png\n  - Portainer:\n      description: Portainer Management UI\n      href: https://portainer.domain.com\n      icon: portainer.png\n- Monitoring:\n  - Grafana:\n      description: Grafana dashboards\n      href: https://grafana.domain.com\n      icon: grafana.png\n      widget:\n        type: grafana\n        url: https://grafana.domain.com\n        username: admin\n        password: prom-operator\n  - Prometheus:\n      description: Prometheus DB\n      href: https://prometheus.domain.com\n      icon: prometheus.png\n      widget:\n        type: prometheus\n        url: https://prometheus.domain.com\n  - Alertmanager:\n      description: Alertmanager alert management\n      href: https://alertmanager.urbmaan.it\n      icon: alertmanager.png\n  - Pushgateway:\n      description: Pushgateway metrics\n      href: https://pushgateway.domain.com\n      icon: prometheus.png\n  - Uptime-Kuma:\n      description: Utime-Kuma service status check\n      href: https://uptimekuma.urbaan.it\n      icon: uptime-kuma.png\n      widget:\n        type: uptimekuma\n        url: https://uptimekuma.domain.com\n        slug: statuspage\n  - Haproxy1:\n      description: Haproxy1 stats\n      href: https://haproxy1.stats.domain.com/stats\n      icon: haproxy.png\n  - Haproxy2:\n      description: Haproxy2 stats\n      href: https://haproxy2.stats.domain.com/stats\n      icon: haproxy.png\n  - Haproxy3:\n      description: Haproxy3 stats\n      href: https://haproxy3.stats.domain.com/stats\n      icon: haproxy.png\n- Management:\n  - Proxmox Cluster:\n      description: Proxmox VE Cluster\n      href: https://pvenode1.domain.com:8006\n      icon: proxmox.png\n      widget:\n        type: proxmox\n        url: https://pvenode1.domain.com:8006\n        username: api-ro-user@pam!gethomepage\n        password: 3c81a243-7638-43db-a7d9-70afd1d49e3a\n  - Proxmox Backup Server:\n      description: Proxmox Backup Server\n      href: https://pbs1.domain.com:8007\n      icon: proxmox.png\n      widget:\n        type: proxmoxbackupserver\n        url: https://pbs1.domain.com:8007\n        username: api-ro-user@pbs!gethomepage\n        password: a5e091f6-27ec-4a00-8b76-eb25157a15c4\n  - Landscape1:\n      description: Landscape server management UI\n      href: https://landscape1.domain.com\n      icon: ubuntu.png\n  - Landscape2:\n      description: Landscape server management UI\n      href: https://landscape2.domain.com\n      icon: ubuntu.png\n  - iDRAC1:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.21\n      icon: dell.png\n  - iDRAC2:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.22\n      icon: dell.png\n  - iDRAC3:\n      description: iDRAC Dell Server management\n      href: https://10.0.100.23\n      icon: dell.png\n  - Openmanage1:\n      description: Openmanage Dell Server management\n      href: https://pvenode1.domain.com:1311\n      icon: dell.png\n  - Openmanage2:\n      description: Openmanage Dell Server management\n      href: https://pvenode2.domain.com:1311\n      icon: dell.png\n  - Openmanage3:\n      description: Openmanage Dell Server management\n      href: https://pvenode3.domain.com:1311\n      icon: dell.png\n  - Netbox:\n      description: Netbox SoT management\n      href: https://netbox.domain.com\n      icon: netbox.png\n- Network management:\n  - pfSense1:\n      description: pfSense networking\n      href: https://pfsense1.domain.com\n      icon: pfsense.png\n      widget:\n        type: pfsense\n        url: http://pfsense1.domain.com\n        username: admin\n        password: dryMfRVXgT4zoyI9\n        wan: vtnet0\n  - pfSense2:\n      description: pfSense networking\n      href: https://pfsense2.domain.com\n      icon: pfsense.png\n      widget:\n        type: pfsense\n        url: http://pfsense2.domain.com\n        username: admin\n        password: dryMfRVXgT4zoyI9\n        wan: vtnet0\n","settings.yaml":"title: My Homelab Homepage\nheaderStyle: boxed\nlanguage: it\nproviders:\n  longhorn:\n    url: https://longhorn.domain.com\n","widgets.yaml":"- logo:\n    icon: mdi-home-outline\n- resources:\n    backend: resources\n    cpu: true\n    expanded: true\n    memory: true\n- kubernetes:\n    cluster:\n      show: true\n      cpu: true\n      memory: true\n      showLabel: true\n      label: \"cluster\"\n    nodes:\n      show: true\n      cpu: true\n      memory: true\n      showLabel: true\n- longhorn:\n      expanded: true\n      total: true\n      labels: true\n      nodes: true\n- openmeteo:\n    label: Anzola dell'Emilia\n    latitude: 44.5473\n    longitude: 11.1956\n    timezone: Europe/Rome\n    units: metric \n    cache: 5\n- datetime:\n    text_size: xl\n    format:\n      dateStyle: long\n      timeStyle: long\n      hourCycle: h23\n- search:\n    provider: google\n    target: _blank\n"},"kind":"ConfigMap","metadata":{"annotations":{"meta.helm.sh/release-name":"gethomepage","meta.helm.sh/release-namespace":"gethomepage"},"labels":{"app.kubernetes.io/instance":"gethomepage","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"homepage","app.kubernetes.io/version":"v0.6.10","helm.sh/chart":"homepage-1.2.1"},"name":"gethomepage","namespace":"gethomepage"}}
-    meta.helm.sh/release-name: gethomepage
-    meta.helm.sh/release-namespace: gethomepage
-  labels:
-    app.kubernetes.io/instance: gethomepage
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: homepage
-    app.kubernetes.io/version: v0.6.10
-    helm.sh/chart: homepage-1.2.1
-  name: gethomepage
-  namespace: gethomepage
+  widgets.yaml: |
+    - logo:
+        icon: mdi-home-outline-#0328fc
+    - resources:
+        backend: kubernetes
+        cpu: true
+        expanded: true
+        memory: true
+    - Kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - longhorn:
+        expanded: true
+        total: true
+        labels: true
+        nodes: true
+    - openmeteo:
+        label: Anzola dell'Emilia
+        latitude: 44.5473
+        longitude: 11.1956
+        timezone: Europe/Rome
+        units: metric
+        cache: 5
+    - datetime:
+        text_size: xl
+        format:
+          dateStyle: long
+          timeStyle: long
+          hourCycle: h23
+    - search:
+        provider: google
+        target: _blank
