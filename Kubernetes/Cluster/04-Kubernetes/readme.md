@@ -248,8 +248,8 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
-  podSubnet: "172.16.0.0/12" # change this (see below)
-  serviceSubnet: "10.10.0.0/16" # change this (see below)
+  podSubnet: "10.10.0.0/16" # change this (see below)
+  serviceSubnet: "10.1.0.0/16" # change this (see below)
 etcd:
   external:
     endpoints:
