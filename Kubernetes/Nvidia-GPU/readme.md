@@ -68,7 +68,13 @@ Mon Jul 31 15:47:23 2023
 +---------------------------------------------------------------------------------------+
 ```
 
-### Install Nvidia contanier (containerd version)
+### Enavle the gpu addon (microk8s cluster)
+
+```bash
+microk8s enable gpu
+```
+
+### Install Nvidia contanier (containerd version, kubeadm cluster)
 
 Install the Nvidia contanier:
 
