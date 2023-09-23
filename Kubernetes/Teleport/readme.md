@@ -42,7 +42,7 @@ kubectl apply -f traefik-teleport.yaml
 Create a user superadmin with all of the roles
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu
 ```
 
 Go to the shown link to generate the password and the MFA, you'll login and see the kubernetes cluster as accessible.
@@ -94,7 +94,7 @@ Create a token and use it in the yaml file.
 kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl tokens add --type=app
 ```
 
-Deploy the kube-agent after having added the apps to the config (see examples in the yaml file)
+Deploy the teleport-kube-agent after having added the token, the ca-pin and the apps to the config (see examples in the yaml file)
 
 ```bash
 helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-agent.yaml

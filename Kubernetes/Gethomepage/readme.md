@@ -7,6 +7,11 @@
 ```bash
 helm repo add jameswynn https://jameswynn.github.io/helm-charts
 helm show values jameswynn/homepage > gethomepage-values.yaml
+```
+
+Set `enableRbac: true`, `serviceAccount.create: true`, `kubernetes.mode: cluster`, then install
+
+```bash
 helm upgrade --install gethomepage --create-namespace --namespace=gethomepage jameswynn/homepage -f gethomepage-values.yaml
 ```
 
@@ -24,6 +29,8 @@ kubectl get cm -n gethomepage gethomepage -o yaml > gethomepage-cm.yaml
 ```
 
 ## Apply the traefik ingress route
+
+Set the username and password in the basic-auth secret, and your domain.
 
 ```bash
 kubectl apply traefik-gethomepage.yaml

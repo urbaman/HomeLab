@@ -5,6 +5,19 @@ metadata:
   labels:
     name: actual-budget
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-budget-pvc
+  namespace: actual-budget
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

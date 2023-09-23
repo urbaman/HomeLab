@@ -44,6 +44,16 @@ app_service:
     labels:
       env: monitoring
       context: homelab
+  - name: groundcover
+    uri: https://www.groundcover.com/
+    labels:
+      env: monitoring
+      context: homelab
+  - name: kubescape
+    uri: https://cloud.armosec.io/
+    labels:
+      env: monitoring
+      context: homelab
   - name: traefik
     uri: https://traefik.domain.com
     labels:
@@ -81,16 +91,6 @@ app_service:
       context: homelab
   - name: gethomepage
     uri: https://gethomepage.urbaman.it
-    labels:
-      env: dashboard
-      context: homelab
-  - name: heimdall
-    uri: https://heimdall.domain.com
-    labels:
-      env: dashboard
-      context: homelab
-  - name: homer
-    uri: https://homer.domain.com
     labels:
       env: dashboard
       context: homelab
@@ -159,6 +159,46 @@ app_service:
     uri: https://pfsense2.domain.com
     labels:
       env: firewall
+      context: homelab
+  - name: mysql
+    uri: https://mysql.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: mariadb
+    uri: https://mariadb.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: dbgate
+    uri: https://dbgate.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: cloudbeaver
+    uri: https://cloudbeaver.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: pgadmin
+    uri: https://pgadmin.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: crouchdb
+    uri: https://crouchdb.domain.com
+    labels:
+      env: database
+      context: homelab
+  - name: ittools
+    uri: https://it-tools.urbaman.it/
+    labels:
+      env: webapp
+      context: homelab
+  - name: s-pdf
+    uri: https://s-pdf.urbaman.it/
+    labels:
+      env: webapp
       context: homelab
   enabled: true
 auth_service:
