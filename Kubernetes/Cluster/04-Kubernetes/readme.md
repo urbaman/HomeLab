@@ -432,3 +432,11 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 kubectl uncordon <node>
 ```
+
+## Delete the cluster
+
+On each node, one by one, keeping the first control plane
+
+```bash
+sudo kubeadm reset && sudo apt install ipvsadm && sudo ipvsadm --clear && sudo apt remove kubeadm kubectl kubelet containerd.io --purge -y --allow-change-held-packages && sudo apt autoremove --purge -y && sudo rm -rf /etc/cni/* && sudo rm -rf /opt/cni/* && sudo rm -rf /etc/kubernetes && sudo rm /longhorn/storage/*
+```
