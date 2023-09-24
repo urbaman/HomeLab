@@ -1,12 +1,217 @@
-# NFS cluster with corosync and pacemaker
+# NFS cluster
 
 ## Requirements
 
 1. Glusterfs cluster (on the same machines): [Gluster](https://github.com/urbaman/HomeLab/tree/main/Storage/Glusterfs)
 
-## Install and setup the cluster
+## With Haproxy and Keepalived
 
-### On all Nodes, Install Pacemaker and configure some settings
+### High availability
+
+Check the [high availability for kubernetes setup](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/03-High-Availability), use it or make up a similar one.
+
+Add the following frontends and backends to your haproxy conf, and point nfs.urbaman.it dns to the VIP IP
+
+```bash
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs nodes
+#---------------------------------------------------------------------
+frontend nfs
+    bind *:2049
+    mode tcp
+    option tcplog
+    default_backend nfs
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs
+#---------------------------------------------------------------------
+backend nfs
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:2049 check
+        server nfs2 nfs2.urbaman.it:2049 check
+        server nfs3 nfs3.urbaman.it:2049 check
+
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs-rpc nodes
+#---------------------------------------------------------------------
+frontend rpc
+    bind *:111
+    mode tcp
+    option tcplog
+    default_backend rpc
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs-rpc
+#---------------------------------------------------------------------
+backend rpc
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:111 check
+        server nfs2 nfs2.urbaman.it:111 check
+        server nfs3 nfs3.urbaman.it:111 check
+
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs-rpc nodes
+#---------------------------------------------------------------------
+frontend nfs32765
+    bind *:32765
+    mode tcp
+    option tcplog
+    default_backend nfs32765
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs-rpc
+#---------------------------------------------------------------------
+backend nfs32765
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:32765 check
+        server nfs2 nfs2.urbaman.it:32765 check
+        server nfs3 nfs3.urbaman.it:32765 check
+
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs-rpc nodes
+#---------------------------------------------------------------------
+frontend nfs32766
+    bind *:32766
+    mode tcp
+    option tcplog
+    default_backend nfs32766
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs-rpc
+#---------------------------------------------------------------------
+backend nfs32766
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:32766 check
+        server nfs2 nfs2.urbaman.it:32766 check
+        server nfs3 nfs3.urbaman.it:32766 check
+
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs-rpc nodes
+#---------------------------------------------------------------------
+frontend nfs32767
+    bind *:32767
+    mode tcp
+    option tcplog
+    default_backend nfs32767
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs-rpc
+#---------------------------------------------------------------------
+backend nfs32767
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:32767 check
+        server nfs2 nfs2.urbaman.it:32767 check
+        server nfs3 nfs3.urbaman.it:32767 check
+
+#---------------------------------------------------------------------
+# nfs frontend which proxys to the nfs-rpc nodes
+#---------------------------------------------------------------------
+frontend nfs32768
+    bind *:32768
+    mode tcp
+    option tcplog
+    default_backend nfs32768
+
+#---------------------------------------------------------------------
+# round robin balancing for nfs-rpc
+#---------------------------------------------------------------------
+backend nfs32768
+    mode tcp
+    balance     roundrobin
+        server nfs1 nfs1.urbaman.it:32768 check
+        server nfs2 nfs2.urbaman.it:32768 check
+        server nfs3 nfs3.urbaman.it:32768 check
+```
+
+### Mount the two gluster volumes in two named directories to share (HDD5T and SDD2T for the example, following the volumes naming)
+
+On all nfs nodes
+
+```bash
+sudo mkdir -p /shares/HDD5T
+sudo mkdir -p /shares/SDD2T
+sudo vi /etc/systemd/system/shares-HDD5T.mount
+```
+
+```bash
+[Unit]
+Description=Mount glusterfs shares-HDD5T
+After=/lib/systemd/system/glusterd.service
+Wants=/lib/systemd/system/glusterd.service
+
+[Mount]
+What=nfs1.urbaman.it:/HDD5T
+Where=/shares/HDD5T
+Type=glusterfs
+Options=_netdev,auto
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo vi /etc/systemd/system/shares-SDD2T.mount
+```
+
+```bash
+[Unit]
+Description=Mount glusterfs shares-SDD2T
+After=/lib/systemd/system/glusterd.service
+Wants=/lib/systemd/system/glusterd.service
+
+[Mount]
+What=nfs1.urbaman.it:/SDD2T
+Where=/shares/SDD2T
+Type=glusterfs
+Options=_netdev,auto
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start shares-HDD5T.mount
+sudo systemctl start shares-SDD2T.mount
+```
+
+Setup the to-be shared directories:
+
+```bash
+sudo chown -R nobody:nogroup /shares
+sudo chmod -R 775 /shares
+```
+
+### Install and setup nfs-kernel-server
+
+```bash
+sudo apt install -y nfs-kernel-server
+vi /etc/exports
+```
+
+```bash
+/shares 10.0.50.0/24(rw,sync,root_squash,all_squash,no_subtree_check,fsid=0,insecure)
+/shares/HDD5T 10.0.50.0/24(rw,sync,root_squash,all_squash,no_subtree_check,fsid=1,insecure)
+/shares/SDD2T 10.0.50.0/24(rw,sync,root_squash,all_squash,no_subtree_check,fsid=2,insecure)
+```
+
+Try to mount from a client
+
+```bash
+sudo mkdir /mnt/nfstest
+sudo mount -o mountvers=4 nfs.urbaman.it:/shares/SDD2T /mnt/nfstest
+```
+
+## With Pacemaker (too difficult, can't seem to make it work properly)
+
+### Install and setup the cluster
+
+#### On all Nodes, Install Pacemaker and configure some settings
 
 ```bash
 sudo apt -y install pacemaker pcs resource-agents
@@ -14,7 +219,7 @@ sudo systemctl stop pacemaker corosync
 sudo systemctl enable --now pcsd
 ```
 
-#### Set cluster admin password
+##### Set cluster admin password
 
 ```bash
 sudo passwd hacluster
@@ -24,9 +229,9 @@ Retype new password:
 passwd: all authentication tokens updated successfully.
 ```
 
-### On a Node, Configure basic Cluster settings
+#### On a Node, Configure basic Cluster settings
 
-#### Authorize among nodes
+##### Authorize among nodes
 
 ```bash
 sudo pcs host auth node01.srv.world node02.srv.world
@@ -36,7 +241,7 @@ node01.srv.world: Authorized
 node02.srv.world: Authorized
 ```
 
-#### Configure the cluster
+##### Configure the cluster
 
 ```bash
 sudo pcs cluster setup ha_cluster node01.srv.world node02.srv.world
@@ -59,7 +264,7 @@ node02.srv.world: successful distribution of the file 'corosync.conf'
 Cluster has been successfully set up.
 ```
 
-#### Start services for the cluster
+##### Start services for the cluster
 
 ```bash
 sudo pcs cluster start --all
@@ -67,7 +272,7 @@ node01.srv.world: Starting Cluster...
 node02.srv.world: Starting Cluster...
 ```
 
-#### Set auto-start
+##### Set auto-start
 
 ```bash
 sudo pcs cluster enable --all
@@ -75,7 +280,7 @@ node01.srv.world: Cluster Enabled
 node02.srv.world: Cluster Enabled
 ```
 
-#### Show status
+##### Show status
 
 ```bash
 sudo pcs cluster status
@@ -103,7 +308,7 @@ Membership information
          2          1 node02.srv.world
 ```
 
-### If you'd like to remove all cluster settings to initalize, run like follows
+#### If you'd like to remove all cluster settings to initalize, run like follows
 
 ```bash
 sudo pcs cluster stop --all
@@ -120,26 +325,26 @@ node02.srv.world: Successfully destroyed cluster
 node01.srv.world: Successfully destroyed cluster
 ```
 
-## Setup the fencing device using iSCSI (working? -> No)
+### Setup the fencing device using iSCSI (working? -> No)
 
-### On all Cluster Nodes, Install SCSI Fence Agent
+#### On all Cluster Nodes, Install SCSI Fence Agent
 
 ```bash
 sudo apt -y install fence-agents-base
 ```
 
-### Configure Fencing on a Node
+#### Configure Fencing on a Node
 
 [sda] of the example below is the storage from iSCSI target.
 
-#### Confirm disk ID
+##### Confirm disk ID
 
 ```bash
 sudo ll /dev/disk/by-id | grep sda | grep wwn
 lrwxrwxrwx 1 root root   9 Sep 15 00:30 wwn-0x60014054a2b171ec9974ef5a736a642d -> ../../sda
 ```
 
-#### Set fencing
+##### Set fencing
 
 [scsi-shooter] : any name
 [pcmk_host_list=***] : specify cluster nodes
@@ -149,7 +354,7 @@ lrwxrwxrwx 1 root root   9 Sep 15 00:30 wwn-0x60014054a2b171ec9974ef5a736a642d -
 sudo pcs stonith create scsi-shooter fence_scsi pcmk_host_list="node01.srv.world node02.srv.world" devices=/dev/disk/by-id/wwn-0x60014054a2b171ec9974ef5a736a642d meta provides=unfencing
 ```
 
-#### Show config
+##### Show config
 
 ```bash
 sudo pcs stonith config scsi-shooter
@@ -159,7 +364,7 @@ sudo pcs stonith config scsi-shooter
   Operations: monitor interval=60s (scsi-shooter-monitor-interval-60s)
 ```
 
-#### Show status (OK if the status of fence device is [Started])
+##### Show status (OK if the status of fence device is [Started])
 
 ```bash
 sudo pcs status
@@ -184,7 +389,7 @@ Daemon Status:
   pcsd: active/enabled
 ```
 
-### Try to test fencing
+#### Try to test fencing
 
 From a different node:
 
@@ -211,14 +416,14 @@ Daemon Status:
   pcsd: active/enabled
 ```
 
-#### Fencing
+##### Fencing
 
 ```bash
 sudo pcs stonith fence node01.srv.world
 Node: node01.srv.world fenced
 ```
 
-#### target node turns to [OFFLINE] and it will be restarted
+##### target node turns to [OFFLINE] and it will be restarted
 
 ```bash
 sudo pcs status
@@ -244,15 +449,15 @@ Daemon Status:
   pcsd: active/enabled
 ```
 
-#### After rebooting, if you manually start the node, do like follows
+##### After rebooting, if you manually start the node, do like follows
 
 ```bash
 sudo pcs cluster start node01.srv.world
 ```
 
-## Fencing through diskless SBD and software watchdog
+### Fencing through diskless SBD and software watchdog
 
-### Install softdog module
+#### Install softdog module
 
 ```bash
 sudo echo "softdog" >> /etc/modules
@@ -276,7 +481,7 @@ crw-rw---- 1 postgres postgres  10, 130 Sep 11 12:53 /dev/watchdog
 crw------- 1 root     root     245,   0 Sep 11 12:53 /dev/watchdog0
 ```
 
-### Install and setup SBD
+#### Install and setup SBD
 
 Prepare the cluster properties
 
@@ -313,13 +518,13 @@ sudo pcs property | grep have-watchdog
  have-watchdog: true
 ```
 
-## Setup Cluster resources (VIP, NFS server)
+### Setup Cluster resources (VIP, NFS server)
 
-### On all Cluster Nodes, Install NFS tools
+#### On all Cluster Nodes, Install NFS tools
 
 sudo apt -y install nfs-kernel-server nfs-common
 
-### Prepare the NFS filesystem
+#### Prepare the NFS filesystem
 
 On the (one of the) shared volume(s), create the NFS directories needed by the cluster:
 
@@ -367,19 +572,19 @@ sudo chown -R nobody:nogroup /HDD5T/nfsshare/exports
 sudo chmod -R 775 /HDD5T/nfsshare/exports
 ```
 
-### Add the NFS server resource
+#### Add the NFS server resource
 
 ```bash
 sudo pcs resource create nfs_server ocf:heartbeat:nfsserver nfs_shared_infodir=/HDD5T/nfsshare/nfsinfo nfs_no_notify=true --group nfs_group
 ```
 
-### Add the VIP resource
+#### Add the VIP resource
 
 ```bash
 sudo pcs resource create nfs_vip ocf:heartbeat:IPaddr2 ip=VIP cidr_netmask=24 --group nfs_group
 ```
 
-### Add the NFS exports (the root and the real exports)
+#### Add the NFS exports (the root and the real exports)
 
 Use the same values in clientspec, directory, options and fsid that you would use in the normal NFS `/etc/exports` file.
 To expose the same export to different ips/cidrs, simply add a resource for every occurrence, setting the clientspec accordingly.
@@ -390,7 +595,7 @@ sudo pcs resource create nfs_export_hdd5t ocf:heartbeat:exportfs clientspec=10.0
 sudo pcs resource create nfs_export_sdd2t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,root_squash,all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/SDD2T fsid=2 --group nfs_group
 ```
 
-### Update resource parameters
+#### Update resource parameters
 
 ```bash
 sudo pcs resource update nfs_export_root ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,no_root_squash,no_all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports fsid=0 --group nfs_group
@@ -398,7 +603,7 @@ sudo pcs resource update nfs_export_hdd5t ocf:heartbeat:exportfs clientspec=10.0
 sudo pcs resource update nfs_export_sdd2t ocf:heartbeat:exportfs clientspec=10.0.50.0/24 options=rw,sync,no_root_squash,no_all_squash,no_subtree_check directory=/HDD5T/nfsshare/exports/SDD2T fsid=2 --group nfs_group
 ```
 
-## Set static ports to NFS secondary services
+### Set static ports to NFS secondary services
 
 Edit /etc/default/nfe.conf and add specific ports (maybe from 3265 to 3268) to lockd (same ports on port and udp port, 32768), mountd (32767) and statd (port 32766, outgoing-port 32765).
 

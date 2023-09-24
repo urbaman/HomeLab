@@ -91,6 +91,8 @@ Edit a file named after the mount path: `mounthpath.mount`.
 ```bash
 [Unit]
 Description=Mount glusterfs volumename
+After=/lib/systemd/system/glusterd.service
+Wants=/lib/systemd/system/glusterd.service
 
 [Mount]
 What=thisserverfullhostname:/volumename

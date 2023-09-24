@@ -1,8 +1,8 @@
-### ZFS: aggiungere un disco creando un mirror:
+# ZFS: aggiungere un disco creando un mirror
 
 psSense
 
-```
+```bash
 #check the zpool and the available drives (freeBSD/pfSense)
 zpool status
 sysctl kern.disks
@@ -22,7 +22,8 @@ dd if=/boot/boot1.efifat of=/dev/da1p1 bs=4m
 ```
 
 TrueNAS
-```
+
+```bash
 gdisk /dev/sda
   b (enter filename)
 
