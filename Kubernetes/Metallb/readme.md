@@ -2,7 +2,7 @@
 
 ## Preparation
 
-If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.
+We should use kube-proxy in IPVS mode (more performant than the default iptables), and since Kubernetes v1.14.2 you have to enable strict ARP mode.
 
 Note, you don’t need this if you’re using kube-router as service-proxy because it is enabling strict ARP by default.
 
@@ -35,6 +35,8 @@ kubectl get configmap kube-proxy -n kube-system -o yaml | \
 sed -e "s/strictARP: false/strictARP: true/" | \
 kubectl apply -f - -n kube-system
 ```
+
+**Microk8s**: edit /var/snap/microk8s/current/args/kube-proxy file adding --ipvs-strict-arp, then stop and start microk8s
 
 ## Installation By Manifest
 

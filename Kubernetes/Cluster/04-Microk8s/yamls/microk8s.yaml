@@ -1,0 +1,24 @@
+# microk8s-config.yaml
+---
+# Addresses to certify for external acces through Load Balancer
+version: 0.1.0
+extraSANs:
+  - 10.50.0.1
+  - 10.0.50.64
+  - k8cp.urbaman.it
+
+---
+# Set the cluster and services CIDRs
+# 'extraKubeProxyArgs' is extra arguments to add to the local node kube-proxy.
+# Set a value to null to remove it from the arguments.
+version: 0.1.0
+extraKubeProxyArgs:
+  --cluster-cidr: 10.10.0.0/16
+extraKubeAPIServerArgs:
+  --service-cluster-ip-range: 10.50.0.0/16
+extraKubeletArgs:
+  --cluster-dns: 10.50.0.10
+  --cluster-domain: cluster.local
+extraCNIEnv:
+  IPv4_CLUSTER_CIDR: "10.10.0.0/16"
+  IPv4_SERVICE_CIDR: "10.50.0.0/16"

@@ -248,8 +248,8 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
-  podSubnet: "172.16.0.0/12" # change this (see below)
-  serviceSubnet: "10.10.0.0/16" # change this (see below)
+  podSubnet: "10.10.0.0/16" # change this (see below)
+  serviceSubnet: "10.1.0.0/16" # change this (see below)
 etcd:
   external:
     endpoints:
@@ -431,4 +431,12 @@ sudo apt-mark hold kubelet kubectl
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 kubectl uncordon <node>
+```
+
+## Delete the cluster
+
+On each node, one by one, keeping the first control plane
+
+```bash
+sudo kubeadm reset && sudo apt install ipvsadm && sudo ipvsadm --clear && sudo apt remove kubeadm kubectl kubelet containerd.io --purge -y --allow-change-held-packages && sudo apt autoremove --purge -y && sudo rm -rf /etc/cni/* && sudo rm -rf /opt/cni/* && sudo rm -rf /etc/kubernetes && sudo rm /longhorn/storage/*
 ```
