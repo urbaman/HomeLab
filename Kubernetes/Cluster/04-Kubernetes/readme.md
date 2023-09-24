@@ -203,7 +203,7 @@ Update apt package index, install kubelet, kubeadm and kubectl, and pin their ve
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet=1.27.6-00 kubeadm=1.27.6-00 kubectl=1.27.6-00
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
