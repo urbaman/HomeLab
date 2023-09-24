@@ -68,13 +68,13 @@ Mon Jul 31 15:47:23 2023
 +---------------------------------------------------------------------------------------+
 ```
 
-### Enavle the gpu addon (microk8s cluster)
+## Enable the gpu addon (microk8s cluster)
 
 ```bash
 microk8s enable gpu
 ```
 
-### Install Nvidia contanier (containerd version, kubeadm cluster)
+## Install Nvidia contanier (containerd version, kubeadm cluster - Not working for network instability)
 
 Install the Nvidia contanier:
 
@@ -143,7 +143,16 @@ Change values where you want (remember to set the gfd subchart `enabled: true` t
 helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin.yaml
 ```
 
-### Test installation
+## Install the Nvidia opreator
+
+```bash
+kubectl create ns gpu-operator
+kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
+helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true
+```
+
+## Test installation
 
 Deploy a test pod and check the logs:
 

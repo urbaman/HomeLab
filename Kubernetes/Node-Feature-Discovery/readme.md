@@ -9,7 +9,7 @@ helm repo add nfd https://kubernetes-sigs.github.io/node-feature-discovery/chart
 helm repo update
 ```
 
-Eventually modify the values enabling the topology updater
+Eventually modify the values enabling the topology updater with its CRDs
 
 ```bash
 helm show values nfd/node-feature-discovery > nodefeaturediscovery.yaml
