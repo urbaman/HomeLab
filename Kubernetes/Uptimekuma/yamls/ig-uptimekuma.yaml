@@ -13,7 +13,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: uptimekuma-ssl-cert
+  secretName: uptimekuma-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -90,7 +90,7 @@ spec:
     middlewares:
     - name: uptimekuma-security
   tls:
-    secretName: uptimekuma-ssl-cert
+    secretName: uptimekuma-urbaman
     options:
       name: uptimekuma-tlsoptions
       namespace: monitoring

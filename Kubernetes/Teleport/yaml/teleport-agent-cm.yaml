@@ -90,7 +90,7 @@ app_service:
       env: sourceoftruth
       context: homelab
   - name: gethomepage
-    uri: https://gethomepage.urbaman.it
+    uri: https://gethomepage.domain.com
     labels:
       env: dashboard
       context: homelab
@@ -191,12 +191,12 @@ app_service:
       env: database
       context: homelab
   - name: ittools
-    uri: https://it-tools.urbaman.it/
+    uri: https://it-tools.domain.com/
     labels:
       env: webapp
       context: homelab
   - name: s-pdf
-    uri: https://s-pdf.urbaman.it/
+    uri: https://s-pdf.domain.com/
     labels:
       env: webapp
       context: homelab
