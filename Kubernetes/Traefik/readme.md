@@ -654,7 +654,7 @@ spec:
         - name: traefik-dashboard-basic-auth
         - name: traefik-dashboard-security
   tls:
-    secretName: urbaman-traefik
+    secretName: traefik-urbaman
     options:
       name: traefik-dashboard-tlsoptions
 ---

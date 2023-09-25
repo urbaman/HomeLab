@@ -11,7 +11,13 @@ helm show values portainer/portainer > portanier-values.yaml
 Set the service.type to CLusterIP, the tls.force=true and the persistence.storageclass to longhorn (or whatever storageclass you're using)
 
 ```bash
-helm install portainer portainer/portainer --create-namespace --namespace portainer -f portainer-values.yaml
+helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer -f portainer-values.yaml
+```
+
+Or set the values directly
+
+```bash
+helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer --set service.type=ClusterIP --set tls.force=true --set persistence.storageclass=longhorn
 ```
 
 Go directly to the dashboard to create a user and login, or the instance will need to be restarted.
@@ -31,5 +37,5 @@ Here, define a "traefik" ingress class of type traefik, and enable "Enable featu
 ## Traefik exposure (admin portaineradmin)
 
 ```bash
-kubectl apply -f portainer-traefik.yaml
+kubectl apply -f ig-portainer.yaml
 ```
