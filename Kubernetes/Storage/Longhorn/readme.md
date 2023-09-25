@@ -9,7 +9,7 @@ sudo apt install jq nfs-common -y
 curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh | bash
 ```
 
-## Installation
+## Installation through manifests
 
 ```bash
 wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
@@ -69,6 +69,21 @@ data:
 
 ```bash
 kubectl apply -f longhorn.yaml
+```
+
+## Installation through helm
+
+```bash
+helm repo add longhorn https://charts.longhorn.io
+helm repo update
+helm upgrade -i longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.5.1 --set defaultSettings.defaultDataPath=/longhorn/storage/ --set defaultSettngs.storageNetwork=default/ipvlan-conf --set defaultSettings.defaultReplicaCount=6 --set persistence.defaultClassReplicaCount=6
+```
+
+Or, get the values file, change the settings and install
+
+```bash
+helm show values longhorn/longhorn > longhorn-values.yaml
+helm upgrade -i longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.5.1 --values longhorn-values.yaml
 ```
 
 ## Access the gui
