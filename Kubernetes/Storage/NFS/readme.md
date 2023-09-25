@@ -26,6 +26,7 @@ We can install a provisioner for every share we want to use.
 
 ```bash
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+helm repo update
 helm install -n nfs-provisioning --create-namespace first-nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=y.y.y.y \
     --set nfs.path=/other/exported/path \
