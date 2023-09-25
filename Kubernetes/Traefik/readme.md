@@ -131,8 +131,8 @@ helm repo update
 ```
 
 ```bash
-helm show values traefik/traefik > traefik.yaml
-vi traefik.yaml
+helm show values traefik/traefik > traefik-values.yaml
+vi traefik-values.yaml
 ```
 
 ## Modify the values to see the persistent volume claim (Only for no HA with Treafik's cert managing)
@@ -192,6 +192,7 @@ ingressClass:
   enabled: true
   fallbackApiVersion: ""
   isDefaultClass: true
+  name: traefik
 ```
 
 ## SSL certs permisisons check (Only for no HA with Treafik's cert managing)
@@ -312,7 +313,7 @@ logs:
 ## Install
 
 ```bash
-helm install traefik traefik/traefik --values traefik.yaml -n traefik
+helm install traefik traefik/traefik -n traefik --create-namespace --values traefik-values.yaml
 ```
 
 ## Check the dashboard

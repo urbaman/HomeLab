@@ -24,7 +24,7 @@ helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dash
 Or give the settings to helm
 
 ```bash
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard  --set=app.ingress.enabled=false --set=nginx.enabled=false --set=cert-manager.enabled=false
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard --set cert-manager.enabled=false --set nginx.enabled=false --set metrics-server.enabled=false  --set metricsScraper.enabled=true
 ```
 
 ## Creating sample user
