@@ -34,7 +34,7 @@ Get the helm value file and add all your namespaces. Add others and upgrade the 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-helm show values prometheus-community/kube-prometheus-stack > prom-stack.yaml
+helm show values prometheus-community/kube-prometheus-stack > kube-prometheus-stack-values.yaml
 ```
 
 ```yaml
@@ -149,7 +149,7 @@ prometheus:
 And install:
 
 ```bash
-helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values prom-stack.yaml
+helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values kube-prometheus-stack-values.yaml
 ```
 
 ## Monitoring other services/apps on other namespaces
@@ -163,14 +163,13 @@ helm get values -n monitoring kube-prometheus-stack -a -o yaml > prom.yaml
 Near the end you'll find something like:
 
 ```yaml
-  serviceMonitorSelector:
-    matchLabels:
-      release: kube-prometheus-stack
+    serviceMonitorSelector: {}
+    serviceMonitorSelectorNilUsesHelmValues: true
 ```
 
-In here, ```release: kube-prometheus-stack``` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
+And the same for the podMonitorSelector. It means that the default `release: kube-prometheus-stack` is the label to add to the Service Monitors you'll need to create for the services to be monitored.
 
-Update: the serviceMonitorSelector is not defined anymore, but the release label works.
+Putting `serviceMonitorSelectorNilUsesHelmValues` and/or `podMonitorSelectorNilUsesHelmValues` to false opens up to monitor all of the serviceMonitors and podMonitors in the monitored namesopaces. Do it if you need to scrape custom serviceMonitors and podMonitors.
 
 ### Example: Traefik (see more below for Traefik implementation)
 
