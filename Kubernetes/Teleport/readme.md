@@ -2,18 +2,18 @@
 
 ## Preparation
 
-- Create a namespace and label it.
+Create a namespace and label it.
 
 ```bash
 kubectl create namespace teleport-cluster
 kubectl label namespace teleport-cluster 'pod-security.kubernetes.io/enforce=baseline'
 ```
 
-- Create a volume (teleport-cluster-auth), pv (teleport-cluster-auth-pv) and pvc (teleport-cluster-auth-pvc) on longhorn (or any other persistent storage solution)
-- Add the helm repo.
+Add the helm repo.
 
 ```bash
 helm repo add teleport https://charts.releases.teleport.dev
+helm repo update
 ```
 
 - Create a certmanager certificate for both teleport.domain.com and *.teleport.domain.com
@@ -27,14 +27,14 @@ kubectl apply -f sslcert-teleport.yaml
 ### Option 1: Install the teleport-cluster with LoadBalance IP, no Traefik
 
 ```bash
-helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-loadbalancer.yaml
+helm upgrade -i teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-loadbalancer.yaml
 ```
 
 ### Option 2: Install the teleport-cluster with ClusterIP IP and Traefik
 
 ```bash
-helm install teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-clusterip.yaml
-kubectl apply -f traefik-teleport.yaml
+helm upgrade -i teleport-cluster teleport/teleport-cluster --namespace=teleport-cluster -f teleport-clusterip.yaml
+kubectl apply -f ig-teleport.yaml
 ```
 
 ### Create a user
@@ -42,7 +42,7 @@ kubectl apply -f traefik-teleport.yaml
 Create a user superadmin with all of the roles
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu,nutadmin
 ```
 
 Go to the shown link to generate the password and the MFA, you'll login and see the kubernetes cluster as accessible.
@@ -60,14 +60,14 @@ When adding kubernetes nodes, the script will fail on the node(s) on which the t
 You can re-add the server when re-installing teleport.
 
 - Stop the teleport service on the server
-- Delete the /var/lib/teleport directrory
+- Delete the `/var/lib/teleport` directrory
 - Generate a token for the server (roles=node)
 
 ```bash
 kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl tokens add --type=node
 ```
 
-- Stop the teleport daemon and delete the `/var/lib/teleport` directory, then put the new token in `/etc/teleport.yaml` and restart the daemon
+- Put the new token in `/etc/teleport.yaml` and restart the daemon
 
 ```bash
 sudo systemctl stop teleport
@@ -76,10 +76,10 @@ sudo vi /etc/teleport.yaml
 sudo systemctl restart teleport
 ```
 
-- Then, you probably need to add the ssh users to your user (comma separated, put all of the logins, not only the new ones):
+- Then, you probably need to add the ssh users to your user if you didn't on creation (comma separated, put all of the logins, not only the new ones):
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users update admin --set-logins root,ubuntu
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users update admin --set-logins root,ubuntu,nutadmin
 ```
 
 ### Add webapps
@@ -97,7 +97,7 @@ kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl to
 Deploy the teleport-kube-agent after having added the token, the ca-pin and the apps to the config (see examples in the yaml file)
 
 ```bash
-helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-agent.yaml
+helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-kube-agent-agent-values.yaml
 ```
 
 You should see the apps appearing and accessible from the GUI.
