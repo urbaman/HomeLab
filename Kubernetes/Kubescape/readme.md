@@ -109,4 +109,10 @@ export PATH=$PATH:/home/ubuntu/.kubescape/bin
 
 Go to [https://cloud.armosec.io/dashboard](https://cloud.armosec.io/dashboard) and register, the add a cluster and run the proposed command on a control plane, adding the `--set kubescape.serviceMonitor.enabled=true` values, then verify on the web console.
 
+or
+
+```bash
+helm upgrade --install kubescape kubescape/kubescape-operator -n kubescape --create-namespace --set clusterName=`kubectl config current-context` --set kubescape.serviceMonitor.enabled=true --set account=<ACCOUNTID>
+```
+
 Go to the webgui console to view the checks

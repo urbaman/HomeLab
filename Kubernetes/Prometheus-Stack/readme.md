@@ -149,7 +149,7 @@ prometheus:
 And install:
 
 ```bash
-helm install --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values kube-prometheus-stack-values.yaml
+helm upgrade -i --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values kube-prometheus-stack-values.yaml
 ```
 
 ## Monitoring other services/apps on other namespaces

@@ -149,7 +149,7 @@ helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin 
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
-helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true
+helm upgrade -i --wait gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true --set dcgmExporter.config.name=dcgmExporter-cm
 ```
 
 ## Test installation
