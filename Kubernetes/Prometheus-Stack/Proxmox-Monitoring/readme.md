@@ -48,6 +48,10 @@ Check going to http:<PVE_NODE_IP/HOST>:9221/pve?target=<IP_OF_A_PVE_NODE>
 
 Define endpoints, service and service monitor with the template yaml.
 
+```bash
+kubectl apply -f prom-proxmox.yaml
+```
+
 Then, add the dashboard to grafana and create the configmap.
 
 ```bash

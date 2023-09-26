@@ -1,49 +1,149 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: nfs-cluster
+  name: nfs1
   labels:
-    app: nfs-cluster
+    app: nfs1
   namespace: monitoring
 subsets:
 - addresses:
-  - ip: xx.xx.xx.xx #IP of the loadbanacer for the cluster
-    nodeName: nfs-cluster
+  - ip: xx.xx.xx.xx #IP of nfs node
+    nodeName: nfs1
   ports:
-  - name: nfs-cluster
+  - name: nfs1
     port: 9100
     protocol: TCP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nfs-cluster
+  name: nfs1
   labels:
-    app: nfs-cluster
+    app: nfs1
   namespace: monitoring
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
-  - name: nfs-cluster
+  - name: nfs1
     port: 9100
     targetPort: 9100
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: nfs-cluster
+  name: nfs1
   namespace: monitoring
   labels:
-    app: nfs-cluster
+    app: nfs1
     release: kube-prometheus-stack
 spec:
   endpoints:
   - interval: 30s
-    port: nfs-cluster
+    port: nfs1
     scheme: http
     path: "/metrics"
-  jobLabel: nfs-cluster
+  jobLabel: nfs1
   selector:
     matchLabels:
-      app: nfs-cluster
+      app: nfs1
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: nfs2
+  labels:
+    app: nfs2
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: xx.xx.xx.xx #IP of nfs node
+    nodeName: nfs2
+  ports:
+  - name: nfs2
+    port: 9100
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs2
+  labels:
+    app: nfs2
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: nfs2
+    port: 9100
+    targetPort: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nfs2
+  namespace: monitoring
+  labels:
+    app: nfs2
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    port: nfs2
+    scheme: http
+    path: "/metrics"
+  jobLabel: nfs2
+  selector:
+    matchLabels:
+      app: nfs2
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: nfs3
+  labels:
+    app: nfs3
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: xx.xx.xx.xx #IP of nfs node
+    nodeName: nfs3
+  ports:
+  - name: nfs3
+    port: 9100
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs3
+  labels:
+    app: nfs3
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: nfs3
+    port: 9100
+    targetPort: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nfs3
+  namespace: monitoring
+  labels:
+    app: nfs3
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    port: nfs3
+    scheme: http
+    path: "/metrics"
+  jobLabel: nfs3
+  selector:
+    matchLabels:
+      app: nfs3

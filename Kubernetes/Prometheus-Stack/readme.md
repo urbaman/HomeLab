@@ -86,6 +86,8 @@ kubectl edit -n monitoring deployment kube-prometheus-stack-operator
 kubectl rollout restart -n monitoring deployment kube-prometheus-stack-operator
 ```
 
+Also add the to the values file, so that next upgrade keeps them.
+
 Disable the internal etcd scraping:
 
 ```yaml
@@ -175,8 +177,6 @@ And install:
 
 ```bash
 helm upgrade -i --namespace monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack --values kube-prometheus-stack-values.yaml
-<<<<<<< HEAD
-=======
 ```
 
 ## The alertmanager PVC problem
@@ -188,7 +188,6 @@ In that case, the PVC got messed up with a Selector {} spec that stops Longhorn 
 ```bash
 kubectl delete pvc -n monitoring alertmanager-kube-prometheus-stack-alertmanager-db-alertmanager-kube-prometheus-stack-alertmanager-0
 kubectl rollout restart -n monitoring statefulset.apps/alertmanager-kube-prometheus-stack-alertmanager
->>>>>>> 2cd5f4be2a250bf285a000fde297dfce9d8914d2
 ```
 
 ## Monitoring other services/apps on other namespaces

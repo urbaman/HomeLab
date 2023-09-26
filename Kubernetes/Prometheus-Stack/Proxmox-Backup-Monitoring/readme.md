@@ -3,16 +3,20 @@
 ## Install prometheus pushgateway on kubernetes
 
 ```bash
-helm show values prometheus-community/prometheus-pushgateway > push.yaml
+helm show values prometheus-community/prometheus-pushgateway > pushgateway-values.yaml
 ```
 
 Define the namespace to monitoring, the Service Monitor to true and add the release=kube-prometheus-stack additional label to the Service Monitor.
 
 ```bash
-helm install prometheus-pushgateway prometheus-community/prometheus-pushgateway --values push.yaml -n monitoring
+helm install prometheus-pushgateway prometheus-community/prometheus-pushgateway --values pushgateway-values.yaml -n monitoring
 ```
 
 Then, create the ingressroute from the yaml template
+
+```bash
+kubectl apply -f ig-pushgateway.yaml
+```
 
 ## Proxmox Backup Server exporter
 

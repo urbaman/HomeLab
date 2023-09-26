@@ -5,6 +5,7 @@ After implementing the prometheus-stack, get the prometheus-operator.yaml file f
 Install the grafana dashboard, download the json from grafana, create the configmap in the monitoring namespace and label it.
 
 ```bash
+kubectl apply -f prom-metallb.yaml
 kubectl create configmap grafana-dashboard-metallb -n monitoring --from-file=grafana-mllb.json
 kubectl label configmap grafana-dashboard-metallb -n monitoring grafana_dashboard="1"
 ```
