@@ -37,6 +37,14 @@ helm repo update
 helm show values prometheus-community/kube-prometheus-stack > kube-prometheus-stack-values.yaml
 ```
 
+Use the followig command to get the namespaces with appended "      - ".
+
+```bash
+kubectl get ns  --no-headers -o custom-columns="'- ':metadata.name" | sed 's/^/      - /'
+```
+
+And add to the chart
+
 ```yaml
   namespaces:
     releaseNamespace: true
@@ -66,6 +74,16 @@ helm show values prometheus-community/kube-prometheus-stack > kube-prometheus-st
       - tigera-operator
       - traefik
       - traefik-external
+```
+
+You can always change (add, delete, ...) the scraped namespaces editing the operator deployment
+
+First, get the namespaces in comma delimitated format, then edit the --namespaces spec, replacing the comma separated string of namespaces with the new one, and restart the deployment
+
+```bash
+kubectl get ns -o jsonpath='{.items[*].metadata.name}' | sed -e "s/ /,/g"
+kubectl edit -n monitoring deployment kube-prometheus-stack-operator
+kubectl rollout restart -n monitoring deployment kube-prometheus-stack-operator
 ```
 
 Disable the internal etcd scraping:
