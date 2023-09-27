@@ -18,13 +18,13 @@ Enable the metrics scraper, disable nginx, cert-manager and ingress, then save t
 ```bash
 helm show values kubernetes-dashboard/kubernetes-dashboard > dashboard-values.yaml
 vi dashboard-values.yaml
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard -f dashboard-values.yaml
+helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard -f dashboard-values.yaml
 ```
 
 Or give the settings to helm
 
 ```bash
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard --set cert-manager.enabled=false --set nginx.enabled=false --set metrics-server.enabled=false  --set metricsScraper.enabled=true
+helm upgrade -i --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard --set cert-manager.enabled=false --set nginx.enabled=false --set metrics-server.enabled=false  --set metricsScraper.enabled=true
 ```
 
 ## Creating sample user

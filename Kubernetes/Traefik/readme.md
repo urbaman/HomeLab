@@ -313,7 +313,7 @@ logs:
 ## Install
 
 ```bash
-helm install traefik traefik/traefik -n traefik --create-namespace --values traefik-values.yaml
+helm upgrade -i traefik traefik/traefik -n traefik --create-namespace --values traefik-values.yaml
 ```
 
 ## Check the dashboard

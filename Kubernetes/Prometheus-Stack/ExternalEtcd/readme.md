@@ -108,6 +108,6 @@ And apply it with kubectl.
 Finally, add a grafana dashboard for etcd on grafana, set the datasource, get the json, create a configmap from it and label it.
 
 ```bash
-kubectl create configmap grafana-dashboard-etcd-cluster --from-file=/path_to/etcd-cluster.json
+kubectl create configmap grafana-dashboard-etcd-cluster --from-file=etcd-cluster.json
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
 ```

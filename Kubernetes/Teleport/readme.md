@@ -97,7 +97,7 @@ kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl to
 Deploy the teleport-kube-agent after having added the token, the ca-pin and the apps to the config (see examples in the yaml file)
 
 ```bash
-helm install teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-agent --create-namespace -f teleport-kube-agent-agent-values.yaml
+helm upgrade -i teleport-kube-agent teleport/teleport-kube-agent --namespace teleport-cluster --create-namespace -f teleport-kube-agent-values.yaml
 ```
 
 You should see the apps appearing and accessible from the GUI.

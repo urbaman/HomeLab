@@ -1,23 +1,9 @@
 # Monitoring Longhorn
 
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: longhorn-prometheus-servicemonitor
-  namespace: monitoring
-  labels:
-    name: longhorn-prometheus-servicemonitor
-    release: kube-prometheus-stack
-spec:
-  selector:
-    matchLabels:
-      app: longhorn-manager
-  namespaceSelector:
-    matchNames:
-    - longhorn-system
-  endpoints:
-  - port: manager
+Deploy the serviceMonitor
+
+```bash
+kubectl apply -f sm-longhorn.yaml
 ```
 
 Import a suitable grafana dashboard (Longhorn Example is ok), get the json definition and create the json definition file.

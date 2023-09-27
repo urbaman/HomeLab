@@ -14,7 +14,7 @@ If you had already added this repo earlier, run helm repo update to retrieve the
 To install the uptime-kuma chart, with the lates image:
 
 ```bash
-helm upgrade my-uptime-kuma uptime-kuma/uptime-kuma --install --namespace monitoring --set image.tag=latest
+helm upgrade -i uptime-kuma uptime-kuma/uptime-kuma --namespace monitoring --set image.tag=latest
 ```
 
 ## Expose through IngressRoute
