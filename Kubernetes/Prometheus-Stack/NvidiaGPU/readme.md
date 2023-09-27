@@ -25,12 +25,14 @@ Set a label to the GPU-provisioned nodes
 kubectl label nodes <your-node-name> gpu=<gpu device> # "QuadroP2200" for me
 ```
 
-Set the nodeSelector to `nvidia.com/gpu.present: "true"`
+Check the nodes' labels, with the Nvidia Device Plugin the GPU-provisioned nodes should have something like `"nvidia.com/gpu.product": "NVIDIA-DEVICE-NAME"`
+
+Set the nodeSelector to `nvidia.com/gpu.product: "NVIDIA-DEVICE-NAME"`
 
 ```bash
 nodeSelector:
   #node: gpu
-  gpu: "<gpu device>"
+  nvidia.com/gpu.product: "NVIDIA-DEVICE-NAME"
 ```
 
 ```bash
