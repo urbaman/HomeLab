@@ -8,7 +8,7 @@ You need a [running NFS server](https://github.com/urbaman/HomeLab/tree/main/Sto
 
 ```bash
 sudo apt install nfs-common -y
-showmount -e nfs.domain.com
+showmount -e k8cp.domain.com
 ```
 
 Output:
@@ -27,12 +27,12 @@ We can install a provisioner for every share we want to use.
 ```bash
 helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
 helm repo update
-helm install -n nfs-provisioning --create-namespace first-nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+helm upgrade -i -n nfs-provisioning --create-namespace first-nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=y.y.y.y \
     --set nfs.path=/other/exported/path \
     --set storageClass.name=first-nfs-client \
     --set storageClass.provisionerName=k8s-sigs.io/first-nfs-subdir-external-provisioner
-helm install -n nfs-provisioning --create-namespace second-nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+helm upgrade -i -n nfs-provisioning --create-namespace second-nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=y.y.y.y \
     --set nfs.path=/other/exported/path \
     --set storageClass.name=second-nfs-client \

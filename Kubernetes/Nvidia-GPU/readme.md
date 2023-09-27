@@ -39,8 +39,8 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 Here you see `ERROR:root:aplay command not found` because the GPU also has an integrated sound chip, but we do not care about it. We also see that the driver version 535 is the recommended one, so we install it:
 
 ```bash
-sudo apt install nvidia-headless-535-server nvidia-utils-535-server libnvidia-encode-535-server -
-sudo apt install cuda-toolkit -y
+sudo apt install nvidia-headless-535-server nvidia-utils-535-server libnvidia-encode-535-server -y
+sudo apt install nvidia-cuda-toolkit -y
 ```
 
 After the installation, reboot the machine again to apply the drivers, then check the installation:
@@ -75,71 +75,34 @@ Mon Jul 31 15:47:23 2023
 microk8s enable gpu
 ```
 
-## Install Nvidia contanier (containerd version, kubeadm cluster - Not working for network instability)
+## Install Nvidia contanier (containerd version, kubeadm cluster)
 
 Install the Nvidia contanier:
 
 ```bash
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
-sudo apt-key export F796ECB0 | sudo gpg --dearmour -o /usr/share/keyrings/libnvidia.gpg
-sudo apt-key del F796ECB0
-sudo vi /etc/apt/sources.list.d/libnvidia-container.list
-```
-
-```bash
-deb [arch=amd64 signed-by=/usr/share/keyrings/libnvidia.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
-deb [arch=amd64 signed-by=/usr/share/keyrings/libnvidia.gpg] https://nvidia.github.io/libnvidia-container/stable/ubuntu18.04/$(ARCH) /
-#deb https://nvidia.github.io/libnvidia-container/experimental/deb/$(ARCH) /
-#deb https://nvidia.github.io/libnvidia-container/experimental/ubuntu18.04/$(ARCH) /
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
+  && \
+    sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit nvidia-container-runtime
 ```
 
 ```bash
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit nvidia-container-runtime
 ```
 
-Then, configure containerd to use it as the default low-level runtime. Edit the `/etc/containerd/config.toml` file:
+Then, configure containerd to use it as the default low-level runtime.
 
 ```bash
-version = 2
-[plugins]
-[...]
-  [plugins."io.containerd.grpc.v1.cri"]
-[...]
+sudo nvidia-ctk runtime configure --runtime=containerd
+```
+
+Open `/etc/containerd/config.toml` and set the `default_runtime_name` to `nvidia`
+
+```bash
     [plugins."io.containerd.grpc.v1.cri".containerd]
       default_runtime_name = "nvidia"
-      disable_snapshot_annotations = true
-      discard_unpacked_layers = false
-      ignore_rdt_not_enabled_errors = false
-      no_pivot = false
-      snapshotter = "overlayfs"
-
-      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
-      
-        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-          base_runtime_spec = ""
-          cni_conf_dir = ""
-          cni_max_conf_num = 0
-          container_annotations = []
-          pod_annotations = []
-          privileged_without_host_devices = false
-          runtime_engine = ""
-          runtime_path = ""
-          runtime_root = ""
-          runtime_type = "io.containerd.runc.v2"
-
-          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-            BinaryName = "/usr/bin/nvidia-container-runtime"
-            CriuImagePath = ""
-            CriuPath = ""
-            CriuWorkPath = ""
-            IoGid = 0
-            IoUid = 0
-            NoNewKeyring = false
-            NoPivotRoot = false
-            Root = ""
-            ShimCgroup = ""
-            SystemdCgroup = true
 ```
 
 And restart containerd.
@@ -162,7 +125,7 @@ Change values where you want (remember to set the gfd subchart `enabled: true` t
 helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin-values.yaml
 ```
 
-## Install the Nvidia opreator
+## Install the Nvidia opreator (prefear the device plugin)
 
 ```bash
 kubectl create ns gpu-operator

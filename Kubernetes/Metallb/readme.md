@@ -2,7 +2,7 @@
 
 ## Preparation
 
-We should use kube-proxy in IPVS mode (more performant than the default iptables), and since Kubernetes v1.14.2 you have to enable strict ARP mode.
+We should use kube-proxy in IPVS mode (more performant than the default iptables if we have more than 1000 services), and since Kubernetes v1.14.2 you have to enable strict ARP mode.
 
 Note, you don’t need this if you’re using kube-router as service-proxy because it is enabling strict ARP by default.
 
@@ -44,6 +44,19 @@ To install MetalLB, apply the manifest:
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.11/config/manifests/metallb-native.yaml
+```
+
+or 
+
+```bash
+helm repo add metallb https://metallb.github.io/metallb
+helm show values metallb/metallb > metallb-values.yaml
+```
+
+Set both the serviceMonitor to `enabled: true`, and set an `additionalLabels: release = kube-prometheus-stack` to both the instances (speaker, controller), but add the values only when kube-prometheus-stack is deployed and running
+
+```bash
+helm upgrade -i -n metallb-system --create namespace metallb metallb/metallb --values metallb-values.yaml
 ```
 
 ## Configuring L2 configuration
