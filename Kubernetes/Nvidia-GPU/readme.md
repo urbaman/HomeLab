@@ -39,7 +39,8 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 Here you see `ERROR:root:aplay command not found` because the GPU also has an integrated sound chip, but we do not care about it. We also see that the driver version 535 is the recommended one, so we install it:
 
 ```bash
-sudo apt install nvidia-headless-535-server nvidia-utils-535-server libnvidia-encode-535-server
+sudo apt install nvidia-headless-535-server nvidia-utils-535-server libnvidia-encode-535-server -
+sudo apt install cuda-toolkit -y
 ```
 
 After the installation, reboot the machine again to apply the drivers, then check the installation:
@@ -107,7 +108,7 @@ version = 2
           base_runtime_spec = ""
           cni_conf_dir = ""
           cni_max_conf_num = 0
-          container_annotations = []
+          container_annotations = ["nvidia.cdi.k8s.io/*"]
           pod_annotations = []
           privileged_without_host_devices = false
           runtime_engine = ""
@@ -121,6 +122,12 @@ version = 2
             CriuPath = ""
             CriuWorkPath = ""
             IoGid = 0
+            IoUid = 0
+            NoNewKeyring = false
+            NoPivotRoot = false
+            Root = ""
+            ShimCgroup = ""
+            SystemdCgroup = true
 ```
 
 And restart containerd.
@@ -149,7 +156,7 @@ helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin 
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
-helm install --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true
+helm upgrade -i --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true
 ```
 
 ## Test installation
