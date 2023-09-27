@@ -82,7 +82,19 @@ Install the Nvidia contanier:
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/libnvidia-container.list
+sudo apt-key export F796ECB0 | sudo gpg --dearmour -o /usr/share/keyrings/libnvidia.gpg
+sudo apt-key del F796ECB0
+sudo vi /etc/apt/sources.list.d/libnvidia-container.list
+```
+
+```bash
+deb [arch=amd64 signed-by=/usr/share/keyrings/libnvidia.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/$(ARCH) /
+deb [arch=amd64 signed-by=/usr/share/keyrings/libnvidia.gpg] https://nvidia.github.io/libnvidia-container/stable/ubuntu18.04/$(ARCH) /
+#deb https://nvidia.github.io/libnvidia-container/experimental/deb/$(ARCH) /
+#deb https://nvidia.github.io/libnvidia-container/experimental/ubuntu18.04/$(ARCH) /
+```
+
+```bash
 sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit nvidia-container-runtime
 ```
 
@@ -108,7 +120,7 @@ version = 2
           base_runtime_spec = ""
           cni_conf_dir = ""
           cni_max_conf_num = 0
-          container_annotations = ["nvidia.cdi.k8s.io/*"]
+          container_annotations = []
           pod_annotations = []
           privileged_without_host_devices = false
           runtime_engine = ""
@@ -141,13 +153,13 @@ sudo systemctl restart containerd
 ```bash
 helm repo add nvdp https://nvidia.github.io/k8s-device-plugin
 helm repo update
-helm show values nvdp/nvidia-device-plugin > nvidia-device-plugin.yaml
+helm show values nvdp/nvidia-device-plugin > nvidia-device-plugin-values.yaml
 ```
 
 Change values where you want (remember to set the gfd subchart `enabled: true` to let the plugin only enable GPU capable nodes), then install the repo:
 
 ```bash
-helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin.yaml
+helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin-values.yaml
 ```
 
 ## Install the Nvidia opreator
@@ -156,7 +168,7 @@ helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin 
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
-helm upgrade -i --wait --generate-name -n gpu-operator --create-namespace nvidia/gpu-operator --set cdi.enabled=true --set cdi.default=true
+helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --set dcgmExporter.enableb=true --set dcgmExporter.serviceMonitor.enabled=true --set dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack --set cdi.enabled=true --set cdi.default=true
 ```
 
 ## Test installation
