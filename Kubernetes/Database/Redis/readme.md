@@ -10,7 +10,7 @@ Select the type of cluster:
 Install the chart.
 
 ```bash
-helm install redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set master.persistence.accessModes={ReadWriteMany} --set replica.persistence.accessModes={ReadWriteMany} --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack
+helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set master.persistence.accessModes={ReadWriteMany} --set replica.persistence.accessModes={ReadWriteMany} --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack
 ```
 
 You can access through the redis-master.redis.svc.cluster.local service for read/writes
