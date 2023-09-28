@@ -22,7 +22,7 @@ Access the postgresql-postgresql-ha-pgpool service on port 5432 (eventually thro
 kubectl port-forward -n postgresql service/postgresql-postgresql-ha-pgpool :5432
 ```
 
-You can also use the service dns inside the cluster: postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local
+You can also use the service dns inside the cluster: `postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local`
 
 ## Add users to pgpool
 
@@ -36,8 +36,10 @@ helm upgrade -i postgresql bitnami/postgresql-ha --namespace postgresql --create
 
 ## Pgadmin
 
-Change the password in the secret, change the domains in the certificate and ingressroutes, then apply the yaml.
+Change the password in the secret, set the postgresql server(s) info in the configmap, change the domains in the certificate and ingressroutes, then apply the yaml.
 
 ```bash
 kubectl apply -n pgadmin.yaml
 ```
+
+You'll probably need to go through the password resetting tool, then 

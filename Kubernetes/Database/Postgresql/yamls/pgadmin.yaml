@@ -7,41 +7,85 @@ type: Opaque
 data:
   pgadmin-default-password: c2VjcmV0cGFzc3dvcmQ= # This is "secretpassword", change to your password
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config-servers
+  namespace: postgresql
+data:
+  servers.json: |
+    {
+        "Servers": {
+          "1": {
+            "Name": "PostgreSQL DB",
+            "Group": "Servers",
+            "Port": 5432,
+            "Username": "postgres",
+            "Host": "postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "postgres"
+          }
+        }
+    }
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: pgadmin
-  namespace: postgresql
 spec:
-  selector:
-   matchLabels:
-    app: pgadmin
+  serviceName: pgadmin-service
+  podManagementPolicy: Parallel
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: pgadmin
   template:
     metadata:
       labels:
         app: pgadmin
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
-        - name: pgadmin4
-          image: dpage/pgadmin4
+        - name: pgadmin
+          image: dpage/pgadmin4:5.4
+          imagePullPolicy: Always
           env:
-           - name: PGADMIN_DEFAULT_EMAIL
-             value: "posgresqladmin@domain.com"
-           - name: PGADMIN_DEFAULT_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: pgadmin-secret
-                 key: pgadmin-default-password
-           - name: PGADMIN_PORT
-             value: "80"
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: user@domain.com
+          - name: PGADMIN_DEFAULT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgadmin-secret
+                key: pgadmin-default-password
           ports:
-            - containerPort: 80
-              name: pgadmin-port
+          - name: pgadmin-port
+            containerPort: 80
+            protocol: TCP
+          volumeMounts:
+          - name: pgadmin-config-servers
+            mountPath: /pgadmin4/servers.json
+            subPath: servers.json
+            readOnly: true
+          - name: pgadmin-data
+            mountPath: /var/lib/pgadmin
       dnsConfig:
         options:
           - name: ndots
             value: "1"
+      volumes:
+      - name: pgadmin-config-servers
+        configMap:
+          name: pgadmin-config-servers
+  volumeClaimTemplates:
+  - metadata:
+      name: pgadmin-data
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      resources:
+        requests:
+          storage: 3Gi
 ---
 apiVersion: v1
 kind: Service
