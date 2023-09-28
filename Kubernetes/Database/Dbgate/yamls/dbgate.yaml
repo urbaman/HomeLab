@@ -1,3 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dbgate
+  labels:
+    name: dbgate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dbgate-data
+  namespace: dbgate
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,7 +47,7 @@ spec:
       volumes:
       - name: dbgate-data
         persistentVolumeClaim:
-          claimName: dbgate-pvc
+          claimName: dbgate-data
 ---
 apiVersion: v1
 kind: Service
@@ -62,15 +82,6 @@ spec:
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
   secretName: dbgate-domain
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-spec:
-  basicAuth:
-    secret: traefik-dbgate-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -130,15 +141,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-dbgate-basic-auth
-  namespace: dbgate
-data:
-  users: |
-    YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -155,7 +157,6 @@ spec:
           port: 3000
             #          serversTransport: traefik-dbgate-transport
       middlewares:
-        - name: traefik-dbgate-basic-auth
         - name: traefik-dbgate-security
   tls:
     secretName: dbgate-domain
