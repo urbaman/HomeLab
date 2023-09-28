@@ -4,6 +4,7 @@
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
 helm install mariadb bitnami/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=600 --set primary.readinessProbe.initialDelaySeconds=600 --set secondary.livenessProbe.initialDelaySeconds=600 --set secondary.readinessProbe.initialDelaySeconds=600
 ```
 
@@ -11,6 +12,7 @@ helm install mariadb bitnami/mariadb --namespace mariadb --create-namespace --se
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
 helm install mariadb bitnami/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=600 --set primary.readinessProbe.initialDelaySeconds=600
 ```
 
@@ -29,25 +31,29 @@ Substitute primary with secondary to access the replica.
 kubectl port-forward -n mariadb service/mariadb-primary :3306
 ```
 
-You can also use the service dns inside the cluster: mariadb-primary.mariadb.svc.cluster.local
+You can also use the service dns inside the cluster: `mariadb-primary.mariadb.svc.cluster.local`
 
 ## Proxysql for read/write split
 
 Add a monitoring user ro mysql:
+
+```bash
+kubectl exec -it -n mariadb mariadb-primary-0 -- mysql -h localhost -u root -pPASSWORD
+```
 
 ```sql
 CREATE USER 'monitor'@'%' IDENTIFIED BY 'monitor';
 GRANT USAGE, REPLICATION CLIENT ON *.* TO 'monitor'@'%';
 ```
 
-Rename the proxysql-mariadb.cnf file to proxysql.cnf
+Rename the proxysql-mariadb.cnf file to proxysql.cnf, set the root password.
 
 ```bash
 kubectl create configmap -n mariadb proxysql-configmap --from-file=proxysql.cnf
 kubectl apply -f proxysql-mariadb.yaml
 ```
 
-Now connect through the proxysql service or proxysql.mariadb.svc.cluster.local
+Now connect on port 6033 through the proxysql service or `proxysql.mariadb.svc.cluster.local`
 
 ### Update Proxysql config on the run
 
@@ -57,8 +63,8 @@ If you need to change the mysql server_version (shouldn't be needed for mariadb)
 - Run the following commands, running as many connections (points 2-5) as needed to update all of the pods in the cluster, with the needed mysql version.
 
 ```
-1. kubectl exec -it -n mysql proxysql-0 -- /bin/bash
-2. mysql -u radmin -pradmin -h proxysql.mysql.svc.cluster.local -P6032 --prompt 'ProxySQL Admin> '
+1. kubectl exec -it -n mariadb proxysql-0 -- /bin/bash
+2. mysql -u radmin -pradmin -h proxysql.mariadb.svc.cluster.local -P6032 --prompt 'ProxySQL Admin> '
 3. update global_variables set variable_value = '8.0.34' where variable_name = 'mysql-server_version';
 4. LOAD MYSQL VARIABLES TO RUNTIME;
 5. SAVE MYSQL VARIABLES TO DISK;
