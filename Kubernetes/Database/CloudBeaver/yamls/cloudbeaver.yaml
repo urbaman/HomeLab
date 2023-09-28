@@ -5,6 +5,18 @@ metadata:
   labels:
     name: cloudbeaver
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cloudbeaver-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,16 +41,12 @@ spec:
             - containerPort: 8978
               name: http
           volumeMounts:
-           - mountPath: /opt/cloudbeaver/workspace
-             name: cloudbeaver-data
-  volumeClaimTemplates:
-  - metadata:
-      name: cloudbeaver-data
-    spec:
-      accessModes: [ "ReadWriteMany" ]
-      resources:
-        requests:
-          storage: 5Gi
+          - mountPath: /opt/cloudbeaver/workspace
+            name: cloudbeaver-data
+      volumes:
+      - name: cloudbeaver-data
+        persistentVolumeClaim:
+          claimName: cloudbeaver-data
 ---
 apiVersion: v1
 kind: Service
@@ -73,15 +81,6 @@ spec:
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
   secretName: cloudbeaver-domain
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-cloudbeaver-basic-auth
-  namespace: cloudbeaver
-spec:
-  basicAuth:
-    secret: traefik-cloudbeaver-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -141,15 +140,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-cloudbeaver-basic-auth
-  namespace: cloudbeaver
-data:
-  users: |
-    YWRtaW46JGFwcjEkREpINEtmNGskcERwWVltUGdUamV3M2JyUzliOGpPMAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -166,7 +156,6 @@ spec:
           port: 8978
           serversTransport: traefik-cloudbeaver-transport
       middlewares:
-        - name: traefik-cloudbeaver-basic-auth
         - name: traefik-cloudbeaver-security
   tls:
     secretName: cloudbeaver-domain
