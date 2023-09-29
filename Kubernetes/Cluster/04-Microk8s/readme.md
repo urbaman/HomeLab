@@ -42,12 +42,39 @@ sudo vi /var/snap/microk8s/current/args/kube-apiserver
 ```
 
 ```bash
+--service-cluster-ip-range=10.100.0.0/16
 --etcd-servers=https://etcd.urbaman.it:2379
 --etcd-cafile=${SNAP_DATA}/certs/etcd-ca.crt
 --etcd-certfile=${SNAP_DATA}/certs/client.crt
 --etcd-keyfile=${SNAP_DATA}/certs/etcd-client.key
 --bind-address=0.0.0.0
 ```
+
+sudo vi /var/snap/microk8s/current/args/kube-controll-manager
+
+--cluster-cidr=10.50.0.0/16
+--service-cluster-ip-range=10.100.0.0/16
+
+sudo vi /var/snap/microk8s/current/args/kube-proxy
+
+--cluster-cidr=10.50.0.0/16
+
+sudo vi /var/snap/microk8s/current/args/flaneld
+
+--etcd-endpoints=https://etcd.urbaman.it:2379
+--etcd-cafile=${SNAP_DATA}/certs/etcd-ca.crt
+--etcd-certfile=${SNAP_DATA}/certs/client.crt
+--etcd-keyfile=${SNAP_DATA}/certs/etcd-client.key
+
+sudo vi /var/snap/microk8s/current/args/cni-env
+
+IPv4_CLUSTER_CIDR=10.50.0.0/16
+IPv4_SERVICE_CIDR=10.100.0.0/16
+
+sudo vi /var/snap/microk8s/current/args/cni-network/calico-kubeconfig
+
+  cluster:
+    server: https://k8cp.urbaman.it:16443
 
 Restart microk8s and re-apply the calico conf
 
