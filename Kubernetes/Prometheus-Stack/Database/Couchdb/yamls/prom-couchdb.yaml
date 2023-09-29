@@ -11,7 +11,7 @@ spec:
   - interval: 30s
     port: metrics
     scheme: http
-    path: "/_node/couchdb@couchdb-couchdb-0.couchdb-couchdb.couchdb.svc.cluster.local/_prometheus/#"
+    path: "/_node/couchdb@couchdb-couchdb-0.couchdb-couchdb.couchdb.svc.cluster.local/_prometheus/"
   jobLabel: couchdb
   selector:
     matchLabels:

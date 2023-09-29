@@ -9,12 +9,12 @@ helm upgrade -i -n couchdb prometheus-couchdb-exporter prometheus-community/prom
 Deploy a servicemonitor
 
 ```bash
-kubectl appy -f prom-couchdb.yaml
+kubectl apply -f prom-couchdb.yaml
 ```
 
-## Add the grafana dashboard
+## Add the grafana dashboard (not yet found)
 
 ```bash
-kubectl create configmap grafana-dashboard-mysql --from-file=grafana-mysql.json
-kubectl label configmap grafana-dashboard-mysql grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-couchdb --from-file=grafana-couchdb.json
+kubectl label configmap grafana-dashboard-couchdb grafana_dashboard="1"
 ```
