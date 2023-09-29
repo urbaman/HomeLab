@@ -378,6 +378,8 @@ sudo scp /etc/kubernetes/admin.conf ubuntu@k8w2:/home/ubuntu
 sudo scp /etc/kubernetes/admin.conf ubuntu@k8w3:/home/ubuntu
 ```
 
+On the nodes:
+
 ```bash
 mkdir -p $HOME/.kube
 sudo cp -i admin.conf $HOME/.kube/config

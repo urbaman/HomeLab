@@ -4,15 +4,30 @@ metadata:
   name: couchdb
   namespace: couchdb
   labels:
-    app: couchdb
+    app: prometheus-couchdb-exporter
     release: kube-prometheus-stack
 spec:
   endpoints:
   - interval: 30s
-    port: metrics
+    port: http
     scheme: http
-    path: "/_node/couchdb@couchdb-couchdb-0.couchdb-couchdb.couchdb.svc.cluster.local/_prometheus/"
+    relabelings:
+    - action: replace
+      sourceLabels: [node_name]
+      regex: "couchdb@couchdb-couchdb-0.couchdb-couchdb.couchdb.svc.cluster.local"
+      targetLabel: "node_name"
+      replacement: "couchdb-couchdb-0"
+    - action: replace
+      sourceLabels: [node_name]
+      regex: "couchdb@couchdb-couchdb-1.couchdb-couchdb.couchdb.svc.cluster.local"
+      targetLabel: "node_name"
+      replacement: "couchdb-couchdb-1"
+    - action: replace
+      sourceLabels: [node_name]
+      regex: "couchdb@couchdb-couchdb-2.couchdb-couchdb.couchdb.svc.cluster.local"
+      targetLabel: "node_name"
+      replacement: "couchdb-couchdb-2"
   jobLabel: couchdb
   selector:
     matchLabels:
-      app: couchdb
+      app: prometheus-couchdb-exporter
