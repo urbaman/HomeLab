@@ -29,9 +29,9 @@ metadata:
     app.kubernetes.io/version: v1.5.1
 data:
   default-setting.yaml: |-
-    default-data-path: /longhorn/storage/ # this is the path where the primary storage is mounted
+    default-data-path: /longhorn/vdisk/ # this is the path where the primary storage is mounted
     storage-network: default/ipvlan-conf # this is the name of the multus network-attachment-definition
-    default-replica-count: 6
+    default-replica-count: 3
 ```
 
 Eventually set the number of replicas in the StorageClass, then install.
@@ -51,7 +51,7 @@ data:
     kind: StorageClass
     apiVersion: storage.k8s.io/v1
     metadata:
-      name: longhorn
+      name: longhorn-vdisk
       annotations:
         storageclass.kubernetes.io/is-default-class: "true"
     provisioner: driver.longhorn.io
@@ -64,6 +64,7 @@ data:
       fromBackup: ""
       fsType: "ext4"
       dataLocality: "disabled"
+      diskSelector: "vdisk"
 ```
 
 
