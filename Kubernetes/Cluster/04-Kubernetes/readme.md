@@ -110,15 +110,10 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 
 #### Install Containerd
 
-After adding the Docker’s repository, update the repository index.
+After adding the Docker’s repository, update the repository index and install containerd
 
 ```bash
 sudo apt update
-```
-
-Then, install containerd using the apt command.
-
-```bash
 sudo apt install -y containerd.io
 ```
 
@@ -203,7 +198,7 @@ Update apt package index, install kubelet, kubeadm and kubectl, and pin their ve
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y kubelet=1.27.6-00 kubeadm=1.27.6-00 kubectl=1.27.6-00
+sudo apt-get install -y kubelet=1.28.2-00 kubeadm=1.28.2-00 kubectl=1.28.2-00
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
@@ -213,7 +208,7 @@ It's a perfect time to make it a template from which we can create both control 
 
 ## Set up the etcd cluster
 
-Follow these instructions to set up the etcd cluster.
+Follow [these instructions](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/02-External-Etcd) to set up the etcd cluster.
 
 Copy the following files from any etcd node in the etcd cluster to the first control panel node:
 Copy etcd certs to first control panel
