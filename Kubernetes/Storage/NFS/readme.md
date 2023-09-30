@@ -1,7 +1,5 @@
 # Deploy the NFS subdir provisioner for dynamic pv
 
-Refer: [Kubernetes NFS Subdir External Provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)
-
 ## Preparation
 
 You need a [running NFS server](https://github.com/urbaman/HomeLab/tree/main/Storage/NFS%20Cluster), nfs-common package installed and a `showmount` verification on all nodes.
