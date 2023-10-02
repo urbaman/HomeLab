@@ -1,0 +1,17 @@
+agent:
+  # Obfuscation
+  alligator:
+    obfuscateData: true
+
+clickhouse:
+  # logs storage
+  persistence:
+    storageClass: longhorn-nvme
+    size: 128Gi
+
+victoria-metrics-single:
+  # metrics storage
+  server:
+    persistentVolume:
+      storageClass: longhorn-nvme
+      size: 100Gi 

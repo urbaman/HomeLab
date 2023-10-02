@@ -10,7 +10,7 @@ Exit the ssh session end login again to enable the groundcover command.
 
 ## Data obfuscation.
 
-Because Groundcover sends data to the cloud, you can set the data to be obfuscated. Create a groundcover-obfuscate.yaml file with the following content
+Because Groundcover sends data to the cloud, you can set the data to be obfuscated. Create a groundcover-values.yaml file with the following content
 
 ```yaml
 agent:
@@ -18,8 +18,28 @@ agent:
     obfuscateData: true
 ```
 
-Then, deploy with the groundcover commad, beware that it will ask you to authenticate with a browser.
+## Storage Class
+
+Add the storage class to the groundcover-values.yaml file
+
+```yaml
+clickhouse:
+  # logs storage
+  persistence:
+    storageClass: longhorn-nvme
+    size: 128Gi
+
+victoria-metrics-single:
+  # metrics storage
+  server:
+    persistentVolume:
+      storageClass: longhorn-nvme
+      size: 100Gi 
+```
+
+Then, delete the deploy and re-deploy with the groundcover commad, beware that it will ask you to authenticate with a browser.
 
 ```bash
-groundcover deploy --values groundcover-obfuscate.yaml
+groundcover delete
+groundcover deploy -f groundcover-values.yaml
 ```
