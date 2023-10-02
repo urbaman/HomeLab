@@ -101,3 +101,11 @@ We should see the size of the new disk as free space in the volume
 sudo lvresize -l +100%FREE vg1/lv1
 sudo resize2fs /dev/vg1/lv1
 ```
+
+
+## Delete the lvm
+
+sudo umount <mount-point>
+sudo lvremove /dev/vg1/lv1
+sudo vgremove vg1
+sudo pvremove /dev/sdb /dev/sdc

@@ -29,9 +29,9 @@ metadata:
     app.kubernetes.io/version: v1.5.1
 data:
   default-setting.yaml: |-
-    default-data-path: /longhorn/storage/ # this is the path where the primary storage is mounted
+    default-data-path: /longhorn/vdisk/ # this is the path where the primary storage is mounted
     storage-network: default/ipvlan-conf # this is the name of the multus network-attachment-definition
-    default-replica-count: 6
+    default-replica-count: 3
 ```
 
 Eventually set the number of replicas in the StorageClass, and see the data-locality (`best-effort tries` to put a replica on the same node where the workload runs, it can be `disabled` or `strict-local` for a single replica) and the node/disk selectors (if you need to deploy different layers of storage, see below) then install.
@@ -51,7 +51,7 @@ data:
     kind: StorageClass
     apiVersion: storage.k8s.io/v1
     metadata:
-      name: longhorn
+      name: longhorn-vdisk
       annotations:
         storageclass.kubernetes.io/is-default-class: "true"
     provisioner: driver.longhorn.io
