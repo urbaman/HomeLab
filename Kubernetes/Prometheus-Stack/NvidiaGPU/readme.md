@@ -1,5 +1,6 @@
-# Install the 
+# Nvidia GPU monitoring
 
+## Install the dcpm-exporter (only for the device plugin (the operator already has it deployed)
 
 ```bash
 helm repo add https://nvidia.github.io/dcgm-exporter/helm-charts
@@ -39,7 +40,7 @@ nodeSelector:
 helm upgrade -i -n nvidia-device-plugin dcgm-exporter gpu-helm-charts/dcgm-exporter --values dcgm-exporter-values.yaml
 ```
 
-Add the grafana dashboard
+## Add the grafana dashboard
 
 ```bash
 kubectl create configmap grafana-dashboard-nvidia-gpu --from-file=grafana-nvidia-gpu.json
