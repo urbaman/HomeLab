@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: traefik-sm
+  namespace: monitoring
   labels:
     traefik: http
     release: kube-prometheus-stack

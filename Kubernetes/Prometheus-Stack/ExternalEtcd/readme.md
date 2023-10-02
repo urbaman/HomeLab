@@ -41,73 +41,13 @@ And upgrade the helm implementation
 helm upgrade -f prom.yaml kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
 ```
 
-Now create Endpoints, Service and Service Monitor:
-
-```yaml
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: etcd-cluster
-  labels:
-    app: etcd
-  namespace: monitoring
-subsets:
-- addresses:
-  - ip: 10.0.50.41
-    nodeName: etcd1
-  - ip: 10.0.50.42
-    nodeName: etcd2
-  - ip: 10.0.50.43
-    nodeName: etcd3
-  ports:
-  - name: metrics
-    port: 2379
-    protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: etcd-cluster
-  labels:
-    app: etcd
-  namespace: monitoring
-spec:
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: metrics
-    port: 2379
-    targetPort: 2379
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: etcd-cluster
-  namespace: monitoring
-  labels:
-    app: etcd
-    release: kube-prometheus-stack
-spec:
-  endpoints:
-  - interval: 30s
-    port: metrics
-    scheme: https
-    tlsConfig:
-      caFile: /etc/prometheus/secrets/etcd-client-cert/ca.crt
-      certFile: /etc/prometheus/secrets/etcd-client-cert/apiserver-etcd-client.crt
-      keyFile: /etc/prometheus/secrets/etcd-client-cert/apiserver-etcd-client.key
-        #serverName: etcdclstr
-  jobLabel: etcd-cluster
-  selector:
-    matchLabels:
-      app: etcd
-```
-
-And apply it with kubectl.
+Now create Endpoints, Service and Service Monitor (see example yaml) and apply it with kubectl.
 
 Finally, add a grafana dashboard for etcd on grafana, set the datasource, get the json, create a configmap from it and label it.
 
 ```bash
 kubectl create configmap grafana-dashboard-etcd-cluster --from-file=etcd-cluster.json
 kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-etcd-cluster-overview --from-file=etcd-cluster-overview.json
+kubectl label configmap grafana-dashboard-etcd-cluster-overview grafana_dashboard="1"
 ```

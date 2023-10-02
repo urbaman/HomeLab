@@ -9,7 +9,7 @@ helm show values prometheus-community/prometheus-pushgateway > pushgateway-value
 Define the namespace to monitoring, the Service Monitor to true and add the release=kube-prometheus-stack additional label to the Service Monitor.
 
 ```bash
-helm install prometheus-pushgateway prometheus-community/prometheus-pushgateway --values pushgateway-values.yaml -n monitoring
+helm upgrade -i prometheus-pushgateway prometheus-community/prometheus-pushgateway --values pushgateway-values.yaml -n monitoring
 ```
 
 Then, create the ingressroute from the yaml template

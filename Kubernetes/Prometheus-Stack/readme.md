@@ -147,7 +147,7 @@ alertmanager:
     storage:
      volumeClaimTemplate:
        spec:
-         storageClassName: longhorn
+         storageClassName: longhorn-vdisk
          accessModes: ["ReadWriteMany"]
          resources:
            requests:
@@ -157,7 +157,7 @@ prometheus:
     storageSpec: 
      volumeClaimTemplate:
        spec:
-         storageClassName: longhorn
+         storageClassName: longhorn-vdisk
          accessModes: ["ReadWriteMany"]
          resources:
            requests:

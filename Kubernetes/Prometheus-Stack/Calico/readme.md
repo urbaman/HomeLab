@@ -97,8 +97,8 @@ spec:
     interval: 15s
     path: '/metrics'
 EOF
-kubectl create configmap grafana-dashboard-felix --from-file=felix.json
+kubectl create configmap grafana-dashboard-felix --from-file=grafana-felix.json
 kubectl label configmap grafana-dashboard-felix grafana_dashboard="1"
-kubectl create configmap grafana-dashboard-typha --from-file=typha.json
+kubectl create configmap grafana-dashboard-typha --from-file=grafana-typha.json
 kubectl label configmap grafana-dashboard-typha grafana_dashboard="1"
 ```

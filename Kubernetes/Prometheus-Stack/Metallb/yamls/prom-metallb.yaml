@@ -2,10 +2,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: metallb-controller
-  namespace: monitoring
+  namespace: metallb-system
   labels:
     release: kube-prometheus-stack
 spec:
+  jobLabel: metallb-controller
   selector:
     matchLabels:
       component: controller
@@ -20,10 +21,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: metallb-speaker
-  namespace: monitoring
+  namespace: metallb-system
   labels:
     release: kube-prometheus-stack
 spec:
+  jobLabel: metallb-speaker
   selector:
     matchLabels:
       component: speaker
