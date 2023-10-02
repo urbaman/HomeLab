@@ -17,7 +17,7 @@ helm upgrade -i portainer portainer/portainer --create-namespace --namespace por
 Or set the values directly
 
 ```bash
-helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer --set service.type=ClusterIP --set tls.force=true --set persistence.storageclass=longhorn
+helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer --set service.type=ClusterIP --set tls.force=true --set persistence.storageclass=longhorn-vdisk
 ```
 
 Go directly to the dashboard to create a user and login, or the instance will need to be restarted.
