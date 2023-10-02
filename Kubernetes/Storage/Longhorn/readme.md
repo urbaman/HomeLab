@@ -34,7 +34,7 @@ data:
     default-replica-count: 6
 ```
 
-Eventually set the number of replicas in the StorageClass, then install.
+Eventually set the number of replicas in the StorageClass, and see the data-locality (`best-effort tries` to put a replica on the same node where the workload runs, it can be `disabled` or `strict-local` for a single replica) and the node/disk selectors (if you need to deploy different layers of storage, see below) then install.
 
 ```yaml
 apiVersion: v1
@@ -63,7 +63,10 @@ data:
       staleReplicaTimeout: "30"
       fromBackup: ""
       fsType: "ext4"
-      dataLocality: "disabled"
+      dataLocality: "best-effort"
+      diskSelector: "vdisk"
+      nodeSelector: "default"
+
 ```
 
 
@@ -71,12 +74,12 @@ data:
 kubectl apply -f longhorn.yaml
 ```
 
-## Installation through helm
+## Installation through helm (can't manage some of the settings)
 
 ```bash
 helm repo add longhorn https://charts.longhorn.io
 helm repo update
-helm upgrade -i longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.5.1 --set defaultSettings.defaultDataPath=/longhorn/storage/ --set defaultSettngs.storageNetwork=default/ipvlan-conf --set defaultSettings.defaultReplicaCount=6 --set persistence.defaultClassReplicaCount=6
+helm upgrade -i longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.5.1 --set defaultSettings.defaultDataPath=/longhorn/storage/ --set defaultSettngs.storageNetwork=default/ipvlan-conf --set defaultSettings.defaultReplicaCount=3 --set persistence.defaultClassReplicaCount=3 
 ```
 
 Or, get the values file, change the settings and install
@@ -210,6 +213,15 @@ spec:
     persistentVolumeClaim:
       claimName: longhorn-volv-pvc
 ```
+
+## Different Storage layers
+
+If you want to manage different storage layers:
+
+- Add disk(s) to two separate paths on host(s) (`/longhorn/vdisk`, `/longhorn/nvme`), deploy longhorn with the default path (`/longhorn/vdisk`) nodeSeleceotr and diskSelector enabled in the default storageClass, defining the storage layer used as default
+- Go to the GUI, add the second disk (path) to the nodes, tag the nodes as `default` and the two disks as `vdisk` or `nvme`
+- Deploy a second storageClass pointing the diskSelector to the second storage layer (disks), see example in the yamls dir
+- Try the above dynamic pvc/pod example doubling up with a version using the new storage class
 
 ## Exposing the dashboard with Traefik
 
