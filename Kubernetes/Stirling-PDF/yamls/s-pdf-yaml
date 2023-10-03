@@ -16,7 +16,7 @@ spec:
   resources:
     requests:
       storage: 10Mi
-  storageClassName: longhorn
+  storageClassName: longhorn-vdisk
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -29,7 +29,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn
+  storageClassName: longhorn-vdisk
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -101,7 +101,7 @@ spec:
             - name:  METRICS_ENABLED
               value: "true"
             - name:  SYSTEM_GOOGLEVISIBILITY
-              value: false # or true
+              value: "false" # or true
           ports:                              # < the ports required (see container documentation)
            - containerPort: 8080
              name: http-8080
@@ -124,15 +124,6 @@ spec:
     - name: http-8080
       protocol: TCP
       port: 8080
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-s-pdf-basic-auth
-  namespace: s-pdf
-spec:
-  basicAuth:
-    secret: traefik-s-pdf-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

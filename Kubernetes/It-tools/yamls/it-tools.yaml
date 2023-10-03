@@ -69,15 +69,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-it-tools-basic-auth
-  namespace: it-tools
-spec:
-  basicAuth:
-    secret: traefik-it-tools-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-it-tools-https-redirect
   namespace: it-tools
 spec:
@@ -133,15 +124,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-it-tools-basic-auth
-  namespace: it-tools
-data:
-  users: |
-    <htpasswd -nb username password | base64>
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -158,7 +140,6 @@ spec:
           port: 80
           serversTransport: traefik-it-tools-transport
       middlewares:
-        - name: traefik-it-tools-basic-auth
         - name: traefik-it-tools-security
   tls:
     secretName: it-tools-urbaman

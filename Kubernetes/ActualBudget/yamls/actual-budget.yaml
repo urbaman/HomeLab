@@ -16,7 +16,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn
+  storageClassName: longhorn-vdisk
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -89,15 +89,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: actual-budget-basic-auth
-  namespace: actual-budget
-spec:
-  basicAuth:
-    secret: actual-budget-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: actual-budget-https-redirect
   namespace: actual-budget
 spec:
@@ -153,15 +144,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: actual-budget-basic-auth
-  namespace: actual-budget
-data:
-  users: |
-    YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -178,7 +160,6 @@ spec:
           port: 5006
           serversTransport: actual-budget-transport
       middlewares:
-#        - name: actual-budget-basic-auth
         - name: actual-budget-security
   tls:
     secretName: budget-urbaman
