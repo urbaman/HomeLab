@@ -6,6 +6,7 @@
 
 ```bash
 helm repo add jameswynn https://jameswynn.github.io/helm-charts
+helm repo update
 helm show values jameswynn/homepage > gethomepage-values.yaml
 ```
 
@@ -33,5 +34,5 @@ kubectl get cm -n gethomepage gethomepage -o yaml > gethomepage-cm.yaml
 Set the username and password in the basic-auth secret, and your domain.
 
 ```bash
-kubectl apply traefik-gethomepage.yaml
+kubectl apply -f ig-gethomepage.yaml
 ```

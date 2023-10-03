@@ -1,0 +1,132 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gethomepage-urbaman
+  namespace: gethomepage
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - gethomepage.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: gethomepage-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-gethomepage-basic-auth
+  namespace: gethomepage
+spec:
+  basicAuth:
+    secret: traefik-gethomepage-basic-auth
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-gethomepage-https-redirect
+  namespace: gethomepage
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-gethomepage-security
+  namespace: gethomepage
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-gethomepage-transport
+  namespace: gethomepage
+spec:
+  serverName: gethomepage 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-gethomepage-tlsoptions
+  namespace: gethomepage
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-gethomepage-basic-auth
+  namespace: gethomepage
+data:
+  users: |
+    <result of "htpasswd -nb username password | base64" command>
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-gethomepage-websecure
+  namespace: gethomepage 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`gethomepage.domain.com`)
+      services:
+        - name: gethomepage
+          port: 3000
+            #          serversTransport: traefik-gethomepage-transport
+      middlewares:
+        - name: traefik-gethomepage-basic-auth
+        - name: traefik-gethomepage-security
+  tls:
+    secretName: gethomepage-urbaman
+    options:
+      name: traefik-gethomepage-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-gethomepage-web
+  namespace: gethomepage
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`gethomepage.domain.com`)
+      services:
+        - name: gethomepage
+          port: 3000 
+      middlewares:
+        - name: traefik-gethomepage-https-redirect
