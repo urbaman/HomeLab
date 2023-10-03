@@ -29,6 +29,25 @@ To save your settings:
 kubectl get cm -n gethomepage gethomepage -o yaml > gethomepage-cm.yaml
 ```
 
+## Update the version and add proper dns resolving
+
+```bash
+kubectl edit -n gethomepage deployment gethomepage
+```
+
+```bash
+      - image: ghcr.io/benphelps/homepage:<IMAGETAG>
+```
+
+After the volumemounts
+
+```bash
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+```
+
 ## Apply the traefik ingress route
 
 Set the username and password in the basic-auth secret, and your domain.
