@@ -19,7 +19,7 @@ helm repo update
 - Create a certmanager certificate for both teleport.domain.com and *.teleport.domain.com
 
 ```bash
-kubectl apply -f sslcert-teleport.yaml
+kubectl apply -f teleport-ssl-cert.yaml
 ```
 
 ## Installation

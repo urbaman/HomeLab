@@ -36,7 +36,7 @@ kubectl edit -n gethomepage deployment gethomepage
 ```
 
 ```bash
-      - image: ghcr.io/benphelps/homepage:<IMAGETAG>
+      - image: ghcr.io/gethomepage/homepage:latest
 ```
 
 After the volumemounts
