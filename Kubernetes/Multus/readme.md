@@ -8,6 +8,12 @@ Multus plugin allows to add a second network interface to the pods, and can be a
 kubectl create -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick.yml
 ```
 
+**N.B.:** the thick plugin seems to be a lot unstable, use the thin one.
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml
+```
+
 ## Install whereabouts for different IPs in differnet nodes
 
 Multus can't manage different IPs for pods on different nodes, leading to IP incompatibilities. Whereabouts is the solution.
