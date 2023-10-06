@@ -48,13 +48,13 @@ Flags:
 I will set the following arguments:
 
 ```yaml
-      --alert-filter-regexp=^(RebootRequired|Watchdog)$
-      --end-time=17:00
-      --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
-      --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
-      --reboot-days=mo,tu,we,th,fr
-      --start-time=10:00
-      --time-zone=Europe/Rome
+            - --alert-filter-regexp=^(RebootRequired|Watchdog)$
+            - --end-time=17:00
+            - --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
+            - --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
+            - --reboot-days=mo,tu,we,th,fr
+            - --start-time=10:00
+            - --time-zone=Europe/Rome
 ```
 
 Be aware to put your proper url to the prometheus service in the `--prometheus-url=` flag.
