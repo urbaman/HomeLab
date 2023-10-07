@@ -175,7 +175,7 @@ sudo postmap /etc/postfix/smtp_header_checks
 Restart service:
 
 ```bash
-service postfix restart
+sudo systemctl restart postfix
 ```
 
 ### Test
