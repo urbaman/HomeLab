@@ -13,4 +13,4 @@ parameters:
   fsType: "ext4"
   dataLocality: "best-effort"
   diskSelector: "nvme"
-  nodeSelector: "default"
+  nodeSelector: "storage"

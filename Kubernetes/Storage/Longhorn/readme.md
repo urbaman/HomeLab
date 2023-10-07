@@ -65,7 +65,7 @@ data:
       fsType: "ext4"
       dataLocality: "best-effort"
       diskSelector: "vdisk"
-      nodeSelector: "default"
+      nodeSelector: "storage"
 
 ```
 
