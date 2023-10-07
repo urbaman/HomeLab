@@ -19,3 +19,9 @@ sudo lshw -class disk | grep <disk_name> -A 5 -B
 lsblk
 lsblk -f
 ```
+
+## Modify text with sed
+
+```bash
+sed -i 's/old-text/new-text/g' input.txt
+```

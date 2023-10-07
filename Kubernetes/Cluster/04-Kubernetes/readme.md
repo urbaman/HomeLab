@@ -167,10 +167,17 @@ Around line 112, change the value for SystemCgroup from false to true.
 SystemdCgroup = true
 ```
 
+
 Next, use the below command to restart the containerd service.
 
 ```bash
 sudo systemctl restart containerd
+```
+
+Do it all in one command
+
+```bash
+sudo mkdir -p /etc/containerd && sudo containerd config default | sudo tee /etc/containerd/config.toml && sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml && sudo systemctl restart containerd
 ```
 
 ## kubelet, kubeadm, kubectl
@@ -283,8 +290,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml -O
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/custom-resources.yaml -O
 ```
 
 If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR to match kubeadm podSubnet above).
@@ -296,7 +303,7 @@ kubectl create -f custom-resources.yaml
 Then, intstall the calicoctl to manage Calico.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calicoctl.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
