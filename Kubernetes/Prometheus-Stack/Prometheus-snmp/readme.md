@@ -19,8 +19,8 @@ kubectl create configmap prometheus-snmp-exporter-arista-switch -n monitoring --
 Set the IPs to the devices in both files
 
 ```bash
-helm install prometheus-snmp-exporter-idrac prometheus-community/prometheus-snmp-exporter -f snmp-exporter-idrac.yaml -n monitoring
-helm install prometheus-snmp-exporter-arista-switch prometheus-community/prometheus-snmp-exporter -f snmp-exporter-arista-switch.yaml -n monitoring
+helm upgrade -i prometheus-snmp-exporter-idrac prometheus-community/prometheus-snmp-exporter -f snmp-exporter-idrac.yaml -n monitoring
+helm upgrade -i prometheus-snmp-exporter-arista-switch prometheus-community/prometheus-snmp-exporter -f snmp-exporter-arista-switch.yaml -n monitoring
 ```
 
 ## Add the dashboards to Grafana

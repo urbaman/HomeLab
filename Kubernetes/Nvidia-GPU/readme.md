@@ -75,7 +75,9 @@ Mon Jul 31 15:47:23 2023
 microk8s enable gpu
 ```
 
-## Install Nvidia contanier (containerd version, kubeadm cluster)
+## Install Nvidia driver plugin for Kubernetes (prefear the Nvidia operator)
+
+### Install Nvidia contanier (containerd version, kubeadm cluster)
 
 Install the Nvidia contanier:
 
@@ -125,13 +127,17 @@ Change values where you want (remember to set the gfd subchart `enabled: true` t
 helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin-values.yaml
 ```
 
-## Install the Nvidia opreator (prefear the device plugin)
+## Install the Nvidia opreator (prefearable)
+
+Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`
 
 ```bash
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
-helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --set dcgmExporter.enableb=true --set dcgmExporter.serviceMonitor.enabled=true --set dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack --set cdi.enabled=true --set cdi.default=true
+helm show values nvidia/gpu-operator > gpu-operator-values.yaml
+vi gpu-operator-values.yaml
+helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values.yaml
 ```
 
 ## Test installation
