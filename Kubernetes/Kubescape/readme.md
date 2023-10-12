@@ -90,7 +90,7 @@ View results
 ────────────
 Now, take your scan results to the next level with actionable insights on ARMO Platform.
 
-Sign up for free here - https://cloud.armosec.io/account/sign-up?customerGUID=5e4077e5-6f1a-4d13-9c7c-a8feb09861ec&invitationToken=Bg5APNBTXz9RILfCKawoCAVEe0fOwMN71k1kKJtEtYRyM1FmeokABoPKSxFzw8eJO0i1nvbtt2Y63aftVg1rgMhRIlU0xgYhqI8ygXND3s3dLyg9SZUN8ldymJAaTDmY&utm_medium=createaccount&utm_source=ARMOgithub
+Sign up for free here - https://cloud.armosec.io/
 
 ℹ️   Run with '--verbose'/'-v' flag for detailed resources view
 ```
