@@ -5,7 +5,7 @@
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn-nvme --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set secondary.livenessProbe.initialDelaySeconds=240 --set secondary.readinessProbe.initialDelaySeconds=240 --set primary.startupProbe.initialDelaySeconds=210 --set secondary.startupProbe.initialDelaySeconds=240
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn-nvme --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set secondary.livenessProbe.initialDelaySeconds=240 --set secondary.readinessProbe.initialDelaySeconds=240 --set primary.startupProbe.initialDelaySeconds=210 --set secondary.startupProbe.initialDelaySeconds=240
 ```
 
 ## Installation - standalone
@@ -13,7 +13,7 @@ helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metr
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mysql bitnami/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set primary.startupProbe.initialDelaySeconds=210
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql --namespace mysql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set primary.startupProbe.initialDelaySeconds=210
 ```
 
 ## Connection

@@ -46,7 +46,7 @@ lrwxrwxrwx 1 root root 7 May  8 18:30 /dev/vg1/lv1 -> ../dm-1
 ```
 
 ```bash
-sudo ls -la /dev/disk/by-id/
+sudo ls -la /dev/disk/by-id/ | grep dm-1
 ```
 
 Output

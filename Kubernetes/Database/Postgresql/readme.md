@@ -5,7 +5,7 @@
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm upgrade -i postgresql bitnami/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set persistence.storageClass=longhorn-nvme --set persistence.size=15Gi --set persistence.accessModes={"ReadWriteMany"} --set postgresql.livenessProbe.initialDelaySeconds=300 --set postgresql.readinessProbe.initialDelaySeconds=240
+helm upgrade -i postgresql oci://registry-1.docker.io/bitnamicharts/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set persistence.storageClass=longhorn-nvme --set persistence.size=15Gi --set persistence.accessModes={"ReadWriteMany"} --set postgresql.livenessProbe.initialDelaySeconds=300 --set postgresql.readinessProbe.initialDelaySeconds=240
 ```
 
 ## Connection
