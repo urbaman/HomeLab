@@ -76,5 +76,5 @@ Do the same to change any other Proxysql config on the run: delete and recreate 
 ## Phpmyadmin for management
 
 ```bash
-kubectl apply -f phpmyadmin-mariadb.sql
+kubectl apply -f phpmyadmin-mariadb.yaml
 ```

@@ -42,4 +42,4 @@ Change the password in the secret, set the postgresql server(s) info in the conf
 kubectl apply -n pgadmin.yaml
 ```
 
-You'll probably need to go through the password resetting tool, then 
+You'll probably need to go through the password resetting tool, then it will ask for the postgres user password (select to save it)
