@@ -38,7 +38,7 @@ spec:
         app: draw.io
     spec:
       containers:
-      - image: docker.io/jgraph/drawio:alpine
+      - image: docker.io/jgraph/drawio:latest
         imagePullPolicy: IfNotPresent
         name: drawio
         ports:
@@ -133,7 +133,7 @@ spec:
       services:
         - name: drawio
           port: 3000
-            #          serversTransport: traefik-drawio-transport
+          serversTransport: traefik-drawio-transport
       middlewares:
         - name: traefik-drawio-security
   tls:
