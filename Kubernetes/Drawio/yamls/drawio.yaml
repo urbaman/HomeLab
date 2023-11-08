@@ -132,7 +132,7 @@ spec:
       match: Host(`drawio.domain.com`)
       services:
         - name: drawio
-          port: 3000
+          port: 8080
           serversTransport: traefik-drawio-transport
       middlewares:
         - name: traefik-drawio-security
@@ -154,6 +154,6 @@ spec:
       match: Host(`drawio.domain.com`)
       services:
         - name: drawio
-          port: 3000 
+          port: 8080 
       middlewares:
         - name: traefik-drawio-https-redirect
