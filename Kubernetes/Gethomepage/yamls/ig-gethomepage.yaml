@@ -18,15 +18,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-gethomepage-basic-auth
-  namespace: gethomepage
-spec:
-  basicAuth:
-    secret: traefik-gethomepage-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-gethomepage-https-redirect
   namespace: gethomepage
 spec:
@@ -82,15 +73,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-gethomepage-basic-auth
-  namespace: gethomepage
-data:
-  users: |
-    <result of "htpasswd -nb username password | base64" command>
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -107,7 +89,6 @@ spec:
           port: 3000
             #          serversTransport: traefik-gethomepage-transport
       middlewares:
-        - name: traefik-gethomepage-basic-auth
         - name: traefik-gethomepage-security
   tls:
     secretName: gethomepage-urbaman

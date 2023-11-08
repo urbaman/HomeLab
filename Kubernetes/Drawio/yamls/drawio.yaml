@@ -44,3 +44,116 @@ spec:
         ports:
         - containerPort: 8080
 ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: drawio-urbaman
+  namespace: drawio
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - drawio.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: drawio-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-drawio-https-redirect
+  namespace: drawio
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-drawio-security
+  namespace: drawio
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-drawio-transport
+  namespace: drawio
+spec:
+  serverName: drawio 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-drawio-tlsoptions
+  namespace: drawio
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-drawio-websecure
+  namespace: drawio 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`drawio.domain.com`)
+      services:
+        - name: drawio
+          port: 3000
+            #          serversTransport: traefik-drawio-transport
+      middlewares:
+        - name: traefik-drawio-security
+  tls:
+    secretName: drawio-urbaman
+    options:
+      name: traefik-drawio-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-drawio-web
+  namespace: drawio
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`drawio.domain.com`)
+      services:
+        - name: drawio
+          port: 3000 
+      middlewares:
+        - name: traefik-drawio-https-redirect
