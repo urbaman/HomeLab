@@ -6,7 +6,7 @@ Here is the Cluster infrastructure we will deploy
 
 - 3x controllers: k8cp1, k8cp2, k8cp3
 - 3x workers: k8w1, k8w2, k8w3
-- 3x etcd cluster: etcd1, etce2, etcd3
+- 3x etcd cluster: etcd1, etcd2, etcd3
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
 - 3x glusterfs cluster: nfs1, nfs22, nfs3
 
@@ -97,7 +97,8 @@ Here are the detailed steps to deploy our homelab cluster
 2. [Homer homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homer)
 3. [it-tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/It-tools)
 4. [Gethomepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Gethomepage)
-5. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
-6. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
-7. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
-8. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
+5. [Drawio](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Drawio)
+6. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
+7. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
+8. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
+9. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
