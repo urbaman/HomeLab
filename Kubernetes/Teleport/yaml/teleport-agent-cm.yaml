@@ -29,6 +29,11 @@ app_service:
     labels:
       env: monitoring
       context: homelab
+  - name: semaphore
+    uri: https://semaphore.domain.com
+    labels:
+      env: automation
+      context: homelab
   - name: haproxyone
     uri: https://haproxy1.stats.domain.com/stats
     labels:
@@ -197,6 +202,16 @@ app_service:
       context: homelab
   - name: s-pdf
     uri: https://s-pdf.domain.com/
+    labels:
+      env: webapp
+      context: homelab
+  - name: drawio
+    uri: https://drawio.domain.com
+    labels:
+      env: webapp
+      context: homelab
+  - name: actualbudget
+    uri: https://budget.domain.com
     labels:
       env: webapp
       context: homelab
