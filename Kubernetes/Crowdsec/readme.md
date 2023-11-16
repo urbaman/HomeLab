@@ -37,3 +37,13 @@ helm upgrade -install -n traefik traefik-bouncer crowdsec/crowdsec-traefik-bounc
 ```
 
 Then, follow the instructions to add the bouncer globally or service specific
+
+## Managing decisions
+
+Enter the LAPI container, list and delete the decisions
+
+```bash
+kubectl -n crowdsec exec -it crowdsec-lapi-fc44857bf-8ln6j -- sh
+cscli decisions list
+cscli decisions delete --ip <IP>
+```
