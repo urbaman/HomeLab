@@ -5,7 +5,7 @@ Add the repo and install
 ```bash
 helm repo add couchdb https://apache.github.io/couchdb-helm
 helm repo update
-helm upgrade -i couchdb couchdb/couchdb --set persistentVolume.enabled=true --set couchdbConfig.chttpd.require_valid_user=true --set prometheusPort.enabled=true --set couchdbConfig.couchdb.uuid=90486a5d-b089-4356-8c1a-4f99fe63cb13 --namespace couchdb --create-namespace
+helm upgrade -i couchdb couchdb/couchdb --set persistentVolume.enabled=true --set persistentVolume.storageClass=longhorn-nvme --set couchdbConfig.chttpd.require_valid_user=true --set prometheusPort.enabled=true --set couchdbConfig.couchdb.uuid=90486a5d-b089-4356-8c1a-4f99fe63cb13 --namespace couchdb --create-namespace
 ```
 
 Get the password for the admin user

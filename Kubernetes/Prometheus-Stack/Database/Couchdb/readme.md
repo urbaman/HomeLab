@@ -3,7 +3,7 @@
 Deploy the couchdb exporter
 
 ```bash
-helm upgrade -i -n couchdb prometheus-couchdb-exporter prometheus-community/prometheus-couchdb-exporter --set couchdb.uri=http://couchdb-couchdb.couchdb.svc:5984 --set couchdb.username=admin --set couchdb.password=tjTXrAQSFythqta9DZ2U --set rbac.pspEnabled=false
+helm upgrade -i -n couchdb prometheus-couchdb-exporter prometheus-community/prometheus-couchdb-exporter --set couchdb.uri=http://couchdb-couchdb.couchdb.svc:5984 --set couchdb.username=admin --set couchdb.password=<PASSWORD> --set rbac.pspEnabled=false
 ```bash
 
 Deploy a servicemonitor
