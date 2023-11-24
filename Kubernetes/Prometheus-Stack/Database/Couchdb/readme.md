@@ -17,4 +17,6 @@ kubectl apply -f prom-couchdb.yaml
 ```bash
 kubectl create configmap grafana-dashboard-couchdb --from-file=grafana-couchdb.json
 kubectl label configmap grafana-dashboard-couchdb grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-couchdb2 --from-file=grafana-couchdb2.json
+kubectl label configmap grafana-dashboard-couchdb2 grafana_dashboard="1"
 ```
