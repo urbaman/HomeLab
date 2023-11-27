@@ -1,4 +1,6 @@
-# Add the grafana Dashboard (see installation for metrics exposure)
+# Mariadb Monitoring
+
+Add the grafana Dashboard (see installation for metrics exposure)
 
 ```bash
 kubectl create configmap grafana-dashboard-mysql --from-file=grafana-mysql.json
