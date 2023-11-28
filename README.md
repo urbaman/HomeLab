@@ -36,7 +36,7 @@ Proxmox (Hypervisor)
   - [x] Kured
   - [x] Heimdall
   - [x] Homer
-  - [ ] [Gethomepage](https://gethomepage.dev)
+  - [x] Gethomepage
   - [ ] Datree (deprecated)
   - [x] Teleport
   - [x] Nvidia GPU plugin
@@ -56,6 +56,7 @@ Proxmox (Hypervisor)
   - [x] Redis and Redis Prometheus-Grafana monitoring
   - [x] Dbgate for multi-db client
   - [x] Cloudbeaver for multi-db client
+  - [x] Memcached
   - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
     - [ ] Nextcloud apps <https://www.ionos.com/digitalguide/server/tools/nextcloud-apps/>
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
@@ -78,14 +79,6 @@ Proxmox (Hypervisor)
   - [ ] Firefly III
   - [ ] Flatnotes
   - [x] IT-tools
+  - [x] Drawio
 
 <https://github.com/awesome-selfhosted/awesome-selfhosted>
-
-### Appunti per how-to da seguire
-
-- Flash H310: <https://fohdeesha.com/docs/H310.html>
-- Generale: <https://www.kreaweb.be/diy-home-server-introduction/>
-- GPU distribuita: <https://drive.google.com/drive/folders/15hGRYQGB69pES2GyUR9Q2zHVvEAVHxDa> <https://3os.org/infrastructure/proxmox/gpu-passthrough/pgu-passthrough-to-vm/#linux-virtual-machine-gpu-passthrough-configuration>
-- Post-install: <https://opensourcelibs.com/lib/xshok-proxmox>, <https://opensourcelibs.com/lib/proxmox-zfs-postinstall>
-- Risorse varie: <https://opensourcelibs.com/lib/awesome-proxmox-ve>
-- Ceph: <https://blog.miniserver.it/proxmox/come-fare-un-cluster-proxmox-con-ceph/>
