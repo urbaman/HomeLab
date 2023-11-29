@@ -407,7 +407,7 @@ sudo apt-mark unhold kubeadm && \
 sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-* && \
 sudo apt-mark hold kubeadm
 kubeadm version
-kubeadm upgrade plan
+sudo kubeadm upgrade plan
 ```
 
 ```bash

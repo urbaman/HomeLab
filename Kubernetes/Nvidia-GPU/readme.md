@@ -75,7 +75,7 @@ Mon Jul 31 15:47:23 2023
 microk8s enable gpu
 ```
 
-## Install Nvidia driver plugin for Kubernetes (prefear the Nvidia operator)
+## Install Nvidia driver plugin for Kubernetes (prefer the Nvidia operator)
 
 ### Install Nvidia contanier (containerd version, kubeadm cluster)
 
