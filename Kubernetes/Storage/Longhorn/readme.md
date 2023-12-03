@@ -12,7 +12,7 @@ curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/en
 ## Installation through manifests
 
 ```bash
-wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
+wget https://raw.githubusercontent.com/longhorn/longhorn/v1.5.3/deploy/longhorn.yaml
 ```
 
 Edit the settings adding needed lines to the longhorn-default-setting ConfigMap
