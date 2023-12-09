@@ -119,6 +119,6 @@ Substitute the disk, check the zpools and fdisk to find the disk without a pool 
 ```bash
 sudo fdisk -l
 sudo zpool status
-sudo zpool create new-pool mirror /dev/sdb /dev/sdc
+sudo zpool create new-pool [mirror] /dev/sdb [/dev/sdc ...]
 sudo gluster volume reset-brick HDD5T gluster1.domain.com:/HDD5T12 gluster1.domain.com:/HDD5T12 commit force
 ```
