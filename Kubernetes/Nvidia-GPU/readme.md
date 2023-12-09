@@ -129,7 +129,7 @@ helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin 
 
 ## Install the Nvidia opreator (prefearable)
 
-Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`
+Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`, `upgradeCRD: true`
 
 ```bash
 kubectl create ns gpu-operator
