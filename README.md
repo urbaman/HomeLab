@@ -57,6 +57,7 @@ Proxmox (Hypervisor)
   - [x] Dbgate for multi-db client
   - [x] Cloudbeaver for multi-db client
   - [x] Memcached
+  - [x] MinIO for S3 ObjectStorage
   - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
     - [ ] Nextcloud apps <https://www.ionos.com/digitalguide/server/tools/nextcloud-apps/>
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
