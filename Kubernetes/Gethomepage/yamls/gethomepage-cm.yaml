@@ -63,11 +63,11 @@ data:
           description: Portainer Management UI
           href: https://portainer.domain.com
           icon: portainer.svg
-          widget:
-            type: portainer
-            url: https://portainer.domain.com
-            env: 1
-            key: ptr_<token>
+#          widget:
+#            type: portainer
+#            url: https://portainer.domain.com
+#            env: 1
+#            key: ptr_<token>
     - Monitoring:
       - Grafana:
           description: Grafana dashboards
@@ -264,18 +264,18 @@ data:
         cpu: true
         expanded: true
         memory: true
-    - Kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
-          label: "cluster"
-        nodes:
-          show: true
-          cpu: true
-          memory: true
-          showLabel: true
+#    - Kubernetes:
+#        cluster:
+#          show: true
+#          cpu: true
+#          memory: true
+#          showLabel: true
+#          label: "cluster"
+#        nodes:
+#          show: true
+#          cpu: true
+#          memory: true
+#          showLabel: true
     - longhorn:
         expanded: true
         total: true
