@@ -167,7 +167,6 @@ Around line 112, change the value for SystemCgroup from false to true.
 SystemdCgroup = true
 ```
 
-
 Next, use the below command to restart the containerd service.
 
 ```bash
@@ -444,4 +443,3 @@ On each node, one by one, keeping the first control plane
 ```bash
 sudo kubeadm reset && sudo apt remove kubeadm kubectl kubelet containerd.io --purge -y --allow-change-held-packages && sudo apt autoremove --purge -y && sudo rm -rf /etc/cni/* && sudo rm -rf /opt/cni/* && sudo rm -rf /etc/kubernetes && sudo rm -rf /longhorn/storage/*
 ```
-
