@@ -443,3 +443,9 @@ On each node, one by one, keeping the first control plane
 ```bash
 sudo kubeadm reset && sudo apt remove kubeadm kubectl kubelet containerd.io --purge -y --allow-change-held-packages && sudo apt autoremove --purge -y && sudo rm -rf /etc/cni/* && sudo rm -rf /opt/cni/* && sudo rm -rf /etc/kubernetes && sudo rm -rf /longhorn/storage/*
 ```
+
+Remember to wipe the etcd cluster, if external. On an etcd node:
+
+```bash
+etcdctl --cacert /etc/etcd/etcd-ca.crt --cert /etc/etcd/server.crt --key /etc/etcd/server.key --endpoints https://<etcdIP1>:2379,https://<etcdIP1>:2379,https://<etcdIP1>:2379 del "" --from-key=true
+```
