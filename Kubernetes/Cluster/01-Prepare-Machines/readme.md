@@ -396,3 +396,15 @@ Finally, restart unattended-upgrades service
 ```bash
 sudo service unattended-upgrades restart
 ```
+
+Eventually:
+
+```bash
+sudo hostnamectl set-hostname k8w9
+sudo sed -i 's/k8w3/k8w9/g' /etc/hosts
+sudo sed -i 's/K8W3/K8W9/g' /etc/postfix/smtp_header_checks
+sudo chmod 600 /etc/postfix/smtp_header_checks
+sudo postmap /etc/postfix/smtp_header_checks
+sudo systemctl restart postfix
+sudo sed -i 's/prova/k8w9/g' /etc/mailname
+```
