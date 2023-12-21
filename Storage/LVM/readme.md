@@ -4,6 +4,12 @@
 
 Let's say I add two new disks to a machine, /dev/sdb and /dev/sdc.
 
+Check them with
+
+```bash
+sudo lsblk
+```
+
 ## Create the Physical Volume(s)
 
 ```bash
