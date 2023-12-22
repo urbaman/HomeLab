@@ -112,6 +112,6 @@ sudo resize2fs /dev/vg1/lv1
 ## Delete the lvm
 
 sudo umount <mount-point>
-sudo lvremove /dev/vg1/lv1
+sudo lvremove /dev/vg1/lv1 -y
 sudo vgremove vg1
 sudo pvremove /dev/sdb /dev/sdc
