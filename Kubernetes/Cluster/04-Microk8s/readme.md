@@ -63,7 +63,7 @@ sed -i 's\https://127.0.0.1\https://k8cp.urbaman.it\g' /var/snap/microk8s/curren
 ```
 
 ```bash
-microk8s add-node
+sudo microk8s add-node
 ```
 
 Output:
