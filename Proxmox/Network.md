@@ -14,6 +14,24 @@ Then, check where the following script gives a "1" result with the cable connect
 for i in $( ls /sys/class/net ); do echo -n $i: ; cat /sys/class/net/$i/carrier; done
 ```
 
+Last update
+
+```bash
+bond2 - bond1
+bond3 - bond2
+
+vmbr1 - vmbr0
+vmbr3 - vmbr1
+vmbr4 - vmbr2
+
+sudo sed -i 's/bond2/bond1/g' /etc/network/interfaces
+sudo sed -i 's/bond3/bond2/g' /etc/network/interfaces
+sudo sed -i 's/vmbr1/vmbr0/g' /etc/network/interfaces
+sudo sed -i 's/vmbr3/vmbr1/g' /etc/network/interfaces
+sudo sed -i 's/vmbr4/vmbr2/g' /etc/network/interfaces
+ifreload -a
+```
+
 ## Set the network (bonds, bridges, vlans)
 
 ```bash
