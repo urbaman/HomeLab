@@ -38,7 +38,7 @@ Set secrets (find it under prometheusSpec)
 And upgrade the helm implementation
 
 ```bash
-helm upgrade -f prom.yaml kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
+helm upgrade -i -f prom.yaml kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
 ```
 
 Now create Endpoints, Service and Service Monitor (see example yaml) and apply it with kubectl.

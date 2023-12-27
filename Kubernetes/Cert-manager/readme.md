@@ -3,7 +3,7 @@
 ## Install Cert-manager
 
 ```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
 ```
 
 Or via helm
@@ -11,7 +11,7 @@ Or via helm
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.13.1 --set installCRDs=true
+helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.13.3 --set installCRDs=true
 ```
 
 Set the installCRDs=true to install the CRDs (best method)
