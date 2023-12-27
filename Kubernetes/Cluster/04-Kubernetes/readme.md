@@ -99,7 +99,8 @@ sudo apt install -y ca-certificates curl gnupg lsb-release
 Then, add the Docker’s GPG key to your system.
 
 ```bash
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 ```
 
 And then, add the Docker repository to the system by running the below command.
