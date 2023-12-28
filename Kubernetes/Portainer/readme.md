@@ -5,10 +5,10 @@ To deploy Portainer, add the helm repo
 ```bash
 helm repo add portainer https://portainer.github.io/k8s/
 helm repo update
-helm show values portainer/portainer > portanier-values.yaml
+helm show values portainer/portainer > portainer-values.yaml
 ```
 
-Set the service.type to CLusterIP, the tls.force=true and the persistence.storageclass to longhorn (or whatever storageclass you're using)
+Set the service.type to ClusterIP, the tls.force=true and the persistence.storageclass to longhorn (or whatever storageclass you're using)
 
 ```bash
 helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer -f portainer-values.yaml
