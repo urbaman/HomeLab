@@ -16,7 +16,7 @@ spec:
   resources:
     requests:
       storage: 10Mi
-  storageClassName: longhorn-vdisk
+  storageClassName: longhorn
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -29,12 +29,12 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn-vdisk
+  storageClassName: longhorn
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: urbaman-s-pdf
+  name: s-pdf-urbaman
   namespace: s-pdf
 spec:
   # Certificate will be valid for these domain names
@@ -46,7 +46,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: urbaman-s-pdf
+  secretName: s-pdf-urbaman
 ---
 apiVersion: apps/v1
 kind: Deployment
