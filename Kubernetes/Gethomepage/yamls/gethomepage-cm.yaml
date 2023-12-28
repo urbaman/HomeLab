@@ -68,6 +68,15 @@ data:
 #            url: https://portainer.domain.com
 #            env: 1
 #            key: ptr_<token>
+    - Storage:
+      - Longhorn:
+          description: Longhorn Dashboard
+          href: https://longhorn.domain.com
+          icon: longhorn.svg
+      - Truenas:
+          description: Truenas GUI
+          href: https://truenas.domain.com
+          icon: truenas.svg
     - Monitoring:
       - Grafana:
           description: Grafana dashboards
