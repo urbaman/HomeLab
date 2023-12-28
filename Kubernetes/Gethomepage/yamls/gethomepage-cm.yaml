@@ -246,7 +246,7 @@ data:
             url: https://pfsense1.domain.com
             username: admin
             password: <password>
-            wan: vtnet0
+            wan: ix0
       - pfSense2:
           description: pfSense networking
           href: https://pfsense2.domain.com
@@ -257,7 +257,7 @@ data:
             url: https://pfsense2.domain.com
             username: admin
             password: <password>
-            wan: vtnet0
+            wan: ix0
   settings.yaml: |
     title: My Homelab Homepage
     headerStyle: boxed
