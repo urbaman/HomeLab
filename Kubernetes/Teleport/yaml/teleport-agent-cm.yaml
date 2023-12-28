@@ -215,6 +215,11 @@ app_service:
     labels:
       env: webapp
       context: homelab
+  - name: truenas
+    uri: https://truenas.domain.com
+    labels:
+      env: storage
+      context: homelab
   enabled: true
 auth_service:
   enabled: false
