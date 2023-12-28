@@ -77,6 +77,19 @@ data:
           description: Truenas GUI
           href: https://truenas.domain.com
           icon: truenas.svg
+          widget:
+            type: truenas
+            url: https://truenas.domain.com
+            username: user
+            password: password
+      - MinioOperator:
+          description: Minio Operator GUI
+          href: https://minio-operator.urbaman.it
+          icon: minio.svg
+      - MinioTenant:
+          description: Minio Tenant GUI
+          href: https://minio-tenant.urbaman.it
+          icon: minio.svg
     - Monitoring:
       - Grafana:
           description: Grafana dashboards
