@@ -1,6 +1,6 @@
 # Nvidia GPU monitoring
 
-## Install the dcpm-exporter (only for the device plugin (the operator already has it deployed)
+## Install the dcpm-exporter (only for the device plugin (the operator already has it deployed))
 
 ```bash
 helm repo add https://nvidia.github.io/dcgm-exporter/helm-charts
