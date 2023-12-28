@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: miniooperator-urbaman
+  name: minio-operator-urbaman
   namespace: minio-operator
 spec:
   # Certificate will be valid for these domain names
@@ -13,12 +13,12 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: miniooperator-urbaman
+  secretName: minio-operator-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-miniooperator-https-redirect
+  name: traefik-minio-operator-https-redirect
   namespace: minio-operator
 spec:
   redirectScheme:
@@ -28,7 +28,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-miniooperator-security
+  name: traefik-minio-operator-security
   namespace: minio-operator
 spec:
   headers:
@@ -43,16 +43,16 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-miniooperator-transport
+  name: traefik-minio-operator-transport
   namespace: minio-operator
 spec:
-  serverName: miniooperator 
+  serverName: minio-operator 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-miniooperator-tlsoptions
+  name: traefik-minio-operator-tlsoptions
   namespace: minio-operator
 spec:
   minVersion: VersionTLS12
@@ -76,7 +76,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-miniooperator-websecure
+  name: traefik-minio-operator-websecure
   namespace: minio-operator 
 spec:
   entryPoints:
@@ -87,18 +87,18 @@ spec:
       services:
         - name: console
           port: 9090
-            #          serversTransport: traefik-miniooperator-transport
+            #          serversTransport: traefik-minio-operator-transport
       middlewares:
-        - name: traefik-miniooperator-security
+        - name: traefik-minio-operator-security
   tls:
-    secretName: miniooperator-urbaman
+    secretName: minio-operator-urbaman
     options:
-      name: traefik-miniooperator-tlsoptions
+      name: traefik-minio-operator-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-miniooperator-web
+  name: traefik-minio-operator-web
   namespace: minio-operator
 spec:
   entryPoints:
@@ -110,4 +110,4 @@ spec:
         - name: console
           port: 9090
       middlewares:
-        - name: traefik-miniooperator-https-redirect
+        - name: traefik-minio-operator-https-redirect
