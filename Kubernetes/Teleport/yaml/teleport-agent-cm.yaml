@@ -220,6 +220,16 @@ app_service:
     labels:
       env: storage
       context: homelab
+  - name: minio-operator
+    uri: https://minio-operator.domain.com
+    labels:
+      env: storage
+      context: homelab
+  - name: minio-tenant
+    uri: https://minio-tenant.domain.com
+    labels:
+      env: storage
+      context: homelab
   enabled: true
 auth_service:
   enabled: false
