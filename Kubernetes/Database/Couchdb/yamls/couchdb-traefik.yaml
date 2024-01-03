@@ -18,15 +18,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-couchdb-basic-auth
-  namespace: couchdb
-spec:
-  basicAuth:
-    secret: traefik-couchdb-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-couchdb-https-redirect
   namespace: couchdb
 spec:
@@ -82,15 +73,6 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: traefik-couchdb-basic-auth
-  namespace: couchdb
-data:
-  users: |
-    <admin password - base64>
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -107,7 +89,6 @@ spec:
           port: 5984
           serversTransport: traefik-couchdb-transport
       middlewares:
-        - name: traefik-couchdb-basic-auth
         - name: traefik-couchdb-security
   tls:
     secretName: couchdb-domain

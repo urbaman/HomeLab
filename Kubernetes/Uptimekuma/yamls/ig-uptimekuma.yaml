@@ -18,15 +18,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: uptimekuma-basic-auth
-  namespace: monitoring
-spec:
-  basicAuth:
-    secret: uptimekuma-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: uptimekuma-https-redirect
   namespace: monitoring
 spec:
