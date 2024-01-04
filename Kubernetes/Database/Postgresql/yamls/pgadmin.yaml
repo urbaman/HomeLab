@@ -16,7 +16,7 @@ data:
   servers.json: |
     {
         "Servers": {
-          "1": {
+          "Internal Postgres": {
             "Name": "PostgreSQL DB",
             "Group": "Servers",
             "Port": 5432,
@@ -32,6 +32,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: pgadmin
+  namespace: postgresql
 spec:
   serviceName: pgadmin-service
   podManagementPolicy: Parallel
@@ -118,15 +119,6 @@ spec:
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
   secretName: pgadmin-domain
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-pgadmin-basic-auth
-  namespace: postgresql
-spec:
-  basicAuth:
-    secret: traefik-pgadmin-basic-auth
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
