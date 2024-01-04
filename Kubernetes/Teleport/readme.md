@@ -107,8 +107,8 @@ You should see the apps appearing and accessible from the GUI.
 Edit the relative config map, and rollout restart the statefulset:
 
 ```bash
-kubectl edit cm -n teleport-agent teleport-kube-agent
-kubectl rollout restart statefulset -n teleport-agent teleport-kube-agent
+kubectl edit cm -n teleport-cluster teleport-kube-agent
+kubectl rollout restart statefulset -n teleport-cluster teleport-kube-agent
 ```
 
 ## Reinstall the apps
