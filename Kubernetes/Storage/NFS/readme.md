@@ -6,7 +6,7 @@ You need a [running NFS server](https://github.com/urbaman/HomeLab/tree/main/Sto
 
 ```bash
 sudo apt install nfs-common -y
-showmount -e k8cp.domain.com
+showmount -e nfs.domain.com
 ```
 
 Output:

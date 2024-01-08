@@ -84,6 +84,11 @@ kind: L2Advertisement
 metadata:
   name: metallb-l2-advertisement
   namespace: metallb-system
+spec:
+  ipAddressPools:
+  - metallb-pool
+  interfaces:
+  - eth0
 ```
 
 Setting no IPAddressPool selector in an L2Advertisement instance is interpreted as that instance being associated to all the IPAddressPools available.

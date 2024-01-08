@@ -1,25 +1,56 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: truenas-service
+  labels:
+    app: truenas-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: 10.0.50.15
+    nodeName: truenas-service
+  ports:
+  - name: truenas
+    port: 443
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: truenas-service
+  labels:
+    app: truenas-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: truenas
+    port: 443
+    targetPort: 443
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: couchdb-domain
-  namespace: couchdb
+  name: truenas-urbaman
+  namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - couchdb.domain.com
+  - truenas.urbaman.it
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: couchdb-domain
+  secretName: truenas-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-couchdb-https-redirect
-  namespace: couchdb
+  name: traefik-truenas-https-redirect
+  namespace: traefik-external
 spec:
   redirectScheme:
     scheme: https
@@ -28,8 +59,8 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-couchdb-security
-  namespace: couchdb
+  name: traefik-truenas-security
+  namespace: traefik-external
 spec:
   headers:
     frameDeny: true
@@ -43,17 +74,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-couchdb-transport
-  namespace: couchdb
+  name: traefik-truenas-transport
+  namespace: traefik-external
 spec:
-  serverName: couchdb 
+  serverName: traefik
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-couchdb-tlsoptions
-  namespace: couchdb
+  name: traefik-truenas-tlsoptions
+  namespace: traefik-external
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -76,38 +107,38 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-couchdb-websecure
-  namespace: couchdb 
+  name: traefik-truenas-websecure
+  namespace: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`couchdb.domain.com`)
+      match: Host(`truenas.urbaman.it`)
       services:
-        - name: couchdb-couchdb
-          port: 5984
-          serversTransport: traefik-couchdb-transport
+        - name: truenas-service
+          port: 443
+          serversTransport: traefik-truenas-transport
       middlewares:
-        - name: traefik-couchdb-security
+        - name: traefik-truenas-security
   tls:
-    secretName: couchdb-domain
+    secretName: truenas-urbaman
     options:
-      name: traefik-couchdb-tlsoptions
+      name: traefik-truenas-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-couchdb-web
-  namespace: couchdb
+  name: traefik-truenas-web
+  namespace: traefik-external
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`couchdb.domain.com`)
+      match: Host(`truenas.urbaman.it`)
       services:
-        - name: couchdb-couchdb
-          port: 5984
+        - name: truenas-service
+          port: 443
       middlewares:
-        - name: traefik-couchdb-https-redirect
+        - name: traefik-truenas-https-redirect

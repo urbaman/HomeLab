@@ -68,6 +68,28 @@ data:
 #            url: https://portainer.domain.com
 #            env: 1
 #            key: ptr_<token>
+    - Storage:
+      - Longhorn:
+          description: Longhorn Dashboard
+          href: https://longhorn.domain.com
+          icon: longhorn.svg
+      - Truenas:
+          description: Truenas GUI
+          href: https://truenas.domain.com
+          icon: truenas.svg
+          widget:
+            type: truenas
+            url: https://truenas.domain.com
+            username: user
+            password: password
+      - MinioOperator:
+          description: Minio Operator GUI
+          href: https://minio-operator.urbaman.it
+          icon: minio.svg
+      - MinioTenant:
+          description: Minio Tenant GUI
+          href: https://minio-tenant.urbaman.it
+          icon: minio.svg
     - Monitoring:
       - Grafana:
           description: Grafana dashboards
@@ -237,7 +259,7 @@ data:
             url: https://pfsense1.domain.com
             username: admin
             password: <password>
-            wan: vtnet0
+            wan: ix0
       - pfSense2:
           description: pfSense networking
           href: https://pfsense2.domain.com
@@ -248,7 +270,7 @@ data:
             url: https://pfsense2.domain.com
             username: admin
             password: <password>
-            wan: vtnet0
+            wan: ix0
   settings.yaml: |
     title: My Homelab Homepage
     headerStyle: boxed

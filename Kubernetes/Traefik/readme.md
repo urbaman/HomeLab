@@ -128,9 +128,6 @@ spec:
 ```bash
 helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
-```
-
-```bash
 helm show values traefik/traefik > traefik-values.yaml
 vi traefik-values.yaml
 ```
@@ -171,7 +168,7 @@ ports:
     exposedPort: 80
     port: 8000
     protocol: TCP
-    redirectTo: websecure
+  #  redirectTo: websecure - do it service per service
   websecure:
     expose: true
     exposedPort: 443

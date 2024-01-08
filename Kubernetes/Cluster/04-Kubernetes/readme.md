@@ -99,7 +99,8 @@ sudo apt install -y ca-certificates curl gnupg lsb-release
 Then, add the Docker’s GPG key to your system.
 
 ```bash
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 ```
 
 And then, add the Docker repository to the system by running the below command.
@@ -289,8 +290,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/custom-resources.yaml -O
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/tigera-operator.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/custom-resources.yaml -O
 ```
 
 If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR to match kubeadm podSubnet above).

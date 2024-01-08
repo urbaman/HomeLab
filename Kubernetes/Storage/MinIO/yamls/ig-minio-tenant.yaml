@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: miniotenant-urbaman
+  name: minio-tenant-urbaman
   namespace: urbaminio
 spec:
   # Certificate will be valid for these domain names
@@ -13,12 +13,12 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: miniotenant-urbaman
+  secretName: minio-tenant-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-miniotenant-https-redirect
+  name: traefik-minio-tenant-https-redirect
   namespace: urbaminio
 spec:
   redirectScheme:
@@ -28,7 +28,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-miniotenant-security
+  name: traefik-minio-tenant-security
   namespace: urbaminio
 spec:
   headers:
@@ -43,16 +43,16 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-miniotenant-transport
+  name: traefik-minio-tenant-transport
   namespace: urbaminio
 spec:
-  serverName: miniotenant 
+  serverName: minio-tenant 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-miniotenant-tlsoptions
+  name: traefik-minio-tenant-tlsoptions
   namespace: urbaminio
 spec:
   minVersion: VersionTLS12
@@ -76,7 +76,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-miniotenant-websecure
+  name: traefik-minio-tenant-websecure
   namespace: urbaminio 
 spec:
   entryPoints:
@@ -87,18 +87,18 @@ spec:
       services:
         - name: urbaminio-console
           port: 9443
-          serversTransport: traefik-miniotenant-transport
+          serversTransport: traefik-minio-tenant-transport
       middlewares:
-        - name: traefik-miniotenant-security
+        - name: traefik-minio-tenant-security
   tls:
-    secretName: miniotenant-urbaman
+    secretName: minio-tenant-urbaman
     options:
-      name: traefik-miniotenant-tlsoptions
+      name: traefik-minio-tenant-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-miniotenant-web
+  name: traefik-minio-tenant-web
   namespace: urbaminio
 spec:
   entryPoints:
@@ -110,12 +110,12 @@ spec:
         - name: urbaminio-console
           port: 9443
       middlewares:
-        - name: traefik-miniotenant-https-redirect
+        - name: traefik-minio-tenant-https-redirect
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: minioapi-urbaman
+  name: minio-s3-urbaman
   namespace: urbaminio
 spec:
   # Certificate will be valid for these domain names
@@ -127,7 +127,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: minioapi-urbaman
+  secretName: minio-s3-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

@@ -10,7 +10,7 @@ helm repo update
 helm show values jameswynn/homepage > gethomepage-values.yaml
 ```
 
-Set `enableRbac: true`, `serviceAccount.create: true`, `kubernetes.mode: cluster`, then install
+Set `enableRbac: true`, `serviceAccount.create: true`, `kubernetes.mode: cluster`, `repository: ghcr.io/gethomepage/homepage`, `tag: latest` then install
 
 ```bash
 helm upgrade --install gethomepage --create-namespace --namespace=gethomepage jameswynn/homepage -f gethomepage-values.yaml

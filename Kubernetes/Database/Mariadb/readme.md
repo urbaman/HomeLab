@@ -5,7 +5,7 @@
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn-nvme --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set secondary.livenessProbe.initialDelaySeconds=240 --set secondary.readinessProbe.initialDelaySeconds=240
+helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set secondary.livenessProbe.initialDelaySeconds=240 --set secondary.readinessProbe.initialDelaySeconds=240
 ```
 
 ## Installation - standalone
@@ -13,7 +13,7 @@ helm install mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespac
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-nvme --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210
+helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210
 ```
 
 ## Connection
@@ -65,7 +65,7 @@ If you need to change the mysql server_version (shouldn't be needed for mariadb)
 ```
 1. kubectl exec -it -n mariadb proxysql-0 -- /bin/bash
 2. mysql -u radmin -pradmin -h proxysql.mariadb.svc.cluster.local -P6032 --prompt 'ProxySQL Admin> '
-3. update global_variables set variable_value = '8.0.34' where variable_name = 'mysql-server_version';
+3. update global_variables set variable_value = '8.0.35' where variable_name = 'mysql-server_version';
 4. LOAD MYSQL VARIABLES TO RUNTIME;
 5. SAVE MYSQL VARIABLES TO DISK;
 6. exit

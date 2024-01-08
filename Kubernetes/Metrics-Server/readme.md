@@ -21,6 +21,8 @@ Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
         - --kubelet-insecure-tls
 ```
 
+Eventually, change the replica number.
+
 Also add the `--enable-aggregator-routing=true` flag to the apiserver configuration, so that requests sent to Metrics Server are load balanced between the 2 instances.
 
 On all control planes:
@@ -64,3 +66,7 @@ sudo vi /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
 
 Deploy the manifest with kubectl
+
+```bash
+kubectl apply -f high-availability-1.21+.yaml
+```

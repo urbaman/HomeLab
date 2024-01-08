@@ -127,9 +127,9 @@ Change values where you want (remember to set the gfd subchart `enabled: true` t
 helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin --create-namespace --values nvidia-device-plugin-values.yaml
 ```
 
-## Install the Nvidia opreator (prefearable)
+## Install the Nvidia opreator (prefearable - no need of drivers)
 
-Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`, `upgradeCRD: true`
+Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`, `upgradeCRD: true`, `cleanupCRD: true`
 
 ```bash
 kubectl create ns gpu-operator
