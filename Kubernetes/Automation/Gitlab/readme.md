@@ -1,6 +1,6 @@
 # Gitlab Installation
 
-Various things to do (external prostgres, redis, minio, cert-manager, traefik)
+Various things to do (external prostgres, redis, minio, cert-manager, traefik, prometheus)
 
 ## Redis
 
@@ -108,3 +108,9 @@ nginx-ingress:
   # Disable the deployment of the in-chart NGINX Ingress provider.
   enabled: false
 ```
+
+## Prometheus
+
+prometheus.install=true
+
+Enable the Gitlab exporter subchart and all the other subcharts metrics and servicemonitors
