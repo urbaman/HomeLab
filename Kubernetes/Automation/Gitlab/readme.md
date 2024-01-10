@@ -78,7 +78,6 @@ certmanager.install=false
 global.ingress.configureCertmanager=false
 gitlab.webservice.ingress.tls.secretName=RELEASE-gitlab-tls
 registry.ingress.tls.secretName=RELEASE-registry-tls
-minio.ingress.tls.secretName=RELEASE-minio-tls
 gitlab.kas.ingress.tls.secretName=RELEASE-kas-tls
 
 ```yaml
@@ -108,6 +107,12 @@ nginx-ingress:
   # Disable the deployment of the in-chart NGINX Ingress provider.
   enabled: false
 ```
+
+### External Traefik
+
+To use an external Traefik, add the `gitlab-shell` entrypoint to Traefik deployment (for example port 2232) and change the gitlab-shell port to 2232. Then, point a IngressRouteTCP on that entrypoint to the gitlab-shell svc. You'll connect to gitlab via shell on that port, so config the client on that port.
+
+You'll also need all of the normal IngressRoutes to gitlab and registry (and kas?).
 
 ## Prometheus
 
