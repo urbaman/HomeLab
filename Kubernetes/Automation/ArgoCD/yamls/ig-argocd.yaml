@@ -18,6 +18,16 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: argocd-https-redirect
+  namespace: argocd
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: argocd-security
   namespace: argocd
 spec:
@@ -73,7 +83,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`argocd.example.com`)
+      match: Host(`argocd.domain.com`)
       priority: 10
       services:
         - name: argocd-server
@@ -82,7 +92,7 @@ spec:
       middlewares:
         - name: argocd-security
     - kind: Rule
-      match: Host(`argocd.example.com`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.domain.com`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
@@ -92,3 +102,20 @@ spec:
     secretName: argocd-urbaman
     options:
       name: argocd-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-web
+  namespace: argocd
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`argocd.domain.com`)
+      services:
+        - name: argocd-server
+          port: 80
+      middlewares:
+        - name: argocd-https-redirect
