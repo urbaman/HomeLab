@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: traefik-memcached
+  namespace: memcached
+spec:
+  entryPoints:
+    - memcached
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: memcached
+          port: 11211

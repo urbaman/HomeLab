@@ -43,3 +43,7 @@ kubectl apply -n pgadmin.yaml
 ```
 
 You'll probably need to go through the password resetting tool, then it will ask for the postgres user password (select to save it)
+
+## Expose through Traefik
+
+Define an entrypoint for postgresql (port 5432) in Traefik, then deploy the `ig-postgresql.yaml` file

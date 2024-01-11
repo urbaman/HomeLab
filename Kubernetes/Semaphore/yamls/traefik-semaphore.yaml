@@ -1,55 +1,55 @@
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: netbox-service
+  name: semaphore-service
   labels:
-    app: netbox-service
+    app: semaphore-service
   namespace: traefik-external
 subsets:
 - addresses:
-  - ip: <netbox-ip>
-    nodeName: netbox-service
+  - ip: <semaphore-ip>
+    nodeName: semaphore-service
   ports:
-  - name: netbox
-    port: 443
+  - name: semaphore
+    port: 3000
     protocol: TCP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: netbox-service
+  name: semaphore-service
   labels:
-    app: netbox-service
+    app: semaphore-service
   namespace: traefik-external
 spec:
   type: ClusterIP
   clusterIP: None
   ports:
-  - name: netbox
-    port: 443
-    targetPort: 443
+  - name: semaphore
+    port: 3000
+    targetPort: 3000
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: netbox-urbaman
+  name: semaphore-urbaman
   namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - netbox.urbaman.it
+  - semaphore.urbaman.it
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: netbox-urbaman
+  secretName: semaphore-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-netbox-https-redirect
+  name: traefik-semaphore-https-redirect
   namespace: traefik-external
 spec:
   redirectScheme:
@@ -59,7 +59,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-netbox-security
+  name: traefik-semaphore-security
   namespace: traefik-external
 spec:
   headers:
@@ -74,7 +74,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-netbox-transport
+  name: traefik-semaphore-transport
   namespace: traefik-external
 spec:
   serverName: traefik
@@ -83,7 +83,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-netbox-tlsoptions
+  name: traefik-semaphore-tlsoptions
   namespace: traefik-external
 spec:
   minVersion: VersionTLS12
@@ -107,38 +107,38 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-netbox-websecure
+  name: traefik-semaphore-websecure
   namespace: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`netbox.urbaman.it`)
+      match: Host(`semaphore.urbaman.it`)
       services:
-        - name: netbox-service
-          port: 443
-          serversTransport: traefik-netbox-transport
+        - name: semaphore-service
+          port: 3000
+          serversTransport: traefik-semaphore-transport
       middlewares:
-        - name: traefik-netbox-security
+        - name: traefik-semaphore-security
   tls:
-    secretName: netbox-urbaman
+    secretName: semaphore-urbaman
     options:
-      name: traefik-netbox-tlsoptions
+      name: traefik-semaphore-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-netbox-web
+  name: traefik-semaphore-web
   namespace: traefik-external
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`netbox.urbaman.it`)
+      match: Host(`semaphore.urbaman.it`)
       services:
-        - name: netbox-service
-          port: 443
+        - name: semaphore-service
+          port: 3000
       middlewares:
-        - name: traefik-netbox-https-redirect
+        - name: traefik-semaphore-https-redirect

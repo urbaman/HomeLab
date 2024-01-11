@@ -7,3 +7,7 @@ helm upgrade -i memcached -n memcached --create-namespace oci://registry-1.docke
 ```
 
 Memcached can be accessed via port 11211 on the following DNS name from within your cluster: `memcached.memcached.svc.cluster.local`
+
+## Expose through Traefik
+
+Define an entrypoint for memcached (port 11211) in Traefik, then deploy the `ig-memcached.yaml` file

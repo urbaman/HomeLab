@@ -390,6 +390,18 @@ ports:
     expose: true
     exposedPort: 6033
     protocol: TCP
+    # Memcached
+  memcached:
+    port: 11211
+    expose: true
+    exposedPort: 11211
+    protocol: TCP
+    # Redis
+  redis:
+    port: 6379
+    expose: true
+    exposedPort: 6379
+    protocol: TCP
     # Gitlab Shell
   gitlab-shell:
     port: 2232
