@@ -18,15 +18,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: monitoring-pushgateway-basic-auth
-  namespace: monitoring
-spec:
-  basicAuth:
-    secret: monitoring-pushgateway-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: monitoring-pushgateway-https-redirect
   namespace: monitoring
 spec:
@@ -81,15 +72,6 @@ spec:
     - CurveP521
     - CurveP384
   sniStrict: false
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: monitoring-pushgateway-basic-auth
-  namespace: monitoring
-data:
-  users: |
-    YWRtaW46JGFwcjEkSVBqUU96bmYkWkhDSWp2UmdTNFd4bXBUZnVVakhMMQoK
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute

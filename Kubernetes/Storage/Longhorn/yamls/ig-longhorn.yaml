@@ -18,15 +18,6 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: longhorn-dashboard-basic-auth
-  namespace: longhorn-system
-spec:
-  basicAuth:
-    secret: longhorn-dashboard-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: longhorn-dashboard-https-redirect
   namespace: longhorn-system
 spec:

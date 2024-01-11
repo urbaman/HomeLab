@@ -62,7 +62,7 @@ If you need to change the mysql server_version:
 - Delete the proxysql statefulset and the pv,pvc and volume, change the server_version global variable in the config map, recreate the statefulset.
 - Run the following commands, running as many connections (points 2-5) as needed to update all of the pods in the cluster, with the needed mysql version.
 
-```
+```bash
 1. kubectl exec -it -n mysql proxysql-0 -- /bin/bash
 2. mysql -u radmin -pradmin -h proxysql.mysql.svc.cluster.local -P6032 --prompt 'ProxySQL Admin> '
 3. update global_variables set variable_value = '8.0.34' where variable_name = 'mysql-server_version';
@@ -78,3 +78,9 @@ Do the same to change any other Proxysql config on the run: delete and recreate 
 ```bash
 kubectl apply -f phpmyadmin-mysql.yaml
 ```
+
+## Expose through Traefik (only one MariaDB/MySQL instance per cluster per entrypoint)
+
+Beware: MySQL do not manage SSL and SNI, so we can only use ```HostSNI(`*`)``` with one entrypoint per db instance (if we have more than one MySQL/MariaDB instances)
+
+Deploy the `ig-mysql.yaml` file

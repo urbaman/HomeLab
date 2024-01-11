@@ -78,3 +78,9 @@ Do the same to change any other Proxysql config on the run: delete and recreate 
 ```bash
 kubectl apply -f phpmyadmin-mariadb.yaml
 ```
+
+## Expose through Traefik (only one MariaDB/MySQL instance per cluster per entrypoint)
+
+Beware: MySQL do not manage SSL and SNI, so we can only use ```HostSNI(`*`)``` with one entrypoint per db instance (if we have more than one MySQL/MariaDB instances)
+
+Deploy the `ig-mariadb.yaml` file
