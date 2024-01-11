@@ -1,0 +1,69 @@
+redis:
+  enabled: false
+
+externalRedis:
+  # -- External Redis server host
+  host: ""
+  # -- External Redis server port
+  port: 6379
+  # -- The name of an existing secret with Redis credentials (must contain key `redis-password`).
+  # When it's set, the `externalRedis.password` parameter is ignored
+  existingSecret: ""
+
+controller:
+  replicas: 1
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+dex:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  extraArgs:
+  - --insecure
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+applicationSet:
+  replicas: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+notifications:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
