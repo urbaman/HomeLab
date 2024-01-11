@@ -180,6 +180,31 @@ ports:
       enabled: true
       options: ""
       secret: secret-name # add this for HA settings, with the secret containing the cert-manager certificate for the traefik host to reach
+# Added Ports
+    # PostgreSQL
+  postgresql:
+    port: 5432
+    expose: true
+    exposedPort: 5432
+    protocol: TCP
+    # MySQL
+  mysql:
+    port: 3306
+    expose: true
+    exposedPort: 3306
+    protocol: TCP
+    # MariaDB
+  mariadb:
+    port: 6033
+    expose: true
+    exposedPort: 6033
+    protocol: TCP
+    # Gitlab Shell
+  gitlab-shell:
+    port: 2232
+    expose: true
+    exposedPort: 2232
+    protocol: TCP
 ```
 
 Enable the ingressClass, set it to default:
