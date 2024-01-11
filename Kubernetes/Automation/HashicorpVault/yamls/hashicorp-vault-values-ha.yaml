@@ -1,0 +1,61 @@
+global:
+  serverTelemetry:
+    prometheusOperator: false
+
+server:
+
+  ingress:
+    enabled: false
+
+  standalone:
+    enabled: false
+  
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          telemetry {
+            unauthenticated_metrics_access = "true"
+          }
+        }
+        storage "raft" {
+          path = "/vault/data"
+          }
+          autopilot {
+            cleanup_dead_servers = "true"
+            last_contact_threshold = "200ms"
+            last_contact_failure_threshold = "10m"
+            max_trailing_logs = 250000
+            min_quorum = 5
+            server_stabilization_time = "10s"
+          }
+        }
+        telemetry {
+          prometheus_retention_time = "30s"
+          disable_hostname = true
+        }
+        service_registration "kubernetes" {}
+
+  extraVolumes:
+    – type: secret
+      name: tls-server
+    – type: secret
+      name: rootCA
+
+  ui:
+    enabled: true
+  
+  serverTelemetry:
+    serviceMonitor:
+      enabled: true
+      selectors:
+        release: kube-prometheus-stack
