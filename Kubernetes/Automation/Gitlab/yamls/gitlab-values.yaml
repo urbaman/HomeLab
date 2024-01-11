@@ -1,0 +1,182 @@
+# General definitions
+
+postgresql:
+  install: false
+
+redis:
+  install: false
+
+certmanager:
+  install: false
+
+registry:
+  ingress:
+    tls:
+      secretName: urbaman-gl-gitlab
+
+nginx-ingress:
+  # Disable the deployment of the in-chart NGINX Ingress provider.
+  enabled: false
+
+prometheus:
+  install: false
+
+# Global definitions
+
+global:
+
+# Ingress
+  ingress:
+    configureCertmanager: false
+    enabled: false
+
+# Shell
+  shell:
+    port: 2232
+    tcp: # Probably needed for Traefik?
+      proxyProtocol: true # Probably needed for Traefik? default false
+
+# Postgres 
+  psql:
+    host: psql.example
+    password:
+      secret: gitlab-postgresql-password
+      key: postgres-password
+    port: 5432
+    database: gitlab
+    username: gitlab
+  
+# Redis
+  redis:
+    host: redis.example
+    auth:
+      enabled: true
+      secret: gitlab-redis
+      key: redis-password
+
+# Object Storage
+  minio:
+    enabled: false
+  registry:
+    bucket: gitlab-registry-storage
+  appConfig:
+    lfs:
+      bucket: gitlab-lfs-storage
+      connection:
+        secret: object-storage
+        key: connection
+    artifacts:
+      bucket: gitlab-artifacts-storage
+      connection:
+        secret: object-storage
+        key: connection
+    uploads:
+      bucket: gitlab-uploads-storage
+      connection:
+        secret: object-storage
+        key: connection
+    packages:
+      bucket: gitlab-packages-storage
+      connection:
+        secret: object-storage
+        key: connection
+    externalDiffs:
+      bucket: gitlab-externalDiffs-storage
+      connection:
+        secret: object-storage
+        key: connection
+    terraformState:
+      bucket: gitlab-terraformState-storage
+      connection:
+        secret: object-storage
+        key: connection
+    dependencyProxy:
+      bucket: gitlab-dependencyProxy-storage
+      connection:
+        secret: object-storage
+        key: connection
+    ciSecureFiles:
+      bucket: gitlab-ciSecureFiles-storage
+      connection:
+        secret: object-storage
+        key: connection
+    backups:
+      bucket: gitlab-backup-storage
+      tmpBucket: gitlab-tmp-storage
+
+# Subcharts
+
+gitlab:
+
+# Webservice
+  webservice:
+    ingress:
+      tls:
+        secretName: urbaman-gitlab
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Gitaly
+  gitaly:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Exporter
+  gitlab-exporter:
+    enabled: true
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Shell
+  gitlab-shell:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# KAS
+  kas:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Migrations
+  migrations:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Sidekiq
+  sidekiq:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabel:
+          release: kube-prometheus-stack
+
+# Toolbox - Backups
+  toolbox:
+    backups:
+      cron:
+        enabled: true
