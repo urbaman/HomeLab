@@ -83,4 +83,4 @@ kubectl apply -f phpmyadmin-mysql.yaml
 
 Beware: MySQL do not manage SSL and SNI, so we can only use ```HostSNI(`*`)``` with one entrypoint per db instance (if we have more than one MySQL/MariaDB instances)
 
-Deploy the `ig-mysql.yaml` file
+Define an entrypoint for mariadb (port 3306?) in Traefik, then deploy the `ig-mysql.yaml` file
