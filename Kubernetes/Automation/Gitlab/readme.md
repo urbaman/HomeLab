@@ -8,9 +8,13 @@ Always check the [documentation](https://docs.gitlab.com/charts/).
 
 Have a postgreSQL server up and running (see [Postgresql replica cluster with Pgadmin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql)).
 
-Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner.
+Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner of the db.
 
 Create a secret containing the user password (gitlab-postgresql-password, postgres-password).
+
+```bash
+kubectl create secret generic -n gitlab gitlab-postgresql-password --from-literal=postgres-password='<PASSWORD>'
+```
 
 Set the helm values:
 
@@ -28,7 +32,11 @@ global.psql.username
 
 Have a Redis server up and running (see [Redis replica cluster](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Redis)).
 
-Create a secret with the Redis password (gitlab-redis, redis-password) or point to the original redis secret (probably you can't).
+Create a secret with the Redis password (gitlab-redis-password, redis-password) or point to the original redis secret (probably you can't).
+
+```bash
+kubectl create secret generic -n gitlab gitlab-redis-password --from-literal=redis-password='<PASSWORD>'
+```
 
 Set the helm values:
 
@@ -36,7 +44,7 @@ Set the helm values:
 redis.install=false
 global.redis.host=redis.example
 global.redis.auth.enabled=true
-global.redis.auth.secret=gitlab-redis
+global.redis.auth.secret=gitlab-redis-password
 global.redis.auth.key=redis-password
 ```
 
@@ -160,7 +168,7 @@ registry:
     key: config
 ```
 
-Various things to do (external prostgres, redis, minio, cert-manager, traefik, prometheus)
+Various things to do (external postgres, redis, minio, cert-manager, traefik, prometheus)
 
 ## Cert-manager and Traefik
 
@@ -190,7 +198,7 @@ nginx-ingress:
   enabled: false
 ```
 
-Make IngressRoute for gitlab and registry, make IngressRouteTCP for githlab-shell.
+Make IngressRoute for gitlab and registry, make IngressRouteTCP for gitlab-shell.
 
 ```yaml
 apiVersion: traefik.containo.us/v1alpha1
