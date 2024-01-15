@@ -2,7 +2,7 @@
 
 ## Installation
 
-We need to give time for the pods to be ready (due to shared storage latency), and set a high number of concurrent connections for Gitlab.
+We need to give time for the pods to be ready (due to shared storage latency) in liveness and readiness probes, and set a high number of concurrent connections for Gitlab in `pgpool.maxPool`, `pgpool.numInitChildren` and `postgresql.maxConnections`. Anyway, `pgpool.maxPool`*`pgpool.numInitChildren`=`postgresql.maxConnections`/2, and must be enough for connection-spawning applications.
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
