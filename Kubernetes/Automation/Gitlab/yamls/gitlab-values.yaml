@@ -25,6 +25,12 @@ prometheus:
 
 global:
 
+# License
+  gitlab:
+    license:
+      secret: gitlab-license
+      key: license
+
 # Ingress
   ingress:
     configureCertmanager: false

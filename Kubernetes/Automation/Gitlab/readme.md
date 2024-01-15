@@ -4,6 +4,29 @@ Always check the [documentation](https://docs.gitlab.com/charts/).
 
 ## Prerequisites and settings
 
+### License secret
+
+**Option 1:** Create a secret containing the Enterprise license
+
+```bash
+kubectl create secret generic -n gitlab gitlab-license --from-file=license=./gitlab-license.txt
+```
+
+```yaml
+global:
+  gitlab:
+    license:
+      secret: gitlab-license
+      key: license
+```
+
+**Option 2:** Select to run che community edition
+
+```yaml
+global:
+  edition: ce
+```
+
 ### PostgreSQL
 
 Have a postgreSQL server up and running (see [Postgresql replica cluster with Pgadmin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql)).
@@ -331,7 +354,7 @@ helm upgrade --install gitlab gitlab/gitlab -n gitlab --create-namespace --value
 Login with user `root` and the following secret:
 
 ```bash
-kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+kubectl get secret -n gitlab gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
 ```
 
 ## Upgrade
