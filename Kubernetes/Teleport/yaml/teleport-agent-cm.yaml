@@ -200,7 +200,7 @@ app_service:
     labels:
       env: webapp
       context: homelab
-  - name: s-pdf
+  - name: spdf
     uri: https://s-pdf.domain.com/
     labels:
       env: webapp
@@ -220,15 +220,30 @@ app_service:
     labels:
       env: storage
       context: homelab
-  - name: minio-operator
+  - name: miniooperator
     uri: https://minio-operator.domain.com
     labels:
       env: storage
       context: homelab
-  - name: minio-tenant
+  - name: miniotenant
     uri: https://minio-tenant.domain.com
     labels:
       env: storage
+      context: homelab
+  - name: argocd
+    uri: https://argocd.domain.com
+    labels:
+      env: automation
+      context: homelab
+  - name: vault
+    uri: https://vault.domain.com
+    labels:
+      env: automation
+      context: homelab
+  - name: gitlab
+    uri: https://gitlab.domain.com
+    labels:
+      env: automation
       context: homelab
   enabled: true
 auth_service:

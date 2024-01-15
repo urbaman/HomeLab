@@ -4,13 +4,40 @@ Always check the [documentation](https://docs.gitlab.com/charts/).
 
 ## Prerequisites and settings
 
+### License secret
+
+**Option 1:** Create a secret containing the Enterprise license
+
+```bash
+kubectl create secret generic -n gitlab gitlab-license --from-file=license=./gitlab-license.txt
+```
+
+```yaml
+global:
+  gitlab:
+    license:
+      secret: gitlab-license
+      key: license
+```
+
+**Option 2:** Select to run che community edition
+
+```yaml
+global:
+  edition: ce
+```
+
 ### PostgreSQL
 
 Have a postgreSQL server up and running (see [Postgresql replica cluster with Pgadmin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql)).
 
-Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner.
+Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner of the db.
 
 Create a secret containing the user password (gitlab-postgresql-password, postgres-password).
+
+```bash
+kubectl create secret generic -n gitlab gitlab-postgresql-password --from-literal=postgres-password='<PASSWORD>'
+```
 
 Set the helm values:
 
@@ -28,7 +55,11 @@ global.psql.username
 
 Have a Redis server up and running (see [Redis replica cluster](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Redis)).
 
-Create a secret with the Redis password (gitlab-redis, redis-password) or point to the original redis secret (probably you can't).
+Create a secret with the Redis password (gitlab-redis-password, redis-password) or point to the original redis secret (probably you can't).
+
+```bash
+kubectl create secret generic -n gitlab gitlab-redis-password --from-literal=redis-password='<PASSWORD>'
+```
 
 Set the helm values:
 
@@ -36,7 +67,7 @@ Set the helm values:
 redis.install=false
 global.redis.host=redis.example
 global.redis.auth.enabled=true
-global.redis.auth.secret=gitlab-redis
+global.redis.auth.secret=gitlab-redis-password
 global.redis.auth.key=redis-password
 ```
 
@@ -59,7 +90,7 @@ Create a secret with the Minio connection specs (object-storage, config) for all
 ```yaml
 provider: AWS
 # Specify the region
-region: us-east-1
+region: homelab
 # Specify access/secret keys
 aws_access_key_id: AWS_ACCESS_KEY
 aws_secret_access_key: AWS_SECRET_KEY
@@ -71,6 +102,10 @@ endpoint: "https://minio.example.com:9000"
 path_style: true
 ```
 
+```bash
+kubectl create secret generic -n gitlab object-storage --from-file=config=./object-storage.txt
+```
+
 Create a secret with the Minio connection specs (registry-storage, config) for registry.
 
 ```yaml
@@ -78,12 +113,17 @@ s3:
   bucket: gitlab-registry-storage
   accesskey: AWS_ACCESS_KEY
   secretkey: AWS_SECRET_KEY
-  region: us-east-1
+  region: homelab
   regionendpoint: "https://minio.example.com:9000"
   v4auth: true
+  pathstyle: true
 ```
 
 **Note:** The bucket name needs to be set both in the secret, and in global.registry.bucket. The secret is used in the registry server, and the global is used by GitLab backups.
+
+```bash
+kubectl create secret generic -n gitlab registry-storage --from-file=config=./registry-storage.txt
+```
 
 Create a secret with the Minio connection specs (storage-config, config) for backups.
 
@@ -91,8 +131,13 @@ Create a secret with the Minio connection specs (storage-config, config) for bac
 [default]
 access_key = AWS_ACCESS_KEY
 secret_key = AWS_SECRET_KEY
-bucket_location = us-east-1
+bucket_location = homelab
+host_base = minio.example.com:9000  
 multipart_chunk_size_mb = 128 # default is 15 (MB)
+```
+
+```bash
+kubectl create secret generic -n gitlab storage-config --from-file=config=./storage-config.txt
 ```
 
 Define the helm values:
@@ -108,42 +153,42 @@ global:
       bucket: gitlab-lfs-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     artifacts:
       bucket: gitlab-artifacts-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     uploads:
       bucket: gitlab-uploads-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     packages:
       bucket: gitlab-packages-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     externalDiffs:
-      bucket: gitlab-externalDiffs-storage
+      bucket: gitlab-externaldiffs-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     terraformState:
-      bucket: gitlab-terraformState-storage
+      bucket: gitlab-terraformstate-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     dependencyProxy:
-      bucket: gitlab-dependencyProxy-storage
+      bucket: gitlab-dependencyproxy-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     ciSecureFiles:
-      bucket: gitlab-ciSecureFiles-storage
+      bucket: gitlab-cisecurefiles-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     backups:
       bucket: gitlab-backup-storage
       tmpBucket: gitlab-tmp-storage
@@ -160,7 +205,7 @@ registry:
     key: config
 ```
 
-Various things to do (external prostgres, redis, minio, cert-manager, traefik, prometheus)
+Various things to do (external postgres, redis, minio, cert-manager, traefik, prometheus)
 
 ## Cert-manager and Traefik
 
@@ -190,7 +235,7 @@ nginx-ingress:
   enabled: false
 ```
 
-Make IngressRoute for gitlab and registry, make IngressRouteTCP for githlab-shell.
+Make IngressRoute for gitlab and registry, make IngressRouteTCP for gitlab-shell.
 
 ```yaml
 apiVersion: traefik.containo.us/v1alpha1
@@ -309,7 +354,7 @@ helm upgrade --install gitlab gitlab/gitlab -n gitlab --create-namespace --value
 Login with user `root` and the following secret:
 
 ```bash
-kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+kubectl get secret -n gitlab gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
 ```
 
 ## Upgrade

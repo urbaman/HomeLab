@@ -50,7 +50,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:5.4
+          image: dpage/pgadmin4:8.2
           imagePullPolicy: Always
           env:
           - name: PGADMIN_DEFAULT_EMAIL
@@ -137,7 +137,6 @@ metadata:
   namespace: postgresql
 spec:
   headers:
-    frameDeny: true
     sslRedirect: true
     browserXssFilter: true
     contentTypeNosniff: true

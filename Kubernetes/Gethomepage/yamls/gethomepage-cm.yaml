@@ -84,11 +84,11 @@ data:
             password: password
       - MinioOperator:
           description: Minio Operator GUI
-          href: https://minio-operator.urbaman.it
+          href: https://minio-operator.domain.com
           icon: minio.svg
       - MinioTenant:
           description: Minio Tenant GUI
-          href: https://minio-tenant.urbaman.it
+          href: https://minio-tenant.domain.com
           icon: minio.svg
     - Monitoring:
       - Grafana:
@@ -223,6 +223,23 @@ data:
           description: Netbox SoT management
           href: https://netbox.domain.com
           icon: netbox.svg
+    - Automation:
+      - ArgoCD:
+          description: ArgoCD
+          href: https://argocd.domain.com
+          icon: argocd.svg
+      - Vault:
+          description: Hashicorp Vault
+          href: https://vault.domain.com
+          icon: vault.svg
+      - Gitlab:
+          description: Gitlab
+          href: https://gitlab.domain.com
+          icon: gitlab.svg
+      - Ansible:
+          description: Ansible Semaphore
+          href: https://semaphore.domain.com
+          icon: ansible.svg
     - Database:
       - Mysql:
           description: Mysql PhpMyAdmin
