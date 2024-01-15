@@ -12,7 +12,7 @@ certmanager:
 registry:
   ingress:
     tls:
-      secretName: urbaman-gl-gitlab
+      secretName: gitlab-urbaman
 
 nginx-ingress:
   # Disable the deployment of the in-chart NGINX Ingress provider.
@@ -51,7 +51,7 @@ global:
     host: redis.example
     auth:
       enabled: true
-      secret: gitlab-redis
+      secret: gitlab-redis-password
       key: redis-password
 
 # Object Storage
@@ -112,7 +112,7 @@ gitlab:
   webservice:
     ingress:
       tls:
-        secretName: urbaman-gitlab
+        secretName: gitlab-urbaman
     metrics:
       enabled: true
       serviceMonitor:
@@ -147,6 +147,7 @@ gitlab:
         enabled: true
         additionalLabel:
           release: kube-prometheus-stack
+    sshDaemon: gitlab-sshd
 
 # KAS
   kas:
@@ -180,3 +181,7 @@ gitlab:
     backups:
       cron:
         enabled: true
+      objectStorage:
+        config:
+          secret: storage-config
+          key: config

@@ -67,7 +67,7 @@ Create a secret with the Minio connection specs (object-storage, config) for all
 ```yaml
 provider: AWS
 # Specify the region
-region: us-east-1
+region: homelab
 # Specify access/secret keys
 aws_access_key_id: AWS_ACCESS_KEY
 aws_secret_access_key: AWS_SECRET_KEY
@@ -79,6 +79,10 @@ endpoint: "https://minio.example.com:9000"
 path_style: true
 ```
 
+```bash
+kubectl create secret generic -n gitlab object-storage --from-file=config=./object-storage.txt
+```
+
 Create a secret with the Minio connection specs (registry-storage, config) for registry.
 
 ```yaml
@@ -86,12 +90,17 @@ s3:
   bucket: gitlab-registry-storage
   accesskey: AWS_ACCESS_KEY
   secretkey: AWS_SECRET_KEY
-  region: us-east-1
+  region: homelab
   regionendpoint: "https://minio.example.com:9000"
   v4auth: true
+  pathstyle: true
 ```
 
 **Note:** The bucket name needs to be set both in the secret, and in global.registry.bucket. The secret is used in the registry server, and the global is used by GitLab backups.
+
+```bash
+kubectl create secret generic -n gitlab registry-storage --from-file=config=./registry-storage.txt
+```
 
 Create a secret with the Minio connection specs (storage-config, config) for backups.
 
@@ -99,8 +108,13 @@ Create a secret with the Minio connection specs (storage-config, config) for bac
 [default]
 access_key = AWS_ACCESS_KEY
 secret_key = AWS_SECRET_KEY
-bucket_location = us-east-1
+bucket_location = homelab
+host_base = minio.example.com:9000  
 multipart_chunk_size_mb = 128 # default is 15 (MB)
+```
+
+```bash
+kubectl create secret generic -n gitlab storage-config --from-file=config=./storage-config.txt
 ```
 
 Define the helm values:
@@ -116,42 +130,42 @@ global:
       bucket: gitlab-lfs-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     artifacts:
       bucket: gitlab-artifacts-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     uploads:
       bucket: gitlab-uploads-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     packages:
       bucket: gitlab-packages-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     externalDiffs:
-      bucket: gitlab-externalDiffs-storage
+      bucket: gitlab-externaldiffs-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     terraformState:
-      bucket: gitlab-terraformState-storage
+      bucket: gitlab-terraformstate-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     dependencyProxy:
-      bucket: gitlab-dependencyProxy-storage
+      bucket: gitlab-dependencyproxy-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     ciSecureFiles:
-      bucket: gitlab-ciSecureFiles-storage
+      bucket: gitlab-cisecurefiles-storage
       connection:
         secret: object-storage
-        key: connection
+        key: config
     backups:
       bucket: gitlab-backup-storage
       tmpBucket: gitlab-tmp-storage
