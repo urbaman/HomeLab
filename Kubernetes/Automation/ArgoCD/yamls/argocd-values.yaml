@@ -39,6 +39,13 @@ server:
       enabled: true
       additionalLabels:
         release: kube-prometheus-stack
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
 
 repoServer:
   autoscaling:
@@ -50,6 +57,13 @@ repoServer:
       enabled: true
       additionalLabels:
         release: kube-prometheus-stack
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
 
 applicationSet:
   replicas: 2
