@@ -189,7 +189,7 @@ sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
 ```
 
-Download the Google Cloud public signing key:
+Download the Kubernetes public signing key:
 
 ```bash
 sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
