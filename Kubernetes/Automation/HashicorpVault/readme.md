@@ -14,7 +14,7 @@ kubectl apply -f ig-hashicorp-vault.yaml
 To initialise the vault first open a terminal on the container using:
 
 ```bash
-kubectl exec -it --stdin=true --tty=true vault-0 /bin/ash
+kubectl exec -it -n vault --stdin=true --tty=true vault-0 /bin/bash
 ```
 
 Now we need to turn off TLS verification as we are accessing vault on localhost, do this by setting up VAULT_SKIP_VERIFY environment variable:
