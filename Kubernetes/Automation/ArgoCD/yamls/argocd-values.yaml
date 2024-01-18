@@ -42,10 +42,10 @@ server:
   resources:
     limits:
       cpu: 100m
-      memory: 128Mi
+      memory: 256Mi
     requests:
       cpu: 50m
-      memory: 64Mi
+      memory: 128Mi
 
 repoServer:
   autoscaling:
@@ -59,11 +59,11 @@ repoServer:
         release: kube-prometheus-stack
   resources:
     limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
       cpu: 50m
       memory: 128Mi
-    requests:
-      cpu: 10m
-      memory: 64Mi
 
 applicationSet:
   replicas: 2
