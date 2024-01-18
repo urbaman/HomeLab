@@ -35,13 +35,13 @@ kubectl get cm -n gethomepage gethomepage -o yaml > gethomepage-cm.yaml
 kubectl edit -n gethomepage deployment gethomepage
 ```
 
-```bash
+```yaml
       - image: ghcr.io/gethomepage/homepage:latest
 ```
 
 After the volumemounts
 
-```bash
+```yaml
       dnsConfig:
         options:
           - name: ndots

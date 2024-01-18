@@ -5,9 +5,9 @@
 To properly install nextcloud, we will need the following:
 
 - a DNS entry, reachable from the outside
-- a MySQL database (we will use mariadb) with a ready database and user
-- a Redis instance
-- a clamav instance [(https://github.com/wiremind/wiremind-helm-charts/tree/main/charts/clamav)](https://github.com/wiremind/wiremind-helm-charts/tree/main/charts/clamav) and [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html)
+- a MySQL database ([we will use mariadb](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Mariadb)) or a [PostgreSQL database](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql) with a ready database and user (nextcloud, nextcloud)
+- [a Redis instance](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Redis)
+- [a ClamAV instance](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ClamAV)
 
 After having set up all of the prerequisites, we start our process.
 
@@ -31,3 +31,5 @@ We now deploy nextcloud, after having setup the various env variables (DB and RE
 ```bash
 kubectl apply -f nextcloud-deploy.yaml
 ```
+
+Login and setup ClamAV: [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html)
