@@ -26,3 +26,45 @@ The `redis-replica.redis.svc.cluster.local` connects to the replicas, in read-on
 ## Expose through Traefik
 
 Define an entrypoint for redis (port 6439) in Traefik, then deploy the `ig-redis.yaml` file
+
+
+## Recover after a crash
+
+If the cluster crashes, you'll probably have the following error:
+
+```bash
+Bad file format reading the append only file appendonly.aof.57.incr.aof: make a backup of your AOF file, then use ./redis-check-aof --fix <filename.manifest>
+```
+
+Create a pod with redis-client pointing to the persistent claim of the master
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-client
+  namespace: redis
+spec:
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: <PERSISTENT-CLAIM>
+  containers:
+    - name: redis
+      image: docker.io/bitnami/redis:6.2.3-debian-10-r0
+      command: ["/bin/bash"]
+      args: ["-c", "sleep infinity"]
+      volumeMounts:
+        - mountPath: "/tmp"
+          name: data
+EOF
+```
+
+And fix the problem.
+
+```bash
+kubectl exec -it -n redis redis-client -- redis-check-aof --fix /tmp/appendonlydir/appendonly.aof.57.incr.aof
+```
+
+Follow the instructions.
