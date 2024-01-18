@@ -1,3 +1,49 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nextcloud
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nextcloud-secrets
+  namespace: nextcloud
+type: Opaque
+data:
+  ADMIN_PASSWORD: admin-password-base64
+  MYSQL_DATABASE: dbname-base64
+  MYSQL_USER: dbusername-base64
+  MYSQL_PASSWORD: mysql-password-base64
+  REDIS_HOST_PASSWORD: redis-password-base64
+  SMTP_PASSWORD: smtp-password-base64
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-pvc
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fast
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data-pvc
+  namespace: nextcloud
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fast
+  resources:
+    requests:
+      storage: 5Ti
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,7 +96,7 @@ spec:
             - name: NEXTCLOUD_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: MYSQL_PASSWORD
+                  key: ADMIN_PASSWORD
                   name: nextcloud-secrets
             - name: REDIS_HOST_PASSWORD
               valueFrom:
@@ -104,10 +150,27 @@ spec:
   selector:
     app: nextcloud
 ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nextcoud-urbaman
+  namespace: nextcoud
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - nextcoud.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: nextcoud-urbaman
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: nextcloud-https-redirect
+  name: traefik-nextcloud-https-redirect
   namespace: nextcloud
 spec:
   redirectScheme:
@@ -115,33 +178,88 @@ spec:
     permanent: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-nextcloud-security
+  namespace: nextcloud
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-nextcloud-transport
+  namespace: nextcloud
+spec:
+  serverName: nextcloud
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-nextcloud-tlsoptions
+  namespace: nextcloud
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: nextcloud-websecure
+  name: traefik-nextcloud-websecure
   namespace: nextcloud
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`nextcloud.urbaman.it`)
-    kind: Rule
-    services:
-    - name: nextcloud
-      port: 8080
+    - match: Host(`nextcloud.urbaman.it`)
+      kind: Rule
+      services:
+        - name: nextcloud
+          port: 8080
+          serversTransport: traefik-nextcloud-transport
+      middlewares:
+        - name: traefik-nextcloud-security
+  tls:
+    secretName: nextcloud-urbaman
+    options:
+      name: traefik-nextcloud-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: nextcloud-web
+  name: traefik-nextcloud-web
   namespace: nextcloud
 spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`nextcloud.urbaman.it`)
-    kind: Rule
-    services:
-    - name: nextcloud
-      port: 8080
-    middlewares:
-      - name: nextcloud-https-redirect
+    - match: Host(`nextcloud.urbaman.it`)
+      kind: Rule
+      services:
+        - name: nextcloud
+          port: 8080
+      middlewares:
+        - name: traefik-nextcloud-https-redirect
