@@ -78,7 +78,6 @@ metadata:
   namespace: drawio
 spec:
   headers:
-    frameDeny: true
     sslRedirect: true
     browserXssFilter: true
     contentTypeNosniff: true
