@@ -75,11 +75,11 @@ spec:
             - containerPort: 80
           resources:
             limits:
-              cpu: 400m
-              memory: 1Gi
-            requests:
               cpu: 200m
-              memory: 512Mi
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 1Mi
           env:
             - name: REDIS_HOST
               value: redis-master
@@ -226,6 +226,7 @@ spec:
     stsIncludeSubdomains: true
     stsPreload: true
     stsSeconds: 31536000
+    customFrameOptionsValue: sameorigin
 ---
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
