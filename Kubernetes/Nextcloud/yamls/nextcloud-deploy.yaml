@@ -76,7 +76,7 @@ spec:
           resources:
             limits:
               cpu: 400m
-              memory: 1024Mi
+              memory: 1Gi
             requests:
               cpu: 200m
               memory: 512Mi
@@ -156,7 +156,7 @@ spec:
     kind: Deployment
     name: nextcloud
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 9
   metrics:
   - type: Resource
     resource:
