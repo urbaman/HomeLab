@@ -115,5 +115,6 @@ Here are the detailed steps to deploy our homelab cluster
 6. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
 7. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
 8. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
-9. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
-10. Calibre+Calibre-Web
+9. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
+10. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
+11. Calibre+Calibre-Web

@@ -1,0 +1,37 @@
+collabora:
+
+  extra_params: --o:ssl.enable=false --o:ssl.termination=true
+  
+  existingSecret:
+    enabled: true
+    secretName: "collabora-auth"
+    usernameKey: "username"
+    passwordKey: "password"
+
+resources:
+   limits:
+      cpu: "400m"
+      memory: "1Gi"
+   requests:
+      cpu: "200m"
+      memory: "512Mi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 50
+
+prometheus:
+   servicemonitor:
+      enabled: true
+      labels:
+         release: "kube-prometheus-stack"
+   rules:
+      enabled: true
+      additionalLabels:
+         release: "kube-prometheus-stack"
+grafana:
+   dashboards:
+      enabled: true

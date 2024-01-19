@@ -8,6 +8,7 @@ To properly install nextcloud, we will need the following:
 - a MySQL database ([we will use mariadb](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Mariadb)) or a [PostgreSQL database](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql) with a ready database and user (nextcloud, nextcloud)
 - [a Redis instance](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Redis)
 - [a ClamAV instance](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ClamAV)
+- [Eventually, Collabora Online already up and running](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
 
 After having set up all of the prerequisites, we start our process.
 
@@ -32,4 +33,7 @@ We now deploy nextcloud, after having setup the various env variables (DB and RE
 kubectl apply -f nextcloud-deploy.yaml
 ```
 
-Login and setup ClamAV: [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html)
+Login and setup
+
+- ClamAV: [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html).
+- Collabora Online.
