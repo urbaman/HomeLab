@@ -16,10 +16,10 @@ data:
     mode: cluster
   services.yaml: |
     - Media:
-      - My First Service:
-          description: Homepage is awesome
-          href: http://localhost/
-          icon: mdi-multimedia-#0328fc
+      - Nextcloud:
+          description: Nextcloud
+          href: https://nextcloud.urbaman.it/
+          icon: nextcloud.svg
     - Domotica:
       - Homeassistant:
           description: Homeassistant GUI

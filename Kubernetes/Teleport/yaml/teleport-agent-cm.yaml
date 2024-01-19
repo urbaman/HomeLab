@@ -1,5 +1,10 @@
 app_service:
   apps:
+  - name: nextcloud
+    uri: https://nextcloud.urbaman.it
+    labels:
+      env: media
+      context: homelab
   - name: alertmanager
     uri: https://alertmanager.domain.com
     labels:
