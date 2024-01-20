@@ -21,8 +21,13 @@ spec:
         - containerPort: 9205
           name: metrics
         env:
-        - name: NEXTCLOUD_AUTH_TOKEN
-          value: "auth_token"
+        - name: NEXTCLOUD_USERNAME
+          value: "admin"
+        - name: NEXTCLOUD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: ADMIN_PASSWORD
+              name: nextcloud-secrets
         - name: NEXTCLOUD_SERVER
           value: "https://nextcloud.urbaman.it"
         - name: NEXTCLOUD_TIMEOUT
@@ -48,7 +53,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: nextcloud-exporter
-  namespace: monitoring
+  namespace: nextcloud
   labels:
     release: kube-prometheus-stack
 spec:
