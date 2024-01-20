@@ -22,12 +22,11 @@ spec:
           name: metrics
         env:
         - name: NEXTCLOUD_USERNAME
-          value: "admin"
+          value: "username"
         - name: NEXTCLOUD_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: ADMIN_PASSWORD
-              name: nextcloud-secrets
+          value: "password"
+        - name: NEXTCLOUD_AUTH_TOKEN
+          value: "token"
         - name: NEXTCLOUD_SERVER
           value: "https://nextcloud.urbaman.it"
         - name: NEXTCLOUD_TIMEOUT
