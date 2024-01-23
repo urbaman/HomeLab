@@ -90,7 +90,7 @@ Create a secret with the Minio connection specs (object-storage, config) for all
 ```yaml
 provider: AWS
 # Specify the region
-region: homelab
+region: us-east-1
 # Specify access/secret keys
 aws_access_key_id: AWS_ACCESS_KEY
 aws_secret_access_key: AWS_SECRET_KEY
@@ -113,7 +113,7 @@ s3:
   bucket: gitlab-registry-storage
   accesskey: AWS_ACCESS_KEY
   secretkey: AWS_SECRET_KEY
-  region: homelab
+  region: us-east-1
   regionendpoint: "https://minio.example.com:9000"
   v4auth: true
   pathstyle: true
@@ -131,7 +131,7 @@ Create a secret with the Minio connection specs (storage-config, config) for bac
 [default]
 access_key = AWS_ACCESS_KEY
 secret_key = AWS_SECRET_KEY
-bucket_location = homelab
+bucket_location = us-east-1
 host_base = minio.example.com:9000  
 multipart_chunk_size_mb = 128 # default is 15 (MB)
 ```
