@@ -132,7 +132,10 @@ Create a secret with the Minio connection specs (storage-config, config) for bac
 access_key = AWS_ACCESS_KEY
 secret_key = AWS_SECRET_KEY
 bucket_location = us-east-1
-host_base = minio.example.com:9000  
+host_base = minio.example.com:9000
+host_bucket = minio.example.com:9000
+use_https = True
+signature_v2 = False
 multipart_chunk_size_mb = 128 # default is 15 (MB)
 ```
 

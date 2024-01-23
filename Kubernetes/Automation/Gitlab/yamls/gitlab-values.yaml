@@ -31,6 +31,31 @@ global:
       secret: gitlab-license
       key: license
 
+  hosts:
+    domain: domain.com
+    hostSuffix: staging
+    gitlab:
+      name: gitlab.domain.com
+      https: false
+    registry:
+      name: registry.domain.com
+      https: false
+    kas:
+      name: kas.domain.com
+    pages:
+      name: pages.domain.com
+      https: false
+    ssh: gitlab.domain.com
+
+  pages:
+    enabled: true
+    objectStore:
+      enabled: true
+      bucket: gitlab-pages
+      connection:
+        secret: object-storage
+        key: config
+
 # Ingress
   ingress:
     configureCertmanager: false
@@ -87,22 +112,22 @@ global:
         secret: object-storage
         key: connection
     externalDiffs:
-      bucket: gitlab-externalDiffs-storage
+      bucket: gitlab-externaldiffs-storage
       connection:
         secret: object-storage
         key: connection
     terraformState:
-      bucket: gitlab-terraformState-storage
+      bucket: gitlab-terraformstate-storage
       connection:
         secret: object-storage
         key: connection
     dependencyProxy:
-      bucket: gitlab-dependencyProxy-storage
+      bucket: gitlab-dependencyproxy-storage
       connection:
         secret: object-storage
         key: connection
     ciSecureFiles:
-      bucket: gitlab-ciSecureFiles-storage
+      bucket: gitlab-cisecurefiles-storage
       connection:
         secret: object-storage
         key: connection
