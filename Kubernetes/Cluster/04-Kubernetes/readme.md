@@ -412,7 +412,7 @@ sudo kubeadm upgrade plan
 
 ```bash
 sudo kubeadm upgrade apply v1.xx.y
-kubectl drain <node> --ignore-daemonsets
+kubectl drain <node> --ignore-daemonsets --delete-emptydir-data
 sudo apt-mark unhold kubelet kubectl && \
 sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-* kubectl=1.xx.y-* && \
 sudo apt-mark hold kubelet kubectl
@@ -428,7 +428,7 @@ sudo apt-mark unhold kubeadm && \
 sudo apt-get update && sudo apt-get install -y kubeadm=1.xx.y-* && \
 sudo apt-mark hold kubeadm
 sudo kubeadm upgrade node
-kubectl drain <node> --ignore-daemonsets
+kubectl drain <node> --ignore-daemonsets --delete-emptydir-data
 sudo apt-mark unhold kubelet kubectl && \
 sudo apt-get update && sudo apt-get install -y kubelet=1.xx.y-* kubectl=1.xx.y-* && \
 sudo apt-mark hold kubelet kubectl
