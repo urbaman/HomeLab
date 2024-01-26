@@ -75,3 +75,9 @@ reboot
 ```
 
 Done. At this point, we have successfully enabled the PCI-e passthrough on Proxmox.
+
+## vGPU
+
+Follow https://gitlab.com/polloloco/vgpu-proxmox
+
+Use the Q profile with the number of instances you want
