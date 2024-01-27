@@ -80,4 +80,6 @@ Done. At this point, we have successfully enabled the PCI-e passthrough on Proxm
 
 Follow https://gitlab.com/polloloco/vgpu-proxmox
 
-Use the Q profile with the number of instances you want
+Use the Q profile with the number of instances you want (some will not work, a P2200 can use a Q1 profile for example).
+
+Install a Licensed Server as per the guide and license your guest VM.
