@@ -1,12 +1,17 @@
 # Use Nvidia GPUs with kubernetes
 
+## Select the deployment
+
+- **Nvidia driver plugin:** needs manual installation of drivers and manual settings of containerd
+- **GPU Operator:** best choice, installs the drivers and manages containerd, both normal and vGPU
+
 ## Prepare the nodes
 
 ### Add the GPU (passthrough)
 
 Add the GPU with passthrough (see Proxmox folder for instructions), and reboot the machine from the Proxmox GUI, to apply the hardware change,
 
-### Install Nvidia drivers
+### Install Nvidia drivers (only for Nvidia driver plugin)
 
 Check the presence of the GPU:
 
@@ -129,6 +134,8 @@ helm upgrade -i nvdp nvdp/nvidia-device-plugin --namespace nvidia-device-plugin 
 
 ## Install the Nvidia opreator (prefearable - no need of drivers)
 
+### Normal drivers
+
 Set `dcgmExporter.enableb=true`, `dcgmExporter.serviceMonitor.enabled=true`, `dcgmExporter.serviceMonitor.additionalLabels=release:kube-prometheus-stack`, `cdi.enabled=true` , `cdi.default=true`, `upgradeCRD: true`, `cleanupCRD: true`
 
 ```bash
@@ -138,6 +145,153 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
 helm show values nvidia/gpu-operator > gpu-operator-values.yaml
 vi gpu-operator-values.yaml
 helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values.yaml
+```
+
+### vGPU drivers
+
+#### Build the Driver Container
+
+Have the guest drivers at hand: `NVIDIA-Linux-x86_64-<version>-grid.run`, then generate and download a client configuration token for your CLS instance or DLS instance. Refer to the NVIDIA License System Quick Start Guide for information about generating a token, or follow the [Nvidia vGPU installation and licensing guide](https://gitlab.com/polloloco/vgpu-proxmox).
+
+Clone the driver container repository and change directory into the repository:
+
+```bash
+git clone https://gitlab.com/nvidia/container-images/driver
+cd driver
+```
+
+Change directory to the operating system name and version under the driver directory:
+
+```bash
+cd ubuntu22.04
+```
+
+Copy the NVIDIA vGPU guest driver from your extracted ZIP file and the NVIDIA vGPU driver catalog file:
+
+```bash
+cp <local-driver-download-directory>/*-grid.run drivers/
+cp vgpuDriverCatalog.yaml drivers/
+```
+
+Set environment variables for building the driver container image.
+
+Specify your private registry URL:
+
+```bash
+export PRIVATE_REGISTRY=<private-registry-url>
+```
+
+Specify the OS_TAG environment variable to identify the guest operating system name and version:
+
+```bash
+export OS_TAG=ubuntu22.04
+```
+
+The value must match the guest operating system version. Refer to Supported Operating Systems and Kubernetes Platforms for the list of supported OS distributions.
+
+Specify the driver container image tag, such as 1.0.0:
+
+```bash
+export VERSION=1.0.0
+```
+
+The specified value can be any user-defined value. The value is used to install the Operator in a subsequent step.
+
+Specify the version of the CUDA base image to use when building the driver container:
+
+```bash
+export CUDA_VERSION=12.2.2
+```
+
+The CUDA version only specifies which base image is used to build the driver container. The version does not have any correlation to the version of CUDA that is associated with or supported by the resulting driver container.
+
+Specify the Linux guest vGPU driver version that you downloaded from the NVIDIA Licensing Portal and append -grid:
+
+```bash
+export VGPU_DRIVER_VERSION=525.60.13-grid
+```
+
+The Operator automatically selects the compatible guest driver version from the drivers bundled with the driver image. If you disable the version check by specifying --build-arg DISABLE_VGPU_VERSION_CHECK=true when you build the driver image, then the VGPU_DRIVER_VERSION value is used as default.
+
+Build the driver container image:
+
+```bash
+sudo docker build \
+    --build-arg DRIVER_TYPE=vgpu \
+    --build-arg DRIVER_VERSION=$VGPU_DRIVER_VERSION \
+    --build-arg CUDA_VERSION=$CUDA_VERSION \
+    --build-arg TARGETARCH=amd64 \  # amd64 or arm64
+    -t ${PRIVATE_REGISTRY}/driver:${VERSION}-${OS_TAG} .
+```
+
+Push the driver container image to your private registry.
+
+Log in to your private registry:
+
+```bash
+sudo docker login ${PRIVATE_REGISTRY} --username=<username>
+```
+
+Enter your password when prompted.
+
+Push the driver container image to your private registry:
+
+```bash
+sudo docker push ${PRIVATE_REGISTRY}/driver:${VERSION}-${OS_TAG}
+```
+
+#### Configure the Cluster with the vGPU License Information and the Driver Container Image
+
+Create an NVIDIA vGPU license file named gridd.conf with contents like the following example:
+
+```bash
+# Description: Set Feature to be enabled
+# Data type: integer
+# Possible values:
+# 0 => for unlicensed state
+# 1 => for NVIDIA vGPU
+# 2 => for NVIDIA RTX Virtual Workstation
+# 4 => for NVIDIA Virtual Compute Server
+FeatureType=1
+```
+
+Rename the client configuration token file that you downloaded to client_configuration_token.tok using a command like the following example:
+
+```bash
+cp ~/Downloads/client_configuration_token_03-28-2023-16-16-36.tok client_configuration_token.tok
+```
+
+The file must be named client_configuraton_token.tok.
+
+Create the gpu-operator namespace:
+
+```bash
+kubectl create namespace gpu-operator
+```
+
+Create a config map that is named licensing-config using the gridd.conf and client_configuration_token.tok files:
+
+```bash
+kubectl create configmap licensing-config \
+    -n gpu-operator --from-file=gridd.conf --from-file=client_configuration_token.tok
+```
+
+#### Install the Operator
+
+helm install --wait --generate-name \
+     -n gpu-operator --create-namespace \
+     nvidia/gpu-operator \
+     --set driver.repository=${PRIVATE_REGISTRY} \
+     --set driver.version=${VERSION} \
+     --set driver.licensingConfig.configMapName=licensing-config
+
+```bash
+kubectl create ns gpu-operator
+kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
+helm show values nvidia/gpu-operator > gpu-operator-values-vgpu.yaml
+vi gpu-operator-values-vgpu.yaml
+helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values-vgpu.yaml
 ```
 
 ## Test installation
