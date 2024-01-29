@@ -46,3 +46,12 @@ helm upgrade -i -n nvidia-device-plugin dcgm-exporter gpu-helm-charts/dcgm-expor
 kubectl create configmap grafana-dashboard-nvidia-gpu --from-file=grafana-nvidia-gpu.json
 kubectl label configmap grafana-dashboard-nvidia-gpu grafana_dashboard="1"
 ```
+
+## Install the vGPU dashboard (only for the operator in vGPU mode)
+
+Just install the dashboard
+
+```bash
+kubectl create configmap grafana-dashboard-nvidia-vgpu --from-file=grafana-nvidia-vgpu.json
+kubectl label configmap grafana-dashboard-nvidia-vgpu grafana_dashboard="1"
+```
