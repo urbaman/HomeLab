@@ -294,6 +294,39 @@ vi gpu-operator-values-vgpu.yaml
 helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values-vgpu.yaml
 ```
 
+##### Needed as of version 23.9.1
+
+We must force the `client_configuration_token` even if we already set it in the helm values
+
+```bash
+kubectl edit ds -n gpu-operator nvidia-driver-daemonset
+```
+
+As last volumeMounth:
+
+```yaml
+        - mountPath: /drivers/ClientConfigToken/client_configuration_token.tok
+          name: licensing-token
+          readOnly: true
+          subPath: client_configuration_token.tok
+```
+
+As last volume:
+
+```yaml
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: client_configuration_token.tok
+            path: client_configuration_token.tok
+          name: licensing-config
+        name: licensing-token
+```
+
+```bash
+kubectl rollout restart ds -n gpu-operator nvidia-driver-daemonset
+```
+
 ## Test installation
 
 Deploy a test pod and check the logs:
