@@ -119,3 +119,6 @@ Here are the detailed steps to deploy our homelab cluster
 10. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
 11. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
 12. Calibre+Calibre-Web
+13. Visual Studio Web
+14. Plex-Sonarr-Radarr-*rr
+15. ...
