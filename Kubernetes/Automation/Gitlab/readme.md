@@ -349,7 +349,7 @@ webservice:
 ```bash
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
-helm upgrade --install gitlab gitlab/gitlab -n gitlab --create-namespace --values gitlab-values.yaml
+helm upgrade -i gitlab gitlab/gitlab -n gitlab --create-namespace --values gitlab-values.yaml
 ```
 
 ## Post-installation
