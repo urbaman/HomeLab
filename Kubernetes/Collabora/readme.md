@@ -8,6 +8,6 @@ kubectl create secret generic -n collabora-online collabora-auth \
     --from-literal=password='PASSWORD'
 helm repo add collabora https://collaboraonline.github.io/online/
 helm repo update
-helm install --create-namespace --namespace collabora-online collabora-online collabora/collabora-online -f collabora-values.yaml
+helm upgrade -i --create-namespace --namespace collabora-online collabora-online collabora/collabora-online -f collabora-values.yaml
 kubectl apply -f ig-collabora.yaml
 ```
