@@ -10,7 +10,7 @@ Select the type of cluster:
 Install the chart.
 
 ```bash
-helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set master.persistence.accessModes={ReadWriteMany} --set master.persistence.storageClass=longhorn --set replica.persistence.accessModes={ReadWriteMany} --set replica.persistence.storageClass=longhorn --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack
+helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set master.persistence.accessModes={ReadWriteMany} --set master.persistence.storageClass=longhorn-r1 --set replica.persistence.accessModes={ReadWriteMany} --set replica.persistence.storageClass=longhorn-r1 --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack
 ```
 
 You can find the redis password in the `redis` secret:
