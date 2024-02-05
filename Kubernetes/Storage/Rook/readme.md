@@ -35,6 +35,14 @@ export RBD_POOL_NAME=<secret>
 export RGW_POOL_PREFIX=default
 ```
 
+3. If you plan to use Cephfs, create the `csi` subvolume
+
+```bash
+ceph fs subvolumegroup create <cephfs_pool> csi
+```
+
+The volumes in CephFS will be accessible in `/mnt/pve/cephfs_pool/volumes`, and the volumes will be openly readable
+
 ## Deployment
 
 1. Paste the previous output on the control plane
