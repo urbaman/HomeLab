@@ -8,7 +8,7 @@ helm repo update
 helm show values portainer/portainer > portainer-values.yaml
 ```
 
-Set the service.type to ClusterIP, the tls.force=true and the persistence.storageclass to longhorn (or whatever storageclass you're using)
+Set the service.type to ClusterIP, the tls.force=true and the persistence.storageclass to rook-ceph-nvme2tb (or whatever storageclass you're using)
 
 ```bash
 helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer -f portainer-values.yaml
@@ -17,7 +17,7 @@ helm upgrade -i portainer portainer/portainer --create-namespace --namespace por
 Or set the values directly
 
 ```bash
-helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer --set service.type=ClusterIP --set tls.force=true --set persistence.storageclass=longhorn-vdisk
+helm upgrade -i portainer portainer/portainer --create-namespace --namespace portainer --set service.type=ClusterIP --set tls.force=true --set persistence.storageclass=rook-ceph-nvme2tb
 ```
 
 Go directly to the dashboard to create a user and login, or the instance will need to be restarted.
