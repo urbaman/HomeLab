@@ -37,7 +37,7 @@ helm repo update
 helm show values prometheus-community/kube-prometheus-stack > kube-prometheus-stack-values.yaml
 ```
 
-Use the followig command to get the namespaces with appended "      - ".
+Use the following command to get the namespaces with appended "      - ".
 
 ```bash
 kubectl get ns  --no-headers -o custom-columns="'- ':metadata.name" | sed 's/^/      - /'
@@ -52,24 +52,17 @@ And add to the chart
       - calico-apiserver
       - calico-system
       - cert-manager
-      - cloudflared
       - default
-      - gpu-feature-discovery
-      - heimdall
-      - homer
       - kube-node-lease
       - kube-public
       - kube-system
       - kubernetes-dashboard
       - kubescape
-      - longhorn-system
       - metallb-system
       - monitoring
-      - nfs-provisioning
-      - node-feature-discovery
-      - nvidia-device-plugin
       - portainer
-      - teleport-agent
+      - rook-ceph
+      - rook-ceph-external
       - teleport-cluster
       - tigera-operator
       - traefik
@@ -147,8 +140,8 @@ alertmanager:
     storage:
      volumeClaimTemplate:
        spec:
-         storageClassName: longhorn
-         accessModes: ["ReadWriteMany"]
+         storageClassName: rook-ceph-nvme2tb
+         accessModes: ["ReadWriteOnce"]
          resources:
            requests:
              storage: 50Gi
@@ -157,8 +150,8 @@ prometheus:
     storageSpec: 
      volumeClaimTemplate:
        spec:
-         storageClassName: longhorn
-         accessModes: ["ReadWriteMany"]
+         storageClassName: rook-ceph-nvme2tb
+         accessModes: ["ReadWriteOnce"]
          resources:
            requests:
              storage: 50Gi
