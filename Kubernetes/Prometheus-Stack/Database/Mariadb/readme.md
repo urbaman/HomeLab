@@ -3,6 +3,6 @@
 Add the grafana Dashboard (see installation for metrics exposure)
 
 ```bash
-kubectl create configmap grafana-dashboard-mysql --from-file=grafana-mysql.json
-kubectl label configmap grafana-dashboard-mysql grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-mysql -n monitoring --from-file=grafana-mysql.json
+kubectl label configmap grafana-dashboard-mysql -n monitoring grafana_dashboard="1"
 ```
