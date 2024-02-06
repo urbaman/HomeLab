@@ -15,8 +15,8 @@ kubectl apply -f prom-haproxy1.yaml -f prom-haproxy2.yaml -f prom-haproxy3.yaml
 Then, add Grafana dashboard
 
 ```bash
-kubectl create configmap grafana-dashboard-haproxy --from-file=grafana-haproxy.json
-kubectl label configmap grafana-dashboard-haproxy grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-haproxy -n monitoring --from-file=grafana-haproxy.json
+kubectl label configmap grafana-dashboard-haproxy -n monitoring grafana_dashboard="1"
 ```
 
 ## Haproxy stats through traefik

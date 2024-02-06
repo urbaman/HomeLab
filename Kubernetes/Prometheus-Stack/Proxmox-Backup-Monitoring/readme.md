@@ -24,6 +24,6 @@ Install the Proxmox Backup Server Exporter from [here](https://github.com/rare-m
 ## Add grafana Dashboard
 
 ```bash
-kubectl create configmap grafana-dashboard-proxmox-bs --from-file=grafana-proxmox-backup-server.json
-kubectl label configmap grafana-dashboard-proxmox-bs grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-proxmox-bs -n monitoring --from-file=grafana-proxmox-backup-server.json
+kubectl label configmap grafana-dashboard-proxmox-bs -n monitoring grafana_dashboard="1"
 ```
