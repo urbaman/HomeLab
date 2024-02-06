@@ -5,7 +5,7 @@
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-r1 --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set secondary.persistence.storageClass=longhorn-r1 --set secondary.persistence.size=15Gi --set secondary.persistence.accessModes={ReadWriteMany} --set architecture=replication --set secondary.replicaCount=2 --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210 --set secondary.livenessProbe.initialDelaySeconds=240 --set secondary.readinessProbe.initialDelaySeconds=240
+helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=rook-ceph-nvme2tb --set primary.persistence.size=15Gi --set secondary.persistence.storageClass=rook-ceph-nvme2tb --set secondary.persistence.size=15Gi --set architecture=replication --set secondary.replicaCount=2
 ```
 
 ## Installation - standalone
@@ -13,8 +13,12 @@ helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --names
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=longhorn-r1 --set primary.persistence.size=15Gi --set primary.persistence.accessModes={ReadWriteMany} --set primary.livenessProbe.initialDelaySeconds=210 --set primary.readinessProbe.initialDelaySeconds=210
+helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=rook-ceph-nvme2tb --set primary.persistence.size=15Gi
 ```
+
+## Upgrading
+
+Deploy the same helm chart with all the same values and add `--set auth.rootPassword=<password>`
 
 ## Connection
 
