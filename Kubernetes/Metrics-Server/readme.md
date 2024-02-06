@@ -8,14 +8,6 @@ First, download the high availability version of the yaml manifest to deploy two
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
 ```
 
-Or by helm:
-
-```bash
-helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
-helm repo update
-helm upgrade -i metrics-server metrics-server/metrics-server --set replicas=3 --set args="--kubelet-insecure-tls"
-```
-
 Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
 
 ```yaml
@@ -84,5 +76,5 @@ Or by helm:
 ```bash
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 helm repo update
-helm upgrade -i metrics-server metrics-server/metrics-server --set replicas=3 --set args[0]="--kubelet-insecure-tls"
+helm upgrade -i metrics-server metrics-server/metrics-server -n kube-system --create-namespace --set replicas=3 --set args[0]="--kubelet-insecure-tls"
 ```
