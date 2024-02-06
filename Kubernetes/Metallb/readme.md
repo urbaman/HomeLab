@@ -38,7 +38,7 @@ kubectl apply -f - -n kube-system
 
 **Microk8s**: edit /var/snap/microk8s/current/args/kube-proxy file adding --ipvs-strict-arp, then stop and start microk8s
 
-## Installation By Manifest
+## Installation
 
 To install MetalLB, apply the manifest:
 
