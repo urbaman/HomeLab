@@ -1,0 +1,18 @@
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rook-cephfs-sas900gb
+parameters:
+  clusterID: external-rook
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: external-rook
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: external-rook
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: external-rook
+  fsName: Cephfs_SAS900GB
+  pool: Cephfs_SAS900GB_data
+provisioner: rook-ceph.cephfs.csi.ceph.com
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
