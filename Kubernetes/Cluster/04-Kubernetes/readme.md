@@ -345,7 +345,7 @@ kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{
 calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
 ```
 
-### Add second netwotk with multus and wereabouts
+### Add second netwotk with multus and wereabouts (only for Longhorn, not used anymore in my setup)
 
 See [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
 
@@ -386,6 +386,42 @@ On the nodes:
 mkdir -p $HOME/.kube
 sudo cp -i admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+## Update Coredns configmap to work on Ubuntu 22.04 (and others with /etc/resolv.conf pointing to 127.0.0.53)
+
+```bash
+kubectl edit configmap coredns -n kube-system
+```
+
+Set the forward option to the upstream DNS server
+
+```yaml
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+           lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+kind: ConfigMap
+metadata:
+  name: coredns
+  namespace: kube-system
 ```
 
 ## Control plane node isolation
