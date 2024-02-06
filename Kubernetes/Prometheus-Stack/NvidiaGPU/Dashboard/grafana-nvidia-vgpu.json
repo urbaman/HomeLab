@@ -602,12 +602,12 @@
           "mappings": [
             {
               "options": {
-                "0": {
+                "1": {
                   "color": "green",
                   "index": 1,
                   "text": "Licensed"
                 },
-                "1": {
+                "0": {
                   "color": "red",
                   "index": 0,
                   "text": "Unlicensed"
