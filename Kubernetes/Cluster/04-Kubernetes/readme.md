@@ -388,40 +388,26 @@ sudo cp -i admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-## Update Coredns configmap to work on Ubuntu 22.04 (and others with /etc/resolv.conf pointing to 127.0.0.53)
+## Update kubelet resolv.conf file reference to make DNS work inside the cluster
+
+Usually, with Ubuntu kubelet uses the host's resolv.conf (/run/systemd/resolve/resolv.conf), that probably adds a search domain to the ones needed for in-cluster resolution.
+This can make the DNS queries go over the kubernetes ndot default of 5, making the queries for the outside world fail.
+
+**Solution:** create a resolv.conf file in /etc/kubernetes containing only the upstream DNS server(s) without search domains, and change the kubelet config to point to that one. You loose the chance to resolve local services without adding the local domain.
 
 ```bash
-kubectl edit configmap coredns -n kube-system
+kubectl edit cm -n kube-system kubelet-config
 ```
 
-Set the forward option to the upstream DNS server
-
 ```yaml
-apiVersion: v1
-data:
-  Corefile: |
-    .:53 {
-        errors
-        health {
-           lameduck 5s
-        }
-        ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-           ttl 30
-        }
-        prometheus :9153
-        forward . /etc/resolv.conf
-        cache 30
-        loop
-        reload
-        loadbalance
-    }
-kind: ConfigMap
-metadata:
-  name: coredns
-  namespace: kube-system
+    resolvConf: /etc/kubernetes/resolv.conf
+```
+
+Then, on every node apply the configuration
+
+```bash
+sudo kubeadm upgrade node phase kubelet-config
+sudo systemctl restart kubelet
 ```
 
 ## Control plane node isolation
