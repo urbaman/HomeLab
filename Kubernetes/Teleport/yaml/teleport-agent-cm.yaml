@@ -1,7 +1,7 @@
 app_service:
   apps:
   - name: nextcloud
-    uri: https://nextcloud.urbaman.it
+    uri: https://nextcloud.domain.com
     labels:
       env: media
       context: homelab
@@ -79,21 +79,6 @@ app_service:
     labels:
       env: management
       context: k8s
-  - name: longhorn
-    uri: https://longhorn.domain.com
-    labels:
-      env: storage
-      context: k8s
-  - name: landscapeone
-    uri: https://landscape1.domain.com
-    labels:
-      env: monitoring
-      context: homelab
-  - name: landscapetwo
-    uri: https://landscape2.domain.com
-    labels:
-      env: monitoring
-      context: homelab
   - name: netbox
     uri: https://netbox.domain.com
     labels:
@@ -219,11 +204,6 @@ app_service:
     uri: https://budget.domain.com
     labels:
       env: webapp
-      context: homelab
-  - name: truenas
-    uri: https://truenas.domain.com
-    labels:
-      env: storage
       context: homelab
   - name: miniooperator
     uri: https://minio-operator.domain.com

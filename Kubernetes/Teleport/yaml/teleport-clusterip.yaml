@@ -297,7 +297,7 @@ persistence:
   # Leave blank to automatically create a PersistentVolumeClaim for Teleport storage.
   # If you would like to use a pre-existing PersistentVolumeClaim, put its name here.
   existingClaimName:
-  storageClassName: longhorn
+  storageClassName: rook-ceph-nvme2tb
   # Size of persistent volume to request when created by Teleport.
   # Ignored if existingClaimName is provided.
   volumeSize: 10Gi

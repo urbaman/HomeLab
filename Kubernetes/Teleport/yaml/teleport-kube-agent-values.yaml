@@ -209,7 +209,7 @@ highAvailability:
 ################################################################
 storage:
   enabled: true
-  storageClassName: ""
+  storageClassName: rook-ceph-nvme2tb
   requests: 128Mi
 
 ################################################################
