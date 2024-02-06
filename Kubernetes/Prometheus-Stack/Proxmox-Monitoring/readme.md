@@ -51,6 +51,6 @@ Define endpoints, service and service monitor with the template yaml.
 Then, add the dashboard to grafana and create the configmap.
 
 ```bash
-kubectl create configmap grafana-dashboard-proxmox --from-file=grafana-proxmox.json
-kubectl label configmap grafana-dashboard-proxmox grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-proxmox --from-file=grafana-proxmox.json -n monitoring
+kubectl label configmap grafana-dashboard-proxmox grafana_dashboard="1" -n monitoring
 ```

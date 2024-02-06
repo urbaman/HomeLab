@@ -5,6 +5,6 @@ Deploy the PodMonitor with the `prom-certmanager.yaml` file, after having added 
 Search and add the cert-manager grafana dashboard
 
 ```bash
-kubectl create configmap grafana-dashboard-cert-manager --from-file=grafana-certmanager.json
-kubectl label configmap grafana-dashboard-cert-manager grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-cert-manager -n monitoring --from-file=grafana-certmanager.json
+kubectl label configmap grafana-dashboard-cert-manager -n monitoring grafana_dashboard="1"
 ```

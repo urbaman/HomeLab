@@ -11,7 +11,7 @@ Or via helm
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.13.3 --set installCRDs=true
+helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
 ```
 
 Set the installCRDs=true to install the CRDs (best method)

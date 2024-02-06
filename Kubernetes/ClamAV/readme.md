@@ -8,15 +8,6 @@ helm repo update
 helm upgrade -i -n clamav clamav --create-namespace wiremind/clamav --set resources.limits.cpu=100m --set resources.limits.memory=256Mi --set resources.requests.cpu=50m --set resources.requests.memory=128Mi --set hpa.memory=80 --set hpa.cpu=80
 ```
 
-Edit the Statefulset, setting after the volumemounts
-
-```yaml
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
-```
-
 ## Check from a client
 
 ```bash

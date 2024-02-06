@@ -278,13 +278,6 @@ kubectl create configmap licensing-config \
 
 #### Install the Operator
 
-helm install --wait --generate-name \
-     -n gpu-operator --create-namespace \
-     nvidia/gpu-operator \
-     --set driver.repository=${PRIVATE_REGISTRY} \
-     --set driver.version=${VERSION} \
-     --set driver.licensingConfig.configMapName=licensing-config
-
 ```bash
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
@@ -296,7 +289,9 @@ helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-opera
 
 ##### Needed as of version 23.9.1
 
-We must force the `client_configuration_token` even if we already set it in the helm values
+Put driver.licensingConfig.nlsEnabled: true
+
+If it still can't license the drivers, check the volumeMounts and volumes in the `nvidia-driver-daemonset` deamonset, there must be the `client_configuration_token.tok` properly mounted
 
 ```bash
 kubectl edit ds -n gpu-operator nvidia-driver-daemonset

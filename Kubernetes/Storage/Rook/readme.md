@@ -7,7 +7,7 @@
 
 ```bash
 wget https://raw.githubusercontent.com/rook/rook/release-1.12/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
-python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB --namespace rook-ceph-external --format bash
+python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB  --cephfs-filesystem-name Cephfs-HDD5T --namespace rook-ceph-external --format bash 
 ```
 
 Copy the output
@@ -35,6 +35,14 @@ export RBD_POOL_NAME=<secret>
 export RGW_POOL_PREFIX=default
 ```
 
+3. If you plan to use Cephfs, create the `csi` subvolume
+
+```bash
+ceph fs subvolumegroup create <cephfs_pool> csi
+```
+
+The volumes in CephFS will be accessible in `/mnt/pve/cephfs_pool/volumes`, and the volumes will be openly readable
+
 ## Deployment
 
 1. Paste the previous output on the control plane
@@ -42,6 +50,19 @@ export RGW_POOL_PREFIX=default
 
 ```bash
 wget https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/import-external-cluster.sh -O import-external-cluster.sh
+```
+
+Change the name of the Storage Classes and fix the `CEPHFS_PROVISIONER` variable
+
+```bash
+RBD_STORAGE_CLASS_NAME="rook-${RBD_POOL_NAME,,}"
+CEPHFS_STORAGE_CLASS_NAME="rook-${CEPHFS_FS_NAME,,}"
+CEPHFS_PROVISIONER=$CSI_DRIVER_NAME_PREFIX=".cephfs.csi.ceph.com" # csi-provisioner-name
+```
+
+Then, launch
+
+```bash
 . import-external-cluster.sh
 ```
 
@@ -55,7 +76,7 @@ kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy
 kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/cluster-external.yaml
 ```
 
-4. Create the storage classes, changing names and pools to your Proxmox Ceph pools
+4. Create the other storage classes, changing names and pools to your Proxmox Ceph pools
 
 ```bash
 kubectl apply -f rook-sc-nvme1tb.yaml

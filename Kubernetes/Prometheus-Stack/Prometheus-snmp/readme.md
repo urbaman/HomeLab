@@ -26,8 +26,8 @@ helm upgrade -i prometheus-snmp-exporter-arista-switch prometheus-community/prom
 ## Add the dashboards to Grafana
 
 ```bash
-kubectl create configmap grafana-dashboard-arista-switch --from-file=grafana-arista.json
-kubectl label configmap grafana-dashboard-arista-switch grafana_dashboard="1"
-kubectl create configmap grafana-dashboard-dell-idrac --from-file=grafana-idrac.json
-kubectl label configmap grafana-dashboard-dell-idrac grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-arista-switch -n monitoring --from-file=grafana-arista.json
+kubectl label configmap grafana-dashboard-arista-switch -n monitoring grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-dell-idrac -n monitoring --from-file=grafana-idrac.json
+kubectl label configmap grafana-dashboard-dell-idrac -n monitoring grafana_dashboard="1"
 ```

@@ -303,7 +303,7 @@ kubectl create -f custom-resources.yaml
 Then, intstall the calicoctl to manage Calico.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/calicoctl.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
@@ -345,7 +345,7 @@ kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{
 calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
 ```
 
-### Add second netwotk with multus and wereabouts
+### Add second netwotk with multus and wereabouts (only for Longhorn, not used anymore in my setup)
 
 See [Second network with Multus and Whereabouts](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Multus)
 
@@ -386,6 +386,28 @@ On the nodes:
 mkdir -p $HOME/.kube
 sudo cp -i admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+## Update kubelet resolv.conf file reference to make DNS work inside the cluster
+
+Usually, with Ubuntu kubelet uses the host's resolv.conf (/run/systemd/resolve/resolv.conf), that probably adds a search domain to the ones needed for in-cluster resolution.
+This can make the DNS queries go over the kubernetes ndot default of 5, making the queries for the outside world fail.
+
+**Solution:** create a resolv.conf file in /etc/kubernetes containing only the upstream DNS server(s) without search domains, and change the kubelet config to point to that one. You loose the chance to resolve local services without adding the local domain.
+
+```bash
+kubectl edit cm -n kube-system kubelet-config
+```
+
+```yaml
+    resolvConf: /etc/kubernetes/resolv.conf
+```
+
+Then, on every node apply the configuration
+
+```bash
+sudo kubeadm upgrade node phase kubelet-config
+sudo systemctl restart kubelet
 ```
 
 ## Control plane node isolation

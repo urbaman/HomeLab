@@ -48,7 +48,7 @@ Flags:
 I will set the following arguments:
 
 ```yaml
-            - --alert-filter-regexp=^(RebootRequired|Watchdog)$
+            - --alert-filter-regexp=^(RebootRequired|Watchdog|InfoInhibitor)$
             - --end-time=17:00
             - --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
             - --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
