@@ -604,12 +604,12 @@
               "options": {
                 "0": {
                   "color": "green",
-                  "index": 0,
+                  "index": 1,
                   "text": "Licensed"
                 },
                 "1": {
                   "color": "red",
-                  "index": 1,
+                  "index": 0,
                   "text": "Unlicensed"
                 }
               },
