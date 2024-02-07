@@ -102,14 +102,14 @@ tenant:
       volumesPerServer: 4
       ###
       # The capacity per volume requested per MinIO Tenant Pod.
-      size: 20Gi
+      size: 10Gi
       ###
       # The `storageClass <https://kubernetes.io/docs/concepts/storage/storage-classes/>`__ to associate with volumes generated for this pool.
       #
       # If using Amazon Elastic Block Store (EBS) CSI driver
       # Please make sure to set xfs for "csi.storage.k8s.io/fstype" parameter under StorageClass.parameters.
       # Docs: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/parameters.md
-      storageClassName: "" # Set the Storage Class
+      storageClassName: rook-ceph-nvme2tb # Set the Storage Class
       ###
       # Specify `annotations <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/>`__ to associate to Tenant pods.
       annotations: { }

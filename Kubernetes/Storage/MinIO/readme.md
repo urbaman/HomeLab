@@ -23,6 +23,13 @@ helm upgrade --install --namespace minio --create-namespace operator minio-opera
 kubectl apply -f ig-minio-operator.yaml
 ```
 
+**Note:** There might be a problem with the synchronization of the chart version and the docker image version, so you might need to install the previous version of the chart with `--version=version`, check it with `helm search repo minio-operator -l`
+
+```bash
+helm upgrade --install --namespace minio --create-namespace operator minio-operator/operator --version <old-chart-version>
+kubectl apply -f ig-minio-operator.yaml
+```
+
 To access, go to the URL defined in the Traefik IngressRoute and insert the token obtained from the following command:
 
 ```bash
@@ -40,6 +47,13 @@ Change the user (accessKey) and password (secretKey), name, servers, pool name, 
 
 ```bash
 helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --values minio-tenant.yaml
+kubectl apply -f ig-minio-tenant.yaml
+```
+
+**Note:** There might be a problem with the synchronization of the chart version and the docker image version, so you might need to install the previous version of the chart with `--version=version`, check it with `helm search repo minio-operator -l`
+
+```bash
+helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --version <old-chart-version> -set existingSecret.name=TENANT-NAME-env-configuration --set tenant.name=TENANT-NAME --set tenant.configuration.name=TENANT-NAME-env-configuration --set tenant.pools.servers=9 --set tenant.pools.name=pool-0 --set tenant.pools.volumesPerServer=4 --set tenant.pools.size=10Gi --set tenant.pools.storageClassName=rook-ceph-nvme2tb
 kubectl apply -f ig-minio-tenant.yaml
 ```
 
