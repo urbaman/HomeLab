@@ -15,8 +15,8 @@ kubectl apply -f prom-couchdb.yaml
 ## Add the grafana dashboard (not yet found)
 
 ```bash
-kubectl create configmap grafana-dashboard-couchdb --from-file=grafana-couchdb.json
-kubectl label configmap grafana-dashboard-couchdb grafana_dashboard="1"
-kubectl create configmap grafana-dashboard-couchdb2 --from-file=grafana-couchdb2.json
-kubectl label configmap grafana-dashboard-couchdb2 grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-couchdb -n monitoring --from-file=grafana-couchdb.json
+kubectl label configmap grafana-dashboard-couchdb -n monitoring grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-couchdb2 -n monitoring --from-file=grafana-couchdb2.json
+kubectl label configmap grafana-dashboard-couchdb2 -n monitoring grafana_dashboard="1"
 ```
