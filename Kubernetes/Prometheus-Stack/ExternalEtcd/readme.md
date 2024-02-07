@@ -46,8 +46,8 @@ Now create Endpoints, Service and Service Monitor (see example yaml) and apply i
 Finally, add a grafana dashboard for etcd on grafana, set the datasource, get the json, create a configmap from it and label it.
 
 ```bash
-kubectl create configmap grafana-dashboard-etcd-cluster --from-file=etcd-cluster.json
-kubectl label configmap grafana-dashboard-etcd-cluster grafana_dashboard="1"
-kubectl create configmap grafana-dashboard-etcd-cluster-overview --from-file=etcd-cluster-overview.json
-kubectl label configmap grafana-dashboard-etcd-cluster-overview grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-etcd-cluster -n monitoring --from-file=etcd-cluster.json
+kubectl label configmap grafana-dashboard-etcd-cluster -n monitoring grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-etcd-cluster-overview -n monitoring --from-file=etcd-cluster-overview.json
+kubectl label configmap grafana-dashboard-etcd-cluster-overview -n monitoring grafana_dashboard="1"
 ```

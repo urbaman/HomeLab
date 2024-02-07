@@ -111,7 +111,7 @@ Here are the detailed steps to deploy our homelab cluster
 1. [Heimdall homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Heimdall-dashboard)
 2. [Homer homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homer)
 3. [it-tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/It-tools)
-4. [Gethomepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Gethomepage)
+4. [Homepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homepage)
 5. [Netbox](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Netbox)
 6. [Drawio](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Drawio)
 7. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)

@@ -12,11 +12,11 @@ metadata:
   namespace: s-pdf
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Mi
-  storageClassName: longhorn
+  storageClassName: rook-ceph-nvme2tb
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -25,11 +25,11 @@ metadata:
   namespace: s-pdf
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn
+  storageClassName: rook-ceph-nvme2tb
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

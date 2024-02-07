@@ -93,7 +93,7 @@ tenant:
     # The number of MinIO Tenant Pods / Servers in this pool.
     # For standalone mode, supply 1. For distributed mode, supply 4 or more.
     # Note that the operator does not support upgrading from standalone to distributed mode.
-    - servers: 6
+    - servers: 9
       ###
       # Custom name for the pool
       name: pool-0
@@ -102,7 +102,7 @@ tenant:
       volumesPerServer: 4
       ###
       # The capacity per volume requested per MinIO Tenant Pod.
-      size: 10Gi
+      size: 20Gi
       ###
       # The `storageClass <https://kubernetes.io/docs/concepts/storage/storage-classes/>`__ to associate with volumes generated for this pool.
       #

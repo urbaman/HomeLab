@@ -71,19 +71,17 @@ spec:
             readOnly: true
           - name: pgadmin-data
             mountPath: /var/lib/pgadmin
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
       volumes:
       - name: pgadmin-config-servers
         configMap:
           name: pgadmin-config-servers
+      securityContext:
+        fsGroup: 5050
   volumeClaimTemplates:
   - metadata:
       name: pgadmin-data
     spec:
-      accessModes: [ "ReadWriteMany" ]
+      accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 3Gi

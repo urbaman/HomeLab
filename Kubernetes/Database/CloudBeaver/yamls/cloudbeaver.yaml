@@ -12,11 +12,11 @@ metadata:
   namespace: cloudbeaver
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn
+  storageClassName: rook-ceph-nvme2tb
 ---
 apiVersion: apps/v1
 kind: Deployment
