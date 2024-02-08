@@ -1,8 +1,9 @@
 # Collabora Online installation
 
-Create a secret with collabora online username and password, install the helm chart with the provided collabora-values.yaml values file, then apply the traefik ig-collabora.yaml
+Create the namespace and a secret with collabora online username and password, install the helm chart with the provided collabora-values.yaml values file, then apply the traefik ig-collabora.yaml
 
 ```bash
+kubectl create namespace collabora-online
 kubectl create secret generic -n collabora-online collabora-auth \
     --from-literal=username='USERNAME' \
     --from-literal=password='PASSWORD'
