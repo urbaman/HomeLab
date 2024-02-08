@@ -77,6 +77,10 @@ spec:
 EOF
 kubectl create -f ${WORKDIR}/csr.yaml
 kubectl certificate approve vault.svc
+kubectl get csr vault.svc
+```
+
+```bash
 kubectl get csr vault.svc -o jsonpath='{.status.certificate}' | openssl base64 -d -A -out ${WORKDIR}/vault.crt
 kubectl config view \
 --raw \
@@ -120,10 +124,12 @@ kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator unseal $VAULT_UNS
 #### Prod mode: unseal normally
 
 ```bash
-kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator init
+kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator init \
+    -format=json > ${WORKDIR}/cluster-keys.json
+jq -r ".unseal_keys_b64[]" ${WORKDIR}/cluster-keys.json
 ```
 
-Remember the keys
+Remember the keys, export three of them to VAULT_UNSEAL_KEY1...3 variables
 
 ```bash
 kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY1
@@ -134,11 +140,27 @@ kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator unseal $VAULT_UNS
 #### Join and unseal the other vaults
 
 ```bash
-kubectl exec -n $VAULT_K8S_NAMESPACE -it vault-1 -- vault operator raft join -address=https://vault-1.vault-internal:8200 -leader-ca-cert="$(cat /vault/userconfig/vault-ha-tls/vault.ca)" -leader-client-cert="$(cat /vault/userconfig/vault-ha-tls/vault.crt)" -leader-client-key="$(cat /vault/userconfig/vault-ha-tls/vault.key)" https://vault-0.vault-internal:8200
+kubectl exec -n $VAULT_K8S_NAMESPACE -it vault-1 -- sh
+```
+
+```bash
+vault operator raft join -address=https://vault-1.vault-internal:8200 -leader-ca-cert="$(cat /vault/userconfig/vault-ha-tls/vault.ca)" -leader-client-cert="$(cat /vault/userconfig/vault-ha-tls/vault.crt)" -leader-client-key="$(cat /vault/userconfig/vault-ha-tls/vault.key)" -tls-skip-verify https://vault-0.vault-internal:8200
+exit
+```
+
+```bash
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY1
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY2
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-1 -- vault operator unseal $VAULT_UNSEAL_KEY3
-kubectl exec -n $VAULT_K8S_NAMESPACE -it vault-2 -- vault operator raft join -address=https://vault-2.vault-internal:8200 -leader-ca-cert="$(cat /vault/userconfig/vault-ha-tls/vault.ca)" -leader-client-cert="$(cat /vault/userconfig/vault-ha-tls/vault.crt)" -leader-client-key="$(cat /vault/userconfig/vault-ha-tls/vault.key)" https://vault-0.vault-internal:8200
+kubectl exec -n $VAULT_K8S_NAMESPACE -it vault-2 -- sh
+```
+
+```bash
+vault operator raft join -address=https://vault-2.vault-internal:8200 -leader-ca-cert="$(cat /vault/userconfig/vault-ha-tls/vault.ca)" -leader-client-cert="$(cat /vault/userconfig/vault-ha-tls/vault.crt)" -leader-client-key="$(cat /vault/userconfig/vault-ha-tls/vault.key)" -tls-skip-verify https://vault-0.vault-internal:8200
+exit
+```
+
+```bash
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY1
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY2
 kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-2 -- vault operator unseal $VAULT_UNSEAL_KEY3
@@ -146,8 +168,13 @@ kubectl exec -n $VAULT_K8S_NAMESPACE -ti vault-2 -- vault operator unseal $VAULT
 
 ### Check the installation
 
+Export the vault token
+
 ```bash
 export CLUSTER_ROOT_TOKEN=$(cat ${WORKDIR}/cluster-keys.json | jq -r ".root_token")
+```
+
+```bash
 kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault login $CLUSTER_ROOT_TOKEN
 kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault operator raft list-peers
 kubectl exec -n $VAULT_K8S_NAMESPACE vault-0 -- vault status

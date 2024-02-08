@@ -82,9 +82,6 @@ server:
         }
         service_registration "kubernetes" {}
 
-  auditStorage:
-    enabled: true
-
   ui:
     enabled: true
 
