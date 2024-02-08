@@ -2,25 +2,21 @@
 
 ## Cluster infrastructure
 
-Here is the Cluster infrastructure we will deploy
+Here is the Cluster infrastructure we will deploy on Proxmox
 
 - 3x controllers: k8cp1, k8cp2, k8cp3
-- 3x workers: k8w1, k8w2, k8w3
+- 9x workers: k8w1, k8w2, k8w3, k8w4, k8w5, k8w6, k8w7, k8w8, k8w9
 - 3x etcd cluster: etcd1, etcd2, etcd3
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
-- 3x glusterfs cluster: nfs1, nfs22, nfs3
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
-| nfs1.domain.com, gluster1.domain.com | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 1                  | 10.0.50.21, 10.0.70.21 (gluster storage) |
-| nfs2.domain.com, gluster2.domain.com | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 2                  | 10.0.50.22, 10.0.70.22 (gluster storage) |
-| nfs3.domain.com, gluster3.domain.com | 8   | 16GB | 1x16GB (OS), 2x5TB (HDD - volume1), 2x2TB  (SDD - volume2) | Ubuntu 22.04       | GlusterFS node 3                  | 10.0.50.23, 10.0.70.23 (gluster storage) |
-| k8cp1.domain.com       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51, 10.0.90.51 (longhorn storage) |
-| k8cp2.domain.com       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52, 10.0.90.52 (longhorn storage) |
-| k8cp3.domain.com       | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53, 10.0.90.53 (longhorn storage) |
-| k8w1.domain.com        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.54, 10.0.90.54 (longhorn storage) |
-| k8w2.domain.com        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.55, 10.0.90.55 (longhorn storage) |
-| k8w3.domain.com        | 8   | 32GB | 32BG (OS), 2x200GB (longhorn)           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.56, 10.0.90.56 (longhorn storage) |
+| k8cp1.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51 |
+| k8cp2.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52 |
+| k8cp3.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53 |
+| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.81 |
+| k8w2.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.82 |
+| k8w3.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.83 |
 | ectd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
 | etcd2.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
 | etcd3.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |

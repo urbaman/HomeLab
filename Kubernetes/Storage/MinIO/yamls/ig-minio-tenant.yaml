@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: minio-tenant-urbaman
-  namespace: urbaminio
+  namespace: minio
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
@@ -19,7 +19,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minio-tenant-https-redirect
-  namespace: urbaminio
+  namespace: minio
 spec:
   redirectScheme:
     scheme: https
@@ -29,7 +29,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minio-tenant-security
-  namespace: urbaminio
+  namespace: minio
 spec:
   headers:
     frameDeny: true
@@ -44,7 +44,7 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: traefik-minio-tenant-transport
-  namespace: urbaminio
+  namespace: minio
 spec:
   serverName: minio-tenant 
   insecureSkipVerify: true
@@ -53,7 +53,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-minio-tenant-tlsoptions
-  namespace: urbaminio
+  namespace: minio
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -77,7 +77,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minio-tenant-websecure
-  namespace: urbaminio 
+  namespace: minio 
 spec:
   entryPoints:
     - websecure
@@ -85,7 +85,7 @@ spec:
     - kind: Rule
       match: Host(`minio-tenant.domain.com`)
       services:
-        - name: urbaminio-console
+        - name: minio-tenant-console
           port: 9443
           serversTransport: traefik-minio-tenant-transport
       middlewares:
@@ -99,7 +99,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minio-tenant-web
-  namespace: urbaminio
+  namespace: minio
 spec:
   entryPoints:
     - web
@@ -107,7 +107,7 @@ spec:
     - kind: Rule
       match: Host(`minio-tenant.domain.com`)
       services:
-        - name: urbaminio-console
+        - name: minio-tenant-console
           port: 9443
       middlewares:
         - name: traefik-minio-tenant-https-redirect
@@ -116,7 +116,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: minio-s3-urbaman
-  namespace: urbaminio
+  namespace: minio
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
@@ -133,7 +133,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minioapi-https-redirect
-  namespace: urbaminio
+  namespace: minio
 spec:
   redirectScheme:
     scheme: https
@@ -143,7 +143,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minioapi-security
-  namespace: urbaminio
+  namespace: minio
 spec:
   headers:
     frameDeny: true
@@ -158,7 +158,7 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: traefik-minioapi-transport
-  namespace: urbaminio
+  namespace: minio
 spec:
   serverName: minioapi 
   insecureSkipVerify: true
@@ -167,7 +167,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-minioapi-tlsoptions
-  namespace: urbaminio
+  namespace: minio
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -191,7 +191,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minioapi-websecure
-  namespace: urbaminio 
+  namespace: minio 
 spec:
   entryPoints:
     - websecure
@@ -205,7 +205,7 @@ spec:
       middlewares:
         - name: traefik-minioapi-security
   tls:
-    secretName: minioapi-urbaman
+    secretName: minio-s3-urbaman
     options:
       name: traefik-minioapi-tlsoptions
 ---
@@ -213,7 +213,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minioapi-web
-  namespace: urbaminio
+  namespace: minio
 spec:
   entryPoints:
     - web
