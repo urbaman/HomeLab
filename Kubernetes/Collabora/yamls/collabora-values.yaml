@@ -10,11 +10,11 @@ collabora:
 
 resources:
    limits:
-      cpu: "200m"
-      memory: "2Gi"
+      cpu: "1800m"
+      memory: "2000Mi"
    requests:
-      cpu: "100m"
-      memory: "1Mi"
+      cpu: "1800m"
+      memory: "2000Mi"
 
 autoscaling:
   enabled: true
