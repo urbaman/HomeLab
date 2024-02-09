@@ -8,20 +8,22 @@ collabora:
     usernameKey: "username"
     passwordKey: "password"
 
-resources:
-   limits:
-      cpu: "1800m"
-      memory: "2000Mi"
-   requests:
-      cpu: "1800m"
-      memory: "2000Mi"
+      #resources:
+      #  limits:
+      #    cpu: "1800m"
+      #    memory: "2000Mi"
+      #  requests:
+      #    cpu: "1800m"
+      #    memory: "2000Mi"
+
+replicaCount: 3
 
 autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 6
-  targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 50
+  enabled: false
+      #  minReplicas: 1
+      #  maxReplicas: 9
+      #  targetCPUUtilizationPercentage: 70
+      #  targetMemoryUtilizationPercentage: 50
 
 prometheus:
    servicemonitor:
