@@ -9,6 +9,7 @@ Always check the [documentation](https://docs.gitlab.com/charts/).
 **Option 1:** Create a secret containing the Enterprise license
 
 ```bash
+kubectl create namespace gitlab
 kubectl create secret generic -n gitlab gitlab-license --from-file=license=./gitlab-license.txt
 ```
 
@@ -82,6 +83,10 @@ Create the following buckets:
 - gitlab-artifacts-storage
 - gitlab-uploads-storage
 - gitlab-packages-storage
+- gitlab-externaldiffs-storage
+- gitlab-terraformstate-storage
+- gitlab-dependencyproxy-storage
+- gitlab-cisecurefiles-storage
 - gitlab-backup-storage
 - gitlab-tmp-storage
 
