@@ -37,6 +37,9 @@ kubectl exec -it -n postgresql <PGPOOL_POD> -- psql -d postgres -U postgres -h p
 ```bash
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-postgresql -o jsonpath="{.data.repmgr-password}" | base64 -d
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-pgpool -o jsonpath="{.data.admin-password}" | base64 -d
+```
+
+```bash
 helm upgrade -i postgresql oci://registry-1.docker.io/bitnamicharts/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set pgpool.replicaCount=3 --set persistence.storageClass=rook-ceph-nvme2tb --set persistence.size=15Gi --set pgpool.customUsers.usernames="user01,user02" --set pgpool.customUsers.passwords="pwd01,pwd02" --set postgresql.password=<postres password> --set postgresql.repmgrPassword=<repmgr-password> --set pgpool.adminPassword=<pgpool admin password> --set pgpool.maxPool=4 --set postgresql.maxConnections=1024 --set pgpool.numInitChildren=64
 ```
 
