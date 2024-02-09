@@ -26,7 +26,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: fast
+  storageClassName: rook-cephfs-ssd5t
   resources:
     requests:
       storage: 8Gi
@@ -39,7 +39,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: fast
+  storageClassName: rook-cephfs-hdd5t
   resources:
     requests:
       storage: 5Ti
@@ -75,10 +75,10 @@ spec:
             - containerPort: 80
           resources:
             limits:
-              cpu: 200m
+              cpu: 1000m
               memory: 2Gi
             requests:
-              cpu: 100m
+              cpu: 500m
               memory: 1Mi
           env:
             - name: REDIS_HOST
