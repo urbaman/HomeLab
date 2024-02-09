@@ -70,6 +70,7 @@ If you need to change the mysql server_version (shouldn't be needed for mariadb)
 1. kubectl exec -it -n mariadb proxysql-0 -- /bin/bash
 2. mysql -u radmin -pradmin -h proxysql.mariadb.svc.cluster.local -P6032 --prompt 'ProxySQL Admin> '
 3. update global_variables set variable_value = '8.0.35' where variable_name = 'mysql-server_version';
+3b. INSERT INTO mysql_users(username,password,default_schema,default_hostgroup,active) VALUES ('user2','password2','schema',0,1);
 4. LOAD MYSQL VARIABLES TO RUNTIME;
 5. SAVE MYSQL VARIABLES TO DISK;
 6. exit
