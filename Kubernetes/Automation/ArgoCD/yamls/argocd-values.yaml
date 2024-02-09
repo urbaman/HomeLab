@@ -3,15 +3,22 @@ redis:
 
 externalRedis:
   # -- External Redis server host
-  host: ""
+  host: "redis-master.redis.svc.cluster.local"
   # -- External Redis server port
   port: 6379
   # -- The name of an existing secret with Redis credentials (must contain key `redis-password`).
   # When it's set, the `externalRedis.password` parameter is ignored
-  existingSecret: ""
+  existingSecret: "redis-auth"
 
 controller:
   replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
   metrics:
     enabled: true
     serviceMonitor:
@@ -20,6 +27,13 @@ controller:
         release: kube-prometheus-stack
 
 dex:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
   metrics:
     enabled: true
     serviceMonitor:
@@ -33,40 +47,47 @@ server:
     minReplicas: 2
   extraArgs:
   - --insecure
+  resources: 
+    limits:
+      cpu: 300m
+      memory: 768Mi
+    requests:
+      cpu: 150m
+      memory: 384Mi
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
       additionalLabels:
         release: kube-prometheus-stack
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
 
 repoServer:
   autoscaling:
     enabled: true
     minReplicas: 2
+  resources: 
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
       additionalLabels:
         release: kube-prometheus-stack
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
 
 applicationSet:
   replicas: 2
+  resources: 
+     limits:
+       cpu: 100m
+       memory: 128Mi
+     requests:
+       cpu: 100m
+       memory: 128Mi
   metrics:
     enabled: true
     serviceMonitor:
@@ -75,6 +96,13 @@ applicationSet:
         release: kube-prometheus-stack
 
 notifications:
+  resources: 
+     limits:
+       cpu: 100m
+       memory: 128Mi
+     requests:
+       cpu: 100m
+       memory: 128Mi
   metrics:
     enabled: true
     serviceMonitor:
