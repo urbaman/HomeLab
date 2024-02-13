@@ -140,6 +140,8 @@ lynis audit system
 
 ### Install and configure zfs autosnapshot (12x5min, 24xh, 7xd, 4xw, 3xm)
 
+**Note**: Beware it will use up disk space, and Proxmox GUI monitor do not show it, it just shows the space reduced.
+
 ```bash
 apt install zfs-auto-snapshot
 sed -i 's|--keep=[0-9]*|--keep=12|g' /etc/cron.d/zfs-auto-snapshot
