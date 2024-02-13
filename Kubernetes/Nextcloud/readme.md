@@ -37,3 +37,16 @@ Login and setup
 
 - ClamAV: [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html).
 - Collabora Online.
+- Mail: add the following in the config/config.php file in the pvc (should be accessible if used NFS or CephFS)
+
+```bash
+'mail_smtpstreamoptions' =>
+  array (
+    'ssl' =>
+    array (
+      'allow_self_signed' => true,
+      'verify_peer' => false,
+      'verify_peer_name' => false,
+    ),
+  ),
+```
