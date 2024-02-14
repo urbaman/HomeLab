@@ -90,6 +90,8 @@ Create the following buckets:
 - gitlab-backup-storage
 - gitlab-tmp-storage
 
+Create an Access Key in Minio tenant, use it in the following settings
+
 Create a secret with the Minio connection specs (object-storage, config) for all of the buckets but registry and backup.
 
 ```yaml

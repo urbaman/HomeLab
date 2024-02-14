@@ -32,7 +32,7 @@ metadata:
   namespace: gitlab
 spec:
   headers:
-    frameDeny: true
+    #frameDeny: true
     sslRedirect: true
     browserXssFilter: true
     contentTypeNosniff: true
