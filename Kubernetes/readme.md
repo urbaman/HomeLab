@@ -49,6 +49,10 @@ Here are the detailed steps to deploy our homelab cluster
 3. [Hashcorp Vault](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/HashicorpVault)
 4. [External Secrets](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ExternalSecrets)
 
+#### Backup
+
+1. [Velero](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Backup/Velero)
+
 #### The other tools
 
 1. [Helm](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Helm)
