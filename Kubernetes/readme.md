@@ -51,7 +51,7 @@ Here are the detailed steps to deploy our homelab cluster
 
 #### Backup
 
-1. [Velero](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Backup/Velero)
+1. [Velero](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/K8sBackup/Velero)
 
 #### The other tools
 
