@@ -229,7 +229,7 @@ metrics:
 
   serviceMonitor:
     autodetect: true
-    enabled: false
+    enabled: true
     annotations: {}
     additionalLabels:
       release: kube-prometheus-stack
@@ -247,7 +247,7 @@ metrics:
     # tlsConfig: {}
   nodeAgentPodMonitor:
     autodetect: true
-    enabled: false
+    enabled: true
     annotations: {}
     additionalLabels:
       release: kube-prometheus-stack
