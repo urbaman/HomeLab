@@ -36,7 +36,7 @@ Proxmox (Hypervisor)
   - [x] Kured
   - [x] Heimdall
   - [x] Homer
-  - [x] Gethomepage
+  - [x] Homepage
   - [ ] Datree (deprecated)
   - [x] Teleport
   - [x] Nvidia GPU plugin
@@ -58,8 +58,12 @@ Proxmox (Hypervisor)
   - [x] Cloudbeaver for multi-db client
   - [x] Memcached
   - [x] MinIO for S3 ObjectStorage
-  - [ ] NextCloud (FileServer) and Prometheus-Grafana monitoring
-    - [ ] Nextcloud apps <https://www.ionos.com/digitalguide/server/tools/nextcloud-apps/>
+  - [x] ArgoCD for CD/DI
+  - [x] Gitlab for CD/CI
+  - [x] Hasicorp vault and External secrets for secret SPoT
+  - [x] Velero Backup
+  - [x] NextCloud (FileServer) and Prometheus-Grafana monitoring
+    - [x] Nextcloud apps
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
   - [ ] Plex (MediaServer) <https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html>
     - [ ] With Sonarr, Radarr, Transmission, Jackett <https://greg.jeanmart.me/2020/04/13/self-host-your-media-center-on-kubernetes-wi/>
