@@ -1,5 +1,9 @@
 # Media Server
 
+confs: nvme2t
+trasco: nvme1t
+media/downloads: ssd4t
+
 We will use a single pvc, to make file transfers faster.
 
 This deployment will install:
