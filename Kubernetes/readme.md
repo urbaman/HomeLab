@@ -125,5 +125,5 @@ Here are the detailed steps to deploy our homelab cluster
 11. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
 12. Calibre+Calibre-Web
 13. Visual Studio Web
-14. Plex-Sonarr-Radarr-*rr
+14. [Media Server: Transmission, Sonarr, Radarr, Readarr, Prowlarr, Plex](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 15. ...
