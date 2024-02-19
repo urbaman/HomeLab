@@ -36,7 +36,7 @@ spec:
         app: transmission
     spec:
       volumes:
-      - name: transmission-downloads
+      - name: transmission-data
         persistentVolumeClaim:
           claimName: media-server-pvc
       containers:
@@ -63,10 +63,13 @@ spec:
           volumeMounts:
            - mountPath: /downloads/transmission
              subPath: downloads/transmission
-             name: transmission-downloads
+             name: transmission-data
            - mountPath: /watch/transmission
              subPath: watch/transmission
-             name: transmission-downloads
+             name: transmission-data
+           - mountPath: /config
+             subPath: configs/transmission
+             name: transmission-data
 ---
 apiVersion: v1
 kind: Service
@@ -199,3 +202,350 @@ spec:
           port: 9091
       middlewares:
         - name: traefik-transmission-https-redirect
+---
+# Flaresolverr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+  namespace: media-server
+  labels:
+    app: flaresolverr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaresolverr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: flaresolverr
+    spec:
+      containers:
+        - image: ghcr.io/flaresolverr/flaresolverr:latest
+          name: flaresolverr
+          imagePullPolicy: Always
+          env:
+            - name: LOG_LEVEL
+              value: info
+          ports:
+           - containerPort: 8191
+             name: http-8191
+             protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  labels:
+    app: flaresolverr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8191
+      targetPort: 8191
+      protocol: TCP
+      name: http
+  selector:
+    app: flaresolverr
+---
+# Flaresolverr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: flaresolverr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - flaresolverr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: flaresolverr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-flaresolverr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-flaresolverr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-flaresolverr-transport
+  namespace: media-server
+spec:
+  serverName: flaresolverr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-flaresolverr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-flaresolverr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`flaresolverr.urbaman.it`)
+      services:
+        - name: flaresolverr
+          port: 8191
+          serversTransport: traefik-flaresolverr-transport
+      middlewares:
+        - name: traefik-flaresolverr-security
+  tls:
+    secretName: flaresolverr-urbaman
+    options:
+      name: traefik-flaresolverr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-flaresolverr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`flaresolverr.urbaman.it`)
+      services:
+        - name: flaresolverr
+          port: 8191
+      middlewares:
+        - name: traefik-flaresolverr-https-redirect
+---
+# Prowlarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: media-server
+  labels:
+    app: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      volumes:
+      - name: prowlarr-config
+        persistentVolumeClaim:
+          claimName: media-server-pvc
+      containers:
+        - image: lscr.io/linuxserver/prowlarr:latest
+          name: prowlarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 9696
+             name: http-9696
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             subPath: configs/prowlarr
+             name: prowlarr-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9696
+      targetPort: 9696
+      protocol: TCP
+      name: http
+  selector:
+    app: prowlarr
+---
+# Prowlarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prowlarr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - prowlarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: prowlarr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-prowlarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-prowlarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-prowlarr-transport
+  namespace: media-server
+spec:
+  serverName: prowlarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-prowlarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-prowlarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`prowlarr.urbaman.it`)
+      services:
+        - name: prowlarr
+          port: 9696
+          serversTransport: traefik-prowlarr-transport
+      middlewares:
+        - name: traefik-prowlarr-security
+  tls:
+    secretName: prowlarr-urbaman
+    options:
+      name: traefik-prowlarr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-prowlarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`prowlarr.urbaman.it`)
+      services:
+        - name: prowlarr
+          port: 9696
+      middlewares:
+        - name: traefik-prowlarr-https-redirect
+
