@@ -12,6 +12,6 @@ This deployment will install:
 - [x] Flaresolverr
 - [x] Prowlarr
 - [x] Sonarr
-- [ ] Radarr
+- [x] Radarr
 - [ ] Readarr
 - [ ] Plex Media server with GPU transcoding
