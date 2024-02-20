@@ -11,7 +11,7 @@ This deployment will install:
 - [x] Transmission for torrent download
 - [x] Flaresolverr
 - [x] Prowlarr
-- [ ] Sonarr
+- [x] Sonarr
 - [ ] Radarr
 - [ ] Readarr
 - [ ] Plex Media server with GPU transcoding
