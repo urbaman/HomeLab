@@ -773,12 +773,12 @@ spec:
             - name: PGID
               value: "1000"
           ports:
-           - containerPort: 8989
-             name: http-8989
+           - containerPort: 7878
+             name: http-7878
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/sonarr
+             subPath: configs/radarr
              name: radarr-data
            - mountPath: /movies
              subPath: library/movies
@@ -804,7 +804,7 @@ spec:
   selector:
     app: radarr
 ---
-# Prowlarr Traefik
+# Radarr Traefik
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -918,3 +918,189 @@ spec:
           port: 7878
       middlewares:
         - name: traefik-radarr-https-redirect
+
+---
+# Lidarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+  namespace: media-server
+  labels:
+    app: lidarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lidarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: lidarr
+    spec:
+      volumes:
+      - name: lidarr-data
+        persistentVolumeClaim:
+          claimName: media-server-pvc
+      containers:
+        - image: lscr.io/linuxserver/lidarr:latest
+          name: lidarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 8686
+             name: http-8686
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             subPath: configs/lidarr
+             name: lidarr-data
+           - mountPath: /music
+             subPath: library/music
+             name: lidarr-data
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: lidarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lidarr
+  labels:
+    app: lidarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8686
+      targetPort: 8686
+      protocol: TCP
+      name: http
+  selector:
+    app: lidarr
+---
+# lidarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lidarr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - lidarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: lidarr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-lidarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-lidarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-lidarr-transport
+  namespace: media-server
+spec:
+  serverName: lidarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-lidarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-lidarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`lidarr.urbaman.it`)
+      services:
+        - name: lidarr
+          port: 8686
+          serversTransport: traefik-lidarr-transport
+      middlewares:
+        - name: traefik-lidarr-security
+  tls:
+    secretName: lidarr-urbaman
+    options:
+      name: traefik-lidarr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-lidarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`lidarr.urbaman.it`)
+      services:
+        - name: lidarr
+          port: 8686
+      middlewares:
+        - name: traefik-lidarr-https-redirect
