@@ -14,5 +14,5 @@ This deployment will install:
 - [x] Sonarr
 - [x] Radarr
 - [x] Lidarr
-- [ ] Readarr
+- [x] Readarr
 - [ ] Plex Media server with GPU transcoding

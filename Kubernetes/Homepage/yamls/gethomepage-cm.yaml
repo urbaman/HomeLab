@@ -15,11 +15,68 @@ data:
   kubernetes.yaml: |
     mode: cluster
   services.yaml: |
-    - Media:
+    - Cloud:
       - Nextcloud:
           description: Nextcloud
           href: https://nextcloud.urbaman.it/
           icon: nextcloud.svg
+          widgets:
+            type: nextcloud
+            url: https://nextcloud.urbaman.it
+            username: <username>
+            password: <password>
+      - ContaboS3:
+          description: Contabo S3 object Storage
+          href: https://new.contabo.com/storage/object-storage
+          icon: mdi-nas-#FF9900
+    - Media:
+      - Transmission:
+          description: Transmisstion torrent download
+          href: https://transmission.urbaman.it
+          icon: transmission.svg
+          widget:
+            type: transmission
+            url: https://transmission.urbaman.it
+      - Prowlarr:
+          description: Prowlarr indexer
+          href: https://prowlarr.urbaman.it
+          icon: prowlarr.svg
+          widget:
+            type: prowlarr
+            url: https://prowlarr.urbaman.it
+            key: 6343a99c4f0542b7a6ef4060348d55c0
+      - Sonarr:
+          description: Sonarr TV Serie library
+          href: https://sonarr.urbaman.it
+          icon: sonarr.svg
+          widget:
+            type: sonarr
+            url: https://sonarr.urbaman.it
+            key: e184fe2afb5a450bad53274f20ba418f
+      - Radarr:
+          description: Radarr movies library
+          href: https://radarr.urbaman.it
+          icon: radarr.svg
+          widget:
+            type: radarr
+            url: https://radarr.urbaman.it
+            key: 1ccb874b54f749b797666ededc0245ba
+      - Lidarr:
+          description: Lidarr music library
+          href: https://lidarr.urbaman.it
+          icon: lidarr.svg
+          widget:
+            type: lidarr
+            url: https://lidarr.urbaman.it
+            key: 26d8158922144e7484199690b9ced90a
+      - Readarr:
+          description: Readarr books library
+          href: https://readarr.urbaman.it
+          icon: readarr.svg
+          widget:
+            type: readarr
+            url: https://readarr.urbaman.it
+            key: 38a5b954f89b4444a53f0d7f0e5f46ad
     - Domotica:
       - Homeassistant:
           description: Homeassistant GUI
@@ -55,33 +112,11 @@ data:
           widget:
             type: traefik
             url: https://traefik.domain.com
-      - Longhorn:
-          description: Longhorn Dashboard
-          href: https://longhorn.domain.com
-          icon: longhorn.svg
       - Portainer:
           description: Portainer Management UI
           href: https://portainer.domain.com
           icon: portainer.svg
-#          widget:
-#            type: portainer
-#            url: https://portainer.domain.com
-#            env: 1
-#            key: ptr_<token>
     - Storage:
-      - Longhorn:
-          description: Longhorn Dashboard
-          href: https://longhorn.domain.com
-          icon: longhorn.svg
-      - Truenas:
-          description: Truenas GUI
-          href: https://truenas.domain.com
-          icon: truenas.svg
-          widget:
-            type: truenas
-            url: https://truenas.domain.com
-            username: user
-            password: password
       - MinioOperator:
           description: Minio Operator GUI
           href: https://minio-operator.domain.com
@@ -187,14 +222,6 @@ data:
             url: https://pbs1.domain.com:8007
             username: api-ro-user@pbs!gethomepage
             password: <token>
-      - Landscape1:
-          description: Landscape server management UI
-          href: https://landscape1.domain.com
-          icon: ubuntu.svg
-      - Landscape2:
-          description: Landscape server management UI
-          href: https://landscape2.domain.com
-          icon: ubuntu.svg
       - iDRAC1:
           description: iDRAC Dell Server management
           href: https://10.0.100.21
@@ -303,23 +330,18 @@ data:
         cpu: true
         expanded: true
         memory: true
-#    - Kubernetes:
-#        cluster:
-#          show: true
-#          cpu: true
-#          memory: true
-#          showLabel: true
-#          label: "cluster"
-#        nodes:
-#          show: true
-#          cpu: true
-#          memory: true
-#          showLabel: true
-    - longhorn:
-        expanded: true
-        total: true
-        labels: true
-        nodes: true
+    - Kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
     - openmeteo:
         label: Anzola dell'Emilia
         latitude: 44.5473
