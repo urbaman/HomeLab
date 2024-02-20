@@ -201,7 +201,7 @@ spec:
       middlewares:
         - name: traefik-s-pdf-security
   tls:
-    secretName: urbaman-s-pdf
+    secretName: s-pdf-urbaman
     options:
       name: traefik-s-pdf-tlsoptions
 ---
