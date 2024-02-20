@@ -88,6 +88,40 @@ spec:
   selector:
     app: transmission
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-peers-tcp
+  labels:
+    app: transmission
+  namespace: media-server
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 52413
+      targetPort: 51413
+      protocol: TCP
+      name: peers-tcp
+  selector:
+    app: transmission
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-peers-udp
+  labels:
+    app: transmission
+  namespace: media-server
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 52413
+      targetPort: 52413
+      protocol: UDP
+      name: peers-udp
+  selector:
+    app: transmission
+---
 # Transmission Traefik
 apiVersion: cert-manager.io/v1
 kind: Certificate

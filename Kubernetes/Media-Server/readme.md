@@ -15,4 +15,7 @@ This deployment will install:
 - [x] Radarr
 - [x] Lidarr
 - [x] Readarr
+- [ ] Bazaar
+- [ ] Unpackerr
 - [ ] Plex Media server with GPU transcoding
+- [ ] Overseer
