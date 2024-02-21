@@ -1507,3 +1507,187 @@ spec:
           port: 6767
       middlewares:
         - name: traefik-bazarr-https-redirect
+---
+# Unpackerr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unpackerr
+  namespace: media-server
+  labels:
+    app: unpackerr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unpackerr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: unpackerr
+    spec:
+      volumes:
+      - name: unpackerr-data
+        persistentVolumeClaim:
+          claimName: media-server-pvc
+      containers:
+        - image: ghcr.io/hotio/unpackerr:latest
+          name: unpackerr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: UMASK
+              value: "002"
+          ports:
+           - containerPort: 5656
+             name: http-5656
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             subPath: configs/unpackerr
+             name: unpackerr-data
+           - mountPath: /data
+             subPath: downloads/transmission/completed
+             name: unpackerr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unpackerr
+  labels:
+    app: unpackerr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5656
+      targetPort: 5656
+      protocol: TCP
+      name: http
+  selector:
+    app: unpackerr
+---
+# Unpackerr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: unpackerr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - unpackerr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: unpackerr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-unpackerr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-unpackerr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-unpackerr-transport
+  namespace: media-server
+spec:
+  serverName: unpackerr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-unpackerr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-unpackerr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`unpackerr.urbaman.it`)
+      services:
+        - name: unpackerr
+          port: 5656
+          serversTransport: traefik-unpackerr-transport
+      middlewares:
+        - name: traefik-unpackerr-security
+  tls:
+    secretName: unpackerr-urbaman
+    options:
+      name: traefik-unpackerr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-unpackerr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`unpackerr.urbaman.it`)
+      services:
+        - name: unpackerr
+          port: 5656
+      middlewares:
+        - name: traefik-unpackerr-https-redirect
