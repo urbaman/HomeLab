@@ -77,13 +77,13 @@ data:
             type: readarr
             url: https://readarr.urbaman.it
             key: <key>
-      - Bazaar:
-          description: Bazaar subtitles manager
+      - Bazarr:
+          description: Bazarr subtitles manager
           href: https://bazarr.urbaman.it
           icon: bazarr.svg
           widget:
-            type: bazaar
-            url: https://bazaar.urbaman.it
+            type: bazarr
+            url: https://bazarr.urbaman.it
             key: <key>
     - Domotica:
       - Homeassistant:
