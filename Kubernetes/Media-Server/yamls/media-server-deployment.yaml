@@ -1166,7 +1166,7 @@ spec:
         persistentVolumeClaim:
           claimName: media-server-pvc
       containers:
-        - image: lscr.io/linuxserver/readarr:latest
+        - image: lscr.io/linuxserver/readarr:develop
           name: readarr
           imagePullPolicy: Always
           env:
@@ -1322,3 +1322,188 @@ spec:
           port: 8787
       middlewares:
         - name: traefik-readarr-https-redirect
+---
+# Bazarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+  namespace: media-server
+  labels:
+    app: bazarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bazarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: bazarr
+    spec:
+      volumes:
+      - name: bazarr-data
+        persistentVolumeClaim:
+          claimName: media-server-pvc
+      containers:
+        - image: lscr.io/linuxserver/bazarr:latest
+          name: bazarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 6767
+             name: http-6767
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             subPath: configs/bazarr
+             name: bazarr-data
+           - mountPath: /movies
+             subPath: library/movies
+             name: bazarr-data
+           - mountPath: /tv
+             subPath: library/tv
+             name: bazarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr
+  labels:
+    app: bazarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6767
+      targetPort: 6767
+      protocol: TCP
+      name: http
+  selector:
+    app: bazarr
+---
+# Bazarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bazarr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - bazarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: bazarr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-bazarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-bazarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-bazarr-transport
+  namespace: media-server
+spec:
+  serverName: bazarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-bazarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-bazarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`bazarr.urbaman.it`)
+      services:
+        - name: bazarr
+          port: 6767
+          serversTransport: traefik-bazarr-transport
+      middlewares:
+        - name: traefik-bazarr-security
+  tls:
+    secretName: bazarr-urbaman
+    options:
+      name: traefik-bazarr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-bazarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`bazarr.urbaman.it`)
+      services:
+        - name: bazarr
+          port: 6767
+      middlewares:
+        - name: traefik-bazarr-https-redirect
