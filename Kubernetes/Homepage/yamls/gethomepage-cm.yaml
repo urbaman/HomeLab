@@ -44,7 +44,7 @@ data:
           widget:
             type: prowlarr
             url: https://prowlarr.urbaman.it
-            key: 6343a99c4f0542b7a6ef4060348d55c0
+            key: <key>
       - Sonarr:
           description: Sonarr TV Serie library
           href: https://sonarr.urbaman.it
@@ -52,7 +52,7 @@ data:
           widget:
             type: sonarr
             url: https://sonarr.urbaman.it
-            key: e184fe2afb5a450bad53274f20ba418f
+            key: <key>
       - Radarr:
           description: Radarr movies library
           href: https://radarr.urbaman.it
@@ -60,7 +60,7 @@ data:
           widget:
             type: radarr
             url: https://radarr.urbaman.it
-            key: 1ccb874b54f749b797666ededc0245ba
+            key: <key>
       - Lidarr:
           description: Lidarr music library
           href: https://lidarr.urbaman.it
@@ -68,7 +68,7 @@ data:
           widget:
             type: lidarr
             url: https://lidarr.urbaman.it
-            key: 26d8158922144e7484199690b9ced90a
+            key: <key>
       - Readarr:
           description: Readarr books library
           href: https://readarr.urbaman.it
@@ -76,7 +76,15 @@ data:
           widget:
             type: readarr
             url: https://readarr.urbaman.it
-            key: 38a5b954f89b4444a53f0d7f0e5f46ad
+            key: <key>
+      - Bazaar:
+          description: Bazaar subtitles manager
+          href: https://bazarr.urbaman.it
+          icon: bazarr.svg
+          widget:
+            type: bazaar
+            url: https://bazaar.urbaman.it
+            key: <key>
     - Domotica:
       - Homeassistant:
           description: Homeassistant GUI
