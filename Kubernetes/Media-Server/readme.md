@@ -1,10 +1,11 @@
 # Media Server
 
-confs: nvme2t
 trasco: nvme1t
-media/downloads: ssd4t
 
-We will use a single pvc, to make file transfers faster.
+We will use a single pvc for configs and downloads/library, to make file transfers faster and management easier. Set it with a File CSI (NFS, CephFS) to be able to navigate through it.
+After the first installation, if you set the Categories for the different apps (tv, movies, music, books, ...), create the subdirectories in the /downloads/transmission path in the PVC.
+
+We will also create a dedicated pvc on a faster storage (nvme is better), it can be RDB type storage (Ceph).
 
 This deployment will install:
 
