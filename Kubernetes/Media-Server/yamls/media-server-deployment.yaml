@@ -12,6 +12,20 @@ spec:
       storage: 15Ti
   storageClassName: rook-cephfs-ssd4t
 ---
+# Persistent Volume Claim for Plex Transcoding
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-transcoding-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: rook-ceph-nvme1tb
+---
 # Transmission Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -98,7 +112,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 52413
+    - port: 51413
       targetPort: 51413
       protocol: TCP
       name: peers-tcp
@@ -115,8 +129,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 52413
-      targetPort: 52413
+    - port: 51413
+      targetPort: 51413
       protocol: UDP
       name: peers-udp
   selector:
@@ -1557,7 +1571,7 @@ spec:
              subPath: configs/unpackerr
              name: unpackerr-data
            - mountPath: /data
-             subPath: downloads/transmission/completed
+             subPath: downloads/transmission/complete
              name: unpackerr-data
 ---
 apiVersion: v1
@@ -1577,28 +1591,270 @@ spec:
   selector:
     app: unpackerr
 ---
-# Unpackerr Traefik
+## Unpackerr Traefik
+#apiVersion: cert-manager.io/v1
+#kind: Certificate
+#metadata:
+#  name: unpackerr-urbaman
+#  namespace: media-server
+#spec:
+#  # Certificate will be valid for these domain names
+#  dnsNames:
+#  - unpackerr.urbaman.it
+#  # Reference our issuer
+#  # As it's a ClusterIssuer, it can be in a different namespace
+#  issuerRef:
+#    kind: ClusterIssuer
+#    name: cert-manager-acme-issuer
+#  # Secret that will be created with our certificate and private keys
+#  secretName: unpackerr-urbaman
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: traefik-unpackerr-https-redirect
+#  namespace: media-server
+#spec:
+#  redirectScheme:
+#    scheme: https
+#    permanent: true
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: traefik-unpackerr-security
+#  namespace: media-server
+#spec:
+#  headers:
+#    frameDeny: true
+#    sslRedirect: true
+#    browserXssFilter: true
+#    contentTypeNosniff: true
+#    stsIncludeSubdomains: true
+#    stsPreload: true
+#    stsSeconds: 31536000
+#---
+#apiVersion: traefik.io/v1alpha1
+#kind: ServersTransport
+#metadata:
+#  name: traefik-unpackerr-transport
+#  namespace: media-server
+#spec:
+#  serverName: unpackerr 
+#  insecureSkipVerify: true
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: TLSOption
+#metadata:
+#  name: traefik-unpackerr-tlsoptions
+#  namespace: media-server
+#spec:
+#  minVersion: VersionTLS12
+#  cipherSuites:
+#    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+#    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+#    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+#    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+#    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+#    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+#    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+#    - TLS_AES_256_GCM_SHA384
+#    - TLS_AES_128_GCM_SHA256
+#    - TLS_CHACHA20_POLY1305_SHA256
+#    - TLS_FALLBACK_SCSV
+#  curvePreferences:
+#    - CurveP521
+#    - CurveP384
+#  sniStrict: false
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: traefik-unpackerr-websecure
+#  namespace: media-server 
+#spec:
+#  entryPoints:
+#    - websecure
+#  routes:
+#    - kind: Rule
+#      match: Host(`unpackerr.urbaman.it`)
+#      services:
+#        - name: unpackerr
+#          port: 5656
+#          serversTransport: traefik-unpackerr-transport
+#      middlewares:
+#        - name: traefik-unpackerr-security
+#  tls:
+#    secretName: unpackerr-urbaman
+#    options:
+#      name: traefik-unpackerr-tlsoptions
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: traefik-unpackerr-web
+#  namespace: media-server
+#spec:
+#  entryPoints:
+#    - web
+#  routes:
+#    - kind: Rule
+#      match: Host(`unpackerr.urbaman.it`)
+#      services:
+#        - name: unpackerr
+#          port: 5656
+#      middlewares:
+#        - name: traefik-unpackerr-https-redirect
+# Plex Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: media-server
+  labels:
+    app: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      volumes:
+      - name: plex-data
+        persistentVolumeClaim:
+          claimName: media-server-pvc
+      - name: plex-transcoding
+        persistentVolumeClaim:
+          claimName: plex-transcoding-pvc
+      containers:
+        - image: plexinc/pms-docker
+          name: plex
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PLEX_UID
+              value: "1000"
+            - name: PLEX_GID
+              value: "1000"
+            - name: PLEX_CLAIM
+              value: "<CleimToken>"
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "compute,video,utility"
+          ports:
+           - containerPort: 32400
+             name: http-32400
+             protocol: TCP
+           - containerPort: 8324
+             name: http-8324
+             protocol: TCP
+           - containerPort: 32469
+             name: http-32469
+             protocol: TCP
+           - containerPort: 1900
+             name: udp-1900
+             protocol: UDP
+           - containerPort: 32410
+             name: udp-32410
+             protocol: UDP
+           - containerPort: 32412
+             name: udp-32412
+             protocol: UDP
+           - containerPort: 32413
+             name: udp-32413
+             protocol: UDP
+           - containerPort: 32414
+             name: udp-32414
+             protocol: UDP
+          volumeMounts:
+           - mountPath: /data
+             subPath: library
+             name: plex-data
+           - mountPath: /transcode
+#             subPath: watch/transmission
+             name: plex-transcoding
+           - mountPath: /config
+             subPath: configs/plex
+             name: plex-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  labels:
+    app: plex
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 32400
+      name: http-32400
+      port: 32400
+      protocol: TCP
+    - targetPort: 8324
+      name: http-8324
+      port: 8324
+      protocol: TCP
+    - targetPort: 32469
+      name: http-32469
+      port: 32469
+      protocol: TCP
+    - targetPort: 1900
+      name: udp-1900
+      port: 1900
+      protocol: UDP
+    - targetPort: 32410
+      name: udp-32410
+      port: 32410
+      protocol: UDP
+    - targetPort: 32412
+      name: udp-32412
+      port: 32412
+      protocol: UDP
+    - targetPort: 32413
+      name: udp-32413
+      port: 32413
+      protocol: UDP
+    - targetPort: 32414
+      name: udp-32414
+      port: 32414
+      protocol: UDP
+  selector:
+    app: plex
+---
+# Plex Traefik
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: unpackerr-urbaman
+  name: plex-urbaman
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - unpackerr.urbaman.it
+  - plex.urbaman.it
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: unpackerr-urbaman
+  secretName: plex-urbaman
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-unpackerr-https-redirect
+  name: traefik-plex-https-redirect
   namespace: media-server
 spec:
   redirectScheme:
@@ -1608,7 +1864,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-unpackerr-security
+  name: traefik-plex-security
   namespace: media-server
 spec:
   headers:
@@ -1623,16 +1879,16 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-unpackerr-transport
+  name: traefik-plex-transport
   namespace: media-server
 spec:
-  serverName: unpackerr 
+  serverName: plex 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-unpackerr-tlsoptions
+  name: traefik-plex-tlsoptions
   namespace: media-server
 spec:
   minVersion: VersionTLS12
@@ -1656,38 +1912,38 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-unpackerr-websecure
+  name: traefik-plex-websecure
   namespace: media-server 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`unpackerr.urbaman.it`)
+      match: Host(`plex.urbaman.it`)
       services:
-        - name: unpackerr
-          port: 5656
-          serversTransport: traefik-unpackerr-transport
+        - name: plex
+          port: 32400
+          serversTransport: traefik-plex-transport
       middlewares:
-        - name: traefik-unpackerr-security
+        - name: traefik-plex-security
   tls:
-    secretName: unpackerr-urbaman
+    secretName: plex-urbaman
     options:
-      name: traefik-unpackerr-tlsoptions
+      name: traefik-plex-tlsoptions
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-unpackerr-web
+  name: traefik-plex-web
   namespace: media-server
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`unpackerr.urbaman.it`)
+      match: Host(`plex.urbaman.it`)
       services:
-        - name: unpackerr
-          port: 5656
+        - name: plex
+          port: 32400
       middlewares:
-        - name: traefik-unpackerr-https-redirect
+        - name: traefik-plex-https-redirect

@@ -20,3 +20,5 @@ This deployment will install:
 - [x] Unpackerr
 - [ ] Plex Media server with GPU transcoding
 - [ ] Overseer
+
+Go to [https://www.plex.tv/claim](https://www.plex.tv/claim) and login to get the ClaimToken, enter it as the PLEX_CLAIM value and deploy the manifest.
