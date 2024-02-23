@@ -65,9 +65,9 @@ Proxmox (Hypervisor)
   - [x] NextCloud (FileServer) and Prometheus-Grafana monitoring
     - [x] Nextcloud apps
     - [ ] Other nextcloud apps <https://www.tecmint.com/nextcloud-apps/amp/>
-  - [ ] Plex (MediaServer) <https://www.debontonline.com/2021/01/part-14-deploy-plexserver-yaml-with.html>
-    - [ ] With Sonarr, Radarr, Transmission, Jackett <https://greg.jeanmart.me/2020/04/13/self-host-your-media-center-on-kubernetes-wi/>
-    - [ ] Tautulli, all other "rr": autobrr, sonarr, radarr, transmission, jackett, bazarr, omegabrr, overseerr, plex-auto-languages, plex-meta-manager, prowlarr, readarr, recyclarr, sabnzbd, unpackerr, wizarr
+  - [x] Plex (MediaServer)
+    - [x] With Sonarr, Radarr, Transmission, Bazarr, Lidarr, Readarr, Prowlarr, Unpackerr, Overseer
+    - [ ] Tautulli, all other "rr": autobrr, omegabrr, plex-auto-languages, plex-meta-manager, recyclarr, sabnzbd, wizarr
   - [ ] Boing shared computing
   - [ ] Vaultwarden <https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment>
   - [ ] the lounge
