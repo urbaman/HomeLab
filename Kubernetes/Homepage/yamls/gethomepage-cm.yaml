@@ -85,6 +85,14 @@ data:
             type: bazarr
             url: https://bazarr.urbaman.it
             key: <key>
+      - Plex:
+          description: Plex Media Server
+          href: https://plex.urbaman.it
+          icon: plex.svg
+          widget:
+            type: plex
+            url: https://plex.urbaman.it
+            key: <ServerToken>
     - Domotica:
       - Homeassistant:
           description: Homeassistant GUI
