@@ -68,6 +68,7 @@ Proxmox (Hypervisor)
   - [x] Plex (MediaServer)
     - [x] With Sonarr, Radarr, Transmission, Bazarr, Lidarr, Readarr, Prowlarr, Unpackerr, Overseer
     - [ ] Tautulli, all other "rr": autobrr, omegabrr, plex-auto-languages, plex-meta-manager, recyclarr, sabnzbd, wizarr
+  - [x] VS code (code-server)
   - [ ] Boing shared computing
   - [ ] Vaultwarden <https://github.com/dani-garcia/vaultwarden/wiki/Kubernetes-deployment>
   - [ ] the lounge
