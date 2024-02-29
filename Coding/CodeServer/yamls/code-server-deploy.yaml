@@ -15,6 +15,19 @@ spec:
   selector:
     app: code-server
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: code-server-pvc
+  namespace: code-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: rook-ceph-nvme2tb
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,6 +45,10 @@ spec:
       labels:
         app: code-server
     spec:
+      volumes:
+      - name: code-server-data
+        persistentVolumeClaim:
+          claimName: code-server-pvc
       containers:
       - image: codercom/code-server:latest
         imagePullPolicy: Always
@@ -39,7 +56,9 @@ spec:
         env:
         - name: PASSWORD
           value: "your_password"
-
+        volumeMounts:
+          - mountPath: /home/coder
+            name: code-server-data
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
