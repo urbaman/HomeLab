@@ -1,7 +1,7 @@
 # To Do
 
 - [x] Create new domain urbaman.cloud
-- [ ] Create directory paths
+- [x] Create directory paths
 - [ ] Install Traefik (uninstall nginx)
 - [ ] Try to proxy both Asustor itself and Portainer
 - [ ] Install all other apps
@@ -12,7 +12,8 @@
 
 - \volume1\home\nasadmin\docker-compose
   - \volume1\home\nasadmin\docker-compose\services
-  - \volume1\home\nasadmin\docker-compose\secrets
+  - \volume1\home\nasadmin\docker-compose\secrets (root:root, 600)
+  - \volume1\home\nasadmin\docker-compose\.env (root:root, 600)
   - \volume1\home\nasadmin\docker-compose\...
 
 ### Docker containers data
