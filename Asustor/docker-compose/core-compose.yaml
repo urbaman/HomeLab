@@ -1,0 +1,72 @@
+version: "3.9"
+ 
+# NETWORKS
+networks:
+  default_network:
+    name: default_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+
+services:
+  # Portainer - WebUI for Containers
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest # Use portainer-ee if you have a Business Edition license key
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["core", "all"]
+    networks:
+    #  - socket_proxy
+      - default_network
+    command: -H unix:///var/run/docker.sock # # Use Docker Socket Proxy instead for improved security
+    # command: -H tcp://socket-proxy:2375
+    ports:
+      - "9000:9000"
+      - "8002:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # # Use Docker Socket Proxy instead for improved security
+      # - $DATADIR/portainer/data:/data # Change to local directory if you want to save/transfer config locally
+    environment:
+      - TZ=$TZ
+  # Dozzle - Real-time Docker Log Viewer
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["apps", "all"]
+    networks:
+      - default_network
+    ports:
+      - "8082:8080"
+    environment:
+      - DOZZLE_LEVEL: info
+      - DOZZLE_TAILSIZE: 300
+      - DOZZLE_FILTER: "status=running"
+      # - DOZZLE_FILTER: "label=log_me" # limits logs displayed to containers with this label
+      # - DOCKER_HOST: tcp://socket-proxy:2375
+      - TZ: $TZ
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Use Docker Socket Proxy instead for improved security
+  # Homepage
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: homepage
+    networks:
+    #  - socket_proxy
+      - default_network
+    ports:
+      - 3000:3000
+    volumes:
+      - $CONFIGDIR/homepage/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations, see alternative methods
+    environment:
+      - TZ=$TZ
