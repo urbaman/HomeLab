@@ -1,0 +1,8 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/bookmarks
+
+- Deployment notes:
+    - Github:
+      - abbr: HL
+        href: https://github.com/urbaman/HomeLab

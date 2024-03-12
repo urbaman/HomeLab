@@ -1,0 +1,17 @@
+http:
+  routers:
+    asustornas1-rtr:
+      rule: "Host(`asustornas1.{{env "DOMAINNAME_1"}}`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - middlewares-chain-no-auth
+      service: asustornas1-svc
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+  services:
+    asustornas1-svc:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.1.31:8001"
