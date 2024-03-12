@@ -5,9 +5,10 @@
 - [x] Create new domain urbaman.cloud
 - [x] Setup the domain on cloudflare
 - [x] Create directory paths
-- [ ] Install Traefik (uninstall nginx)
-- [ ] Try to proxy both Asustor itself and Portainer
-- [ ] Install all other apps
+- [x] Install Traefik (uninstall nginx)
+- [x] Try to proxy both Asustor itself and Portainer
+- [x] Dizzle
+- [x] Homepage
 
 ## Cloudflare domain setup
 
