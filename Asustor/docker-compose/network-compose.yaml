@@ -18,7 +18,7 @@ services:
   # Traefik 2 - Reverse Proxy
   traefik:
     container_name: traefik
-    image: traefik:2.10
+    image: traefik:latest
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -101,3 +101,55 @@ services:
       # Middlewares
       # - "traefik.http.routers.traefik-rtr.middlewares=middlewares-basic-auth@file" # For Basic HTTP Authentication
       - "traefik.http.routers.traefik-rtr.middlewares=middlewares-chain-no-auth@file"
+  #Pihole
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["core", "all"]
+    networks:
+#      - dnet
+      - traefik
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    environment:
+      - TZ=$TZ
+      - ServerIP: 192.168.1.31
+      - DNS1: 1.1.1.1
+      - DNS2: 1.0.0.1
+      - VIRTUAL_HOST: pi.hole
+      - DNSMASQ_LISTENING: all
+    volumes:
+      - '$CONFIGDIR/pihole/pihole/:/etc/pihole/'
+      - '$CONFIGDIR/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
+    depends_on:
+      - dhcphelper
+    networks:
+      traefik:
+        ipv4_address: '192.168.2.100'
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
+      - "traefik.http.routers.pihole-rtr.rule=HostRegexp:pihole.${DOMAINNAME},{catchall:.*}" # Host(`pihole.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.pihole-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.pihole-rtr.service=pihole-svc"
+      - "traefik.http.services.pihole-svc.loadbalancer.server.port=80"
+  # dchp_helper
+  dhcphelper:
+    build: ./dhcp-helper
+    restart: unless-stopped
+    network_mode: "host"
+    command: -s 192.168.2.100
+    cap_add:
+      - NET_ADMIN  
