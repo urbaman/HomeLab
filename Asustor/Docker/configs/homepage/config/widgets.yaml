@@ -1,0 +1,29 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/service-widgets
+
+- logo:
+    icon: mdi-home-outline-#0328fc
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    expanded: true
+    cputemp: true
+    uptime: true
+- openmeteo:
+    label: Anzola dell'Emilia
+    latitude: 44.5473
+    longitude: 11.1956
+    timezone: Europe/Rome
+    units: metric
+    cache: 5
+- datetime:
+    text_size: xl
+    format:
+      dateStyle: long
+      timeStyle: long
+      hourCycle: h23
+- search:
+    provider: google
+    target: _blank

@@ -1,0 +1,45 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+
+- Core:
+    - Asustor Nas1:
+        href: https://asustornas1.urbaman.cloud
+        description: Asustor Nas 1
+        icon: asustor.svg
+        ping: https://192.168.1.31:8001
+        #erver: my-docker
+        #ontainer: dozzle
+    - Portainer:
+        href: https://portainer.urbaman.cloud
+        description: Docker web GUI
+        icon: portainer.svg
+        #ping: https://portainer.urbaman.cloud
+        server: my-docker
+        container: portainer
+        widget:
+          type: portainer
+          url: https://portainer.urbaman.cloud
+          env: 1
+          key: <api_token>
+    - Dozzle:
+        href: https://dozzle.urbaman.cloud
+        description: Docker log reader
+        icon: dozzle.svg
+        #ping: https://dozzle.urbaman.cloud
+        server: my-docker
+        container: dozzle
+
+- Network:
+    - Traefik:
+        href: https://traefik.urbaman.cloud
+        description: Docker service proxy
+        icon: traefik.svg       
+        #ping: https://traefik.urbaman.cloud
+        server: my-docker
+        container: traefik
+
+- My Third Group:
+    - My Third Service:
+        href: http://localhost/
+        description: Homepage is 😎
