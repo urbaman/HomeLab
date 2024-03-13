@@ -1,0 +1,9 @@
+services:
+  cloudflared:
+    container_name: cloudflared
+    image: visibilityspots/cloudflared:latest
+    pull_policy: always
+    restart: unless-stopped
+    networks:
+      pihole:
+        ipv4_address: 192.168.4.101

@@ -1,0 +1,48 @@
+version: "3.9"
+ 
+# NETWORKS
+networks:
+  traefik:
+    external: true
+  pihole:
+    external: true
+#  dnet:
+#    external: true
+ 
+# SECRETS
+secrets:
+  cf_dns_api_token:
+    file: $SECRETSDIR/cf_dns_api_token
+ 
+# SERVICES
+
+include:
+# NETWORK
+  # Traefik 2 - Reverse Proxy
+  - compose/network/traefik.yaml
+
+  #Cloudflared DNS DoH
+  - compose/network/cloudflared.yaml
+
+  #Pihole DNS DHCP server
+  - compose/network/pihole.yaml
+
+  # dchp_helper
+  - compose/network/dhcphelper.yaml
+
+# CORE
+  # Portainer docker dashboard
+  - compose/core/portainer.yaml
+
+  # Dozzle log reader
+  - compose/core/dozzle.yaml
+
+  # Homepage
+  - compose/core/homepage.yaml
+
+# TOOLS
+  # Stirling PDF tools
+  - compose/tools/stirling-pdf.yaml
+
+  # IT Tools
+  - compose/tools/it-tools.yaml

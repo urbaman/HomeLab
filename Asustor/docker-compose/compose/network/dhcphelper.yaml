@@ -1,0 +1,9 @@
+services:
+  dhcphelper:
+    container_name: dhcp-helper
+    build: ./dhcp-helper
+    restart: unless-stopped
+    network_mode: "host"
+    command: -s 192.168.4.100
+    cap_add:
+      - NET_ADMIN
