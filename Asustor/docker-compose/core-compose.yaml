@@ -6,12 +6,15 @@ networks:
 #    external: true
   traefik:
     external: true
+  pihole:
+    external: true
 
 services:
   # Portainer - WebUI for Containers
   portainer:
     container_name: portainer
     image: portainer/portainer-ce:latest # Use portainer-ee if you have a Business Edition license key
+    pull_policy: always
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -19,12 +22,16 @@ services:
     networks:
     #  - dnet
       - traefik
+      - pihole
     command: -H unix:///var/run/docker.sock # # Use Docker Socket Proxy instead for improved security
     #command: -H tcp://socket-proxy:2375
     ports:
       - "9000:9000"
 #      - "8002:8000"
 #      - "9443:9443"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # # Use Docker Socket Proxy instead for improved security
       - $DATADIR/portainer/data:/data # Change to local directory if you want to save/transfer config locally
@@ -43,6 +50,7 @@ services:
   # Dozzle - Real-time Docker Log Viewer
   dozzle:
     image: amir20/dozzle:latest
+    pull_policy: always
     container_name: dozzle
     security_opt:
       - no-new-privileges:true
@@ -51,8 +59,12 @@ services:
     networks:
     #  - dnet
       - traefik
+      - pihole
     ports:
       - "8080:8080"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
     environment:
       - DOZZLE_LEVEL=info
       - DOZZLE_TAILSIZE=300
@@ -75,6 +87,7 @@ services:
   # Homepage
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
+    pull_policy: always
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -83,8 +96,12 @@ services:
     #  - socket_proxy
     #  - dnet
       - traefik
+      - pihole
     ports:
       - 3000:3000
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
     volumes:
       - $CONFIGDIR/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations, see alternative methods
@@ -100,3 +117,4 @@ services:
       # HTTP Services
       - "traefik.http.routers.homepage-rtr.service=homepage-svc"
       - "traefik.http.services.homepage-svc.loadbalancer.server.port=3000"
+

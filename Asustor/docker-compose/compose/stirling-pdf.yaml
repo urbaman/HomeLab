@@ -1,0 +1,39 @@
+services:
+  stirling-pdf:
+    container_name: s-pdf
+    image: frooodle/s-pdf:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - pihole 
+    dns:
+      - 192.168.4.100
+    ports:
+      - '8083:8080'
+    volumes:
+      - $DATADIR/stirling-pdf:/usr/share/tessdata
+      - $CONFIGDIR/stirling-pdf:/configs
+#      - /location/of/customFiles:/customFiles/
+      - $LOGDIR/sitrling-pdf:/logs/
+    environment:
+      - DOCKER_ENABLE_SECURITY=true
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=true
+      - SECURITY_ENABLELOGIN=true
+      - SECURITY_CSRFDISABLED=true
+      - SYSTEM_DEFAULTLOCALE=it_IT
+      - UI_APPNAME=stirling-pdf
+      - UI_HOMEDESCRIPTION=Stirling PDF tools
+      - UI_APPNAMENAVBAR=Stirling-PDF
+      - SYSTEM_MAXFILESIZE=10000
+      - METRICS_ENABLED=true
+      - SYSTEM_GOOGLEVISIBILITY=false
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.s-pdf-rtr.entrypoints=websecure"
+      - "traefik.http.routers.s-pdf-rtr.rule=Host(`s-pdf.$DOMAINNAME_1`)" # HostRegexp:s-pdf.${DOMAINNAME_1},{catchall:.*}" # Host(`s-pdf.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.s-pdf-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.s-pdf-rtr.service=s-pdf-svc"
+      - "traefik.http.services.s-pdf-svc.loadbalancer.server.port=8080"

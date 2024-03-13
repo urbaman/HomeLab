@@ -4,6 +4,8 @@ version: "3.9"
 networks:
   traefik:
     external: true
+  pihole:
+    external: true
 #  dnet:
 #    external: true
  
@@ -19,6 +21,7 @@ services:
   traefik:
     container_name: traefik
     image: traefik:latest
+    pull_policy: always
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -26,6 +29,7 @@ services:
     networks:
 #      - dnet
       - traefik
+      - pihole
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true
@@ -80,6 +84,9 @@ services:
       - "80:80"
       - "443:443"
       - "8082:8082"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
     volumes:
       - $CONFIGDIR/traefik/rules:/rules # Dynamic File Provider directory
       - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy
@@ -101,32 +108,50 @@ services:
       # Middlewares
       # - "traefik.http.routers.traefik-rtr.middlewares=middlewares-basic-auth@file" # For Basic HTTP Authentication
       - "traefik.http.routers.traefik-rtr.middlewares=middlewares-chain-no-auth@file"
+  #Cloudflared DNS DoH
+  cloudflared:
+    container_name: cloudflared
+    image: visibilityspots/cloudflared:latest
+    pull_policy: always
+    restart: unless-stopped
+    networks:
+      pihole:
+        ipv4_address: 192.168.4.101
   #Pihole
   pihole:
     container_name: pihole
+    domainname: docker
+    hostname: pihole
     image: pihole/pihole:latest
-    security_opt:
-      - no-new-privileges:true
+    pull_policy: always
+#    security_opt:
+#      - no-new-privileges:true
     restart: unless-stopped
     # profiles: ["core", "all"]
-    networks:
+#    networks:
 #      - dnet
-      - traefik
+#      - traefik
     ports:
       - "53:53/tcp"
       - "53:53/udp"
+      - "8081:80"
     cap_add:
       - NET_ADMIN
     dns:
-      - 1.1.1.1
-      - 1.0.0.1
+      - 127.0.0.1
     environment:
-      - TZ=$TZ
-      - ServerIP: 192.168.1.31
-      - DNS1: 1.1.1.1
-      - DNS2: 1.0.0.1
-      - VIRTUAL_HOST: pi.hole
-      - DNSMASQ_LISTENING: all
+#      - PUID=${PUID}
+#      - GUID=${GUID}
+      - ServerIP=${SERVER_IP}
+      - PROXY_LOCATION="pihole"
+      - VIRTUAL_HOST=pihole.${DOMAINNAME_1}
+      - VIRTUAL_PORT=80
+      - TZ=${TZ}
+      - WEBPASSWORD=piholeadmin
+      - DNS1=192.168.4.101#5054
+      - IPv6=false
+      - DNS2=""
+      - DNSMASQ_LISTENING=all
     volumes:
       - '$CONFIGDIR/pihole/pihole/:/etc/pihole/'
       - '$CONFIGDIR/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
@@ -134,12 +159,14 @@ services:
       - dhcphelper
     networks:
       traefik:
-        ipv4_address: '192.168.2.100'
+        ipv4_address: '192.168.3.100'
+      pihole:
+        ipv4_address: '192.168.4.100'
     labels:
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
-      - "traefik.http.routers.pihole-rtr.rule=HostRegexp:pihole.${DOMAINNAME},{catchall:.*}" # Host(`pihole.$DOMAINNAME_1`)"
+      - "traefik.http.routers.pihole-rtr.rule=Host(`pihole.$DOMAINNAME_1`)" # HostRegexp:pihole.${DOMAINNAME_1},{catchall:.*}" # Host(`pihole.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.pihole-rtr.middlewares=middlewares-chain-no-auth@file"
       # HTTP Services
@@ -150,6 +177,6 @@ services:
     build: ./dhcp-helper
     restart: unless-stopped
     network_mode: "host"
-    command: -s 192.168.2.100
+    command: -s 192.168.4.100
     cap_add:
-      - NET_ADMIN  
+      - NET_ADMIN
