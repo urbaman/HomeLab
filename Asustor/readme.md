@@ -6,9 +6,14 @@
 - [x] Setup the domain on cloudflare
 - [x] Create directory paths
 - [x] Install Traefik (uninstall nginx)
+- [x] Portainer
 - [x] Try to proxy both Asustor itself and Portainer
-- [x] Dizzle
+- [x] Dozzle
 - [x] Homepage
+- [x] Pihole with dhcphelper and cloudflared for DoH
+- [x] IT-tools
+- [x] Stirling PDF
+- [x] Draw.io
 
 ## Cloudflare domain setup
 
@@ -42,7 +47,10 @@
 ### Docker compose
 
 - \volume1\home\nasadmin\docker-compose
-  - \volume1\home\nasadmin\docker-compose\services
+  - \volume1\home\nasadmin\docker-compose\compose
+  - \volume1\home\nasadmin\docker-compose\compose\core
+  - \volume1\home\nasadmin\docker-compose\compose\network
+  - \volume1\home\nasadmin\docker-compose\compose\tools
   - \volume1\home\nasadmin\docker-compose\secrets (root:root, 600)
   - \volume1\home\nasadmin\docker-compose\.env (root:root, 600)
   - \volume1\home\nasadmin\docker-compose\...
@@ -62,3 +70,11 @@
     - \volume1\Docker\logs\app1
     - \volume1\Docker\logs\app2
     - \volume1\Docker\logs\...
+
+### Create the docker networks
+
+```bash
+docker network create --driver=bridge --subnet=192.168.2.0/24 --gateway=192.168.2.1 dnet
+docker network create --driver=bridge --subnet=192.168.3.0/24 --gateway=192.168.3.1 traefik
+docker network create --driver=bridge --subnet=192.168.4.0/24 --gateway=192.168.4.1 pihole
+```

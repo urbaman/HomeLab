@@ -46,3 +46,6 @@ include:
 
   # IT Tools
   - compose/tools/it-tools.yaml
+
+  # Draw.io
+  - compose/tools/drawio.yaml
