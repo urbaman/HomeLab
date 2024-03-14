@@ -8,8 +8,8 @@ services:
       - pihole 
     dns:
       - 192.168.4.100
-    ports:
-      - '8083:8080'
+#    ports:
+#      - '8083:8080'
     volumes:
       - $DATADIR/stirling-pdf:/usr/share/tessdata
       - $CONFIGDIR/stirling-pdf:/configs

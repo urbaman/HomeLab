@@ -11,8 +11,8 @@ services:
     #  - dnet
       - traefik
       - pihole
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     dns:
       - 192.168.4.100
       - 127.0.0.11

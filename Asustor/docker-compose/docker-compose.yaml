@@ -49,3 +49,6 @@ include:
 
   # Draw.io
   - compose/tools/drawio.yaml
+
+  # Boinc
+  - compose/tools/boinc.yaml

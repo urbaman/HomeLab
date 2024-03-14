@@ -11,8 +11,8 @@ services:
     #  - dnet
       - traefik
       - pihole
-    ports:
-      - 3000:3000
+#    ports:
+#      - 3000:3000
     dns:
       - 192.168.4.100
       - 127.0.0.11

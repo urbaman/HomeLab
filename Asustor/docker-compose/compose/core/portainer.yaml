@@ -14,8 +14,8 @@ services:
       - pihole
     command: -H unix:///var/run/docker.sock # # Use Docker Socket Proxy instead for improved security
     #command: -H tcp://socket-proxy:2375
-    ports:
-      - "9000:9000"
+#    ports:
+#      - "9000:9000"
 #      - "8002:8000"
 #      - "9443:9443"
     dns:
