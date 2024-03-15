@@ -39,6 +39,11 @@ scrape_configs:
     static_configs:
       - targets: ['traefik:8082']
 
+  - job_name: 'pihole'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['piholeexporter:9617']
+
 alerting:
   alertmanagers:
   - scheme: http
