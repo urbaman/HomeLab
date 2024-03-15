@@ -1,0 +1,29 @@
+services:
+  pushgateway:
+    image: prom/pushgateway:latest
+    container_name: pushgateway
+    restart: unless-stopped
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+#   expose:
+#     - 9091
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    networks:
+      - monitoring
+      - pihole
+      - traefik
+    environment:
+      - TZ=$TZ
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.pushgateway-rtr.entrypoints=websecure"
+      - "traefik.http.routers.pushgateway-rtr.rule=Host(`pushgateway.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.pushgateway-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.pushgateway-rtr.service=pushgateway-svc"
+      - "traefik.http.services.pushgateway-svc.loadbalancer.server.port=9090"

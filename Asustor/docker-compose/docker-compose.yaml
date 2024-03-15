@@ -6,6 +6,8 @@ networks:
     external: true
   pihole:
     external: true
+  monitoring:
+    external: true
 #  dnet:
 #    external: true
  
@@ -40,6 +42,25 @@ include:
   # Homepage
   - compose/core/homepage.yaml
 
+# Monitoring
+  # Prometheus
+  - compose/monitoring/prometheus.yaml
+
+  # Alertmanager
+  - compose/monitoring/alertmanager.yaml
+
+  # Nodeexporter
+  - compose/monitoring/nodeexporter.yaml
+
+  # Cadvisor
+  - compose/monitoring/cadvisor.yaml
+
+  # Grafana
+  - compose/monitoring/grafana.yaml
+
+  # Pushgateway
+  - compose/monitoring/pushgateway.yaml
+
 # TOOLS
   # Stirling PDF tools
   - compose/tools/stirling-pdf.yaml
@@ -50,5 +71,6 @@ include:
   # Draw.io
   - compose/tools/drawio.yaml
 
+# Cloud compute
   # Boinc
   - compose/tools/boinc.yaml

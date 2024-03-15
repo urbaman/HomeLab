@@ -1,0 +1,40 @@
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - $CONFIGDIR/prometheus:/etc/prometheus
+      - $DATADIR/prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+#   expose:
+#     - 9090
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    networks:
+      - monitoring
+      - pihole
+      - traefik
+    environment:
+      - TZ=$TZ
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.prometheus-rtr.entrypoints=websecure"
+      - "traefik.http.routers.prometheus-rtr.rule=Host(`prometheus.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.prometheus-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.prometheus-rtr.service=prometheus-svc"
+      - "traefik.http.services.prometheus-svc.loadbalancer.server.port=9090"
