@@ -5,15 +5,33 @@
 - [x] Create new domain urbaman.cloud
 - [x] Setup the domain on cloudflare
 - [x] Create directory paths
+
+Network and Core tools
+
 - [x] Install Traefik (uninstall nginx)
 - [x] Portainer
 - [x] Try to proxy both Asustor itself and Portainer
 - [x] Dozzle
 - [x] Homepage
 - [x] Pihole with dhcphelper and cloudflared for DoH
+
+Tools
+
 - [x] IT-tools
 - [x] Stirling PDF
 - [x] Draw.io
+- [x] BOINC
+
+Monitoring:
+
+- [x] Prometheus
+- [x] Alertmanager
+- [x] Pushgateway
+- [x] Grafana
+- [x] Cadvisor
+- [x] Node Exporter
+- [x] Pihole Exporter
+- [x] Traefik monitoring
 
 ## Cloudflare domain setup
 
