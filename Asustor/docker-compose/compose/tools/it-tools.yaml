@@ -14,7 +14,7 @@ services:
 #      - $DATADIR/stirling-pdf:/usr/share/tessdata
     environment:
 #      - SYSTEM_DEFAULTLOCALE=it_IT
-      - TZ=$TZ
+      - TZ=${TZ}
     labels:
       - "traefik.enable=true"
       # HTTP Routers

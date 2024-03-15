@@ -9,6 +9,7 @@ services:
     volumes:
       - $CONFIGDIR/alertmanager:/etc/alertmanager
       - $DATADIR/alertmanager:/alertmanager
+    user: "1000"
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
@@ -20,14 +21,17 @@ services:
       - pihole
       - traefik
     environment:
-      - TZ=$TZ
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
-      - "traefik.http.routers.alermanager-rtr.entrypoints=websecure"
-      - "traefik.http.routers.alermanager-rtr.rule=Host(`alermanager.$DOMAINNAME_1`)"
+      - "traefik.http.routers.alertmanager-rtr.entrypoints=websecure"
+      - "traefik.http.routers.alertmanager-rtr.rule=Host(`alertmanager.$DOMAINNAME_1`)"
       # Middlewares
-      - "traefik.http.routers.alermanager-rtr.middlewares=middlewares-chain-no-auth@file"
+      - "traefik.http.routers.alertmanager-rtr.middlewares=middlewares-chain-no-auth@file"
       # HTTP Services
-      - "traefik.http.routers.alermanager-rtr.service=alermanager-svc"
-      - "traefik.http.services.alermanager-svc.loadbalancer.server.port=9093"
+      - "traefik.http.routers.alertmanager-rtr.service=alertmanager-svc"
+      - "traefik.http.services.alertmanager-svc.loadbalancer.server.port=9093"

@@ -9,6 +9,7 @@ services:
     volumes:
       - $CONFIGDIR/prometheus:/etc/prometheus
       - $DATADIR/prometheus:/prometheus
+    user: "1000"
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -27,8 +28,11 @@ services:
       - pihole
       - traefik
     environment:
-      - TZ=$TZ
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.prometheus-rtr.entrypoints=websecure"

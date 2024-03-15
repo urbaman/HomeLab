@@ -15,9 +15,9 @@ services:
       - $DATADIR/boinc:/config
 #      - $LOGDIR/stirling-pdf:/logs
     environment:
-      - TZ=$TZ
-      - PUID=1000
-      - PGID=1000
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
     devices:
       - /dev/dri:/dev/dri
     labels:

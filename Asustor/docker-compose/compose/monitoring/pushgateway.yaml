@@ -16,8 +16,11 @@ services:
       - pihole
       - traefik
     environment:
-      - TZ=$TZ
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.pushgateway-rtr.entrypoints=websecure"
@@ -26,4 +29,4 @@ services:
       - "traefik.http.routers.pushgateway-rtr.middlewares=middlewares-chain-no-auth@file"
       # HTTP Services
       - "traefik.http.routers.pushgateway-rtr.service=pushgateway-svc"
-      - "traefik.http.services.pushgateway-svc.loadbalancer.server.port=9090"
+      - "traefik.http.services.pushgateway-svc.loadbalancer.server.port=9091"

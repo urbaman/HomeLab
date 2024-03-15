@@ -3,6 +3,8 @@ services:
     image: prom/node-exporter:latest
     container_name: nodeexporter
     pull_policy: always
+    environment:
+      - TZ=${TZ}
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -20,3 +22,5 @@ services:
     networks:
       - monitoring
       - pihole
+    labels:
+      - "org.label-schema.group=monitoring"

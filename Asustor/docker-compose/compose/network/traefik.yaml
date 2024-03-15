@@ -75,7 +75,7 @@ services:
       - $CONFIGDIR/traefik/acme/acme.json:/acme.json # Certs File
       - $LOGDIR/traefik:/logs # Traefik logs
     environment:
-      - TZ=$TZ
+      - TZ=${TZ}
       - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
       - DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
     secrets:

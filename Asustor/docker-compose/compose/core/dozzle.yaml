@@ -22,7 +22,7 @@ services:
       - DOZZLE_FILTER="status=running"
       # - DOZZLE_FILTER: "label=log_me" # limits logs displayed to containers with this label
       # - DOCKER_HOST: tcp://socket-proxy:2375
-      - TZ=$TZ
+      - TZ=${TZ}
     labels:
       - "traefik.enable=true"
       # HTTP Routers

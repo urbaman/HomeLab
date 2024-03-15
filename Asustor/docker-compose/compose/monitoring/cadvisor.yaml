@@ -1,7 +1,7 @@
 # /var/lib/docker is /volume1/.@plugins/AppCentral/docker-ce/docker_lib
 services:
   cadvisor:
-    image: gcr.io/google-containers/cadvisor:v0.49.1
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
@@ -13,8 +13,8 @@ services:
     restart: unless-stopped
     privileged: true
     environment:
-      - TZ=$TZ
-    device:
+      - TZ=${TZ}
+    devices:
       - /dev/kmsg
 #    expose:
 #      - 8080
@@ -24,3 +24,5 @@ services:
     dns:
       - 192.168.4.100
       - 127.0.0.11
+    labels:
+      - "org.label-schema.group=monitoring"

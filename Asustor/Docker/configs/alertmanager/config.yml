@@ -16,7 +16,7 @@ receivers:
     email_configs:
     - to: 'admin@urbaman.it'
       from: 'admin@urbaman.it'
-      smarthost: smtp.urbaman.it587
+      smarthost: smtp.urbaman.it:587
       auth_username: 'admin@urbaman.it'
       auth_identity: 'admin@urbaman.it'
       auth_password: ')1f?zd97SKGI'
