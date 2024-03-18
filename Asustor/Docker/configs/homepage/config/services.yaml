@@ -7,26 +7,33 @@
         href: https://asustornas1.urbaman.cloud
         description: Asustor Nas 1
         icon: asustor.svg
-        ping: https://192.168.1.31:8001
-        #erver: my-docker
-        #ontainer: dozzle
+        ping: https://asustornas1.urbaman.cloud
+        #server: my-docker
+        #container: dozzle
+    - Asustor Nas1 Shell:
+        href: https://nasshell.urbaman.cloud
+        description: Asustor Nas 1 SSH Shell
+        icon: terminal.svg
+        ping: https://nasshell.urbaman.cloud
+        #server: my-docker
+        #container: dozzle
     - Portainer:
         href: https://portainer.urbaman.cloud
         description: Docker web GUI
         icon: portainer.svg
-        #ping: https://portainer.urbaman.cloud
+        ping: https://portainer.urbaman.cloud
         server: my-docker
         container: portainer
         widget:
           type: portainer
           url: https://portainer.urbaman.cloud
           env: 1
-          key: <api_token>
+          key: ptr_2EuN/LNvJbElQyeAQs/0ssA5rTO/8YCBuDb8uBkFYgk=
     - Dozzle:
         href: https://dozzle.urbaman.cloud
         description: Docker log reader
         icon: dozzle.svg
-        #ping: https://dozzle.urbaman.cloud
+        ping: https://dozzle.urbaman.cloud
         server: my-docker
         container: dozzle
 
@@ -35,11 +42,95 @@
         href: https://traefik.urbaman.cloud
         description: Docker service proxy
         icon: traefik.svg       
-        #ping: https://traefik.urbaman.cloud
+        ping: https://traefik.urbaman.cloud
         server: my-docker
         container: traefik
+        widget:
+          type: traefik
+          url: https://traefik.urbaman.cloud
+    - Pihole:
+        href: https://pihole.urbaman.cloud
+        description: Pihole DNS DHSP server
+        icon: pi-hole.svg
+        ping: https://pihole.urbaman.cloud
+        server: my-docker
+        container: pihole
+        widget:
+          type: pihole
+          url: https://pihole.urbaman.cloud
+          key: 3dc684147909199a5d258b84e0df0b23bb75de01f33e38c2f616be04a7c4bd67
 
-- My Third Group:
-    - My Third Service:
-        href: http://localhost/
-        description: Homepage is 😎
+- Tools:
+    - Stirling-PDF:
+        href: https://s-pdf.urbaman.cloud
+        description: Stirling PDF tools
+        icon: stirling-pdf.svg
+        ping: https://s-pdf.urbaman.cloud
+        server: my-docker
+        container: s-pdf
+    - IT-Tools:
+        href: https://it-tools.urbaman.cloud
+        description: IT Tools
+        icon: it-tools.svg
+        ping: https://it-tools.urbaman.cloud
+        server: my-docker
+        container: it-tools
+    - Drawio:
+        href: https://drawio.urbaman.cloud
+        description: Diagram drawing tool
+        icon: si-diagramsdotnet-#F08705
+        ping: https://drawio.urbaman.cloud
+        server: my-docker
+        container: drawio
+    - Boinc:                                 
+        href: https://boinc.urbaman.cloud
+        description: Distributed scientific calc                      
+        icon: https://boinc.berkeley.edu/logo/boinc_logo_ai.svg
+        ping: https://boinc.urbaman.cloud
+        server: my-docker             
+        container: boinc
+    - Code-server:
+        href: https://code-server.urbaman.cloud
+        description: VSCode server
+        icon: vscode.svg
+        ping: https://code-server.urbaman.cloud
+        server: my-docker
+        container: code-server
+
+- Monitoring:
+    - Grafana:
+        href: https://grafana.urbaman.cloud
+        description: Grafana monitoring dashboards
+        icon: grafana.svg
+        ping: https://grafana.urbaman.cloud
+        server: my-docker
+        container: grafana
+        widget:
+          type: grafana
+          url: https://grafana.urbaman.cloud
+          username: admin
+          password: grafanaadmin
+    - Prometheus:
+        href: https://prometheus.urbaman.cloud
+        description: Prometheus monitoring metrics
+        icon: prometheus.svg
+        ping: https://prometheus.urbaman.cloud
+        server: my-docker
+        container: prometheus
+        widget:
+          type: prometheus
+          url: https://prometheus.urbaman.cloud
+    - Alertmanager:
+        href: https://alertmanager.urbaman.cloud
+        description: Alertmanager alerting tool
+        icon: alertmanager.svg
+        ping: https://alertmanager.urbaman.cloud
+        server: my-docker
+        container: alertmanager
+    - Pushgateway:
+        href: https://pushgateway.urbaman.cloud
+        description: Pushgateway for prometheus injection
+        icon: prometheus.svg
+        ping: https://pushgateway.urbaman.cloud
+        server: my-docker
+        container: pushgateway
