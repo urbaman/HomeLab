@@ -19,7 +19,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - PIHOLE_HOSTNAME=pihole
-      - PIHOLE_PASSWORD=piholeadmin
+      - PIHOLE_PASSWORD=${PIHOLEPASSWORD}
       - PIHOLE_PORT=80
     labels:
       - "org.label-schema.group=monitoring"

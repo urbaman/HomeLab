@@ -28,7 +28,7 @@ services:
       - VIRTUAL_HOST=pihole.${DOMAINNAME_1}
       - VIRTUAL_PORT=80
       - TZ=${TZ}
-      - WEBPASSWORD=piholeadmin
+      - WEBPASSWORD=$PIHOLEPASSWORD
       - DNS1=192.168.4.101#5054
       - IPv6=false
       - DNS2=""

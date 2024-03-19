@@ -9,7 +9,7 @@ services:
       - TZ=${TZ}
       - PASSWORD=codeserveradmin
 #      - HASHED_PASSWORD= #optional
-      - SUDO_PASSWORD=codeserveradmin #optional
+      - SUDO_PASSWORD=${CODESERVERPASSWORD} #optional
 #      - SUDO_PASSWORD_HASH= #optional
       - PROXY_DOMAIN=code-server.urbaman.cloud #optional
       - DEFAULT_WORKSPACE=/config/workspace #optional
