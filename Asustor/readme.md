@@ -21,6 +21,8 @@ Tools
 - [x] Stirling PDF
 - [x] Draw.io
 - [x] BOINC
+- [x] Code Server
+- [ ] Calibre and Calibre web - https://academy.pointtosource.com/containers/ebooks-calibre-readarr/
 
 Monitoring:
 
