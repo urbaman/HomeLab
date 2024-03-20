@@ -22,7 +22,7 @@ Tools
 - [x] Draw.io
 - [x] BOINC
 - [x] Code Server
-- [ ] Media server (Transmission, Prowlarr, Flaresolverr, Sonarr, Radarr, Readarr, Lidarr, Sonarr, Umpackerr, Plex, ...) - https://academy.pointtosource.com/containers/all-in-one-media-server-docker/
+- [ ] Media server (Transmission, Prowlarr, Flaresolverr, Sonarr, Radarr, Readarr, Lidarr, Sonarr, Umpackerr, Plex, ...) - https://academy.pointtosource.com/containers/all-in-one-media-server-docker/ - https://wiki.servarr.com/ - https://trash-guides.info/
 - [ ] Calibre and Calibre web - https://academy.pointtosource.com/containers/ebooks-calibre-readarr/
 
 Monitoring:
