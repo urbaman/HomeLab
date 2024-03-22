@@ -21,12 +21,12 @@ data:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nextcloud-pvc
+  name: nextcloud-config-pvc
   namespace: nextcloud
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: rook-cephfs-ssd4t
+  storageClassName: asustor-nfs-client
   resources:
     requests:
       storage: 8Gi
@@ -39,7 +39,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: rook-cephfs-hdd5t
+  storageClassName: asustor-nfs-client
   resources:
     requests:
       storage: 5Ti
@@ -64,12 +64,12 @@ spec:
       volumes:
       - name: nextcloud-app
         persistentVolumeClaim: 
-          claimName: nextcloud-pvc
+          claimName: nextcloud-config-pvc
       - name: nextcloud-data
         persistentVolumeClaim: 
           claimName: nextcloud-data-pvc
       containers:
-        - image: nextcloud:apache
+        - image: nextcloud:latest
           name: nextcloud 
           ports:
             - containerPort: 80

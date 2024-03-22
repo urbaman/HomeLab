@@ -33,6 +33,8 @@ We now deploy nextcloud, after having setup the various env variables (DB and RE
 kubectl apply -f nextcloud-deploy.yaml
 ```
 
+Log in to the nfs server and set www-data:www-data the owner of the created data volume (no need for the config one). Probably not needed when installing.
+
 Login and setup
 
 - ClamAV: [https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html](https://docs.nextcloud.com/server/22/admin_manual/configuration_server/antivirus_configuration.html).
