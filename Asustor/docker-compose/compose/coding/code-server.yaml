@@ -1,0 +1,34 @@
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    pull_policy: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${GUID}
+      - TZ=${TZ}
+      - PASSWORD=codeserveradmin
+#      - HASHED_PASSWORD= #optional
+      - SUDO_PASSWORD=${CODESERVERPASSWORD} #optional
+#      - SUDO_PASSWORD_HASH= #optional
+      - PROXY_DOMAIN=code-server.urbaman.cloud #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - $CONFIGDIR/code-server/config:/config
+    networks:
+      - traefik
+      - pihole
+#    ports:
+#      - 8443:8443
+    restart: unless-stopped
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.code-server-rtr.entrypoints=websecure"
+      - "traefik.http.routers.code-server-rtr.rule=Host(`code-server.$DOMAINNAME_1`)" # HostRegexp:code-server.${DOMAINNAME_1},{catchall:.*}" # Host(`code-server.$DOMAI
+      # Middlewares
+      - "traefik.http.routers.code-server-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.code-server-rtr.service=code-server-svc"
+      - "traefik.http.services.code-server-svc.loadbalancer.server.port=8443"

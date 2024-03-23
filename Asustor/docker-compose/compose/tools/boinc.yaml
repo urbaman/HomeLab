@@ -1,0 +1,32 @@
+services:
+  boinc:
+    container_name: boinc
+    image: lscr.io/linuxserver/boinc:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - pihole 
+    dns:
+      - 192.168.4.100
+#    ports:
+#      - '8083:8080'
+    volumes:
+#      - $DATADIR/:/usr/share/tessdata
+      - $DATADIR/boinc:/config
+#      - $LOGDIR/stirling-pdf:/logs
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    devices:
+      - /dev/dri:/dev/dri
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.boinc-rtr.entrypoints=websecure"
+      - "traefik.http.routers.boinc-rtr.rule=Host(`boinc.$DOMAINNAME_1`)" # HostRegexp:boinc.${DOMAINNAME_1},{catchall:.*}" # Host(`boinc.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.boinc-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.boinc-rtr.service=boinc-svc"
+      - "traefik.http.services.boinc-svc.loadbalancer.server.port=8080"

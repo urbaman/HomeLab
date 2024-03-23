@@ -1,0 +1,55 @@
+services:
+  pihole:
+    container_name: pihole
+    domainname: docker
+    hostname: pihole
+    image: pihole/pihole:latest
+    pull_policy: always
+#    security_opt:
+#      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["core", "all"]
+#    networks:
+#      - dnet
+#      - traefik
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+#      - "8081:80"
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 127.0.0.1
+    environment:
+#      - PUID=${PUID}
+#      - GUID=${GUID}
+      - ServerIP=${SERVER_IP}
+      - PROXY_LOCATION="pihole"
+      - VIRTUAL_HOST=pihole.${DOMAINNAME_1}
+      - VIRTUAL_PORT=80
+      - TZ=${TZ}
+      - WEBPASSWORD=$PIHOLEPASSWORD
+      - DNS1=192.168.4.101#5054
+      - IPv6=false
+      - DNS2=""
+      - DNSMASQ_LISTENING=all
+    volumes:
+      - '$CONFIGDIR/pihole/pihole/:/etc/pihole/'
+      - '$CONFIGDIR/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
+    depends_on:
+      - dhcphelper
+    networks:
+      traefik:
+        ipv4_address: '192.168.3.100'
+      pihole:
+        ipv4_address: '192.168.4.100'
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
+      - "traefik.http.routers.pihole-rtr.rule=Host(`pihole.$DOMAINNAME_1`)" # HostRegexp:pihole.${DOMAINNAME_1},{catchall:.*}" # Host(`pihole.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.pihole-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.pihole-rtr.service=pihole-svc"
+      - "traefik.http.services.pihole-svc.loadbalancer.server.port=80"

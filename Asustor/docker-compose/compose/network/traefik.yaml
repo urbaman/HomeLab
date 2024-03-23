@@ -1,24 +1,9 @@
-version: "3.9"
- 
-# NETWORKS
-networks:
-  traefik:
-    external: true
-#  dnet:
-#    external: true
- 
-# SECRETS
-secrets:
-  cf_dns_api_token:
-    file: $SECRETSDIR/cf_dns_api_token
- 
-# SERVICES
-
 services:
   # Traefik 2 - Reverse Proxy
   traefik:
     container_name: traefik
     image: traefik:latest
+    pull_policy: always
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -26,6 +11,7 @@ services:
     networks:
 #      - dnet
       - traefik
+      - pihole
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true
@@ -60,7 +46,7 @@ services:
       - --providers.docker.endpoint=unix:///var/run/docker.sock # Disable for Socket Proxy. Enable otherwise.
       # - --providers.docker.endpoint=tcp://socket-proxy:2375 # Enable for Socket Proxy. Disable otherwise.
       - --providers.docker.exposedByDefault=false
-      - --providers.docker.network=t2_proxy 
+      - --providers.docker.network=t2_proxy
       - --providers.docker.swarmMode=false
       - --entrypoints.websecure.http.tls.options=tls-opts@file
       # Add dns-cloudflare as default certresolver for all services. Also enables TLS and no need to specify on individual services
@@ -80,18 +66,22 @@ services:
       - "80:80"
       - "443:443"
       - "8082:8082"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
     volumes:
       - $CONFIGDIR/traefik/rules:/rules # Dynamic File Provider directory
       - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy
-      - $CONFIGDIR/traefik/acme/acme.json:/acme.json # Certs File 
+      - $CONFIGDIR/traefik/acme/acme.json:/acme.json # Certs File
       - $LOGDIR/traefik:/logs # Traefik logs
     environment:
-      - TZ=$TZ
-      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token    
-      - DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules. 
+      - TZ=${TZ}
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
+      - DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
     secrets:
       - cf_dns_api_token
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
@@ -101,61 +91,3 @@ services:
       # Middlewares
       # - "traefik.http.routers.traefik-rtr.middlewares=middlewares-basic-auth@file" # For Basic HTTP Authentication
       - "traefik.http.routers.traefik-rtr.middlewares=middlewares-chain-no-auth@file"
-  #Pihole
-  pihole:
-    container_name: pihole
-    domainname: docker
-    hostname: pihole
-    image: pihole/pihole:latest
-    security_opt:
-      - no-new-privileges:true
-    restart: unless-stopped
-    # profiles: ["core", "all"]
-#    networks:
-#      - dnet
-#      - traefik
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "8081:80"
-    cap_add:
-      - NET_ADMIN
-    dns:
-      - 1.1.1.1
-      - 1.0.0.1
-    environment:
-      - ServerIP=${SERVER_IP}
-      - PROXY_LOCATION="pihole"
-      - VIRTUAL_HOST=pihole.${DOMAINNAME}
-      - VIRTUAL_PORT=80
-      - TZ=${TZ}
-      - WEBPASSWORD="password"
-      - DNS1=1.1.1.1
-      - DNS2=1.0.0.1
-      - DNSMASQ_LISTENING=all
-    volumes:
-      - '$CONFIGDIR/pihole/pihole/:/etc/pihole/'
-      - '$CONFIGDIR/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
-    depends_on:
-      - dhcphelper
-    networks:
-      traefik:
-        ipv4_address: '192.168.3.100'
-    labels:
-      - "traefik.enable=true"
-      # HTTP Routers
-      - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
-      - "traefik.http.routers.pihole-rtr.rule=HostRegexp:pihole.${DOMAINNAME},{catchall:.*}" # Host(`pihole.$DOMAINNAME_1`)"
-      # Middlewares
-      - "traefik.http.routers.pihole-rtr.middlewares=middlewares-chain-no-auth@file"
-      # HTTP Services
-      - "traefik.http.routers.pihole-rtr.service=pihole-svc"
-      - "traefik.http.services.pihole-svc.loadbalancer.server.port=80"
-  # dchp_helper
-  dhcphelper:
-    build: ./dhcp-helper
-    restart: unless-stopped
-    network_mode: "host"
-    command: -s 192.168.3.100
-    cap_add:
-      - NET_ADMIN

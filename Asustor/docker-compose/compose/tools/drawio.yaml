@@ -1,0 +1,27 @@
+services:
+  drawio:
+    container_name: drawio
+    image: jgraph/drawio:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - pihole 
+    dns:
+      - 192.168.4.100
+#    ports:
+#      - '8085:8080'
+#    volumes:
+#      - $DATADIR/stirling-pdf:/usr/share/tessdata
+    environment:
+#      - SYSTEM_DEFAULTLOCALE=it_IT
+      - TZ=${TZ}
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.drawio-rtr.entrypoints=websecure"
+      - "traefik.http.routers.drawio-rtr.rule=Host(`drawio.$DOMAINNAME_1`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.drawio-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.drawio-rtr.service=drawio-svc"
+      - "traefik.http.services.drawio-svc.loadbalancer.server.port=8080"

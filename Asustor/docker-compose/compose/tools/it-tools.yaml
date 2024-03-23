@@ -1,0 +1,27 @@
+services:
+  it-tools:
+    container_name: it-tools
+    image: corentinth/it-tools:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - pihole 
+    dns:
+      - 192.168.4.100
+#    ports:
+#      - '8084:80'
+#    volumes:
+#      - $DATADIR/stirling-pdf:/usr/share/tessdata
+    environment:
+#      - SYSTEM_DEFAULTLOCALE=it_IT
+      - TZ=${TZ}
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.it-tools-rtr.entrypoints=websecure"
+      - "traefik.http.routers.it-tools-rtr.rule=Host(`it-tools.$DOMAINNAME_1`)" # HostRegexp:it-tools.${DOMAINNAME_1},{catchall:.*}" # Host(`it-tools.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.it-tools-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.it-tools-rtr.service=it-tools-svc"
+      - "traefik.http.services.it-tools-svc.loadbalancer.server.port=80"

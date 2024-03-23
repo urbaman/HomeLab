@@ -1,0 +1,37 @@
+services:
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - $CONFIGDIR/alertmanager:/etc/alertmanager
+      - $DATADIR/alertmanager:/alertmanager
+    user: "1000"
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+#    expose:
+#      - 9093
+    networks:
+      - monitoring
+      - pihole
+      - traefik
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.alertmanager-rtr.entrypoints=websecure"
+      - "traefik.http.routers.alertmanager-rtr.rule=Host(`alertmanager.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.alertmanager-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.alertmanager-rtr.service=alertmanager-svc"
+      - "traefik.http.services.alertmanager-svc.loadbalancer.server.port=9093"
