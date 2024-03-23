@@ -104,29 +104,35 @@ services:
   #Pihole
   pihole:
     container_name: pihole
+    domainname: docker
+    hostname: pihole
     image: pihole/pihole:latest
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
     # profiles: ["core", "all"]
-    networks:
+#    networks:
 #      - dnet
-      - traefik
+#      - traefik
     ports:
       - "53:53/tcp"
       - "53:53/udp"
+      - "8081:80"
     cap_add:
       - NET_ADMIN
     dns:
       - 1.1.1.1
       - 1.0.0.1
     environment:
-      - TZ=$TZ
-      - ServerIP: 192.168.1.31
-      - DNS1: 1.1.1.1
-      - DNS2: 1.0.0.1
-      - VIRTUAL_HOST: pi.hole
-      - DNSMASQ_LISTENING: all
+      - ServerIP=${SERVER_IP}
+      - PROXY_LOCATION="pihole"
+      - VIRTUAL_HOST=pihole.${DOMAINNAME}
+      - VIRTUAL_PORT=80
+      - TZ=${TZ}
+      - WEBPASSWORD="password"
+      - DNS1=1.1.1.1
+      - DNS2=1.0.0.1
+      - DNSMASQ_LISTENING=all
     volumes:
       - '$CONFIGDIR/pihole/pihole/:/etc/pihole/'
       - '$CONFIGDIR/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
@@ -134,7 +140,7 @@ services:
       - dhcphelper
     networks:
       traefik:
-        ipv4_address: '192.168.2.100'
+        ipv4_address: '192.168.3.100'
     labels:
       - "traefik.enable=true"
       # HTTP Routers
@@ -150,6 +156,6 @@ services:
     build: ./dhcp-helper
     restart: unless-stopped
     network_mode: "host"
-    command: -s 192.168.2.100
+    command: -s 192.168.3.100
     cap_add:
-      - NET_ADMIN  
+      - NET_ADMIN

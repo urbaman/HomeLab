@@ -2,15 +2,141 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: media-server-pvc
+  name: media-server-data-pvc
   namespace: media-server
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 15Ti
-  storageClassName: rook-cephfs-ssd4t
+      storage: 5Ti
+  storageClassName: asustor-nfs-client
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bazarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lidarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: readarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transmission-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+# Persistent Volume Claim for all configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: unpackerr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
 ---
 # Persistent Volume Claim for Plex Transcoding
 apiVersion: v1
@@ -52,7 +178,10 @@ spec:
       volumes:
       - name: transmission-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: transmission-config
+        persistentVolumeClaim:
+          claimName: transmission-config-pvc
       containers:
         - image: lscr.io/linuxserver/transmission:latest
           name: transmission
@@ -82,8 +211,7 @@ spec:
              subPath: watch/transmission
              name: transmission-data
            - mountPath: /config
-             subPath: configs/transmission
-             name: transmission-data
+             name: transmission-config
 ---
 apiVersion: v1
 kind: Service
@@ -444,7 +572,7 @@ spec:
       volumes:
       - name: prowlarr-config
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: prowlarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/prowlarr:latest
           name: prowlarr
@@ -462,7 +590,6 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/prowlarr
              name: prowlarr-config
 ---
 apiVersion: v1
@@ -623,7 +750,10 @@ spec:
       volumes:
       - name: sonarr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: sonarr-config
+        persistentVolumeClaim:
+          claimName: sonarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/sonarr:latest
           name: sonarr
@@ -641,8 +771,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/sonarr
-             name: sonarr-data
+             name: sonarr-config
            - mountPath: /tv
              subPath: library/tv
              name: sonarr-data
@@ -808,7 +937,10 @@ spec:
       volumes:
       - name: radarr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: radarr-config
+        persistentVolumeClaim:
+          claimName: radarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/radarr:latest
           name: radarr
@@ -826,8 +958,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/radarr
-             name: radarr-data
+             name: radarr-config
            - mountPath: /movies
              subPath: library/movies
              name: radarr-data
@@ -993,7 +1124,10 @@ spec:
       volumes:
       - name: lidarr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: lidarr-config
+        persistentVolumeClaim:
+          claimName: lidarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/lidarr:latest
           name: lidarr
@@ -1011,8 +1145,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/lidarr
-             name: lidarr-data
+             name: lidarr-config
            - mountPath: /music
              subPath: library/music
              name: lidarr-data
@@ -1178,7 +1311,10 @@ spec:
       volumes:
       - name: readarr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: readarr-config
+        persistentVolumeClaim:
+          claimName: readarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/readarr:develop
           name: readarr
@@ -1196,8 +1332,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/readarr
-             name: readarr-data
+             name: readarr-config
            - mountPath: /books
              subPath: library/books
              name: readarr-data
@@ -1363,7 +1498,10 @@ spec:
       volumes:
       - name: bazarr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: bazarr-config
+        persistentVolumeClaim:
+          claimName: bazarr-config-pvc
       containers:
         - image: lscr.io/linuxserver/bazarr:latest
           name: bazarr
@@ -1381,8 +1519,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/bazarr
-             name: bazarr-data
+             name: bazarr-config
            - mountPath: /movies
              subPath: library/movies
              name: bazarr-data
@@ -1548,7 +1685,10 @@ spec:
       volumes:
       - name: unpackerr-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
+      - name: unpackerr-config
+        persistentVolumeClaim:
+          claimName: unpackerr-config-pvc
       containers:
         - image: ghcr.io/hotio/unpackerr:latest
           name: unpackerr
@@ -1568,8 +1708,7 @@ spec:
              protocol: TCP
           volumeMounts:
            - mountPath: /config
-             subPath: configs/unpackerr
-             name: unpackerr-data
+             name: unpackerr-config
            - mountPath: /data
              subPath: downloads/transmission/complete
              name: unpackerr-data
@@ -1591,120 +1730,6 @@ spec:
   selector:
     app: unpackerr
 ---
-## Unpackerr Traefik
-#apiVersion: cert-manager.io/v1
-#kind: Certificate
-#metadata:
-#  name: unpackerr-urbaman
-#  namespace: media-server
-#spec:
-#  # Certificate will be valid for these domain names
-#  dnsNames:
-#  - unpackerr.urbaman.it
-#  # Reference our issuer
-#  # As it's a ClusterIssuer, it can be in a different namespace
-#  issuerRef:
-#    kind: ClusterIssuer
-#    name: cert-manager-acme-issuer
-#  # Secret that will be created with our certificate and private keys
-#  secretName: unpackerr-urbaman
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: traefik-unpackerr-https-redirect
-#  namespace: media-server
-#spec:
-#  redirectScheme:
-#    scheme: https
-#    permanent: true
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: traefik-unpackerr-security
-#  namespace: media-server
-#spec:
-#  headers:
-#    frameDeny: true
-#    sslRedirect: true
-#    browserXssFilter: true
-#    contentTypeNosniff: true
-#    stsIncludeSubdomains: true
-#    stsPreload: true
-#    stsSeconds: 31536000
-#---
-#apiVersion: traefik.io/v1alpha1
-#kind: ServersTransport
-#metadata:
-#  name: traefik-unpackerr-transport
-#  namespace: media-server
-#spec:
-#  serverName: unpackerr 
-#  insecureSkipVerify: true
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: TLSOption
-#metadata:
-#  name: traefik-unpackerr-tlsoptions
-#  namespace: media-server
-#spec:
-#  minVersion: VersionTLS12
-#  cipherSuites:
-#    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
-#    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-#    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-#    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-#    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-#    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-#    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-#    - TLS_AES_256_GCM_SHA384
-#    - TLS_AES_128_GCM_SHA256
-#    - TLS_CHACHA20_POLY1305_SHA256
-#    - TLS_FALLBACK_SCSV
-#  curvePreferences:
-#    - CurveP521
-#    - CurveP384
-#  sniStrict: false
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: IngressRoute
-#metadata:
-#  name: traefik-unpackerr-websecure
-#  namespace: media-server 
-#spec:
-#  entryPoints:
-#    - websecure
-#  routes:
-#    - kind: Rule
-#      match: Host(`unpackerr.urbaman.it`)
-#      services:
-#        - name: unpackerr
-#          port: 5656
-#          serversTransport: traefik-unpackerr-transport
-#      middlewares:
-#        - name: traefik-unpackerr-security
-#  tls:
-#    secretName: unpackerr-urbaman
-#    options:
-#      name: traefik-unpackerr-tlsoptions
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: IngressRoute
-#metadata:
-#  name: traefik-unpackerr-web
-#  namespace: media-server
-#spec:
-#  entryPoints:
-#    - web
-#  routes:
-#    - kind: Rule
-#      match: Host(`unpackerr.urbaman.it`)
-#      services:
-#        - name: unpackerr
-#          port: 5656
-#      middlewares:
-#        - name: traefik-unpackerr-https-redirect
 # Plex Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -1731,14 +1756,20 @@ spec:
       volumes:
       - name: plex-data
         persistentVolumeClaim:
-          claimName: media-server-pvc
+          claimName: media-server-data-pvc
       - name: plex-transcoding
         persistentVolumeClaim:
           claimName: plex-transcoding-pvc
+      - name: plex-config
+        persistentVolumeClaim:
+          claimName: plex-config-pvc
       containers:
         - image: plexinc/pms-docker
           name: plex
           imagePullPolicy: Always
+          resources:
+            limits:
+              nvidia.com/gpu: 1 # requesting 1 GPUs
           env:
             - name:  TZ
               value: Europe/Rome
@@ -1746,8 +1777,10 @@ spec:
               value: "1000"
             - name: PLEX_GID
               value: "1000"
+            - name: ADVERTISE_IP
+              value: "http://10.0.50.103:32400"
             - name: PLEX_CLAIM
-              value: "<CleimToken>"
+              value: "claim-1Jt8UF23imhPvevVAczz"
             - name: NVIDIA_VISIBLE_DEVICES
               value: "all"
             - name: NVIDIA_DRIVER_CAPABILITIES
@@ -1782,11 +1815,9 @@ spec:
              subPath: library
              name: plex-data
            - mountPath: /transcode
-#             subPath: watch/transmission
              name: plex-transcoding
            - mountPath: /config
-             subPath: configs/plex
-             name: plex-data
+             name: plex-config
 ---
 apiVersion: v1
 kind: Service
@@ -1796,7 +1827,7 @@ metadata:
     app: plex
   namespace: media-server
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - targetPort: 32400
       name: http-32400
