@@ -1,6 +1,6 @@
 # Traefik
 
-## Gluster for storage (use Longhorn instead, not needed for HA through cert-manager)
+## Gluster for storage (use Rook instead, not needed for HA through cert-manager)
 
 ### Create the glusterfs endpoints in the traefik namespace
 

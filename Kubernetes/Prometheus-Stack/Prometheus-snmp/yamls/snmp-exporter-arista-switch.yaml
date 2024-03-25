@@ -3,7 +3,7 @@ restartPolicy: Always
 kind: Deployment
 
 image:
-  repository: prom/snmp-exporter
+  repository: quay.io/prometheus/snmp-exporter
   # if not set appVersion field from Chart.yaml is used
   tag: ""
   pullPolicy: IfNotPresent
@@ -29,16 +29,17 @@ containerSecurityContext:
   readOnlyRootFilesystem: true
 
 ## Additional labels to add to all resources
-customLabels:
+customLabels: 
   app: snmp-exporter-arista-switch
   release: kube-prometheus-stack
+  # app: snmp-exporter
 
 # config:
 
-extraConfigmapMounts:
-  - name: prometheus-snmp-exporter-arista-switch 
-    mountPath: /etc/snmp_exporter 
-      #subPath: snmp.yaml # (optional)
+extraConfigmapMounts: 
+  - name: prometheus-snmp-exporter-arista-switch
+    mountPath: /etc/snmp_exporter
+      #    subPath: snmp.yml # (optional)
     configMap: prometheus-snmp-exporter-arista-switch
     readOnly: true
     defaultMode: 420
@@ -58,6 +59,12 @@ extraSecretMounts: []
   #   secretName: snmp-exporter-secret-files
   #   readOnly: true
   #   defaultMode: 420
+
+# Additional volumes, e.g. for secrets used in an extraContainer
+extraVolumes: []
+
+# Additional volume mounts for snmp-exporter container
+extraVolumeMounts: []
 
 ## For RBAC support:
 rbac:
@@ -134,8 +141,8 @@ configmapReload:
   ## configmap-reload container image
   ##
   image:
-    repository: jimmidyson/configmap-reload
-    tag: v0.5.0
+    repository: quay.io/prometheus-operator/prometheus-config-reloader
+    tag: v0.71.2
     pullPolicy: IfNotPresent
 
   ## configmap-reload resource requests and limits
@@ -147,6 +154,7 @@ configmapReload:
 # A service monitor will be created per each item in serviceMonitor.params[]
 serviceMonitor:
   enabled: true
+  # Default value is the namespace the release is deployed to
   namespace: monitoring
 
   path: /snmp
@@ -155,7 +163,14 @@ serviceMonitor:
   # interval: 10s
   scrapeTimeout: 10s
   module:
-    - if_mib
+    - arista_switch
+  auth:
+    - arista_switch_v3
+  #module:
+  #  - if_mib
+  # Auth used for scraping.
+  #auth:
+  #  - public_v2
 
   # Relabelings dynamically rewrite the label set of a target before it gets scraped.
   # Set if defined unless overriden by params.relabelings.
@@ -179,21 +194,21 @@ serviceMonitor:
   # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.Endpoint
   honorLabels: true
 
-  params:
+  params: 
     # Human readable URL that will appear in Prometheus / AlertManager
-    - name: arista-switch 
+    - name: arista-switch
     # The target that snmp will scrape
-      target: xxx.xxx.xxx.xxx #serverIP
+      target: xxx.xxx.xxx.xxx
     # Module used for scraping. Overrides value set in serviceMonitor.module
-      module:
-        - arista_switch
+    #   module:
+    #     - if_mib
     # Map of labels for ServiceMonitor. Overrides value set in serviceMonitor.selector
     #   labels: {}
           # release: kube-prometheus-stack
     # Scraping interval. Overrides value set in serviceMonitor.interval
-      interval: 10s
+      interval: 30s
     # Scrape timeout. Overrides value set in serviceMonitor.scrapeTimeout
-      scrapeTimeout: 10s
+      scrapeTimeout: 30s
     # Relabelings. Overrides value set in serviceMonitor.relabelings
       relabelings:
         - sourceLabels: [__param_target]
@@ -211,3 +226,10 @@ extraManifests: []
   #     name: prometheus-extra
   #   data:
   #     extra-data: "value"
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+  type: RollingUpdate
+
