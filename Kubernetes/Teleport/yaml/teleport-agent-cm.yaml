@@ -1,56 +1,51 @@
 app_service:
   apps:
-  - name: nextcloud
-    uri: https://nextcloud.domain.com
-    labels:
-      env: media
-      context: homelab
   - name: alertmanager
-    uri: https://alertmanager.domain.com
+    uri: https://alertmanager.urbaman.it
     labels:
       env: monitoring
       context: homelab
   - name: prometheus
-    uri: https://prometheus.domain.com
+    uri: https://prometheus.urbaman.it
     labels:
       env: monitoring
       context: homelab
   - name: grafana
-    uri: https://grafana.domain.com
+    uri: https://grafana.urbaman.it
     labels:
       env: monitoring
       context: homelab
     rewrite:
       headers:
-      - "Origin: https://grafana.domain.com"
-      - "Host: grafana.domain.com"
+      - "Origin: https://grafana.urbaman.it"
+      - "Host: grafana.urbaman.it"
   - name: pushgateway
-    uri: https://pushgateway.domain.com
+    uri: https://pushgateway.urbaman.it
     labels:
       env: monitoring
       context: homelab
   - name: uptimekuma
-    uri: https://uptimekuma.domain.com
+    uri: https://uptimekuma.urbaman.it
     labels:
       env: monitoring
       context: homelab
   - name: semaphore
-    uri: https://semaphore.domain.com
+    uri: https://semaphore.urbaman.it
     labels:
       env: automation
       context: homelab
   - name: haproxyone
-    uri: https://haproxy1.stats.domain.com/stats
+    uri: https://haproxy1.stats.urbaman.it/stats
     labels:
       env: monitoring
       context: homelab
   - name: haproxytwo
-    uri: https://haproxy2.stats.domain.com/stats
+    uri: https://haproxy2.stats.urbaman.it/stats
     labels:
       env: monitoring
       context: homelab
   - name: haproxythree
-    uri: https://haproxy3.stats.domain.com/stats
+    uri: https://haproxy3.stats.urbaman.it/stats
     labels:
       env: monitoring
       context: homelab
@@ -65,47 +60,62 @@ app_service:
       env: monitoring
       context: homelab
   - name: traefik
-    uri: https://traefik.domain.com
+    uri: https://traefik.urbaman.it
     labels:
       env: management
       context: k8s
   - name: portainer
-    uri: https://portainer.domain.com
+    uri: https://portainer.urbaman.it
     labels:
       env: management
       context: k8s
   - name: kubedashboard
-    uri: "https://k8dashboard.domain.com/#/login"
+    uri: "https://k8dashboard.urbaman.it/#/login"
     labels:
       env: management
       context: k8s
+  - name: longhorn
+    uri: https://longhorn.urbaman.it
+    labels:
+      env: storage
+      context: k8s
+  - name: landscapeone
+    uri: https://landscape1.urbaman.it
+    labels:
+      env: monitoring
+      context: homelab
+  - name: landscapetwo
+    uri: https://landscape2.urbaman.it
+    labels:
+      env: monitoring
+      context: homelab
   - name: netbox
-    uri: https://netbox.domain.com
+    uri: https://netbox.urbaman.it
     labels:
       env: sourceoftruth
       context: homelab
   - name: gethomepage
-    uri: https://gethomepage.domain.com
+    uri: https://gethomepage.urbaman.it
     labels:
       env: dashboard
       context: homelab
   - name: pvenodeone
-    uri: https://pvenode1.domain.com:8006
+    uri: https://pvenode1.urbaman.it:8006
     labels:
       env: hypervisor
       context: homelab
   - name: pvenodetwo
-    uri: https://pvenode2.domain.com:8006
+    uri: https://pvenode2.urbaman.it:8006
     labels:
       env: hypervisor
       context: homelab
   - name: pvenodethree
-    uri: https://pvenode3.domain.com:8006
+    uri: https://pvenode3.urbaman.it:8006
     labels:
       env: hypervisor
       context: homelab
   - name: proxmoxbackupone
-    uri: https://pbs1.domain.com:8007
+    uri: https://pbs1.urbaman.it:8007
     labels:
       env: backup
       context: homelab
@@ -146,90 +156,95 @@ app_service:
       context: homelab
     insecure_skip_verify: true
   - name: pfsenseone
-    uri: https://pfsense1.domain.com
+    uri: https://pfsense1.urbaman.it
     labels:
       env: firewall
       context: homelab
   - name: pfsensetwo
-    uri: https://pfsense2.domain.com
+    uri: https://pfsense2.urbaman.it
     labels:
       env: firewall
       context: homelab
   - name: mysql
-    uri: https://mysql.domain.com
+    uri: https://mysql.urbaman.it
     labels:
       env: database
       context: homelab
   - name: mariadb
-    uri: https://mariadb.domain.com
+    uri: https://mariadb.urbaman.it
     labels:
       env: database
       context: homelab
   - name: dbgate
-    uri: https://dbgate.domain.com
+    uri: https://dbgate.urbaman.it
     labels:
       env: database
       context: homelab
   - name: cloudbeaver
-    uri: https://cloudbeaver.domain.com
+    uri: https://cloudbeaver.urbaman.it
     labels:
       env: database
       context: homelab
   - name: pgadmin
-    uri: https://pgadmin.domain.com
+    uri: https://pgadmin.urbaman.it
     labels:
       env: database
       context: homelab
   - name: crouchdb
-    uri: https://crouchdb.domain.com
+    uri: https://crouchdb.urbaman.it
     labels:
       env: database
       context: homelab
   - name: ittools
-    uri: https://it-tools.domain.com/
+    uri: https://it-tools.urbaman.it/
     labels:
       env: webapp
       context: homelab
   - name: spdf
-    uri: https://s-pdf.domain.com/
+    uri: https://s-pdf.urbaman.it/
     labels:
       env: webapp
       context: homelab
   - name: drawio
-    uri: https://drawio.domain.com
+    uri: https://drawio.urbaman.it
     labels:
       env: webapp
       context: homelab
   - name: actualbudget
-    uri: https://budget.domain.com
+    uri: https://budget.urbaman.it
     labels:
       env: webapp
       context: homelab
+  - name: truenas
+    uri: https://truenas.urbaman.it
+    labels:
+      env: storage
+      context: homelab
   - name: miniooperator
-    uri: https://minio-operator.domain.com
+    uri: https://minio-operator.urbaman.it
     labels:
       env: storage
       context: homelab
   - name: miniotenant
-    uri: https://minio-tenant.domain.com
+    uri: https://minio-tenant.urbaman.it
     labels:
       env: storage
       context: homelab
   - name: argocd
-    uri: https://argocd.domain.com
+    uri: https://argocd.urbaman.it
     labels:
-      env: automation
-      context: homelab
+      env: storage
+      context: automation
   - name: vault
-    uri: https://vault.domain.com
+    uri: https://vault.urbaman.it
     labels:
-      env: automation
-      context: homelab
+      env: storage
+      context: automation
   - name: gitlab
-    uri: https://gitlab.domain.com
+    uri: https://gitlab.urbaman.it
     labels:
-      env: automation
-      context: homelab
+      env: storage
+      context: automation
   enabled: true
 auth_service:
   enabled: false
@@ -255,5 +270,5 @@ teleport:
       output: text
     output: stderr
     severity: INFO
-  proxy_server: teleport.domain.com:443
+  proxy_server: teleport.urbaman.it:443
 version: v3
