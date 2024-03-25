@@ -138,6 +138,20 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
+# Persistent Volume Claim for all configs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: overseerr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-nvme2tb
+---
 # Persistent Volume Claim for Plex Transcoding
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -1978,3 +1992,182 @@ spec:
           port: 32400
       middlewares:
         - name: traefik-plex-https-redirect
+---
+# Overseerr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: overseerr
+  namespace: media-server
+  labels:
+    app: overseerr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: overseerr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: overseerr
+    spec:
+      volumes:
+      - name: overseerr-config
+        persistentVolumeClaim:
+          claimName: overseerr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/overseerr:latest
+          name: overseerr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 5055
+             name: http-5055
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: overseerr-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: overseerr
+  labels:
+    app: overseerr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5055
+      targetPort: 5055
+      protocol: TCP
+      name: http
+  selector:
+    app: overseerr
+---
+# Overseer Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: overseerr-urbaman
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - overseerr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: overseerr-urbaman
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-overseerr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-overseerr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-overseerr-transport
+  namespace: media-server
+spec:
+  serverName: overseerr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-overseerr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-overseerr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`overseerr.urbaman.it`)
+      services:
+        - name: overseerr
+          port: 5055
+          serversTransport: traefik-overseerr-transport
+      middlewares:
+        - name: traefik-overseerr-security
+  tls:
+    secretName: overseerr-urbaman
+    options:
+      name: traefik-overseerr-tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-overseerr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`overseerr.urbaman.it`)
+      services:
+        - name: overseerr
+          port: 5055
+      middlewares:
+        - name: traefik-overseerr-https-redirect
+

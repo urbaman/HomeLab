@@ -17,6 +17,12 @@ Here is the Cluster infrastructure we will deploy on Proxmox
 | k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.81 |
 | k8w2.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.82 |
 | k8w3.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.83 |
+| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 4          | 10.0.50.84 |
+| k8w5.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 5          | 10.0.50.85 |
+| k8w6.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 6          | 10.0.50.86 |
+| k8w7.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 7          | 10.0.50.87 |
+| k8w8.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 8          | 10.0.50.88 |
+| k8w9.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 9          | 10.0.50.89 |
 | ectd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
 | etcd2.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
 | etcd3.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |
@@ -128,5 +134,5 @@ Here are the detailed steps to deploy our homelab cluster
 10. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
 11. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
 12. Calibre+Calibre-Web
-13. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+13. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 14. ...
