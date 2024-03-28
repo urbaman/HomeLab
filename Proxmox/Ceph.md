@@ -66,3 +66,25 @@ Create the new class, change the class to the new one on the pools, delete the o
 ```bash
 ceph osd crush rule rm OLD
 ```
+
+### Increase maximum recovery & backfilling speed
+
+Keep in mind that more recovery/backfilling resouces will add to the cluster resource usage, so use it only if and when needed
+
+#### Set new parameters
+
+Using these commands, you can adjust the parameters accordingly. The parameter values can vary depending on the system, e.g. a system with NVMes can have more OSD max backfills than a system with HDDs. These commands change the parameters on all available OSDs in the cluster.
+
+```bash
+ceph tell 'osd.*' injectargs '--osd-max-backfills 16'
+ceph tell 'osd.*' injectargs '--osd-recovery-max-active 4'
+```
+
+#### Reset parameters
+
+If necessary, you may want to set the default parameters again after the successful recovery. For this purpose, you should use the parameters from the section "Finding out the current parameters".
+
+```bash
+ceph tell 'osd.*' injectargs '--osd-max-backfills 1'
+ceph tell 'osd.*' injectargs '--osd-recovery-max-active 0'
+```
