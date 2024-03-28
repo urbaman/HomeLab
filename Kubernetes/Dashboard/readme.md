@@ -16,9 +16,9 @@ helm repo update
 Enable the metrics scraper, disable nginx, cert-manager and ingress, then save the values and install the chart
 
 ```bash
-helm show values kubernetes-dashboard/kubernetes-dashboard > dashboard-values.yaml # --version 7.0.0-alpha1 for newer
+helm show values kubernetes-dashboard/kubernetes-dashboard > dashboard-values.yaml # --version 6.0.8 for latest working version
 vi dashboard-values.yaml
-helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard -f kubernetes-dashboard-values.yaml # --version 7.0.0-alpha1 for newer
+helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard -f kubernetes-dashboard-values.yaml # --version 6.0.8 for latest working version
 ```
 
 Or give the settings to helm
