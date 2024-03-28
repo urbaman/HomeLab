@@ -1,274 +1,331 @@
-app_service:
-  apps:
-  - name: alertmanager
-    uri: https://alertmanager.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: prometheus
-    uri: https://prometheus.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: grafana
-    uri: https://grafana.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-    rewrite:
-      headers:
-      - "Origin: https://grafana.urbaman.it"
-      - "Host: grafana.urbaman.it"
-  - name: pushgateway
-    uri: https://pushgateway.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: uptimekuma
-    uri: https://uptimekuma.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: semaphore
-    uri: https://semaphore.urbaman.it
-    labels:
-      env: automation
-      context: homelab
-  - name: haproxyone
-    uri: https://haproxy1.stats.urbaman.it/stats
-    labels:
-      env: monitoring
-      context: homelab
-  - name: haproxytwo
-    uri: https://haproxy2.stats.urbaman.it/stats
-    labels:
-      env: monitoring
-      context: homelab
-  - name: haproxythree
-    uri: https://haproxy3.stats.urbaman.it/stats
-    labels:
-      env: monitoring
-      context: homelab
-  - name: groundcover
-    uri: https://www.groundcover.com/
-    labels:
-      env: monitoring
-      context: homelab
-  - name: kubescape
-    uri: https://cloud.armosec.io/
-    labels:
-      env: monitoring
-      context: homelab
-  - name: traefik
-    uri: https://traefik.urbaman.it
-    labels:
-      env: management
-      context: k8s
-  - name: portainer
-    uri: https://portainer.urbaman.it
-    labels:
-      env: management
-      context: k8s
-  - name: kubedashboard
-    uri: "https://k8dashboard.urbaman.it/#/login"
-    labels:
-      env: management
-      context: k8s
-  - name: longhorn
-    uri: https://longhorn.urbaman.it
-    labels:
-      env: storage
-      context: k8s
-  - name: landscapeone
-    uri: https://landscape1.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: landscapetwo
-    uri: https://landscape2.urbaman.it
-    labels:
-      env: monitoring
-      context: homelab
-  - name: netbox
-    uri: https://netbox.urbaman.it
-    labels:
-      env: sourceoftruth
-      context: homelab
-  - name: gethomepage
-    uri: https://gethomepage.urbaman.it
-    labels:
-      env: dashboard
-      context: homelab
-  - name: pvenodeone
-    uri: https://pvenode1.urbaman.it:8006
-    labels:
-      env: hypervisor
-      context: homelab
-  - name: pvenodetwo
-    uri: https://pvenode2.urbaman.it:8006
-    labels:
-      env: hypervisor
-      context: homelab
-  - name: pvenodethree
-    uri: https://pvenode3.urbaman.it:8006
-    labels:
-      env: hypervisor
-      context: homelab
-  - name: proxmoxbackupone
-    uri: https://pbs1.urbaman.it:8007
-    labels:
-      env: backup
-      context: homelab
-  - name: idracone
-    uri: https://10.0.100.21
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: idractwo
-    uri: https://10.0.100.22
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: idracthree
-    uri: https://10.0.100.23
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: openmanageone
-    uri: https://10.0.100.11:1311
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: openmanagetwo
-    uri: https://10.0.100.12:1311
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: openmanagethree
-    uri: https://10.0.100.13.1311
-    labels:
-      env: management
-      context: homelab
-    insecure_skip_verify: true
-  - name: pfsenseone
-    uri: https://pfsense1.urbaman.it
-    labels:
-      env: firewall
-      context: homelab
-  - name: pfsensetwo
-    uri: https://pfsense2.urbaman.it
-    labels:
-      env: firewall
-      context: homelab
-  - name: mysql
-    uri: https://mysql.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: mariadb
-    uri: https://mariadb.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: dbgate
-    uri: https://dbgate.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: cloudbeaver
-    uri: https://cloudbeaver.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: pgadmin
-    uri: https://pgadmin.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: crouchdb
-    uri: https://crouchdb.urbaman.it
-    labels:
-      env: database
-      context: homelab
-  - name: ittools
-    uri: https://it-tools.urbaman.it/
-    labels:
-      env: webapp
-      context: homelab
-  - name: spdf
-    uri: https://s-pdf.urbaman.it/
-    labels:
-      env: webapp
-      context: homelab
-  - name: drawio
-    uri: https://drawio.urbaman.it
-    labels:
-      env: webapp
-      context: homelab
-  - name: actualbudget
-    uri: https://budget.urbaman.it
-    labels:
-      env: webapp
-      context: homelab
-  - name: truenas
-    uri: https://truenas.urbaman.it
-    labels:
-      env: storage
-      context: homelab
-  - name: miniooperator
-    uri: https://minio-operator.urbaman.it
-    labels:
-      env: storage
-      context: homelab
-  - name: miniotenant
-    uri: https://minio-tenant.urbaman.it
-    labels:
-      env: storage
-      context: homelab
-  - name: argocd
-    uri: https://argocd.urbaman.it
-    labels:
-      env: storage
-      context: automation
-  - name: vault
-    uri: https://vault.urbaman.it
-    labels:
-      env: storage
-      context: automation
-  - name: gitlab
-    uri: https://gitlab.urbaman.it
-    labels:
-      env: storage
-      context: automation
-  enabled: true
-auth_service:
-  enabled: false
-db_service:
-  enabled: false
-kubernetes_service:
-  enabled: false
-proxy_service:
-  enabled: false
-ssh_service:
-  enabled: false
-teleport:
-  join_params:
-    method: token
-    token_name: /etc/teleport-secrets/auth-token
-  log:
-    format:
-      extra_fields:
-      - timestamp
-      - level
-      - component
-      - caller
-      output: text
-    output: stderr
-    severity: INFO
-  proxy_server: teleport.urbaman.it:443
-version: v3
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  teleport.yaml: |
+    app_service:
+      apps:
+      - name: alertmanager
+        uri: https://alertmanager.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: prometheus
+        uri: https://prometheus.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: grafana
+        uri: https://grafana.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+        rewrite:
+          headers:
+          - "Origin: https://grafana.urbaman.it"
+          - "Host: grafana.urbaman.it"
+      - name: pushgateway
+        uri: https://pushgateway.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: kubetail
+        uri: https://kubetail.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: uptimekuma
+        uri: https://uptimekuma.urbaman.it
+        labels:
+          env: monitoring
+          context: homelab
+      - name: semaphore
+        uri: https://semaphore.urbaman.it
+        labels:
+          env: automation
+          context: homelab
+      - name: haproxyone
+        uri: https://haproxy1.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: haproxytwo
+        uri: https://haproxy2.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: haproxythree
+        uri: https://haproxy3.stats.urbaman.it/stats
+        labels:
+          env: monitoring
+          context: homelab
+      - name: groundcover
+        uri: https://www.groundcover.com/
+        labels:
+          env: monitoring
+          context: homelab
+      - name: kubescape
+        uri: https://cloud.armosec.io/
+        labels:
+          env: monitoring
+          context: homelab
+      - name: traefik
+        uri: https://traefik.urbaman.it
+        labels:
+          env: management
+          context: k8s
+      - name: portainer
+        uri: https://portainer.urbaman.it
+        labels:
+          env: management
+          context: k8s
+      - name: kubedashboard
+        uri: "https://k8dashboard.urbaman.it/#/login"
+        labels:
+          env: management
+          context: k8s
+      - name: netbox
+        uri: https://netbox.urbaman.it
+        labels:
+          env: sourceoftruth
+          context: homelab
+      - name: gethomepage
+        uri: https://gethomepage.urbaman.it
+        labels:
+          env: dashboard
+          context: homelab
+      - name: pvenodeone
+        uri: https://pvenode1.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: pvenodetwo
+        uri: https://pvenode2.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: pvenodethree
+        uri: https://pvenode3.urbaman.it:8006
+        labels:
+          env: hypervisor
+          context: homelab
+      - name: proxmoxbackupone
+        uri: https://pbs1.urbaman.it:8007
+        labels:
+          env: backup
+          context: homelab
+      - name: idracone
+        uri: https://10.0.100.21
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: idractwo
+        uri: https://10.0.100.22
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: idracthree
+        uri: https://10.0.100.23
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: openmanageone
+        uri: https://10.0.100.11:1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: openmanagetwo
+        uri: https://10.0.100.12:1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: openmanagethree
+        uri: https://10.0.100.13.1311
+        labels:
+          env: management
+          context: homelab
+        insecure_skip_verify: true
+      - name: pfsenseone
+        uri: https://pfsense1.urbaman.it
+        labels:
+          env: firewall
+          context: homelab
+      - name: pfsensetwo
+        uri: https://pfsense2.urbaman.it
+        labels:
+          env: firewall
+          context: homelab
+      - name: mysql
+        uri: https://mysql.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: mariadb
+        uri: https://mariadb.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: dbgate
+        uri: https://dbgate.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: cloudbeaver
+        uri: https://cloudbeaver.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: pgadmin
+        uri: https://pgadmin.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: crouchdb
+        uri: https://crouchdb.urbaman.it
+        labels:
+          env: database
+          context: homelab
+      - name: ittools
+        uri: https://it-tools.urbaman.it/
+        labels:
+          env: webapp
+          context: homelab
+      - name: spdf
+        uri: https://s-pdf.urbaman.it/
+        labels:
+          env: webapp
+          context: homelab
+      - name: drawio
+        uri: https://drawio.urbaman.it
+        labels:
+          env: webapp
+          context: homelab
+      - name: actualbudget
+        uri: https://budget.urbaman.it
+        labels:
+          env: webapp
+          context: homelab
+      - name: miniooperator
+        uri: https://minio-operator.urbaman.it
+        labels:
+          env: storage
+          context: homelab
+      - name: miniotenant
+        uri: https://minio-tenant.urbaman.it
+        labels:
+          env: storage
+          context: homelab
+      - name: argocd
+        uri: https://argocd.urbaman.it
+        labels:
+          env: automation
+          context: homelab
+      - name: vault
+        uri: https://vault.urbaman.it
+        labels:
+          env: automation
+          context: homelab
+      - name: gitlab
+        uri: https://gitlab.urbaman.it
+        labels:
+          env: automation
+          context: homelab
+      - name: prowlarr
+        uri: https://prowlarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: bazarr
+        uri: https://bazarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: sonarr
+        uri: https://sonarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: radarr
+        uri: https://radarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: lidarr
+        uri: https://lidarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: readarr
+        uri: https://readarr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: overseerr
+        uri: https://overseerr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: flaresolverr
+        uri: https://flaresolverr.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: transmission
+        uri: https://transmission.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: plex
+        uri: https://plex.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: calibre
+        uri: https://calibre.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: calibrews
+        uri: https://calibre-ws.urbaman.it
+        labels:
+          env: media
+          context: homelab
+      - name: nextcloud
+        uri: https://nextcloud.urbaman.it
+        labels:
+          env: cloud
+          context: homelab
+      enabled: true
+    auth_service:
+      enabled: false
+    db_service:
+      enabled: false
+    kubernetes_service:
+      enabled: false
+    proxy_service:
+      enabled: false
+    ssh_service:
+      enabled: false
+    teleport:
+      join_params:
+        method: token
+        token_name: /etc/teleport-secrets/auth-token
+      log:
+        format:
+          extra_fields:
+          - timestamp
+          - level
+          - component
+          - caller
+          output: text
+        output: stderr
+        severity: INFO
+      proxy_server: teleport.urbaman.it:443
+    version: v3
