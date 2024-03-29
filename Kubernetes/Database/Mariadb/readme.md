@@ -18,15 +18,16 @@ helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --names
 
 ## Upgrading
 
-Deploy the same helm chart with all the same values and add `--set auth.rootPassword=<password>`
-
-## Connection
-
-Get the password for the root (admin) user
+Get the passwords for root and replication (only for replica cluster) users:
 
 ```bash
 kubectl get secret --namespace mariadb mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d
+kubectl get secret --namespace "mariadb" mariadb -o jsonpath="{.data.mariadb-replication-password}" | base64 -d
 ```
+
+Deploy the same helm chart with all the same values and add `--set auth.rootPassword=<password> --set auth.replicationPassword=<password>`
+
+## Connection
 
 Access the mysql service on port 5432 (eventually through kubectl proxy) with user root and just found password.
 Substitute primary with secondary to access the replica.

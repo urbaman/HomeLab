@@ -53,7 +53,7 @@ kubectl apply -f ig-minio-tenant.yaml
 **Note:** There might be a problem with the synchronization of the chart version and the docker image version, so you might need to install the previous version of the chart with `--version=version`, check it with `helm search repo minio-operator -l`
 
 ```bash
-helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --version <old-chart-version> -set existingSecret.name=TENANT-NAME-env-configuration --set tenant.name=TENANT-NAME --set tenant.configuration.name=TENANT-NAME-env-configuration --set tenant.pools.servers=9 --set tenant.pools.name=pool-0 --set tenant.pools.volumesPerServer=4 --set tenant.pools.size=10Gi --set tenant.pools.storageClassName=rook-ceph-nvme2tb
+helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant  --values minio-tenant.yaml --version <old-chart-version>
 kubectl apply -f ig-minio-tenant.yaml
 ```
 

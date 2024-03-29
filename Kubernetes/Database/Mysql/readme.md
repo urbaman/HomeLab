@@ -18,15 +18,16 @@ helm upgrade -i mysql oci://registry-1.docker.io/bitnamicharts/mysql --namespace
 
 ## Upgrading
 
-Deploy the same helm chart with all the same values and add `--set auth.rootPassword=<password>`
-
-## Connection
-
-Get the password for the root (admin) user
+Get the passwords for root and replication (only for replica cluster) users:
 
 ```bash
-kubectl get secret -n mysql mysql -o jsonpath='{.data.mysql-root-password}' | base64 -d
+kubectl get secret --namespace mysql mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d
+kubectl get secret --namespace mysql mysql -o jsonpath="{.data.mysql-replication-password}" | base64 -d
 ```
+
+Deploy the same helm chart with all the same values and add `--set auth.rootPassword=<password> --set auth.replicationPassword=<password>`
+
+## Connection
 
 Access the mysql service on port 5432 (eventually through kubectl proxy) with user root and just found password
 
