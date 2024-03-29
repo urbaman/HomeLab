@@ -37,6 +37,8 @@ kubectl exec -it -n postgresql <PGPOOL_POD> -- psql -d postgres -U postgres -h p
 ```bash
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-postgresql -o jsonpath="{.data.repmgr-password}" | base64 -d
 kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-pgpool -o jsonpath="{.data.admin-password}" | base64 -d
+kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-pgpool-custom-users -o jsonpath="{.data.usernames}" | base64 -d
+kubectl get secret --namespace "postgresql" postgresql-postgresql-ha-pgpool-custom-users -o jsonpath="{.data.passwords}" | base64 -d
 ```
 
 ```bash
