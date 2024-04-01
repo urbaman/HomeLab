@@ -55,6 +55,7 @@ metadata:
   namespace: s-pdf   # < namespace where place the deployment and pods
   labels:
     app: s-pdf          # < label for tagging and reference
+    app.kubernetes.io/name: s-pdf
 spec:
   replicas: 1           # < number of pods to deploy
   selector:
@@ -69,6 +70,7 @@ spec:
     metadata:
       labels:
         app: s-pdf
+        app.kubernetes.io/name: s-pdf
     spec:
       volumes:
       - name: s-pdf-config  # < linkname of the volume for the pvc
