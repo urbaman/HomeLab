@@ -10,6 +10,12 @@ We need to give time for the pods to be ready (due to shared storage latency) in
 helm upgrade -i postgresql oci://registry-1.docker.io/bitnamicharts/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set pgpool.replicaCount=3 --set persistence.storageClass=rook-ceph-nvme2tb --set persistence.size=15Gi --set pgpool.maxPool=4 --set postgresql.maxConnections=1024 --set pgpool.numInitChildren=64
 ```
 
+Try this for chart v14 (probably the resoucePreset default of nano is the main problem)
+
+```bash
+helm upgrade -i postgresql oci://registry-1.docker.io/bitnamicharts/postgresql-ha --namespace postgresql --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set pgpool.replicaCount=3 --set persistence.storageClass=rook-ceph-nvme2tb --set persistence.size=15Gi --set pgpool.customUsers.usernames="gitlab" --set pgpool.customUsers.passwords="7yS^tU92Kf2cK3" --set postgresql.password=lptMehz0CU --set postgresql.repmgrPassword=UfL9ZeGefS --set pgpool.adminPassword=sy2xhJNcud --set pgpool.maxPool=4 --set postgresql.maxConnections=1024 --set pgpool.numInitChildren=64 --set postgresql.resourcesPreset=none --set pgpool.resourcesPreset=none --set metrics.resourcesPreset=none --set postgresql.containerSecurityContext.readOnlyRootFilesystem=false --set pgpool.containerSecurityContext.readOnlyRootFilesystem=false --set postgresql.containerSecurityContext.runAsGroup=0 --set pgpool.containerSecurityContext.runAsGroup=0 --set metrics.containerSecurityContext.runAsGroup=0 --set global.compatibility.openshift.adaptSecurityContext=disabled
+```
+
 ## Connection
 
 Get the password for the postgres (admin) user
