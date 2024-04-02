@@ -25,6 +25,7 @@ metadata:
   namespace: cloudbeaver
   labels:
     app: cloudbeaver
+    app.kubernetes.io/name: cloudbeaver
 spec:
   replicas: 1
   selector:
@@ -34,6 +35,7 @@ spec:
     metadata:
       labels:
         app: cloudbeaver
+        app.kubernetes.io/name: cloudbeaver
     spec:
       containers:
         - name: cloudbeaver

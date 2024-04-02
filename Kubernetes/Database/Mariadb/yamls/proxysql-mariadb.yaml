@@ -5,6 +5,7 @@ metadata:
   namespace: mariadb
   labels:
     app: proxysql
+    app.kubernetes.io/name: mariadb
 spec:
   replicas: 3
   serviceName: proxysqlcluster
@@ -17,6 +18,7 @@ spec:
     metadata:
       labels:
         app: proxysql
+        app.kubernetes.io/name: mariadb
     spec:
       restartPolicy: Always
       containers:

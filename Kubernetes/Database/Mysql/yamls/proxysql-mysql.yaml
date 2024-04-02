@@ -5,6 +5,7 @@ metadata:
   namespace: mysql
   labels:
     app: proxysql
+    app.kubernetes.io/name: mysql
 spec:
   replicas: 3
   serviceName: proxysqlcluster
@@ -17,6 +18,7 @@ spec:
     metadata:
       labels:
         app: proxysql
+        app.kubernetes.io/name: mysql
     spec:
       restartPolicy: Always
       containers:

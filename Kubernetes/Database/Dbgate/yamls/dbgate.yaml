@@ -25,6 +25,7 @@ metadata:
   namespace: dbgate
   labels:
     app: dbgate
+    app.kubernetes.io/name: dbgate
 spec:
   replicas: 1
   selector:
@@ -34,6 +35,7 @@ spec:
     metadata:
       labels:
         app: dbgate
+        app.kubernetes.io/name: dbgate
     spec:
       containers:
         - name: dbgate

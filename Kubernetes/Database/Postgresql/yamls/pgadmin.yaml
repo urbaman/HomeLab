@@ -33,6 +33,8 @@ kind: StatefulSet
 metadata:
   name: pgadmin
   namespace: postgresql
+  labels:
+    app.kubernetes.io/name: postgresql-ha
 spec:
   serviceName: pgadmin-service
   podManagementPolicy: Parallel
@@ -46,6 +48,7 @@ spec:
     metadata:
       labels:
         app: pgadmin
+        app.kubernetes.io/name: postgresql-ha
     spec:
       terminationGracePeriodSeconds: 10
       containers:

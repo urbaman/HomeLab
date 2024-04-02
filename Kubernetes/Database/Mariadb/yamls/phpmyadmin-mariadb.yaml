@@ -5,6 +5,7 @@ metadata:
   namespace: mariadb
   labels:
     app: phpmyadmin
+    app.kubernetes.io/name: mariadb
 spec:
   replicas: 1
   selector:
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         app: phpmyadmin
+        app.kubernetes.io/name: mariadb
     spec:
       containers:
         - name: phpmyadmin

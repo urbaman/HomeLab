@@ -115,7 +115,8 @@ tenant:
       annotations: { }
       ###
       # Specify `labels <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/>`__ to associate to Tenant pods.
-      labels: { }
+      labels:
+        app.kubernetes.io/name: minio-tenant
       ###
       #
       # An array of `Toleration labels <https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/>`__ to associate to Tenant pods.
