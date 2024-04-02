@@ -8,6 +8,12 @@ helm repo update
 helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=rook-ceph-nvme2tb --set primary.persistence.size=15Gi --set secondary.persistence.storageClass=rook-ceph-nvme2tb --set secondary.persistence.size=15Gi --set architecture=replication --set secondary.replicaCount=2
 ```
 
+From chart v17
+
+```bash
+helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=rook-ceph-nvme2tb --set primary.persistence.size=15Gi --set secondary.persistence.storageClass=rook-ceph-nvme2tb --set secondary.persistence.size=15Gi --set architecture=replication --set secondary.replicaCount=2 --set global.compatibility.openshift.adaptSecurityContext=disabled --set primary.containerSecurityContext.runAsGroup=0 --set metrics.containerSecurityContext.runAsGroup=0 --set secondary.containerSecurityContext.runAsGroup=0 --set primary.containerSecurityContext.readOnlyRootFilesystem=false --set secondary.containerSecurityContext.readOnlyRootFilesystem=false --set metrics.containerSecurityContext.readOnlyRootFilesystem=false --set primary.resourcesPreset=none --set metrics.resourcesPreset=none --set secondary.resourcesPreset=none
+```
+
 ## Installation - standalone
 
 ```bash
