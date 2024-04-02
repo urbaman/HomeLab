@@ -45,6 +45,8 @@ server:
   autoscaling:
     enabled: true
     minReplicas: 2
+  podLabels:
+    app.kubernetes.io/name: argocd-server
   extraArgs:
   - --insecure
   resources: 

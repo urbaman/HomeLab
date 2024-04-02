@@ -144,6 +144,8 @@ gitlab:
     ingress:
       tls:
         secretName: gitlab-urbaman
+    podLabels:
+      app.kubernetes.io/name: gitlab-webservice
     metrics:
       enabled: true
       serviceMonitor:
