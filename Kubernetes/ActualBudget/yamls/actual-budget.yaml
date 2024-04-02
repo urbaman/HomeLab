@@ -25,6 +25,7 @@ metadata:
   namespace: actual-budget
   labels:
     app: actual-budget
+    app.kubernetes.io/name: actual-budget
 spec:
   strategy:
     type: Recreate
@@ -36,6 +37,7 @@ spec:
     metadata:
       labels:
         app: actual-budget
+        app.kubernetes.io/name: actual-budget
     spec:
       containers:
         - name: actual-budget

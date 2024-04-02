@@ -1033,10 +1033,12 @@ extraLabels:
   # extraLabels.config(object) -- are labels to set on the ConfigMap.
   config: {}
   # extraLabels.deployment(object) -- are labels to set on the Deployment or StatefulSet.
-  deployment: {}
+  deployment:
+    app.kubernetes.io/name: teleport-cluster
   # extraLabels.pod(object) -- are labels to set on the Pods created by the
   # Deployment or StatefulSet.
-  pod: {}
+  pod:
+    app.kubernetes.io/name: teleport-cluster
   # extraLabels.podDisruptionBudget(object) -- are labels to set on the podDisruptionBudget.
   podDisruptionBudget: {}
   # extraLabels.podSecurityPolicy(object) -- are labels to set on the podSecurityPolicy.

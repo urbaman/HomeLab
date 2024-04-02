@@ -29,6 +29,7 @@ metadata:
   namespace: it-tools   # < namespace where place the deployment and pods
   labels:
     app: it-tools          # < label for tagging and reference
+    app.kubernetes.io/name: it-tools
 spec:
   replicas: 1           # < number of pods to deploy
   selector:
@@ -43,6 +44,7 @@ spec:
     metadata:
       labels:
         app: it-tools
+        app.kubernetes.io/name: it-tools
     spec:
       containers:
         - image: corentinth/it-tools:latest # < the name of the docker image we will use

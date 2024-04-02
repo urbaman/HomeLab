@@ -27,6 +27,9 @@ kind: Deployment
 metadata:
   name: drawio
   namespace: drawio
+  labels:
+    app: draw.io        
+    app.kubernetes.io/name: draw.io
 spec:
   replicas: 2
   selector:
@@ -35,7 +38,8 @@ spec:
   template:
     metadata:
       labels:
-        app: draw.io
+        app: draw.io        
+        app.kubernetes.io/name: draw.io
     spec:
       containers:
       - image: docker.io/jgraph/drawio:latest

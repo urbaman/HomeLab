@@ -50,7 +50,8 @@ metadata:
   name: nextcloud
   namespace: nextcloud 
   labels:
-    app: nextcloud 
+    app: nextcloud
+    app.kubernetes.io/name: nextcloud
 spec:
   replicas: 3
   selector:
@@ -60,6 +61,7 @@ spec:
     metadata:
       labels:
         app: nextcloud
+        app.kubernetes.io/name: nextcloud
     spec:
       volumes:
       - name: nextcloud-app
