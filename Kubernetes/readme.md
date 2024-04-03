@@ -134,6 +134,6 @@ Here are the detailed steps to deploy our homelab cluster
 9. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
 10. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
 11. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
-12. Calibre+Calibre-Web
-13. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
-14. ...
+12. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+13. [Calibre server and Calibre web](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+14. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
