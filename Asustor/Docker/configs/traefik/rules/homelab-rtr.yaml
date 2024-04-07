@@ -1,0 +1,18 @@
+tcp: #http:
+  routers:
+    homelab-rtr:
+      rule: "HostSNIRegexp(`{subdomain:[a-z]+}.urbaman.it`)" #"Host(`*.urbaman.it`)"
+      entryPoints:
+        - websecure
+      #middlewares:
+      #  - middlewares-chain-no-auth
+      service: homelab-svc
+      tls:
+        passthrough: true
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+  services:
+    homelab-svc:
+      loadBalancer:
+        servers:
+          - address: "192.168.1.103:443"
