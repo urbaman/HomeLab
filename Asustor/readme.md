@@ -15,7 +15,7 @@ Network and Core tools
 - [x] Homepage
 - [x] Pihole with dhcphelper and cloudflared for DoH
 - [x] Nginx Proxy Manager (not used)
-- [ ] OpenVPN - [https://github.com/dockovpn/dockovpn](https://github.com/dockovpn/dockovpn)
+- [x] OpenVPN - [https://github.com/dockovpn/dockovpn](https://github.com/dockovpn/dockovpn)
 
 Tools
 

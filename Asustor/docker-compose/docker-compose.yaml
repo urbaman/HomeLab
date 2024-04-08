@@ -32,8 +32,11 @@ include:
   # dchp_helper
   - compose/network/dhcphelper.yaml
 
-  # Nginx Proxy Manager (uncomment to use it)
+  # Nginx Proxy Manager
   #- compose/network/nginxproxymanager.yaml
+
+  # Dockovpn
+  - compose/network/dockovpn.yaml
 
 # CORE
   # Portainer docker dashboard
