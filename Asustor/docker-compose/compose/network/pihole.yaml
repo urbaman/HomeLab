@@ -28,7 +28,7 @@ services:
       - VIRTUAL_HOST=pihole.${DOMAINNAME_1}
       - VIRTUAL_PORT=80
       - TZ=${TZ}
-      - WEBPASSWORD=$PIHOLEPASSWORD
+      - WEBPASSWORD=piholeadmin
       - DNS1=192.168.4.101#5054
       - IPv6=false
       - DNS2=""
@@ -44,6 +44,7 @@ services:
       pihole:
         ipv4_address: '192.168.4.100'
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.pihole-rtr.entrypoints=websecure"

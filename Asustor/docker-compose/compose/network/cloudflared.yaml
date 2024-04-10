@@ -7,3 +7,5 @@ services:
     networks:
       pihole:
         ipv4_address: 192.168.4.101
+    labels:
+      - "org.label-schema.group=monitoring"

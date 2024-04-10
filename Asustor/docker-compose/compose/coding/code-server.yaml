@@ -5,11 +5,11 @@ services:
     pull_policy: always
     environment:
       - PUID=${PUID}
-      - PGID=${GUID}
+      - PGID=${PGID}
       - TZ=${TZ}
       - PASSWORD=codeserveradmin
 #      - HASHED_PASSWORD= #optional
-      - SUDO_PASSWORD=${CODESERVERPASSWORD} #optional
+      - SUDO_PASSWORD=codeserveradmin #optional
 #      - SUDO_PASSWORD_HASH= #optional
       - PROXY_DOMAIN=code-server.urbaman.cloud #optional
       - DEFAULT_WORKSPACE=/config/workspace #optional
@@ -18,6 +18,9 @@ services:
     networks:
       - traefik
       - pihole
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
 #    ports:
 #      - 8443:8443
     restart: unless-stopped
