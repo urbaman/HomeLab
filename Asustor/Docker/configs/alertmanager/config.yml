@@ -21,5 +21,7 @@ receivers:
       auth_identity: 'admin@urbaman.it'
       auth_password: ')1f?zd97SKGI'
       send_resolved: true
+      tls_config:
+        insecure_skip_verify: true
       headers:
         subject: 'Prometheus Mail Alerts'

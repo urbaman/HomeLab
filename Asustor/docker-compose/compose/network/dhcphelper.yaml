@@ -7,3 +7,5 @@ services:
     command: -s 192.168.4.100
     cap_add:
       - NET_ADMIN
+    labels:
+      - "org.label-schema.group=monitoring"

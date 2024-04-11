@@ -22,6 +22,7 @@ services:
     environment:
       - TZ={$TZ}
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.homepage-rtr.entrypoints=websecure"

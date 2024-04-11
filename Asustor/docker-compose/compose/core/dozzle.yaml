@@ -24,6 +24,7 @@ services:
       # - DOCKER_HOST: tcp://socket-proxy:2375
       - TZ=${TZ}
     labels:
+      - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
       # HTTP Routers
       - "traefik.http.routers.dozzle-rtr.entrypoints=websecure"

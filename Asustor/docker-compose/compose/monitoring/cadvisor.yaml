@@ -3,13 +3,18 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: cadvisor
+    command:
+      - "--docker_only"
+      - "--housekeeping_interval=30s"
+      - "--disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
+      - "--allow_dynamic_housekeeping=true"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /volume1/.@plugins/AppCentral/docker-ce/docker_lib:/var/lib/docker:ro
 #     - /dev/disk/:/dev/disk:ro
-#     - /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+      - /sys/fs/cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
     restart: unless-stopped
     privileged: true
     environment:
@@ -25,4 +30,13 @@ services:
       - 192.168.4.100
       - 127.0.0.11
     labels:
-      - "org.label-schema.group=monitoring"
+      - "org.label-schema.group=monitoring"      
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.cadvisor-rtr.entrypoints=websecure"
+      - "traefik.http.routers.cadvisor-rtr.rule=Host(`cadvisor.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.cadvisor-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.cadvisor-rtr.service=cadvisor-svc"
+      - "traefik.http.services.cadvisor-svc.loadbalancer.server.port=8080"
