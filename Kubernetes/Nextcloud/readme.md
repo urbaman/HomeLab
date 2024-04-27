@@ -52,3 +52,13 @@ Login and setup
     ),
   ),
 ```
+
+
+## Lauch occ cli commands from inside the pod
+
+```bash
+kubectl exec -ti -n nextcloud nextcloud-6d556d7f46-2qf7w -- /bin/bash
+su -s /bin/bash www-data
+```
+
+launch the commands
