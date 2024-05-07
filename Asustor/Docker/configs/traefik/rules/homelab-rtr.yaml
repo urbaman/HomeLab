@@ -1,18 +1,31 @@
-tcp: #http:
+http: #tcp
   routers:
-    homelab-rtr:
-      rule: "HostSNIRegexp(`{subdomain:[a-z]+}.urbaman.it`)" #"Host(`*.urbaman.it`)"
+    homelab-rtr-https:
+      rule: "HostRegexp(`urbaman.it`) || HostRegexp(`fateitalia.it`) || HostRegexp(`worldsinperil.it`) || HostRegexp(`indiecongdr.it`) || HostRegexp(`gamechefpummarola.eu`) || HostRegexp(`koboldinabox.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.urbaman.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.worldsinperil.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.indiecongdr.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.fateitalia.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.koboldinabox.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.gamechefpummarola.eu`)" #"Host(`*.urbaman.it`)"
       entryPoints:
         - websecure
-      #middlewares:
-      #  - middlewares-chain-no-auth
-      service: homelab-svc
+      middlewares:
+        - middlewares-chain-no-auth
+      service: homelab-svc-https
       tls:
-        passthrough: true
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+    homelab-rtr-http:
+      rule: "HostRegexp(`urbaman.it`) || HostRegexp(`fateitalia.it`) || HostRegexp(`worldsinperil.it`) || HostRegexp(`indiecongdr.it`) || HostRegexp(`gamechefpummarola.eu`) || HostRegexp(`koboldinabox.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.urbaman.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.worldsinperil.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.indiecongdr.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.fateitalia.it`) || HostRegexp(`{subdomain:[a-z0-9]+}.koboldinabox.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.gamechefpummarola.eu`)"  #"Host(`*.urb
+      entryPoints:
+        - web
+      middlewares:
+        - middlewares-chain-no-auth
+      service: homelab-svc-http
+      tls:
         certResolver: dns-cloudflare
         options: tls-opts@file
   services:
-    homelab-svc:
+    homelab-svc-https:
       loadBalancer:
         servers:
-          - address: "192.168.1.103:443"
+          - url: "https://192.168.1.103:443"
+    homelab-svc-http:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.1.103:80"
