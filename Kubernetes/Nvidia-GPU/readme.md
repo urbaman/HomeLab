@@ -205,13 +205,14 @@ export CUDA_VERSION=12.2.2
 
 The CUDA version only specifies which base image is used to build the driver container. The version does not have any correlation to the version of CUDA that is associated with or supported by the resulting driver container.
 
-Specify the Linux guest vGPU driver version that you downloaded from the NVIDIA Licensing Portal and append -grid:
+Specify the Linux guest vGPU driver version that you downloaded from the NVIDIA Licensing Portal and append `-grid`, then a second variable without `-grid`:
 
 ```bash
 export VGPU_DRIVER_VERSION=525.60.13-grid
+export VGPU_DRIVER=525.60.13
 ```
 
-The Operator automatically selects the compatible guest driver version from the drivers bundled with the driver image. If you disable the version check by specifying --build-arg DISABLE_VGPU_VERSION_CHECK=true when you build the driver image, then the VGPU_DRIVER_VERSION value is used as default.
+The Operator automatically selects the compatible guest driver version from the drivers bundled with the driver image. If you disable the version check by specifying `--build-arg DISABLE_VGPU_VERSION_CHECK=true` when you build the driver image, then the `VGPU_DRIVER_VERSION` value is used as default.
 
 Build the driver container image:
 
@@ -229,7 +230,8 @@ Push the driver container image to your private registry.
 Log in to your private registry:
 
 ```bash
-sudo docker login ${PRIVATE_REGISTRY} --username=<username>
+export CR_PAT=<github_registry_token>
+sudo echo $CR_PAT | sudo docker login ghcr.io -u <username> --password-stdin
 ```
 
 Enter your password when prompted.
@@ -238,6 +240,9 @@ Push the driver container image to your private registry:
 
 ```bash
 sudo docker push ${PRIVATE_REGISTRY}/driver:${VERSION}-${OS_TAG}
+sudo docker images
+sudo docker tag <image> ${PRIVATE_REGISTRY}/driver:${VGPU_DRIVER}-${OS_TAG}
+sudo docker push ${PRIVATE_REGISTRY}/driver:${VGPU_DRIVER}-${OS_TAG}
 ```
 
 #### Configure the Cluster with the vGPU License Information and the Driver Container Image
