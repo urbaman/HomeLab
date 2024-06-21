@@ -21,6 +21,7 @@ services:
       - TZ=${TZ}
     devices:
       - /dev/kmsg
+    cpus: .25
 #    expose:
 #      - 8080
     networks:

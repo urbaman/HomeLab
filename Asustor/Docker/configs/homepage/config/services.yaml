@@ -133,4 +133,11 @@
         icon: prometheus.svg
         ping: https://pushgateway.urbaman.cloud
         server: my-docker
-        container: pushgateway
+        container: pushgateway                                                
+    - Cadvisor:                                                             
+        href: https://cadvisor.urbaman.cloud                                
+        description: CAdvisor docker metrics exporter
+        icon: https://www.netdata.cloud/img/cadvisor.png #https://github.com/google/cadvisor/blob/master/logo.png
+        ping: https://cadvisor.urbaman.cloud                                
+        server: my-docker                                                      
+        container: cadvisor

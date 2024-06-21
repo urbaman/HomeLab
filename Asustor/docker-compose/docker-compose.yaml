@@ -8,6 +8,10 @@ networks:
     external: true
   monitoring:
     external: true
+  clamav:
+    external: true
+  database:
+    external: true
 #  dnet:
 #    external: true
  
@@ -36,7 +40,7 @@ include:
   #- compose/network/nginxproxymanager.yaml
 
   # Dockovpn
-  - compose/network/dockovpn.yaml
+  #- compose/network/dockovpn.yaml
 
 # CORE
   # Portainer docker dashboard
@@ -47,6 +51,9 @@ include:
 
   # Homepage
   - compose/core/homepage.yaml
+  
+  # ClamAV
+  - compose/core/clamav.yaml
 
 # Monitoring
   # Prometheus
@@ -59,7 +66,7 @@ include:
   - compose/monitoring/nodeexporter.yaml
 
   # Cadvisor
-  - compose/monitoring/cadvisor.yaml
+  #- compose/monitoring/cadvisor.yaml
 
   # Grafana
   - compose/monitoring/grafana.yaml
@@ -79,6 +86,20 @@ include:
 
   # Draw.io
   - compose/tools/drawio.yaml
+
+  # Collabora
+  - compose/tools/collabora.yaml
+
+# Cloud
+  # Nextcloud
+  - compose/cloud/nextcloud.yaml
+
+# DATABASE
+  # MariaDB
+  - compose/database/mariadb.yaml
+
+  # Redis
+  - compose/database/redis.yaml
 
 # Cloud compute
   # Boinc

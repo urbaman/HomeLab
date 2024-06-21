@@ -1,0 +1,24 @@
+services:
+  clamav:
+    image: clamav/clamav:latest_base
+    pull_policy: always
+    container_name: clamav
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["apps", "all"]
+    networks:
+    #  - dnet
+      - clamav 
+      - pihole
+#    ports:
+#      - "8080:8080"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    environment:
+      # - DOZZLE_FILTER: "label=log_me" # limits logs displayed to containers with this label
+      # - DOCKER_HOST: tcp://socket-proxy:2375
+      - TZ=${TZ}
+    volumes:
+      - $DATADIR/clamav/db:/var/lib/clamav

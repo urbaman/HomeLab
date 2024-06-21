@@ -15,6 +15,7 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
+#      - "67:67/udp"
 #      - "8081:80"
     cap_add:
       - NET_ADMIN

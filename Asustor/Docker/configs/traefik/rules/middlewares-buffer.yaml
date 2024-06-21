@@ -1,0 +1,8 @@
+http:
+  middlewares:
+    middlewares-buffer:
+      buffering:
+        maxRequestBodyBytes: 16000000
+        memRequestBodyBytes: 16000000
+        maxResponseBodyBytes: 16000000
+        memResponseBodyBytes: 1600000

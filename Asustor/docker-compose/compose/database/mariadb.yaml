@@ -1,0 +1,18 @@
+services:
+  # MariaDB 
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - database
+    volumes:
+      - $DATADIR/mariadb:/var/lib/mysql
+    environment:
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PWD}
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1

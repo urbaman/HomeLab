@@ -1,0 +1,48 @@
+services:
+  # Nextcloud - personal cloud
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - traefik
+      - pihole
+      - database
+      - clamav
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    volumes:
+      - $DATADIR/nextcloud:/var/www/html/data
+      - $CONFIGDIR/nextcloud:/var/www/html/config
+    environment:
+      - TZ=${TZ}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MYSQL_NC_PASSWORD}
+      - MYSQL_HOST=mariadb
+      - NEXTCLOUD_ADMIN_USER=${NC_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NC_ADMIN_PASSWORD}
+      - REDIS_HOST=redis
+      - SMTP_HOST=mail.urbaman.it
+      - SMTP_NAME=nextcloud@urbaman.it
+      - SMTP_PASSWORD=${NC_SMTP_PASSWORD}
+      - MAIL_FROM_ADDRESS=nextcloud@urbaman.it
+      - MAIL_DOMAIN=urbaman.it
+      - PHP_MEMORY_LIMIT=2048M
+      - PHP_UPLOAD_LIMIT=16G
+    labels:
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.nextcloud-rtr.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud-rtr.rule=Host(`nextcloud.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.nextcloud-rtr.middlewares=middlewares-chain-no-auth@file"
+      - "traefik.http.routers.nextcloud-rtr.middlewares=middlewares-buffer@file"
+      # HTTP Services
+      - "traefik.http.routers.nextcloud-rtr.service=nextcloud-svc"
+      - "traefik.http.services.nextcloud-svc.loadbalancer.server.port=80"
+

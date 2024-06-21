@@ -1,0 +1,31 @@
+services:
+  collabora:
+    container_name: collabora
+    image: collabora/code:latest
+    pull_policy: always
+    privileged: true
+    cap_add:
+      - MKNOD
+    networks:
+      - traefik
+      - pihole
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    environment:
+      - TZ=${TZ}
+      - "extra-params=--o:ssl.enable=false --o:ssl.termination=true"
+      - username=${COLLABORA_USERNAME}
+      - password=${COLLABORA_PASSWORD}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.collabora-rtr.entrypoints=websecure"
+      - "traefik.http.routers.collabora-rtr.rule=Host(`collabora.$DOMAINNAME_1`)" 
+      # Middlewares
+      #- "traefik.http.routers.collabora-rtr.middlewares=middlewares-chain-no-auth@file"
+      # HTTP Services
+      - "traefik.http.routers.collabora-rtr.service=collabora-svc"
+      - "traefik.http.services.collabora-svc.loadbalancer.server.scheme=https"
+      - "traefik.http.services.collabora-svc.loadbalancer.server.port=9980"

@@ -11,5 +11,4 @@ quicklaunch:
   hideInternetSearch: true
   hideVisitURL: true
 headerStyle: boxed
-statusStyle: 'dot'
 
