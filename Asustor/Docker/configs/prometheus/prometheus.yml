@@ -19,7 +19,8 @@ scrape_configs:
       - targets: ['nodeexporter:9100']
 
   - job_name: 'cadvisor'
-    scrape_interval: 5s
+    scrape_interval: 30s
+    scrape_timeout: 30s
     static_configs:
       - targets: ['cadvisor:8080']
 
@@ -43,6 +44,24 @@ scrape_configs:
     scrape_interval: 15s
     static_configs:
       - targets: ['piholeexporter:9617']
+
+  - job_name: 'mariadbexporter'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['mariadbexporter:9104']
+
+  - job_name: 'redisexporter'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['redisexporter:9121']
+
+  - job_name: 'nextcloudexporter'
+    scrape_interval: 90s
+    honor_labels: true
+    static_configs:
+      - targets: ['nextcloudexporter:9205']
 
 alerting:
   alertmanagers:

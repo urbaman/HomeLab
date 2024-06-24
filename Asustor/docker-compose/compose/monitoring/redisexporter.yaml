@@ -1,0 +1,22 @@
+services:
+  redisexporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redisexporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+#   expose:
+#     - 9121
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    networks:
+      - monitoring
+      - database
+      - pihole
+    environment:
+      - TZ=${TZ}
+      - REDIS_ADDR=redis://redis:6379
+    labels:
+      - "org.label-schema.group=monitoring"

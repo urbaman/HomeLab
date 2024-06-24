@@ -1,0 +1,26 @@
+services:
+  mariadbexporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mariadbexporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    command: 
+     - --config.my-cnf=/cfg/.my.cnf
+     - --mysqld.address=mariadb:3306
+#   expose:
+#     - 9104
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    networks:
+      - monitoring
+      - database
+      - pihole
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - $CONFIGDIR/mariadbexporter/.my.cnf:/cfg/.my.cnf
+    labels:
+      - "org.label-schema.group=monitoring"

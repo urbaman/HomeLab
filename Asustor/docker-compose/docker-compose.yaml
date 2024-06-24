@@ -66,7 +66,7 @@ include:
   - compose/monitoring/nodeexporter.yaml
 
   # Cadvisor
-  #- compose/monitoring/cadvisor.yaml
+  - compose/monitoring/cadvisor.yaml
 
   # Grafana
   - compose/monitoring/grafana.yaml
@@ -76,6 +76,15 @@ include:
 
   # Pihole exporter
   - compose/monitoring/piholeexporter.yaml
+
+  # Mariadb exporter
+  - compose/monitoring/mariadbexporter.yaml
+
+  # Redis exporter
+  - compose/monitoring/redisexporter.yaml
+
+  # Nextcloud exporter
+  - compose/monitoring/nextcloudexporter.yaml
 
 # TOOLS
   # Stirling PDF tools

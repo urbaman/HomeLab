@@ -1,0 +1,24 @@
+services:
+  nextcloudexporter:
+    image: xperimental/nextcloud-exporter:latest
+    container_name: nextcloudexporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+#   expose:
+#     - 9205
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    networks:
+      - monitoring
+      - pihole
+    environment:
+      - TZ=${TZ}
+      - NEXTCLOUD_SERVER=https://nextcloud.urbaman.cloud
+      - NEXTCLOUD_USERNAME=exporter
+      - NEXTCLOUD_PASSWORD=${NEXTCLOUD_EXPORTER_PASSWORD}
+      - NEXTCLOUD_TIMEOUT=5s 
+    labels:
+      - "org.label-schema.group=monitoring"

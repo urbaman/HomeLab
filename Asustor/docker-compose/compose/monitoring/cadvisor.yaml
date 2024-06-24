@@ -1,13 +1,13 @@
 # /var/lib/docker is /volume1/.@plugins/AppCentral/docker-ce/docker_lib
 services:
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     command:
       - "-docker_only"
-      - "-housekeeping_interval=10s"
+      - "-housekeeping_interval=30s"
       - "-disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
-      - "-allow_dynamic_housekeeping=true"
+      - "-allow_dynamic_housekeeping=false"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
