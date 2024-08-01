@@ -6,21 +6,15 @@
 - 3x workers: k8w1, k8w2, k8w3
 - 3x etcd cluster: etcd1, etce2, etcd3
 - 3x haproxy+keepalive: haproxy1, haproxy2, haproxy3
-- 3x glusterfs cluster: truenas1, truenas2, truenas3
-- 1x glusterfs clusater manager: truecommand
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
-| truenas1.urbaman.it    | 4   | 16GB | 2x32GB (OS), 2x5TB (GFS) | TrueNAS SCALE      | GlusterFS node 1                  | 10.0.50.21 |
-| truenas2.urbaman.it    | 4   | 16GB | 2x32GB (OS), 2x5TB (GFS) | TrueNAS SCALE      | GlusterFS node 2                  | 10.0.50.22 |
-| truenas3.urbaman.it    | 4   | 16GB | 2x32GB (OS), 2x5TB (GFS) | TrueNAS SCALE      | GlusterFS node 3                  | 10.0.50.23 |
-| truecommand.urbaman.it | 2   | 4GB  | 32GB                     | Debian/Truecommand | GlusterFS cluster manager         | 10.0.50.24 |
-| k8cp1.urbaman.it       | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.31 |
-| k8cp2.urbaman.it       | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.32 |
-| k8cp3.urbaman.it       | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.33 |
-| k8w1.urbaman.it        | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.34 |
-| k8w2.urbaman.it        | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.35 |
-| k8w3.urbaman.it        | 8   | 32GB | 16BG                     | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.36 |
+| k8cp1.urbaman.it       | 8   | 16GB | 100BG                     | Ubuntu 24.04       | Kubernetes control manager node 1 | 10.0.50.51 |
+| k8cp2.urbaman.it       | 8   | 16GB | 100BG                     | Ubuntu 24.04       | Kubernetes control manager node 2 | 10.0.50.52 |
+| k8cp3.urbaman.it       | 8   | 16GB | 100BG                     | Ubuntu 24.04       | Kubernetes control manager node 3 | 10.0.50.53 |
+| k8w1.urbaman.it        | 8   | 32GB | 100BG                     | Ubuntu 24.04       | Kubernetes worker node 1          | 10.0.50.81 |
+| k8w2.urbaman.it        | 8   | 32GB | 100BG                     | Ubuntu 24.04       | Kubernetes worker node 2          | 10.0.50.82 |
+| k8w3.urbaman.it        | 8   | 32GB | 100BG                     | Ubuntu 24.04       | Kubernetes worker node 3          | 10.0.50.83 |
 | ectd1.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
 | etcd2.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
 | etcd3.urbaman.it       | 2   | 4GB  | 16GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |
