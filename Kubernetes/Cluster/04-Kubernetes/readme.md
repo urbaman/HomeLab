@@ -53,7 +53,7 @@ Turn swap off:
 sudo swapoff -a
 ```
 
-And prevents it from turning on after reboots by commenting it in the /etc/fstab file:
+And prevent it from turning on after reboots by commenting it in the /etc/fstab file:
 
 ```bash
 sudo vi /etc/fstab
