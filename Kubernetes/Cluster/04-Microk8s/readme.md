@@ -93,3 +93,48 @@ On a worker:
 ```bash
 sudo microk8s join 10.0.50.51:25000/e223f1b3d2040b82ee82aa6db88bfc5d/5bed05e3b3a8 --worker
 ```
+
+## Second try at the loadbalancer (not yet tryed)
+
+1. Install microk8s on the 3 nodes that form the control plane cluster: sudo snap install microk9s --classic
+2. Create new certificates on all nodes allowing for the VIP address:
+   a. Edit /var/snap/microk8s/current/certs/csr.conf.template on all nodes
+   b. Add IP.99 = a.b.c.d where a.b.c.d is the VIP address
+   c. Generate new certificates on all nodes with sudo microk8s refresh-certs
+3. Form the cluster following the instructions listed here: https://microk8s.io/docs/high-availability
+4. Prepare the basic cluster components microk8s enable rbac helm3 dns
+5. Install kube-vip via helm-chart (as a deamon set)
+
+```bash
+microk8s helm3 repo add kube-vip https://kube-vip.io/helm-charts
+microk8s helm3 repo update
+microk8s helm3 install kube-vip kube-vip/kube-vip --namespace kube-system -f values.yaml
+```
+
+The file values.yaml can be found here https://github.com/kube-vip/helm-charts/blob/main/charts/kube-vip/values.yaml
+and i simply modified so that the following was configured
+
+```bash
+config:
+  address: "192.168.0.30"  # This is my VIP
+
+env:
+  vip_interface: "eth0" # This is the interface, same on all nodes where the VIP is announced
+  vip_arp: "true"  # mandatory for L2 mode
+  lb_enable: "true" # enable load balancing
+  lb_port: "16443" # description here -   https://kube-vip.io/architecture/#control-plane-load-balancing , changed only because microk8s used 16443 instead of 6443
+  vip_cidr: "32"
+  cp_enable: "true" # enable control plane load balancing
+  svc_enable: "false" # disable SVC load balancing
+  vip_leaderelection: "true" # mandatory for L2 mode
+
+nodeSelector:
+  node.kubernetes.io/microk8s-controlplane: microk8s-controlplane
+```
+
+At this point we are done, i get a kubectl config from microk8s using microk8s config and simply make sure that the server IP is changed to the VIP instead of localhost used by default
+
+Notice that the deamon set comes with a toileration and node-selector so that will only run on control plane nodes and not on workers ones.
+
+I have tested also a join from a worker, everything seems to be working fine (i can join and i get proper HA on failures) , the only thing is that you want to run "microk8s add-node" from the node where the VIP is currently active (i used  ip addr show eth0 to find the server with the VIP being active on ) .. not sure if it's mandatory, but it worked well for me .
+The only thing i had to take care of was to edit /var/snap/microk8s/current/traefik/provider.yaml to only have my VIP there
