@@ -24,7 +24,7 @@ export CSI_RBD_PROVISIONER_SECRET=<secret>
 export CSI_RBD_PROVISIONER_SECRET_NAME=csi-rbd-provisioner
 export CEPHFS_POOL_NAME=<cephfs_pool_data_name>
 export CEPHFS_METADATA_POOL_NAME=<cephfs_pool_metadata_name>
-export CEPHFS_FS_NAME=C<ceph_pool_name>
+export CEPHFS_FS_NAME=<ceph_pool_name>
 export CSI_CEPHFS_NODE_SECRET=<secret>
 export CSI_CEPHFS_PROVISIONER_SECRET=<secret>
 export CSI_CEPHFS_NODE_SECRET_NAME=csi-cephfs-node
@@ -90,3 +90,7 @@ kubectl apply -f rook-sc-sas900gb.yaml
 kubectl apply -f rook-mysql.yaml
 kubectl apply -f rook-wordpress.yaml
 ```
+
+## Microk8s
+
+Add the addon with the latest rook version, then follow the instructions.
