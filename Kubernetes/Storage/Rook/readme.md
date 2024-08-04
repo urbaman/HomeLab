@@ -6,7 +6,7 @@
 2. From one of the nodes, run the following command
 
 ```bash
-wget https://raw.githubusercontent.com/rook/rook/release-1.12/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
+wget https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
 python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB  --cephfs-filesystem-name Cephfs-HDD5T --namespace rook-ceph-external --format bash 
 ```
 
@@ -69,11 +69,11 @@ Then, launch
 3. Deploy the manifests (check the documentation for changes). **Note**: beware of the version in the URL
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/common.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/crds.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/operator.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/common-external.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/cluster-external.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/common.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/common-external.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/cluster-external.yaml
 ```
 
 4. Create the other storage classes, changing names and pools to your Proxmox Ceph pools
