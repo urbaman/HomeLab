@@ -1,5 +1,22 @@
 # Rook with Proxmox Ceph
 
+Check rbd and nbd modules existence on the nodes:
+
+```bash
+sudo lsmod | grep rbd
+sudo lsmod | grep nbd
+```
+
+If they're not present, add them
+
+```bash
+sudo modprobe rbd && sudo modprobe nbd
+cat <<EOF | sudo tee /etc/modules-load.d/rook-ceph.conf
+rbd
+nbd
+EOF
+```
+
 ## Prepare the environment
 
 1. Give access to both Ceph networks (Public and Cluster) to the K8s nodes
@@ -49,7 +66,7 @@ The volumes in CephFS will be accessible in `/mnt/pve/cephfs_pool/volumes`, and 
 2. Run the import script (beware of the version in the URL)
 
 ```bash
-wget https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/import-external-cluster.sh -O import-external-cluster.sh
+wget https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/import-external-cluster.sh -O import-external-cluster.sh
 ```
 
 Change the name of the Storage Classes and fix the `CEPHFS_PROVISIONER` variable
@@ -94,3 +111,21 @@ kubectl apply -f rook-wordpress.yaml
 ## Microk8s
 
 Add the addon with the latest rook version, then follow the instructions.
+
+Copy the `ceph.client.admin.keyring` and `ceph.conf` files from /etc/ceph on one of the proxmox nodes to the working directory, then install
+
+```bash
+microk8s enable rook-ceph --rook-version v1.14.9
+```
+
+Wait for the operator pod to be running
+
+```bash
+kubectl get pods -n rook-ceph
+```
+
+Then import the cluster
+
+```bash
+microk8s connect-external-ceph --ceph-conf ceph.conf --keyring ceph.client.admin.keyring --rbd-pool Ceph-NVMe2TB
+```
