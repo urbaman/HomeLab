@@ -24,7 +24,7 @@ EOF
 
 ```bash
 wget https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
-python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB  --cephfs-filesystem-name Cephfs-HDD5T --namespace rook-ceph-external --format bash 
+python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB  --cephfs-filesystem-name Cephfs-SSD2T --namespace rook-ceph-external --format bash 
 ```
 
 Copy the output
