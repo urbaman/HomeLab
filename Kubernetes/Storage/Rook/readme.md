@@ -1,12 +1,29 @@
 # Rook with Proxmox Ceph
 
+Check rbd and nbd modules existence on the nodes:
+
+```bash
+sudo lsmod | grep rbd
+sudo lsmod | grep nbd
+```
+
+If they're not present, add them
+
+```bash
+sudo modprobe rbd && sudo modprobe nbd
+cat <<EOF | sudo tee /etc/modules-load.d/rook-ceph.conf
+rbd
+nbd
+EOF
+```
+
 ## Prepare the environment
 
 1. Give access to both Ceph networks (Public and Cluster) to the K8s nodes
 2. From one of the nodes, run the following command
 
 ```bash
-wget https://raw.githubusercontent.com/rook/rook/release-1.12/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
+wget https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/create-external-cluster-resources.py -O create-external-cluster-resources.py
 python3 create-external-cluster-resources.py --rbd-data-pool-name Ceph-NVMe2TB  --cephfs-filesystem-name Cephfs-HDD5T --namespace rook-ceph-external --format bash 
 ```
 
@@ -24,7 +41,7 @@ export CSI_RBD_PROVISIONER_SECRET=<secret>
 export CSI_RBD_PROVISIONER_SECRET_NAME=csi-rbd-provisioner
 export CEPHFS_POOL_NAME=<cephfs_pool_data_name>
 export CEPHFS_METADATA_POOL_NAME=<cephfs_pool_metadata_name>
-export CEPHFS_FS_NAME=C<ceph_pool_name>
+export CEPHFS_FS_NAME=<ceph_pool_name>
 export CSI_CEPHFS_NODE_SECRET=<secret>
 export CSI_CEPHFS_PROVISIONER_SECRET=<secret>
 export CSI_CEPHFS_NODE_SECRET_NAME=csi-cephfs-node
@@ -49,7 +66,7 @@ The volumes in CephFS will be accessible in `/mnt/pve/cephfs_pool/volumes`, and 
 2. Run the import script (beware of the version in the URL)
 
 ```bash
-wget https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/import-external-cluster.sh -O import-external-cluster.sh
+wget https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/import-external-cluster.sh -O import-external-cluster.sh
 ```
 
 Change the name of the Storage Classes and fix the `CEPHFS_PROVISIONER` variable
@@ -69,11 +86,11 @@ Then, launch
 3. Deploy the manifests (check the documentation for changes). **Note**: beware of the version in the URL
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/common.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/crds.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/operator.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/common-external.yaml
-kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.13/deploy/examples/cluster-external.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/common.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/common-external.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.14/deploy/examples/cluster-external.yaml
 ```
 
 4. Create the other storage classes, changing names and pools to your Proxmox Ceph pools
@@ -89,4 +106,26 @@ kubectl apply -f rook-sc-sas900gb.yaml
 ```bash
 kubectl apply -f rook-mysql.yaml
 kubectl apply -f rook-wordpress.yaml
+```
+
+## Microk8s
+
+Add the addon with the latest rook version, then follow the instructions.
+
+Copy the `ceph.client.admin.keyring` and `ceph.conf` files from /etc/ceph on one of the proxmox nodes to the working directory, then install
+
+```bash
+microk8s enable rook-ceph --rook-version v1.14.9
+```
+
+Wait for the operator pod to be running
+
+```bash
+kubectl get pods -n rook-ceph
+```
+
+Then import the cluster
+
+```bash
+microk8s connect-external-ceph --ceph-conf ceph.conf --keyring ceph.client.admin.keyring --rbd-pool Ceph-NVMe2TB
 ```
