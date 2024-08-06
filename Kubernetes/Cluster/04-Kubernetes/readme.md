@@ -210,7 +210,7 @@ Update apt package index, install kubelet, kubeadm and kubectl, and pin their ve
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y kubelet=1.28.2-00 kubeadm=1.28.2-00 kubectl=1.28.2-00
+sudo apt-get install -y kubelet=1.30.3* kubeadm=1.30.3* kubectl=1.30.3*
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
@@ -218,7 +218,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 It's a perfect time to make it a template from which we can create both control panes and workers.
 
-## Set up the etcd cluster (only for external etcd/haproxy)
+## Set up the etcd cluster (only for external etcd)
 
 Follow [these instructions](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/02-External-Etcd) to set up the etcd cluster.
 
@@ -244,11 +244,43 @@ sudo cp apiserver-etcd-client.crt /etc/kubernetes/pki/
 sudo cp apiserver-etcd-client.key /etc/kubernetes/pki/
 ```
 
-## Set up the first control plane node
+## Set up kubevip
 
-Create a file called kubeadm-config.yaml with the following contents (modify IPs and hostnames as needed, then eliminate comments):
+This is how to setup Kube-vip just for control plane loadbalancing, not for services loadbalancing (we're doing it with metallb). if you want to add services loadbalancing, add `--services` to the `kube-vip manifest pod` command below.
+
+On the first CP node:
 
 ```bash
+sudo su
+export VIP=192.168.0.40
+export INTERFACE=eth0
+KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
+alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+kube-vip manifest pod \
+    --interface $INTERFACE \
+    --address $VIP \
+    --controlplane \
+    --services \
+    --arp \
+    --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
+exit
+scp /etc/kubernetes/manifests/kube-vip.yaml ubuntu@<CP2-IP>:/home/ubuntu/kube-vip.yaml
+scp /etc/kubernetes/manifests/kube-vip.yaml ubuntu@<CP3-IP>:/home/ubuntu/kube-vip.yaml
+```
+
+On the other nodes:
+
+```bash
+sudo cp kube-vip.yaml /etc/kubernetes/manifests/kube-vip.yaml
+```
+
+## Set up the first control plane node
+
+For kube-vip: setup the loadbalancer DNS to the first cp node IP for the moment (just to init the first node).
+
+Create a file called kubeadm-config.yaml with the following contents (modify IPs and hostnames as needed, then eliminate comments; eliminate the etcd section if not using an external etcd):
+
+```yaml
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
@@ -280,6 +312,8 @@ sudo kubeadm init --config kubeadm-config.yaml --upload-certs
 
 Write the output join commands that are returned to a text file for later use.
 
+For kube-vip: finally setup the loadbalancer DNS to the VIP.
+
 ### Setup kubectl for a normal user
 
 To start using your cluster, you need to run the following as a regular user:
@@ -295,8 +329,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/tigera-operator.yaml
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/custom-resources.yaml -O
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml -O
 ```
 
 If you wish to customize the Calico install, customize the downloaded custom-resources.yaml manifest locally (for example, customizing the IP CIDR to match kubeadm podSubnet above).
@@ -308,7 +342,7 @@ kubectl create -f custom-resources.yaml
 Then, intstall the calicoctl to manage Calico.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calicoctl.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
