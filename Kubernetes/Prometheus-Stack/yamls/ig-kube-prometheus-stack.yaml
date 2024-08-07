@@ -15,7 +15,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: grafana-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-grafana-https-redirect
@@ -25,7 +25,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-grafana-security
@@ -49,7 +49,7 @@ spec:
   serverName: grafana
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: monitoring-grafana-tlsoptions
@@ -73,7 +73,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-grafana-websecure
@@ -95,7 +95,7 @@ spec:
     options:
       name: monitoring-grafana-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-grafana-web
@@ -129,7 +129,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: prometheus-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-prometheus-https-redirect
@@ -139,7 +139,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-prometheus-security
@@ -163,7 +163,7 @@ spec:
   serverName: prometheus
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: monitoring-prometheus-tlsoptions
@@ -187,7 +187,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-prometheus-websecure
@@ -209,7 +209,7 @@ spec:
     options:
       name: monitoring-prometheus-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-prometheus-web
@@ -243,7 +243,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: alertmanager-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-alertmanager-https-redirect
@@ -253,7 +253,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-alertmanager-security
@@ -277,7 +277,7 @@ spec:
   serverName: alertmanager
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: monitoring-alertmanager-tlsoptions
@@ -301,7 +301,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-alertmanager-websecure
@@ -323,7 +323,7 @@ spec:
     options:
       name: monitoring-alertmanager-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-alertmanager-web

@@ -154,23 +154,27 @@ Go to the ports section, and set to true both the metrics and the traefik (dashb
 ```yaml
 ports:
   metrics:
-    expose: true
+    expose:
+      default: true
     exposedPort: 9100
     port: 9100
     protocol: TCP
   traefik:
-    expose: true
+    expose:
+      default: true
     exposedPort: 9000
     port: 9000
     protocol: TCP
   web:
-    expose: true
+    expose:
+      default: true
     exposedPort: 80
     port: 8000
     protocol: TCP
   #  redirectTo: websecure - do it service per service
   websecure:
-    expose: true
+    expose:
+      default: true
     exposedPort: 443
     port: 8443
     protocol: TCP
@@ -184,25 +188,29 @@ ports:
     # PostgreSQL
   postgresql:
     port: 5432
-    expose: true
+    expose:
+      default: true
     exposedPort: 5432
     protocol: TCP
     # MySQL
   mysql:
     port: 3306
-    expose: true
+    expose:
+      default: true
     exposedPort: 3306
     protocol: TCP
     # MariaDB
   mariadb:
     port: 6033
-    expose: true
+    expose:
+      default: true
     exposedPort: 6033
     protocol: TCP
     # Gitlab Shell
   gitlab-shell:
     port: 2232
-    expose: true
+    expose:
+      default: true
     exposedPort: 2232
     protocol: TCP
 ```
@@ -253,7 +261,7 @@ stringData:
   apiKey: yourglobalapikey
 ```
 
-Also in the traefik vales yaml file, add the following additionalArguments (choose only one resolver), the env settings and the volume settings (volume only for pebble certResolver)
+Also in the traefik values yaml file, add the following additionalArguments (choose only one resolver), the env settings and the volume settings (volume only for pebble certResolver)
 
 ```yaml
 additionalArguments:
@@ -362,7 +370,7 @@ dXNlcm5hbWU6JGFwcjEkLmtMR05oTzAkcnZVZTZBY0k3R2dyRHlFbkI0d2J2LwoK
 Customize and apply the following yaml file (this is for the k8s dashboard previously exposed, can point to any exposed service):
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: k8dashboard-basic-auth
@@ -371,7 +379,7 @@ spec:
   basicAuth:
     secret: k8dashboard-basic-auth
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: k8dashboard-https-redirect
@@ -390,7 +398,7 @@ data:
   users: |
     dXNlcm5hbWU6JGFwcjEkLmtMR05oTzAkcnZVZTZBY0k3R2dyRHlFbkI0d2J2LwoK
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: k8dashboard-websecure
@@ -405,7 +413,7 @@ spec:
     - name: kubernetes-dashboard
       port: 80
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: k8dashboard-web
@@ -461,7 +469,7 @@ Then you can set an ingressroute to the service as an internal service.
 Add a security middleware and a TLSoptions object, add them to the IngressRoute
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: security
@@ -476,7 +484,7 @@ spec:
     stsPreload: true
     stsSeconds: 31536000
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: tlsoptions
@@ -500,7 +508,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: whoami
@@ -561,7 +569,7 @@ ports:
 Then, create the certificates with cert-manager and add them to the IngressRoute:
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: whoami
@@ -581,7 +589,7 @@ spec:
 ## ingressRoute for the Traefik Dashboard (complete example)
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-dashboard-basic-auth
@@ -590,7 +598,7 @@ spec:
   basicAuth:
     secret: traefik-dashboard-basic-auth
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-dashboard-https-redirect
@@ -600,7 +608,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-dashboard-security
@@ -624,7 +632,7 @@ spec:
   serverName: traefik
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-dashboard-tlsoptions
@@ -657,7 +665,7 @@ data:
   users: |
     YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-dashboard-websecure
@@ -680,7 +688,7 @@ spec:
     options:
       name: traefik-dashboard-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-dashboard-web
