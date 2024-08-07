@@ -341,9 +341,18 @@ kubectl create -f custom-resources.yaml
 
 Then, intstall the calicoctl to manage Calico.
 
+#### As a static pod
+
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
+```
+
+#### As a binary
+
+```bash
+sudo curl -L https://github.com/projectcalico/calico/releases/download/v3.28.1/calicoctl-linux-amd64 -o /usr/sbin/calicoctl
+sudo chmod +x /usr/sbin/calicoctl
 ```
 
 This way, in order to use the calicoctl alias when reading manifests, redirect the file into stdin, for example:
@@ -380,7 +389,7 @@ Then disable kubeproxy and enable ebpf
 
 ```bash
 kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
-kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF", "hostPorts":null}}}'
+kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF"}}}'
 calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
 ```
 
