@@ -23,6 +23,13 @@ sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
 sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
 ```
 
+Also, change the etcd metrics listen address from 127.0.0.1 to 0.0.0.0:
+
+
+```bash
+sudo vi /etc/kubernetes/manifests/etcd.yaml
+```
+
 Then check the controller manager and scheduler pods, they should restart as soon as the system recognize the changed manifests, if not manually delete each scheduler and each controller manager pods in the kube-system namespace to make them load the new settings.
 
 ```bash
