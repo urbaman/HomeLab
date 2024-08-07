@@ -48,6 +48,7 @@ Flags:
 I will set the following arguments:
 
 ```yaml
+            - --reboot-sentinel=/var/run/reboot-required
             - --alert-filter-regexp=^(RebootRequired|Watchdog|InfoInhibitor)$
             - --end-time=17:00
             - --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
