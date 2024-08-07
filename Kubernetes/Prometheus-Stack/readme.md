@@ -113,6 +113,10 @@ And define Alertmanager notifications by email:
         auth_identity: 'tomail@domain.com'
         auth_password: 'password'
         send_resolved: true
+        tls_config:
+          insecure_skip_verify: true
+        headers:
+          subject: 'Prometheus Mail Alerts'
 ```
 
 Under the grafana header, add some plugins:
