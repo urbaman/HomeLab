@@ -3,7 +3,7 @@
 ## Install Cert-manager
 
 ```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.2/cert-manager.yaml
 ```
 
 Or via helm
@@ -11,7 +11,7 @@ Or via helm
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true --set extraArgs='{--dns01-recursive-nameservers-only,--dns01-recursive-nameservers=8.8.8.8:53\,1.1.1.1:53}'
+helm upgrade -i cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true --set crds.keep=true --set dns01RecursiveNameserversOnly=true --set dns01RecursiveNameservers=8.8.8.8:53\,1.1.1.1:53 # extraArgs='{--dns01-recursive-nameservers-only,--dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53}'
 ```
 
 Set the installCRDs=true to install the CRDs (best method)
