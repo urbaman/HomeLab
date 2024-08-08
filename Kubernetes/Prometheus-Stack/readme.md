@@ -86,11 +86,20 @@ kubectl edit -n monitoring deployment kube-prometheus-stack-operator
 kubectl rollout restart -n monitoring deployment kube-prometheus-stack-operator
 ```
 
-Disable the internal etcd scraping:
+Disable the internal etcd and/or the internal kubeProxy scraping:
 
 ```yaml
 kubeEtcd:
   enabled: false
+
+
+kubeProxy:
+  enabled: false
+
+defaulteRules:
+  create: true
+  rules:
+    kubeProxy: false
 ```
 
 And define Alertmanager notifications by email:
@@ -108,7 +117,7 @@ And define Alertmanager notifications by email:
           - alertname =~ "InfoInhibitor|Watchdog"
       - receiver: 'mail'
         matchers:
-          - alertname =~ "InfoInhibitor|Watchdog"
+          - alertname != "InfoInhibitor|Watchdog"
     receivers:
     - name: 'null'
     - name: 'mail'
