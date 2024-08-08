@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/crowdsecurity/helm-charts/main/charts/crowdsec/values.schema.json
+
 # Default values for crowdsec-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -10,8 +12,17 @@ image:
   repository: crowdsecurity/crowdsec
   # -- pullPolicy
   pullPolicy: IfNotPresent
+  # -- pullSecrets
+  pullSecrets: []
+    # - name: ""
   # -- docker image tag
   tag: ""
+
+# -- Annotations to be added to pods
+podAnnotations: {}
+
+# -- Labels to be added to pods
+podLabels: {}
 
 # Here you can specify your own custom configuration to be loaded in crowdsec agent or lapi
 # Each config needs to be a multi-line using '|' in YAML specs
@@ -69,6 +80,17 @@ config:
     #  filters:
     #    - Alert.Remediation == true && Alert.GetScope() == "Ip"
     #  ...
+  # -- General configuration (https://docs.crowdsec.net/docs/configuration/crowdsec_configuration/#configuration-example)
+  config.yaml.local: ""
+    #   |
+    # db_config:
+    #   type:     postgresql
+    #   user:     crowdsec
+    #   password: ${DB_PASSWORD}
+    #   db_name:  crowdsec
+    #   host:     192.168.0.2
+    #   port:     5432
+    #   sslmode:  require
   # -- notifications configuration (https://docs.crowdsec.net/docs/next/notification_plugins/intro)
   notifications: {}
     # email.yaml: |
@@ -87,6 +109,18 @@ tls:
   insecureSkipVerify: false
   certManager:
     enabled: true
+    # -- Use existing issuer to sign certificates. Leave empty to generate a self-signed issuer
+    issuerRef: {}
+      # name: ""
+      # kind: "ClusterIssuer"
+    # -- Add annotations and/or labels to generated secret
+    secretTemplate:
+      annotations: {}
+      labels: {}
+    # -- duration for Certificate resources
+    duration: 2160h # 90d
+    # -- renewBefore for Certificate resources
+    renewBefore: 720h # 30d
   bouncer:
     secret: "{{ .Release.Name }}-bouncer-tls"
     reflector:
@@ -109,10 +143,12 @@ secrets:
 
 # lapi will deploy pod with crowdsec lapi and dashboard as deployment
 lapi:
+  # -- replicas for local API
+  replicas: 1
   # -- environment variables from crowdsecurity/crowdsec docker image
   env:
     - name: ENROLL_KEY
-      value: "EnrollKeyHere"
+      value: "clozy41vg0001l908kcpol5y4"
     - name: ENROLL_INSTANCE_NAME
       value: "k8s_cluster"
     - name: ENROLL_TAGS
@@ -120,6 +156,12 @@ lapi:
     # by default disable the agent because it only needs the local API.
     #- name: DISABLE_AGENT
     #  value: "true"
+  # Allows you to load environment variables from kubernetes secret or config map
+  envFrom: []
+    # - secretRef:
+    #     name: env-secret
+    # - configMapRef:
+    #     name: config-map
   # -- Enable ingress lapi object
   ingress:
     enabled: false
@@ -131,9 +173,33 @@ lapi:
     host: "" # crowdsec-api.example.com
     # tls: {}
 
+  # -- pod priority class name
+  priorityClassName: ""
+
+  # -- Annotations to be added to lapi deployment
+  deployAnnotations: {}
+
+  # -- Annotations to be added to lapi pods, if global podAnnotations are not set
+  podAnnotations: {}
+
+  # -- Labels to be added to lapi pods, if global podLabels are not set
+  podLabels: {}
+
+  # -- resources for lapi
+  resources:
+    limits:
+      memory: 500Mi
+      cpu: 500m
+    requests:
+      cpu: 500m
+      memory: 500Mi
+
   dashboard:
     # -- Enable Metabase Dashboard (by default disabled)
-    enabled: false
+    enabled: false 
+    # -- environment variables from metabase/metabase docker image
+    # -- see https://www.metabase.com/docs/latest/configuring-metabase/environment-variables
+    env: []
     image:
       # -- docker image repository name
       repository: metabase/metabase
@@ -145,13 +211,14 @@ lapi:
     assetURL: https://crowdsec-statics-assets.s3-eu-west-1.amazonaws.com/metabase_sqlite.zip
 
     ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-    ##
+    # -- resources for metabase dashboard
     resources: {}
       # limits:
-      #   memory: 2Gi
+      #   memory: 1Gi
+      #   cpu: 500m
       # requests:
-      #   cpu: 150m
-      #   memory: 1700Mi
+      #   cpu: 500m
+      #   memory: 1Gi
 
     # -- Enable ingress object
     ingress:
@@ -164,28 +231,22 @@ lapi:
       host: "" # metabase.example.com
       # tls: {}
 
-  resources:
-    limits:
-      memory: 100Mi
-    requests:
-      cpu: 150m
-      memory: 100Mi
   # -- Enable persistent volumes
   persistentVolume:
     # -- Persistent volume for data folder. Stores e.g. registered bouncer api keys
     data:
       enabled: true
       accessModes:
-        - ReadWriteMany
-      storageClassName: ""
+        - ReadWriteOnce
+      storageClassName: rook-ceph-nvme2tb
       existingClaim: ""
       size: 1Gi
     # -- Persistent volume for config folder. Stores e.g. online api credentials
     config:
       enabled: true
       accessModes:
-        - ReadWriteMany
-      storageClassName: ""
+        - ReadWriteOnce
+      storageClassName: rook-ceph-nvme2tb
       existingClaim: ""
       size: 100Mi
 
@@ -201,20 +262,40 @@ lapi:
   # -- nodeSelector for lapi
   nodeSelector: {}
   # -- tolerations for lapi
-  tolerations: {}
+  tolerations: []
+  # -- dnsConfig for lapi
+  dnsConfig: {}
+  # -- affinity for lapi
+  affinity: {}
+  # -- topologySpreadConstraints for lapi
+  topologySpreadConstraints: []
 
   # -- Enable service monitoring (exposes "metrics" port "6060" for Prometheus)
   metrics:
-    enabled: false
+    enabled: true
     # -- Creates a ServiceMonitor so Prometheus will monitor this service
     # -- Prometheus needs to be configured to watch on all namespaces for ServiceMonitors
     # -- See the documentation: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#prometheusioscrape
     # -- See also: https://github.com/prometheus-community/helm-charts/issues/106#issuecomment-700847774
     serviceMonitor:
-      enabled: false
+      enabled: true
 
   strategy:
-    type: RollingUpdate
+    type: Recreate
+
+  secrets:
+    # -- Shared LAPI secret. Will be generated randomly if not specified. Size must be > 64 characters
+    csLapiSecret: ""
+  # -- Any extra secrets you may need (for example, external DB password)
+  extraSecrets: {}
+    # dbPassword: randomPass
+  lifecycle: {}
+    # preStop:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+    # postStart:
+    #   exec:
+    #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
 
 # agent will deploy pod on every node as daemonSet to read wanted pods logs
 agent:
@@ -233,37 +314,53 @@ agent:
     # -- Specify each pod you want to process it logs (namespace, podName and program)
     - namespace: traefik #ingress-nginx
       # -- to select pod logs to process
-      podName: traefik* #ingress-nginx-controller-*
+      podName: traefik-* #ingress-nginx-controller-*
       # -- program name related to specific parser you will use (see https://hub.crowdsec.net/author/crowdsecurity/configurations/docker-logs)
       program: traefik #nginx
       # -- If set to true, will poll the files using os.Stat instead of using inotify
       poll_without_inotify: false
+
+  # -- pod priority class name
+  priorityClassName: ""
+
+  # -- Annotations to be added to agent daemonset
+  daemonsetAnnotations: {}
+
+  # -- Annotations to be added to agent pods, if global podAnnotations are not set
+  podAnnotations: {}
+
+  # -- Labels to be added to agent pods, if global podLabels are not set
+  podLabels: {}
+
   resources:
     limits:
-      memory: 100Mi
+      memory: 250Mi
+      cpu: 500m
     requests:
-      cpu: 150m
-      memory: 100Mi
+      cpu: 500m
+      memory: 250Mi
   # -- Enable persistent volumes
   persistentVolume:
     # -- Persistent volume for config folder. Stores local config (parsers, scenarios etc.)
     config:
-      enabled: true 
+      enabled: false
       accessModes:
-        - ReadWriteMany
-      storageClassName: ""
+        - ReadWriteOnce
+      storageClassName: rook-ceph-nvme2tb
       existingClaim: ""
       size: 100Mi
+  # -- Enable hostPath to /var/log
+  hostVarLog: true
   # -- environment variables from crowdsecurity/crowdsec docker image
   env:
-    # by default we configure the docker-logs parser to be able to parse docker logs in k8s
-    # by default we disable local API on the agent pod
     - name: PARSERS
       value: "crowdsecurity/cri-logs"
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"
     - name: DISABLE_PARSERS
       value: "crowdsecurity/whitelists"
+    # by default we configure the docker-logs parser to be able to parse docker logs in k8s
+    # by default we disable local API on the agent pod
     # - name: SCENARIOS
     #   value: "scenario/name otherScenario/name"
     # - name: PARSERS
@@ -294,7 +391,42 @@ agent:
   # -- nodeSelector for agent
   nodeSelector: {}
   # -- tolerations for agent
-  tolerations: {}
+  tolerations: []
+  # -- affinity for agent
+  affinity: {}
+
+  # -- livenessProbe for agent
+  livenessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- readinessProbe for agent
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- startupProbe for agent
+  startupProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+      scheme: HTTP
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+    failureThreshold: 30
 
   # -- Enable service monitoring (exposes "metrics" port "6060" for Prometheus)
   metrics:
@@ -326,5 +458,4 @@ agent:
       tag: "1.28"
 
 #service: {}
-
 

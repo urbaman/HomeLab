@@ -24,8 +24,9 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 43,
+  "id": 56,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": true,
@@ -66,7 +67,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -102,7 +104,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -110,9 +112,9 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "(process_start_time_seconds{instance=\"$instance\"})*1000",
+              "expr": "(process_start_time_seconds{machine=\"$machine\"})*1000",
               "interval": "",
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{machine}}",
               "refId": "A"
             }
           ],
@@ -132,7 +134,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -160,7 +163,7 @@
             "showThresholdMarkers": false,
             "text": {}
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -168,11 +171,11 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "process_resident_memory_bytes{instance=\"$instance\"}",
+              "expr": "process_resident_memory_bytes{machine=\"$machine\"}",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 3,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{machine}}",
               "refId": "A"
             }
           ],
@@ -194,7 +197,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -226,7 +230,7 @@
             "showThresholdMarkers": true,
             "text": {}
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -234,10 +238,10 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "rate(process_cpu_seconds_total{instance=\"$instance\"}[$__interval])*100",
+              "expr": "rate(process_cpu_seconds_total{machine=\"$machine\"}[$__interval])*100",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{machine}}",
               "refId": "A"
             }
           ],
@@ -270,7 +274,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -306,7 +311,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -314,9 +319,9 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "process_max_fds{instance=\"$instance\"}",
+              "expr": "process_max_fds{machine=\"$machine\"}",
               "interval": "",
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{machine}}",
               "refId": "A"
             }
           ],
@@ -348,7 +353,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -384,7 +390,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -392,7 +398,7 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "sum(increase(cs_filesource_hits_total{instance=\"$instance\"}[$__interval]) or up * 0) + sum(increase(cs_cloudwatch_stream_hits_total{instance=\"$instance\"}[$__interval]) or up * 0) + sum(increase(cs_journalctlsource_hits_total{instance=\"$instance\"}[$__interval]) or up * 0) + sum(increase(cs_syslogsource_hits_total{instance=\"$instance\"}[$__interval]) or up * 0)",
+              "expr": "sum(increase(cs_filesource_hits_total{machine=\"$machine\"}[$__interval]) or up * 0) + sum(increase(cs_cloudwatch_stream_hits_total{machine=\"$machine\"}[$__interval]) or up * 0) + sum(increase(cs_journalctlsource_hits_total{machine=\"$machine\"}[$__interval]) or up * 0) + sum(increase(cs_syslogsource_hits_total{machine=\"$machine\"}[$__interval]) or up * 0)",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -427,7 +433,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -463,7 +470,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -471,7 +478,7 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "sum(increase(cs_parser_hits_ok_total{instance=\"$instance\"}[$__interval]))",
+              "expr": "sum(increase(cs_parser_hits_ok_total{machine=\"$machine\"}[$__interval]))",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -506,7 +513,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -542,7 +550,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -550,7 +558,7 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "sum(increase(cs_bucket_overflowed_total{instance=\"$instance\"}[$__interval]))",
+              "expr": "sum(increase(cs_bucket_overflowed_total{machine=\"$machine\"}[$__interval]))",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -585,7 +593,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -621,7 +630,7 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
@@ -629,9 +638,9 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "process_open_fds{instance=\"$instance\"}",
+              "expr": "process_open_fds{machine=\"$machine\"}",
               "interval": "",
-              "legendFormat": "{{instance}}",
+              "legendFormat": "{{machine}}",
               "refId": "A"
             }
           ],
@@ -663,7 +672,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -699,14 +709,14 @@
             "text": {},
             "textMode": "auto"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "targets": [
             {
               "datasource": {
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "sum(increase(cs_parser_hits_ko_total{instance=\"$instance\"}[$__interval]))",
+              "expr": "sum(increase(cs_parser_hits_ko_total{machine=\"$machine\"}[$__interval]))",
               "interval": "",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -728,7 +738,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
@@ -744,6 +755,8 @@
           "id": 16,
           "options": {
             "displayMode": "gradient",
+            "minVizHeight": 10,
+            "minVizWidth": 0,
             "orientation": "horizontal",
             "reduceOptions": {
               "calcs": [
@@ -753,9 +766,10 @@
               "values": false
             },
             "showUnfilled": false,
-            "text": {}
+            "text": {},
+            "valueMode": "color"
           },
-          "pluginVersion": "8.1.2",
+          "pluginVersion": "10.1.2",
           "repeatDirection": "v",
           "targets": [
             {
@@ -764,7 +778,7 @@
                 "uid": "prometheus"
               },
               "exemplar": true,
-              "expr": "sum(increase(cs_bucket_overflowed_total{instance=\"$instance\"}[$__interval])) by (name)",
+              "expr": "sum(increase(cs_bucket_overflowed_total{machine=\"$machine\"}[$__interval])) by (name)",
               "format": "time_series",
               "instant": false,
               "interval": "",
@@ -778,7 +792,7 @@
           "type": "bargauge"
         }
       ],
-      "repeat": "instance",
+      "repeat": "machine",
       "targets": [
         {
           "datasource": {
@@ -788,11 +802,13 @@
           "refId": "A"
         }
       ],
-      "title": "$instance",
+      "title": "$machine",
       "type": "row"
     }
   ],
-  "schemaVersion": 39,
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
@@ -806,16 +822,16 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(cs_info, instance)",
+        "definition": "label_values(up, machine)",
         "hide": 0,
         "includeAll": true,
-        "label": "instance",
+        "label": "machine",
         "multi": true,
-        "name": "instance",
+        "name": "machine",
         "options": [],
         "query": {
-          "query": "label_values(cs_info, instance)",
-          "refId": "Prometheus-instance-Variable-Query"
+          "query": "label_values(up, machine)",
+          "refId": "Prometheus-machine-Variable-Query"
         },
         "refresh": 1,
         "regex": "",
@@ -848,7 +864,7 @@
   },
   "timezone": "",
   "title": "Crowdsec Insight",
-  "uid": "e7sWOBVnk2",
+  "uid": "e7sWOBVnk",
   "version": 1,
   "weekStart": ""
 }

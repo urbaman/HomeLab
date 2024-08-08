@@ -1,8 +1,8 @@
 # Crowdsec monitoring
 
-Remember to deploy Crowdsec with metrics = true and serviceMonitor = true, the edit the service monitor label to `release: prometheus-kube-stack`.
+Remember to deploy Crowdsec with metrics = true and serviceMonitor = true, then add a label `release: prometheus-kube-stack` to the service monitors.
 
-Create the dashboards (now in v4):
+Create the dashboards (now in v5):
 
 ```bash
 kubectl create configmap grafana-dashboard-crowdsec-dpm --from-file=crowdsec-details-per-machine.json
