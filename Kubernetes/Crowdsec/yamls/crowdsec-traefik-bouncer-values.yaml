@@ -5,7 +5,7 @@
 # Required parameters to be passed to the image env variables
 bouncer:
   # -- bouncer api key (need to be generated from crowdsec agent)
-  crowdsec_bouncer_api_key: 2JNysNi6jhzkS/l2m5raRGU6dpPpJ6xh+OoxA8Jo2EM 
+  crowdsec_bouncer_api_key: "Api Key Here" 
   # -- crowdsec lapi host (ie: crowdsec-service.crowdsec.svc.cluster.local:8080)
   crowdsec_agent_host: "crowdsec-service.crowdsec.svc.cluster.local:8080"
   # -- crowdsec_bouncer_gin_mode sets the mode of the app
