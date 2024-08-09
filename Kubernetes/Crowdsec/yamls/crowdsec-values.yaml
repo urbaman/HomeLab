@@ -148,7 +148,7 @@ lapi:
   # -- environment variables from crowdsecurity/crowdsec docker image
   env:
     - name: ENROLL_KEY
-      value: "clozy41vg0001l908kcpol5y4"
+      value: "Key Here"
     - name: ENROLL_INSTANCE_NAME
       value: "k8s_cluster"
     - name: ENROLL_TAGS
