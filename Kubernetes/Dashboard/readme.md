@@ -1,6 +1,6 @@
 # Kubernetes Dashboard
 
-## via manifests
+## via manifests (not for the new version - only helm)
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
@@ -12,6 +12,8 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/a
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm repo update
 ```
+
+### For old version
 
 Enable the metrics scraper, disable nginx, cert-manager and ingress, then save the values and install the chart
 
@@ -27,6 +29,14 @@ Or give the settings to helm
 helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard --set cert-manager.enabled=false --set nginx.enabled=false --set metrics-server.enabled=false  --set metricsScraper.enabled=true
 ```
 
+### For new version
+
+Just install:
+
+```bash
+helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+```
+
 ## Creating sample user
 
 In this guide, we will find out how to create a new user using the Service Account mechanism of Kubernetes, grant this user admin permissions and login to Dashboard using a bearer token tied to this user.
@@ -39,7 +49,7 @@ For each of the following snippets for ServiceAccount and ClusterRoleBinding, yo
 
 We are creating Service Account with the name admin-user in namespace kubernetes-dashboard first.
 
-```bash
+```yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -51,7 +61,7 @@ metadata:
 
 In most cases after provisioning the cluster using kops, kubeadm or any other popular tool, the ClusterRole cluster-admin already exists in the cluster. We can use it and create only a ClusterRoleBinding for our ServiceAccount. If it does not exist then you need to create this role first and grant required privileges manually.
 
-```bash
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -83,3 +93,22 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiw
 Now copy the token and paste it into the Enter token field on the login screen.
 
 Click the Sign in button and that's it. You are now logged in as an admin.
+
+### Getting a long-lived Bearer Token
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/service-account.name: "admin-user"   
+type: kubernetes.io/service-account-token
+```
+
+Then to get it:
+
+```bash
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+```

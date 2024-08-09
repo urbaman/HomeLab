@@ -1,21 +1,21 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: k8dashboard-urbaman
+  name: k8dashboard-domain
   namespace: kubernetes-dashboard
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - k8dashboard.urbaman.it
+  - k8dashboard.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: k8dashboard-urbaman
+  secretName: k8dashboard-domain
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: k8dashboard-https-redirect
@@ -25,7 +25,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: k8dashboard-security
@@ -49,7 +49,7 @@ spec:
   serverName: k8dashboard
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: k8dashboard-tlsoptions
@@ -73,7 +73,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: k8dashboard-websecure
@@ -82,26 +82,20 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`k8dashboard.urbaman.it`)
+  - match: Host(`k8dashboard.domain.com`)
     kind: Rule
     services:
-    - name: kubernetes-dashboard-web
-      port: 8000
-      serversTransport: k8dashboard-transport
-  - match: Host(`k8dashboard.urbaman.it`) && PathPrefix(`/api`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard-api
-      port: 9000
+    - name: kubernetes-dashboard-kong-proxy
+      port: 443 
       serversTransport: k8dashboard-transport
     middlewares:
       - name: k8dashboard-security
   tls:
-    secretName: k8dashboard-urbaman
+    secretName: k8dashboard-domain
     options:
       name: k8dashboard-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: k8dashboard-web
@@ -110,16 +104,10 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`k8dashboard.urbaman.it`)
+  - match: Host(`k8dashboard.domain.com`)
     kind: Rule
     services:
-    - name: kubernetes-dashboard-web
-      port: 8000
-  - match: Host(`k8dashboard.urbaman.it`) && PathPrefix(`/api`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard-api
-      port: 9000
+    - name: kubernetes-dashboard-kong-proxy
+      port: 443 
     middlewares:
       - name: k8dashboard-https-redirect
-
