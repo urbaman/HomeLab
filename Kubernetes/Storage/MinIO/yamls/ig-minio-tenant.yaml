@@ -15,7 +15,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: minio-tenant-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minio-tenant-https-redirect
@@ -25,7 +25,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minio-tenant-security
@@ -49,7 +49,7 @@ spec:
   serverName: minio-tenant 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-minio-tenant-tlsoptions
@@ -73,7 +73,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minio-tenant-websecure
@@ -95,7 +95,7 @@ spec:
     options:
       name: traefik-minio-tenant-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minio-tenant-web
@@ -129,7 +129,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: minio-s3-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minioapi-https-redirect
@@ -139,7 +139,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-minioapi-security
@@ -163,7 +163,7 @@ spec:
   serverName: minioapi 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-minioapi-tlsoptions
@@ -187,7 +187,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minioapi-websecure
@@ -209,7 +209,7 @@ spec:
     options:
       name: traefik-minioapi-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minioapi-web
