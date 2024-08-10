@@ -11,15 +11,17 @@ helm repo update
 
 ## Install the operator
 
+**Note**: the console has been deprecated in the helm chart at the moment
+
 ```bash
-helm show values minio-operator/operator > minio-operator.yaml
-vi minio-operator.yaml
+helm show values minio-operator/operator > minio-operator-values.yaml
+vi minio-operator-values.yaml
 ```
 
 Let's keep the default values, but change them if you want
 
 ```bash
-helm upgrade --install --namespace minio --create-namespace operator minio-operator/operator --values minio-operator.yaml
+helm upgrade --install --namespace minio --create-namespace operator minio-operator/operator --values minio-operator-values.yaml
 kubectl apply -f ig-minio-operator.yaml
 ```
 
@@ -27,6 +29,11 @@ kubectl apply -f ig-minio-operator.yaml
 
 ```bash
 helm upgrade --install --namespace minio --create-namespace operator minio-operator/operator --version <old-chart-version>
+```
+
+### For the old helm chart with the console still working (!?)
+
+```bash
 kubectl apply -f ig-minio-operator.yaml
 ```
 
@@ -39,14 +46,14 @@ kubectl get secret/console-sa-secret -n minio -o json | jq -r ".data.token" | ba
 ## Install the tenant
 
 ```bash
-helm show values minio-operator/tenant > minio-tenant.yaml
-vi minio-tenant.yaml
+helm show values minio-operator/tenant > minio-tenant-values.yaml
+vi minio-tenant-values.yaml
 ```
 
 Change the user (accessKey) and password (secretKey), name, servers, pool name, volumes per server, volume size, storage class, enable the metrics then apply the chart.
 
 ```bash
-helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --values minio-tenant.yaml
+helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --values minio-tenant-values.yaml
 kubectl apply -f ig-minio-tenant.yaml
 ```
 
