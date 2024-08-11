@@ -47,10 +47,26 @@ kubectl get secret/console-sa-secret -n minio -o json | jq -r ".data.token" | ba
 
 ```bash
 helm show values minio-operator/tenant > minio-tenant-values.yaml
+```
+
+Also prepare a `config.env` file to enable monitoring on the gui.
+
+```bash
+export MINIO_ROOT_USER=<user>
+export MINIO_ROOT_PASSWORD=<password>
+export MINIO_PROMETHEUS_URL=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+export MINIO_PROMETHEUS_JOB_ID=minio
+export MINIO_PROMETHEUS_AUTH_TYPE="public" # not needed
+```
+
+Create a secret from the file.
+
+```bash
+kubectl create secret generic minio-env-configuration -n minio     --from-file=./config.env
 vi minio-tenant-values.yaml
 ```
 
-Change the user (accessKey) and password (secretKey), name, servers, pool name, volumes per server, volume size, storage class, enable the metrics then apply the chart.
+Change the name, servers, pool name, volumes per server, volume size, storage class, enable the metrics, also enable the existingSecret specs with the secret name equal to the name of the secret you just created.
 
 ```bash
 helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --values minio-tenant-values.yaml
