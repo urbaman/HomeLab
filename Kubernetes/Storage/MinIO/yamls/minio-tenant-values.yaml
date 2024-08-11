@@ -17,8 +17,8 @@
 #
 secrets:
   name: TENANT-NAME-env-configuration
-  accessKey: ACCESS_KEY 
-  secretKey: SECRET_KEY
+  # accessKey: ACCESS_KEY 
+  # secretKey: SECRET_KEY
 ###
 # The name of an existing Kubernetes secret to import to the MinIO Tenant
 # The secret must contain a key ``config.env``.
@@ -281,7 +281,7 @@ tenant:
   serviceAccountName: ""
   ###
   # Directs the Operator to add the Tenant's metric scrape configuration to an existing Kubernetes Prometheus deployment managed by the Prometheus Operator.
-  prometheusOperator: false
+  prometheusOperator: true
   ###
   # Configure pod logging configuration for the MinIO Tenant.
   #
@@ -299,7 +299,9 @@ tenant:
   ###
   # serviceMetadata allows passing additional labels and annotations to MinIO and Console specific
   # services created by the operator.
-  serviceMetadata: { }
+  serviceMetadata:
+    minioServiceLabels:
+      app: minio
   ###
   # Add environment variables to be set in MinIO container (https://github.com/minio/minio/tree/master/docs/config)
   env: [ ]

@@ -66,7 +66,14 @@ kubectl create secret generic minio-env-configuration -n minio     --from-file=.
 vi minio-tenant-values.yaml
 ```
 
-Change the name, servers, pool name, volumes per server, volume size, storage class, enable the metrics, also enable the existingSecret specs with the secret name equal to the name of the secret you just created.
+Change the name, servers, pool name, volumes per server, volume size, storage class, enable the metrics, also enable the existingSecret specs with the secret name equal to the name of the secret you just created, and `prometheusOperator` to true.
+Finally set serviceMetadata to add an `app: minio` label to the minio service (to target it with serviceMonitors):
+
+```yaml
+serviceMetadata:
+    minioServiceLabels:
+      app: minio
+```
 
 ```bash
 helm upgrade --install --namespace minio --create-namespace tenant minio-operator/tenant --values minio-tenant-values.yaml
