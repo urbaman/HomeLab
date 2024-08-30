@@ -23,7 +23,7 @@ Here is the Cluster infrastructure we will deploy on Proxmox
 | k8w7.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 7          | 10.0.50.87 |
 | k8w8.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 8          | 10.0.50.88 |
 | k8w9.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 9          | 10.0.50.89 |
-| ectd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 1               | 10.0.50.41 |
+| etcd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 1               | 10.0.50.41 |
 | etcd2.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 2               | 10.0.50.42 |
 | etcd3.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 3               | 10.0.50.43 |
 | haproxy1.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
