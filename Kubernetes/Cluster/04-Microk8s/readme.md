@@ -122,7 +122,7 @@ microk8s helm install kube-vip kube-vip/kube-vip --namespace kube-system -f valu
 ```
 
 The file values.yaml can be found here https://github.com/kube-vip/helm-charts/blob/main/charts/kube-vip/values.yaml
-and i simply modified so that the following was configured
+and I simply modified so that the following was configured
 
 ```bash
 config:
