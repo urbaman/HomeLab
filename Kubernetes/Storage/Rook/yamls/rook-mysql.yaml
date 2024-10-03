@@ -19,7 +19,7 @@ metadata:
   labels:
     app: wordpress
 spec:
-  storageClassName: ceph-external-rbd2
+  storageClassName: rook-ceph-nvme2tb
   accessModes:
     - ReadWriteOnce
   resources:

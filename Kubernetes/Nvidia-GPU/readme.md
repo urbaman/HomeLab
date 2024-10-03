@@ -208,8 +208,8 @@ The CUDA version only specifies which base image is used to build the driver con
 Specify the Linux guest vGPU driver version that you downloaded from the NVIDIA Licensing Portal and append `-grid`, then a second variable without `-grid`:
 
 ```bash
-export VGPU_DRIVER_VERSION=525.60.13-grid
-export VGPU_DRIVER=525.60.13
+export VGPU_DRIVER_VERSION=525.60.13-grid # 535.161.05 as of now
+export VGPU_DRIVER=525.60.13 # 535.161.05 as of now
 ```
 
 The Operator automatically selects the compatible guest driver version from the drivers bundled with the driver image. If you disable the version check by specifying `--build-arg DISABLE_VGPU_VERSION_CHECK=true` when you build the driver image, then the `VGPU_DRIVER_VERSION` value is used as default.
@@ -225,7 +225,7 @@ sudo docker build \
     -t ${PRIVATE_REGISTRY}/driver:${VERSION}-${OS_TAG} .
 ```
 
-Push the driver container image to your private registry.
+#### Push the driver container image to your private registry.
 
 Log in to your private registry:
 
@@ -289,8 +289,15 @@ kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=pri
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
 helm show values nvidia/gpu-operator > gpu-operator-values-vgpu.yaml
 vi gpu-operator-values-vgpu.yaml
+```
+
+Check the driver.repository and driver.version to match your custom image if needed
+
+```bash
 helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values-vgpu.yaml
 ```
+
+
 
 ##### Needed as of version 23.9.1
 

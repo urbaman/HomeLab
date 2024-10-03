@@ -1,0 +1,95 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio-sm-cluster
+  namespace: minio
+  labels:
+    v1.min.io/tenant: minio
+    release: kube-prometheus-stack
+spec:
+  jobLabel: cluster-job
+  endpoints:
+  - bearerTokenSecret:
+      key: cluster-token
+      name: minio-metrics-bearer-tokens
+    path: /minio/v2/metrics/cluster
+    scheme: https
+    port: https-minio
+    tlsConfig:
+      insecureSkipVerify: true
+  selector:
+    matchLabels:
+      v1.min.io/tenant: minio
+      app: minio
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio-sm-bucket
+  namespace: minio
+  labels:
+    v1.min.io/tenant: minio
+    release: kube-prometheus-stack
+spec:
+  jobLabel: cluster-job
+  endpoints:
+  - bearerTokenSecret:
+      key: bucket-token
+      name: minio-metrics-bearer-tokens
+    path: /minio/v2/metrics/bucket
+    scheme: https
+    port: https-minio
+    tlsConfig:
+      insecureSkipVerify: true
+  selector:
+    matchLabels:
+      v1.min.io/tenant: minio
+      app: minio
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio-sm-node
+  namespace: minio
+  labels:
+    v1.min.io/tenant: minio
+    release: kube-prometheus-stack
+spec:
+  jobLabel: cluster-job
+  endpoints:
+  - bearerTokenSecret:
+      key: node-token
+      name: minio-metrics-bearer-tokens
+    path: /minio/v2/metrics/node
+    scheme: https
+    port: https-minio
+    tlsConfig:
+      insecureSkipVerify: true  
+  selector:
+    matchLabels:
+      v1.min.io/tenant: minio
+      app: minio
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio-sm-resource
+  namespace: minio
+  labels:
+    v1.min.io/tenant: minio
+    release: kube-prometheus-stack
+spec:
+  jobLabel: cluster-job
+  endpoints:
+  - bearerTokenSecret:
+      key: resource-token
+      name: minio-metrics-bearer-tokens
+    path: /minio/v2/metrics/resource
+    scheme: https
+    port: https-minio
+    tlsConfig:
+      insecureSkipVerify: true
+  selector:
+    matchLabels:
+      v1.min.io/tenant: minio
+      app: minio

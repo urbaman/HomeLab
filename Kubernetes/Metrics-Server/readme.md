@@ -78,3 +78,7 @@ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 helm repo update
 helm upgrade -i metrics-server metrics-server/metrics-server -n kube-system --create-namespace --set replicas=3 --set args[0]="--kubelet-insecure-tls"
 ```
+
+## Microk8s
+
+Just enable the add-on

@@ -31,6 +31,10 @@ sudo timedatectl set-timezone Europe/Rome
 
 Do it.
 
+```bash
+sudo apt install postfix unattended-upgrades
+```
+
 ## Create script to run at new template creation, to customize postfix and other mail settings to the new desired settings (mailto)
 
 ```bash

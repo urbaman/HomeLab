@@ -23,6 +23,13 @@ sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
 sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
 ```
 
+Also, change the etcd metrics listen address from 127.0.0.1 to 0.0.0.0:
+
+
+```bash
+sudo vi /etc/kubernetes/manifests/etcd.yaml
+```
+
 Then check the controller manager and scheduler pods, they should restart as soon as the system recognize the changed manifests, if not manually delete each scheduler and each controller manager pods in the kube-system namespace to make them load the new settings.
 
 ```bash
@@ -79,11 +86,20 @@ kubectl edit -n monitoring deployment kube-prometheus-stack-operator
 kubectl rollout restart -n monitoring deployment kube-prometheus-stack-operator
 ```
 
-Disable the internal etcd scraping:
+Disable the internal etcd and/or the internal kubeProxy scraping:
 
 ```yaml
 kubeEtcd:
   enabled: false
+
+
+kubeProxy:
+  enabled: false
+
+defaulteRules:
+  create: true
+  rules:
+    kubeProxy: false
 ```
 
 And define Alertmanager notifications by email:
@@ -101,7 +117,7 @@ And define Alertmanager notifications by email:
           - alertname =~ "InfoInhibitor|Watchdog"
       - receiver: 'mail'
         matchers:
-          - alertname =~ "InfoInhibitor|Watchdog"
+          - alertname != "InfoInhibitor|Watchdog"
     receivers:
     - name: 'null'
     - name: 'mail'
@@ -113,6 +129,10 @@ And define Alertmanager notifications by email:
         auth_identity: 'tomail@domain.com'
         auth_password: 'password'
         send_resolved: true
+        tls_config:
+          insecure_skip_verify: true
+        headers:
+          subject: 'Prometheus Mail Alerts'
 ```
 
 Under the grafana header, add some plugins:

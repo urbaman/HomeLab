@@ -11,24 +11,24 @@ Here is the Cluster infrastructure we will deploy on Proxmox
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
-| k8cp1.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 1 | 10.0.50.51 |
-| k8cp2.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 2 | 10.0.50.52 |
-| k8cp3.domain.com       | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes control manager node 3 | 10.0.50.53 |
-| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 1          | 10.0.50.81 |
-| k8w2.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 2          | 10.0.50.82 |
-| k8w3.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 3          | 10.0.50.83 |
-| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 4          | 10.0.50.84 |
-| k8w5.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 5          | 10.0.50.85 |
-| k8w6.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 6          | 10.0.50.86 |
-| k8w7.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 7          | 10.0.50.87 |
-| k8w8.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 8          | 10.0.50.88 |
-| k8w9.domain.com        | 8   | 32GB | 100GB           | Ubuntu 22.04       | Kubernetes worker node 9          | 10.0.50.89 |
-| ectd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 1               | 10.0.50.41 |
-| etcd2.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 2               | 10.0.50.42 |
-| etcd3.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 22.04       | Etcd cluster node 3               | 10.0.50.43 |
-| haproxy1.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
-| haproxy2.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
-| haproxy3.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 22.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
+| k8cp1.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 1 | 10.0.50.51 |
+| k8cp2.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 2 | 10.0.50.52 |
+| k8cp3.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 3 | 10.0.50.53 |
+| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 1          | 10.0.50.81 |
+| k8w2.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 2          | 10.0.50.82 |
+| k8w3.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 3          | 10.0.50.83 |
+| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 4          | 10.0.50.84 |
+| k8w5.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 5          | 10.0.50.85 |
+| k8w6.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 6          | 10.0.50.86 |
+| k8w7.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 7          | 10.0.50.87 |
+| k8w8.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 8          | 10.0.50.88 |
+| k8w9.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 9          | 10.0.50.89 |
+| etcd1.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 1               | 10.0.50.41 |
+| etcd2.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 2               | 10.0.50.42 |
+| etcd3.domain.com       | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 3               | 10.0.50.43 |
+| haproxy1.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
+| haproxy2.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
+| haproxy3.domain.com    | 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
 | k8cp.domain.com, nfs.domain.com | N/A | N/A  | N/A                      | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
 
 ## Cluster deployment
