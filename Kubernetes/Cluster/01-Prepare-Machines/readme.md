@@ -152,7 +152,7 @@ sudo postmap /etc/postfix/sasl_passwd
 Set the default root email in /etc/aliases adding the following line:
 
 ```bash
-root me@myemail.com
+root: me@myemail.com
 ```
 
 ```bash
@@ -346,7 +346,7 @@ In addition, you can choose to receive email updates in case an update goes wron
 
 uncomment it and change the attribute "on-change" to "only-on-error"
 
-When security updates are installed, it's always good practice to restart the server in order to update the kernel. You can enable an automatic reboot by locating the line below. I  our implementation, we do not enable this feature.
+When security updates are installed, it's always good practice to restart the server in order to update the kernel. You can enable an automatic reboot by locating the line below. In our implementation, we do not enable this feature.
 
 ```bash
 //Unattended-Upgrade::Automatic-Reboot "false";
