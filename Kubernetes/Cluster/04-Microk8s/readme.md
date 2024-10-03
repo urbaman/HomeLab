@@ -1,14 +1,6 @@
 # Microk8s cluster
 
-See [https://microk8s.io/docs/high-availability#set-failure-domains-4](https://microk8s.io/docs/high-availability#set-failure-domains-4) to set the failure domanis (probably the pve nodes)
-
-See [https://microk8s.io/docs/external-etcd](https://microk8s.io/docs/external-etcd) for external etcd
-
-See [https://microk8s.io/docs/add-launch-config](https://microk8s.io/docs/add-launch-config) to set the loadbalancer IP in che SANs
-
-See [https://discuss.kubernetes.io/t/adding-a-worker-node-only-with-microk8s/14801](https://discuss.kubernetes.io/t/adding-a-worker-node-only-with-microk8s/14801) to set a loadbalancer (?)
-
-## On all nodes
+## On all nodes (not to do)
 
 ```bash
 sudo mkdir -p /var/snap/microk8s/current/certs/
@@ -50,7 +42,7 @@ microk8s status --wait-ready
 vi /var/snap/microk8s/current/certs/csr.conf.template
 ```
 
-## this part about the loadbalancer is not working yet
+## this part about the loadbalancer is not working yet (not to do)
 
 Add the Loadbalancer DNS as DNS.100 and the Loadbalancer IP as IP.100
 
