@@ -18,7 +18,7 @@ sudo visudo
 add at the end:
 
 ```bash
-ubuntu (ALL)=ALL NOPASSWD:ALL
+ubuntu ALL=(ALL) NOPASSWD:ALL
 ```
 
 ## Set your timezone
