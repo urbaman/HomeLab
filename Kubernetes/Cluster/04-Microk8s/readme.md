@@ -91,7 +91,7 @@ sudo microk8s join 10.0.50.51:25000/e223f1b3d2040b82ee82aa6db88bfc5d/5bed05e3b3a
 1. Install microk8s on the 3 nodes that form the control plane cluster:
 
 ```bash
-sudo snap install microk8s --classic --channel=1.30
+sudo snap install microk8s --classic --channel=1.31/stable
 sudo usermod -a -G microk8s $USER
 mkdir -p ~/.kube
 chmod 0700 ~/.kube
@@ -113,7 +113,7 @@ microk8s helm repo update
 microk8s helm install kube-vip kube-vip/kube-vip --namespace kube-system -f values.yaml
 ```
 
-The file values.yaml can be found here https://github.com/kube-vip/helm-charts/blob/main/charts/kube-vip/values.yaml
+The file values.yaml can be found here https://raw.githubusercontent.com/kube-vip/helm-charts/refs/heads/main/charts/kube-vip/values.yaml
 and I simply modified so that the following was configured
 
 ```bash
