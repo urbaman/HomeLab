@@ -135,7 +135,7 @@ nodeSelector:
 
 At this point we are done, i get a kubectl config from microk8s using microk8s config and simply make sure that the server IP is changed to the VIP instead of localhost used by default
 
-Notice that the deamon set comes with a toileration and node-selector so that will only run on control plane nodes and not on workers ones.
+Notice that the daemon set comes with a toleration and node-selector so that will only run on control plane nodes and not on workers ones.
 
 I have tested also a join from a worker, everything seems to be working fine (i can join and i get proper HA on failures) , the only thing is that you want to run "microk8s add-node" from the node where the VIP is currently active (i used  ip addr show eth0 to find the server with the VIP being active on ) .. not sure if it's mandatory, but it worked well for me .
 The only thing i had to take care of was to edit `/var/snap/microk8s/current/traefik/provider.yaml` to only have my VIP there, and make the change stable by setting `--refresh-interval 0` in `/var/snap/microk8s/current/args/apiserver-proxy`.
