@@ -199,13 +199,6 @@ ports:
       default: true
     exposedPort: 3306
     protocol: TCP
-    # MariaDB
-  mariadb:
-    port: 6033
-    expose:
-      default: true
-    exposedPort: 6033
-    protocol: TCP
     # Gitlab Shell
   gitlab-shell:
     port: 2232
