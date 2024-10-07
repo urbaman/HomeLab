@@ -46,7 +46,6 @@ vi /var/snap/microk8s/current/certs/csr.conf.template
 
 Add the Loadbalancer DNS as DNS.100 and the Loadbalancer IP as IP.100
 
-
 ```bash
 sed -i 's\https://127.0.0.1\https://k8cp.urbaman.it\g' /var/snap/microk8s/current/credentials/client.config
 sed -i 's\https://127.0.0.1\https://k8cp.urbaman.it\g' /var/snap/microk8s/current/credentials/controller.config
@@ -88,7 +87,7 @@ sudo microk8s join 10.0.50.51:25000/e223f1b3d2040b82ee82aa6db88bfc5d/5bed05e3b3a
 
 ## Cluster with Loadbalance between the CPs with Kube-vip
 
-1. Install microk8s on the 3 nodes that form the control plane cluster:
+- Install microk8s on the 3 nodes that form the control plane cluster:
 
 ```bash
 sudo snap install microk8s --classic --channel=1.31/stable
@@ -98,14 +97,14 @@ chmod 0700 ~/.kube
 su $USER
 ```
 
-2. Create new certificates on all nodes allowing for the VIP address:
-   a. Edit `/var/snap/microk8s/current/certs/csr.conf.template` on all control planes
-   b. Add IP.99 = a.b.c.d where a.b.c.d is the VIP address
-   c. Add DNS.99 = mk8.domain.com for the loadbalancer FQDN
-   c. Generate new certificates on all nodes with `sudo microk8s refresh-certs`
-3. Form the cluster following the instructions listed here: https://microk8s.io/docs/high-availability
-4. Prepare the basic cluster components microk8s enable rbac helm3 dns
-5. Install kube-vip via helm-chart (as a deamon set)
+- Create new certificates on all nodes allowing for the VIP address:
+  - Edit `/var/snap/microk8s/current/certs/csr.conf.template` on all control planes
+  - Add IP.99 = a.b.c.d where a.b.c.d is the VIP address
+  - Add DNS.99 = mk8.domain.com for the loadbalancer FQDN
+  - Generate new certificates on all nodes with `sudo microk8s refresh-certs`
+- Form the cluster following the [instructions listed here](https://microk8s.io/docs/high-availability)
+- Prepare the basic cluster components microk8s enable rbac helm3 dns
+- Install kube-vip via helm-chart (as a deamon set)
 
 ```bash
 microk8s helm repo add kube-vip https://kube-vip.github.io/helm-charts
@@ -113,7 +112,7 @@ microk8s helm repo update
 microk8s helm install kube-vip kube-vip/kube-vip --namespace kube-system -f values.yaml
 ```
 
-The file values.yaml can be found here https://raw.githubusercontent.com/kube-vip/helm-charts/refs/heads/main/charts/kube-vip/values.yaml
+The file values.yaml [can be found here](https://raw.githubusercontent.com/kube-vip/helm-charts/refs/heads/main/charts/kube-vip/values.yaml)
 and I simply modified so that the following was configured
 
 ```bash
@@ -136,7 +135,7 @@ nodeSelector:
 
 At this point we are done, i get a kubectl config from microk8s using microk8s config and simply make sure that the server IP is changed to the VIP instead of localhost used by default
 
-Notice that the deamon set comes with a toileration and node-selector so that will only run on control plane nodes and not on workers ones.
+Notice that the daemon set comes with a toleration and node-selector so that will only run on control plane nodes and not on workers ones.
 
 I have tested also a join from a worker, everything seems to be working fine (i can join and i get proper HA on failures) , the only thing is that you want to run "microk8s add-node" from the node where the VIP is currently active (i used  ip addr show eth0 to find the server with the VIP being active on ) .. not sure if it's mandatory, but it worked well for me .
 The only thing i had to take care of was to edit `/var/snap/microk8s/current/traefik/provider.yaml` to only have my VIP there, and make the change stable by setting `--refresh-interval 0` in `/var/snap/microk8s/current/args/apiserver-proxy`.
