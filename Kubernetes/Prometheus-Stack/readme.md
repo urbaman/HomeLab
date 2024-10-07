@@ -25,7 +25,6 @@ sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
 
 Also, change the etcd metrics listen address from 127.0.0.1 to 0.0.0.0:
 
-
 ```bash
 sudo vi /etc/kubernetes/manifests/etcd.yaml
 ```
@@ -35,6 +34,8 @@ Then check the controller manager and scheduler pods, they should restart as soo
 ```bash
 kubectl delete pod <pod-name> -n kube-system
 ```
+
+**Note:** When using microk8s, the above settings about bind addresses are in `/var/snap/microk8s/current/args/`, specific files for each service. Remember the services are not pods, you'll need to set appropriate endpoints to properly scrape their metrics (see note later on).
 
 Get the helm value file and add all your namespaces. Add others and upgrade the deploy if needed.
 
@@ -96,10 +97,11 @@ kubeEtcd:
 kubeProxy:
   enabled: false
 
-defaulteRules:
+defaultRules:
   create: true
   rules:
     kubeProxy: false
+    etcd: false # Only if using other cluster storage systems
 ```
 
 And define Alertmanager notifications by email:
@@ -116,8 +118,8 @@ And define Alertmanager notifications by email:
         matchers:
           - alertname =~ "InfoInhibitor|Watchdog"
       - receiver: 'mail'
-        matchers:
-          - alertname != "InfoInhibitor|Watchdog"
+#        matchers:
+#          - alertname != "InfoInhibitor|Watchdog"
     receivers:
     - name: 'null'
     - name: 'mail'
@@ -175,6 +177,16 @@ prometheus:
          resources:
            requests:
              storage: 50Gi
+grafana:
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: "asustornas1-nfs"
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
 ```
 
 Finally, decide for a Grafana password
@@ -182,6 +194,20 @@ Finally, decide for a Grafana password
 ```yaml
 grafana:
  adminPassword: prom-operator
+```
+
+**Note:** When using microk8s, add the endpoints to proxy, scheduler and controller-manager, example:
+
+```yaml
+kubeScheduler:
+  enabled: true
+
+  ## If your kube scheduler is not deployed as a pod, specify IPs it can be found on
+  ##
+  endpoints:
+   - IP1
+   - IP2
+   - IP3
 ```
 
 And install:
