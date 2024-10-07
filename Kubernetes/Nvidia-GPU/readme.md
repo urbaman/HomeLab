@@ -225,7 +225,7 @@ sudo docker build \
     -t ${PRIVATE_REGISTRY}/driver:${VERSION}-${OS_TAG} .
 ```
 
-#### Push the driver container image to your private registry.
+#### Push the driver container image to your private registry
 
 Log in to your private registry:
 
@@ -296,8 +296,6 @@ Check the driver.repository and driver.version to match your custom image if nee
 ```bash
 helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values-vgpu.yaml
 ```
-
-
 
 ##### Needed as of version 23.9.1
 
