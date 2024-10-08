@@ -1,5 +1,5 @@
-kind: Endpoints
 apiVersion: v1
+kind: Endpoints
 metadata:
   name: asustornas1-service
   namespace: traefik-external
@@ -7,16 +7,14 @@ metadata:
     app: asustornas1-service
 subsets:
   - addresses:
-      -
-        ip: <IP>
+      - ip: <IP>
     ports:
-      -
-        port: 8001
+      - port: 8001
         name: asustornas1
         protocol: TCP
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: asustornas1-service
   namespace: traefik-external
@@ -24,8 +22,7 @@ metadata:
     app: asustornas1-service
 spec:
   ports:
-    -
-      name: asustornas1
+    - name: asustornas1
       protocol: TCP
       port: 443
       targetPort: 8001
