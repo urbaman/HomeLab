@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: virtualmin-service
+  labels:
+    app: virtualmin-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: <virtualmin-ip>
+    nodeName: virtualmin-service
+  ports:
+  - name: virtualmin
+    port: 443
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: virtualmin-service
+  labels:
+    app: virtualmin-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: virtualmin
+    port: 443
+    targetPort: 443
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: webmin-service
+  labels:
+    app: webmin-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: <webmin-ip>
+    nodeName: webmin-service
+  ports:
+  - name: webmin
+    port: 2087
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webmin-service
+  labels:
+    app: webmin-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: webmin
+    port: 443
+    targetPort: 2087
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: usermin-service
+  labels:
+    app: usermin-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: <usermin-ip>
+    nodeName: usermin-service
+  ports:
+  - name: usermin
+    port: 2083
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usermin-service
+  labels:
+    app: usermin-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: usermin
+    port: 443
+    targetPort: 2083
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-virtualmin-https-redirect
+  namespace: traefik-external
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-virtualmin-security
+  namespace: traefik-external
+spec:
+  headers:
+    hostsProxyHeaders:
+      - "X-Forwarded-Host"
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-virtualmin-transport
+  namespace: traefik-external
+spec:
+  serverName: traefik
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-virtualmin-tlsoptions
+  namespace: traefik-external
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false

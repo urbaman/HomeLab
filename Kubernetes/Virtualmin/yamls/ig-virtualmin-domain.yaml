@@ -1,0 +1,102 @@
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: virtualmin-domain-com
+  namespace: traefik-external
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - domain.com
+  - www.domain.com
+  - ...
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: virtualmin-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-virtualmin-domain-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain.com`)||Host(`www.domain.com`)||Host(`...`)
+      services:
+        - name: virtualmin-service
+          port: 443
+          serversTransport: traefik-virtualmin-transport
+      middlewares:
+        - name: traefik-virtualmin-security
+  tls:
+    secretName: virtualmin-domain-com
+    options:
+      name: traefik-virtualmin-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-virtualmin-domain-web
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`domain.com`)||Host(`www.domain.com`)||Host(`...`)
+      services:
+        - name: virtualmin-service
+          port: 443
+      middlewares:
+        - name: traefik-virtualmin-https-redirect
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-virtualmin-domain-webmin
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - webmin
+  routes:
+    - kind: Rule
+      match: Host(`domain.com`)||Host(`www.domain.com`)||Host(`...`)
+      services:
+        - name: webmin-service
+          port: 443
+          serversTransport: traefik-virtualmin-transport
+      middlewares:
+        - name: traefik-virtualmin-security
+  tls:
+    secretName: virtualmin-domain-com
+    options:
+      name: traefik-virtualmin-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-virtualmin-domain-usermin
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - usermin
+  routes:
+    - kind: Rule
+      match: Host(`domain.com`)||Host(`www.domain.com`)||Host(`...`)
+      services:
+        - name: usermin-service
+          port: 443
+          serversTransport: traefik-virtualmin-transport
+      middlewares:
+        - name: traefik-virtualmin-security
+  tls:
+    secretName: virtualmin-domain-com
+    options:
+      name: traefik-virtualmin-tlsoptions
