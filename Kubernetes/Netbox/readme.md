@@ -3,7 +3,7 @@
 ## External behind Traefik
 
 ```bash
-kubectl apply -f traefik-netbox.yaml
+kubectl apply -f ig-netbox.yaml
 ```
 
 ## Internal via helm chart

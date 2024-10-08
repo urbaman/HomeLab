@@ -46,7 +46,7 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: semaphore-urbaman
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-semaphore-https-redirect
@@ -56,7 +56,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-semaphore-security
@@ -80,7 +80,7 @@ spec:
   serverName: traefik
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-semaphore-tlsoptions
@@ -104,7 +104,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-semaphore-websecure
@@ -126,7 +126,7 @@ spec:
     options:
       name: traefik-semaphore-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-semaphore-web

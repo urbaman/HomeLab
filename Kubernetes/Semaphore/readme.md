@@ -1,5 +1,5 @@
-# Netbox behind Traefik
+# Semaphore behind Traefik
 
 ```bash
-kubectl apply -f traefik-netbox.yaml
+kubectl apply -f ig-semaphore.yaml
 ```

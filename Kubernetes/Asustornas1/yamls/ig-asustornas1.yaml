@@ -1,35 +1,67 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: asustornas1-service
+  namespace: traefik-external
+  labels:
+    app: asustornas1-service
+subsets:
+  - addresses:
+      -
+        ip: <IP>
+    ports:
+      -
+        port: 8001
+        name: asustornas1
+        protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: asustornas1-service
+  namespace: traefik-external
+  labels:
+    app: asustornas1-service
+spec:
+  ports:
+    -
+      name: asustornas1
+      protocol: TCP
+      port: 443
+      targetPort: 8001
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: traefik-urbaman-it
-  namespace: traefik
+  name: asustornas1-urbaman-cloud
+  namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - traefik.urbaman.it
+  - asustornas1.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: traefik-urbaman-it
+  secretName: asustornas1-urbaman-cloud
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dashboard-https-redirect
-  namespace: traefik
+  name: traefik-asustornas1-https-redirect
+  namespace: traefik-external
 spec:
   redirectScheme:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-dashboard-security
-  namespace: traefik
+  name: traefik-asustornas1-security
+  namespace: traefik-external
 spec:
   headers:
     frameDeny: true
@@ -43,17 +75,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-dashboard-transport
-  namespace: traefik
+  name: traefik-asustornas1-transport
+  namespace: traefik-external
 spec:
   serverName: traefik
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-dashboard-tlsoptions
-  namespace: traefik
+  name: traefik-asustornas1-tlsoptions
+  namespace: traefik-external
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -73,41 +105,41 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dashboard-websecure
-  namespace: traefik
+  name: traefik-asustornas1-websecure
+  namespace: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`)
+      match: Host(`asustornas1.domain.com`)
       services:
-        - kind: TraefikService
-          name: api@internal
-          serversTransport: traefik-dashboard-transport
+        - name: asustornas1-service
+          port: 443
+          serversTransport: traefik-asustornas1-transport
       middlewares:
-        - name: traefik-dashboard-security
+        - name: traefik-asustornas1-security
   tls:
-    secretName: traefik-urbaman-it
+    secretName: asustornas1-urbaman-cloud
     options:
-      name: traefik-dashboard-tlsoptions
+      name: traefik-asustornas1-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dashboard-web
-  namespace: traefik
+  name: traefik-asustornas1-web
+  namespace: traefik-external
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`)
+      match: Host(`asustornas1.domain.com`)
       services:
-        - kind: TraefikService
-          name: api@internal
+        - name: asustornas1-service
+          port: 443
       middlewares:
-        - name: traefik-dashboard-https-redirect
+        - name: traefik-asustornas1-https-redirect
