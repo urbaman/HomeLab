@@ -24,9 +24,9 @@ spec:
             - containerPort: 80
           env:
             - name: PMA_HOST
-              value: proxysql.mariadb.svc.cluster.local
+              value: mariadb.mariadb.svc.cluster.local # The required service (here is the standalone one)
             - name: PMA_PORT
-              value: "6033"
+              value: "3306" # The required port, use 6033 for proxySQL
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -50,7 +50,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: mariadb-domain
+  name: mariadb-domain-com
   namespace: mariadb
 spec:
   # Certificate will be valid for these domain names
@@ -62,9 +62,9 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: mariadb-domain
+  secretName: mariadb-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-mariadb-basic-auth
@@ -73,7 +73,7 @@ spec:
   basicAuth:
     secret: traefik-mariadb-basic-auth
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-mariadb-https-redirect
@@ -83,7 +83,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-mariadb-security
@@ -107,7 +107,7 @@ spec:
   serverName: mariadb 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-mariadb-tlsoptions
@@ -131,7 +131,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-mariadb-websecure
@@ -149,11 +149,11 @@ spec:
       middlewares:
         - name: traefik-mariadb-security
   tls:
-    secretName: mariadb-domain
+    secretName: mariadb-domain-com
     options:
       name: traefik-mariadb-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-mariadb-web
