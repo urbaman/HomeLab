@@ -19,6 +19,14 @@ From chart v19
 helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set master.persistence.storageClass=rook-ceph-nvme2tb --set replica.persistence.storageClass=rook-ceph-nvme2tb --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack --set global.compatibility.openshift.adaptSecurityContext=disabled --set master.containerSecurityContext.runAsGroup=0 --set replica.containerSecurityContext.runAsGroup=0 --set metrics.containerSecurityContext.runAsGroup=0 --set master.containerSecurityContext.readOnlyRootFilesystem=false --set replica.containerSecurityContext.readOnlyRootFilesystem=false --set metrics.containerSecurityContext.readOnlyRootFilesystem=false --set master.resourcesPreset=none --set replica.resourcesPreset=none --set metrics.resourcesPreset=none
 ```
 
+## Standalone
+
+```bash
+helm upgrade -i redis oci://registry-1.docker.io/bitnamicharts/redis --namespace redis --create-namespace --set architecture=standalone --set master.persistence.storageClass=rook-ceph-nvme2tb --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true  --set metrics.serviceMonitor.additionalLabels.release=kube-prometheus-stack
+```
+
+## Access
+
 You can find the redis password in the `redis` secret:
 
 ```bash
