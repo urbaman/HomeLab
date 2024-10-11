@@ -17,8 +17,6 @@ helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --names
 ## Installation - standalone
 
 ```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
 helm upgrade -i mariadb oci://registry-1.docker.io/bitnamicharts/mariadb --namespace mariadb --create-namespace --set metrics.enabled=true --set metrics.serviceMonitor.enabled=true --set metrics.serviceMonitor.labels.release=kube-prometheus-stack --set primary.persistence.storageClass=rook-ceph-nvme2tb --set primary.persistence.size=15Gi
 ```
 
