@@ -2,20 +2,22 @@
 
 ## On proxmox nodes
 
-From the Datacenter/Permissions view on the proxmox webgui, create a user (prometheus@pve) with Audit on "\" (all resources)
+From the Datacenter/Permissions view on the proxmox webgui, create a user (prometheus@pve) and a token with Audit on "\" (all resources)
 
 From the shell:
 
 ```bash
 apt install python3 python3-pip
-pip3 install prometheus-pve-exporter
+pip3 install prometheus-pve-exporter --break-system-packages
+mkdir /etc/prometheus
 vi /etc/prometheus/pve.yml
 ```
 
 ```bash
 default:
     user: user@pve
-    password: your_password_here
+    token_name: <token-id>
+    token_value: <token-value>
     verify_ssl: false
 ```
 
@@ -30,7 +32,7 @@ Documentation=https://github.com/znerol/prometheus-pve-exporter
 
 [Service]
 Restart=always
-ExecStart=/usr/local/bin/pve_exporter /etc/prometheus/pve.yml
+ExecStart=/usr/local/bin/pve_exporter --config.file /etc/prometheus/pve.yml
 
 [Install]
 WantedBy=multi-user.target
