@@ -1,3 +1,8 @@
+# Namespace
+apiVersion: v1
+kind: Namepace
+metadata:
+  name: media-server
 # Persistent Volume Claim for all Media
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -12,7 +17,7 @@ spec:
       storage: 5Ti
   storageClassName: asustor-nfs-client
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Bazarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -26,7 +31,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Lidarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -40,7 +45,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Plex configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -54,7 +59,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Prowlarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -68,7 +73,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Radarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -82,7 +87,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Radarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -96,7 +101,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Sonarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -110,7 +115,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Tansmission configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -124,7 +129,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs 
+# Persistent Volume Claim for Unpackerr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -138,7 +143,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for all configs
+# Persistent Volume Claim for Overseerr configs
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -284,21 +289,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: transmission-urbaman
+  name: transmission-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - transmission.urbaman.it
+  - transmission.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: transmission-urbaman
+  secretName: transmission-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-transmission-https-redirect
@@ -308,7 +313,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-transmission-security
@@ -332,7 +337,7 @@ spec:
   serverName: transmission 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-transmission-tlsoptions
@@ -356,7 +361,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-transmission-websecure
@@ -366,7 +371,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`transmission.urbaman.it`)
+      match: Host(`transmission.domain.com`)
       services:
         - name: transmission
           port: 9091
@@ -374,11 +379,11 @@ spec:
       middlewares:
         - name: traefik-transmission-security
   tls:
-    secretName: transmission-urbaman
+    secretName: transmission-domain-com
     options:
       name: traefik-transmission-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-transmission-web
@@ -388,7 +393,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`transmission.urbaman.it`)
+      match: Host(`transmission.domain.com`)
       services:
         - name: transmission
           port: 9091
@@ -453,21 +458,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: flaresolverr-urbaman
+  name: flaresolverr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - flaresolverr.urbaman.it
+  - flaresolverr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: flaresolverr-urbaman
+  secretName: flaresolverr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-flaresolverr-https-redirect
@@ -477,7 +482,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-flaresolverr-security
@@ -501,7 +506,7 @@ spec:
   serverName: flaresolverr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-flaresolverr-tlsoptions
@@ -525,7 +530,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-flaresolverr-websecure
@@ -535,7 +540,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`flaresolverr.urbaman.it`)
+      match: Host(`flaresolverr.domain.com`)
       services:
         - name: flaresolverr
           port: 8191
@@ -543,11 +548,11 @@ spec:
       middlewares:
         - name: traefik-flaresolverr-security
   tls:
-    secretName: flaresolverr-urbaman
+    secretName: flaresolverr-domain-com
     options:
       name: traefik-flaresolverr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-flaresolverr-web
@@ -557,7 +562,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`flaresolverr.urbaman.it`)
+      match: Host(`flaresolverr.domain.com`)
       services:
         - name: flaresolverr
           port: 8191
@@ -633,21 +638,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prowlarr-urbaman
+  name: prowlarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - prowlarr.urbaman.it
+  - prowlarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: prowlarr-urbaman
+  secretName: prowlarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-prowlarr-https-redirect
@@ -657,7 +662,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-prowlarr-security
@@ -681,7 +686,7 @@ spec:
   serverName: prowlarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-prowlarr-tlsoptions
@@ -705,7 +710,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-prowlarr-websecure
@@ -715,7 +720,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`prowlarr.urbaman.it`)
+      match: Host(`prowlarr.domain.com`)
       services:
         - name: prowlarr
           port: 9696
@@ -723,11 +728,11 @@ spec:
       middlewares:
         - name: traefik-prowlarr-security
   tls:
-    secretName: prowlarr-urbaman
+    secretName: prowlarr-domain-com
     options:
       name: traefik-prowlarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-prowlarr-web
@@ -737,7 +742,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`prowlarr.urbaman.it`)
+      match: Host(`prowlarr.domain.com`)
       services:
         - name: prowlarr
           port: 9696
@@ -822,21 +827,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: sonarr-urbaman
+  name: sonarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - sonarr.urbaman.it
+  - sonarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: sonarr-urbaman
+  secretName: sonarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-sonarr-https-redirect
@@ -846,7 +851,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-sonarr-security
@@ -870,7 +875,7 @@ spec:
   serverName: sonarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-sonarr-tlsoptions
@@ -894,7 +899,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-sonarr-websecure
@@ -904,7 +909,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`sonarr.urbaman.it`)
+      match: Host(`sonarr.domain.com`)
       services:
         - name: sonarr
           port: 8989
@@ -912,11 +917,11 @@ spec:
       middlewares:
         - name: traefik-sonarr-security
   tls:
-    secretName: sonarr-urbaman
+    secretName: sonarr-domain-com
     options:
       name: traefik-sonarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-sonarr-web
@@ -926,7 +931,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`sonarr.urbaman.it`)
+      match: Host(`sonarr.domain.com`)
       services:
         - name: sonarr
           port: 8989
@@ -1011,21 +1016,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: radarr-urbaman
+  name: radarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - radarr.urbaman.it
+  - radarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: radarr-urbaman
+  secretName: radarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-radarr-https-redirect
@@ -1035,7 +1040,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-radarr-security
@@ -1059,7 +1064,7 @@ spec:
   serverName: radarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-radarr-tlsoptions
@@ -1083,7 +1088,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-radarr-websecure
@@ -1093,7 +1098,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`radarr.urbaman.it`)
+      match: Host(`radarr.domain.com`)
       services:
         - name: radarr
           port: 7878
@@ -1101,11 +1106,11 @@ spec:
       middlewares:
         - name: traefik-radarr-security
   tls:
-    secretName: radarr-urbaman
+    secretName: radarr-domain-com
     options:
       name: traefik-radarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-radarr-web
@@ -1115,7 +1120,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`radarr.urbaman.it`)
+      match: Host(`radarr.domain.com`)
       services:
         - name: radarr
           port: 7878
@@ -1200,21 +1205,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: lidarr-urbaman
+  name: lidarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - lidarr.urbaman.it
+  - lidarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: lidarr-urbaman
+  secretName: lidarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-lidarr-https-redirect
@@ -1224,7 +1229,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-lidarr-security
@@ -1248,7 +1253,7 @@ spec:
   serverName: lidarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-lidarr-tlsoptions
@@ -1272,7 +1277,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-lidarr-websecure
@@ -1282,7 +1287,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`lidarr.urbaman.it`)
+      match: Host(`lidarr.domain.com`)
       services:
         - name: lidarr
           port: 8686
@@ -1290,11 +1295,11 @@ spec:
       middlewares:
         - name: traefik-lidarr-security
   tls:
-    secretName: lidarr-urbaman
+    secretName: lidarr-domain-com
     options:
       name: traefik-lidarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-lidarr-web
@@ -1304,7 +1309,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`lidarr.urbaman.it`)
+      match: Host(`lidarr.domain.com`)
       services:
         - name: lidarr
           port: 8686
@@ -1389,21 +1394,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: readarr-urbaman
+  name: readarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - readarr.urbaman.it
+  - readarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: readarr-urbaman
+  secretName: readarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-readarr-https-redirect
@@ -1413,7 +1418,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-readarr-security
@@ -1437,7 +1442,7 @@ spec:
   serverName: readarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-readarr-tlsoptions
@@ -1461,7 +1466,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-readarr-websecure
@@ -1471,7 +1476,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`readarr.urbaman.it`)
+      match: Host(`readarr.domain.com`)
       services:
         - name: readarr
           port: 8787
@@ -1479,11 +1484,11 @@ spec:
       middlewares:
         - name: traefik-readarr-security
   tls:
-    secretName: readarr-urbaman
+    secretName: readarr-domain-com
     options:
       name: traefik-readarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-readarr-web
@@ -1493,7 +1498,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`readarr.urbaman.it`)
+      match: Host(`readarr.domain.com`)
       services:
         - name: readarr
           port: 8787
@@ -1578,21 +1583,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: bazarr-urbaman
+  name: bazarr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - bazarr.urbaman.it
+  - bazarr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: bazarr-urbaman
+  secretName: bazarr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-bazarr-https-redirect
@@ -1602,7 +1607,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-bazarr-security
@@ -1626,7 +1631,7 @@ spec:
   serverName: bazarr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-bazarr-tlsoptions
@@ -1650,7 +1655,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-bazarr-websecure
@@ -1660,7 +1665,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`bazarr.urbaman.it`)
+      match: Host(`bazarr.domain.com`)
       services:
         - name: bazarr
           port: 6767
@@ -1668,11 +1673,11 @@ spec:
       middlewares:
         - name: traefik-bazarr-security
   tls:
-    secretName: bazarr-urbaman
+    secretName: bazarr-domain-com
     options:
       name: traefik-bazarr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-bazarr-web
@@ -1682,7 +1687,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`bazarr.urbaman.it`)
+      match: Host(`bazarr.domain.com`)
       services:
         - name: bazarr
           port: 6767
@@ -1797,13 +1802,15 @@ spec:
       - name: plex-config
         persistentVolumeClaim:
           claimName: plex-config-pvc
+      nodeName: foo-node # schedule pod to specific node
       containers:
         - image: plexinc/pms-docker
           name: plex
           imagePullPolicy: Always
           resources:
             limits:
-              nvidia.com/gpu: 1 # requesting 1 GPUs
+              nvidia.com/gpu: 1 # requesting 1 Nvidia GPUs
+              gpu.intel.com/i915: 1 # requesting 1 Intel GPUs
           env:
             - name:  TZ
               value: Europe/Rome
@@ -1902,21 +1909,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: plex-urbaman
+  name: plex-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - plex.urbaman.it
+  - plex.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: plex-urbaman
+  secretName: plex-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-plex-https-redirect
@@ -1926,7 +1933,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-plex-security
@@ -1950,7 +1957,7 @@ spec:
   serverName: plex 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-plex-tlsoptions
@@ -1974,7 +1981,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-plex-websecure
@@ -1984,7 +1991,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`plex.urbaman.it`)
+      match: Host(`plex.domain.com`)
       services:
         - name: plex
           port: 32400
@@ -1992,11 +1999,11 @@ spec:
       middlewares:
         - name: traefik-plex-security
   tls:
-    secretName: plex-urbaman
+    secretName: plex-domain-com
     options:
       name: traefik-plex-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-plex-web
@@ -2006,7 +2013,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`plex.urbaman.it`)
+      match: Host(`plex.domain.com`)
       services:
         - name: plex
           port: 32400
@@ -2082,21 +2089,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: overseerr-urbaman
+  name: overseerr-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - overseerr.urbaman.it
+  - overseerr.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: overseerr-urbaman
+  secretName: overseerr-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-overseerr-https-redirect
@@ -2106,7 +2113,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-overseerr-security
@@ -2130,7 +2137,7 @@ spec:
   serverName: overseerr 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-overseerr-tlsoptions
@@ -2154,7 +2161,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-overseerr-websecure
@@ -2164,7 +2171,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`overseerr.urbaman.it`)
+      match: Host(`overseerr.domain.com`)
       services:
         - name: overseerr
           port: 5055
@@ -2172,11 +2179,11 @@ spec:
       middlewares:
         - name: traefik-overseerr-security
   tls:
-    secretName: overseerr-urbaman
+    secretName: overseerr-domain-com
     options:
       name: traefik-overseerr-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-overseerr-web
@@ -2186,7 +2193,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`overseerr.urbaman.it`)
+      match: Host(`overseerr.domain.com`)
       services:
         - name: overseerr
           port: 5055
@@ -2270,21 +2277,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: calibre-urbaman
+  name: calibre-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - calibre.urbaman.it
+  - calibre.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: calibre-urbaman
+  secretName: calibre-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-calibre-https-redirect
@@ -2294,7 +2301,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-calibre-security
@@ -2331,7 +2338,7 @@ spec:
   serverName: calibre 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-calibre-tlsoptions
@@ -2355,7 +2362,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-calibre-websecure
@@ -2365,7 +2372,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`calibre.urbaman.it`)
+      match: Host(`calibre.domain.com`)
       services:
         - name: calibre
           port: 8181
@@ -2373,11 +2380,11 @@ spec:
       middlewares:
         - name: traefik-calibre-security
   tls:
-    secretName: calibre-urbaman
+    secretName: calibre-domain-com
     options:
       name: traefik-calibre-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-calibre-web
@@ -2387,7 +2394,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`calibre.urbaman.it`)
+      match: Host(`calibre.domain.com`)
       services:
         - name: calibre
           port: 8181
@@ -2398,21 +2405,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: calibre-ws-urbaman
+  name: calibre-ws-domain-com
   namespace: media-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - calibre-ws.urbaman.it
+  - calibre-ws.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: calibre-ws-urbaman
+  secretName: calibre-ws-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-calibre-ws-https-redirect
@@ -2422,7 +2429,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-calibre-ws-security
@@ -2446,7 +2453,7 @@ spec:
   serverName: calibre-ws 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-calibre-ws-tlsoptions
@@ -2470,7 +2477,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-calibre-ws-websecure
@@ -2480,7 +2487,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`calibre-ws.urbaman.it`)
+      match: Host(`calibre-ws.domain.com`)
       services:
         - name: calibre
           port: 8081
@@ -2488,11 +2495,11 @@ spec:
       middlewares:
         - name: traefik-calibre-ws-security
   tls:
-    secretName: calibre-ws-urbaman
+    secretName: calibre-ws-domain-com
     options:
       name: traefik-calibre-ws-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-calibre-ws-web
@@ -2502,7 +2509,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`calibre-ws.urbaman.it`)
+      match: Host(`calibre-ws.domain.com`)
       services:
         - name: calibre
           port: 8081
