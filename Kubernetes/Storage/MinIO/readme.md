@@ -31,7 +31,7 @@ kubectl apply -f ig-minio-operator.yaml
 helm upgrade --install --namespace minio --create-namespace operator minio-operator/operator --version <old-chart-version>
 ```
 
-### For the old helm chart with the console still working (!?)
+### For the old helm chart with the console still working
 
 ```bash
 kubectl apply -f ig-minio-operator.yaml
