@@ -2491,6 +2491,7 @@ spec:
       services:
         - name: calibre
           port: 8081
+          scheme: https
           serversTransport: traefik-calibre-ws-transport
       middlewares:
         - name: traefik-calibre-ws-security
