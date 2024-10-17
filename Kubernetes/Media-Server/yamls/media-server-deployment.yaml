@@ -31,6 +31,20 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
+# Persistent Volume Claim for Calibre configs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: calibre-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
 # Persistent Volume Claim for Lidarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -87,7 +101,7 @@ spec:
       storage: 1Gi
   storageClassName: rook-ceph-nvme2tb
 ---
-# Persistent Volume Claim for Radarr configs 
+# Persistent Volume Claim for Readarr configs 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -2226,6 +2240,9 @@ spec:
         app.kubernetes.io/name: calibre
     spec:
       volumes:
+      - name: calibre-config
+        persistentVolumeClaim:
+          claimName: calibre-config-pvc
       - name: calibre-data
         persistentVolumeClaim:
           claimName: media-server-data-pvc
@@ -2248,9 +2265,11 @@ spec:
              name: http-8181
              protocol: TCP
           volumeMounts:
-           - mountPath: /config
+           - mountPath: /library
              subPath: library/books
              name: calibre-data
+           - mountPath: /config
+             name: calibre-config
 ---
 apiVersion: v1
 kind: Service

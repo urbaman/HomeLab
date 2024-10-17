@@ -24,5 +24,5 @@ This deployment will install:
 
 Go to [https://www.plex.tv/claim](https://www.plex.tv/claim) and login to get the ClaimToken, enter it as the PLEX_CLAIM value and deploy the manifest.
 
-Go to `calibre.domain.com`, go through the settings, then go to preferences, connection, check `Require username and password to access the Content Server`, add a user with read access, save, then enable the content-server (also on calibre starts).
+Go to `calibre.domain.com`, go through the settings (set the library in a `/library/<libraryPath>` path - without spaces), then go to preferences, connection, check `Require username and password to access the Content Server`, add a user with read access, save, then enable the content-server (also on calibre starts).
 Go to `readarr.domain.com`, and add the root folder connected to calibre content server.
