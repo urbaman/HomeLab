@@ -11,12 +11,12 @@ metadata:
   namespace: nextcloud
 type: Opaque
 data:
-  ADMIN_PASSWORD: admin-password-base64
-  MYSQL_DATABASE: dbname-base64
-  MYSQL_USER: dbusername-base64
-  MYSQL_PASSWORD: mysql-password-base64
-  REDIS_HOST_PASSWORD: redis-password-base64
-  SMTP_PASSWORD: smtp-password-base64
+  ADMIN_PASSWORD: <adminPasswordBase64> 
+  MYSQL_DATABASE: <mysqlDatabase>
+  MYSQL_USER: <mysqlUser>
+  MYSQL_PASSWORD: <mysqlPassword>
+  REDIS_HOST_PASSWORD: <redisHostPassword>
+  SMTP_PASSWORD: <smtpPassword>
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,7 +26,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: asustor-nfs-client
+  storageClassName: asustornas1-nfs
   resources:
     requests:
       storage: 8Gi
@@ -39,7 +39,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: asustor-nfs-client
+  storageClassName: asustornas1-nfs
   resources:
     requests:
       storage: 5Ti
@@ -53,7 +53,7 @@ metadata:
     app: nextcloud
     app.kubernetes.io/name: nextcloud
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nextcloud 
@@ -84,9 +84,9 @@ spec:
 #              memory: 1Mi
           env:
             - name: REDIS_HOST
-              value: redis-master
+              value: redis-master.redis.svc.cluster.local
             - name: MYSQL_HOST
-              value: mariadb
+              value: mariadb.mariadb.svc.cluster.local
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
@@ -127,13 +127,17 @@ spec:
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "domain.com"
             - name: TRUSTED_PROXIES
-              value: "10.0.50.100" # Traefik loadbalancer IP
+              value: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22" # Local CIDRs, Cloudflare IPs
             - name: OVERWRITEHOST
               value: "nextcloud.domain.com"
             - name: OVERWRITEPROTOCOL
               value: "https"
             - name: OVERWRITECLIURL
               value: "https://nextcloud.domain.com"
+            - name: APACHE_DISABLE_REWRITE_IP
+              value: "1"
+            - name: FORWARDED_FOR_HEADERS
+              value: "HTTP_CF_CONNECTING_IP HTTP_X_FORWARDED_FOR"
             - name: SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -281,7 +285,7 @@ spec:
       middlewares:
         - name: traefik-nextcloud-security
   tls:
-    secretName: nextcloud-domain
+    secretName: nextcloud-domain-com
     options:
       name: traefik-nextcloud-tlsoptions
 ---
@@ -301,3 +305,4 @@ spec:
           port: 8080
       middlewares:
         - name: traefik-nextcloud-https-redirect
+
