@@ -16,7 +16,7 @@ collabora:
       #    cpu: "1800m"
       #    memory: "2000Mi"
 
-replicaCount: 3
+replicaCount: 1
 
 autoscaling:
   enabled: false

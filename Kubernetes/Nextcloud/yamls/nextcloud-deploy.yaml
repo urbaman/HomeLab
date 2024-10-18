@@ -115,25 +115,25 @@ spec:
             - name: NEXTCLOUD_ADMIN_USER
               value: "admin"
             - name: SMTP_HOST
-              value: "smtp.urbaman.it"
+              value: "smtp.domain.com"
             - name: SMTP_SECURE
-              value: "tls"
+              value: "ssl"
             - name: SMTP_PORT
-              value: "587"
+              value: "465"
             - name: SMTP_NAME
-              value: "nextcloud@urbaman.it"
+              value: "nextcloud@domain.com"
             - name: MAIL_FROM_ADDRESS
-              value: "nextcloud@urbaman.it"
+              value: "nextcloud@domain.com"
             - name: NEXTCLOUD_TRUSTED_DOMAINS
-              value: "urbaman.it"
+              value: "domain.com"
             - name: TRUSTED_PROXIES
-              value: "10.0.50.100"
+              value: "10.0.50.100" # Traefik loadbalancer IP
             - name: OVERWRITEHOST
-              value: "nextcloud.urbaman.it"
+              value: "nextcloud.domain.com"
             - name: OVERWRITEPROTOCOL
               value: "https"
             - name: OVERWRITECLIURL
-              value: "nextcloud.urbaman.it"
+              value: "https://nextcloud.domain.com"
             - name: SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -190,21 +190,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: nextcoud-urbaman
-  namespace: nextcoud
+  name: nextcloud-domain-com
+  namespace: nextcloud
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - nextcoud.urbaman.it
+  - nextcloud.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: nextcoud-urbaman
+  secretName: nextcloud-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-nextcloud-https-redirect
@@ -214,7 +214,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-nextcloud-security
@@ -239,7 +239,7 @@ spec:
   serverName: nextcloud
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-nextcloud-tlsoptions
@@ -263,7 +263,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-nextcloud-websecure
@@ -272,7 +272,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`nextcloud.urbaman.it`)
+    - match: Host(`nextcloud.domain.com`)
       kind: Rule
       services:
         - name: nextcloud
@@ -281,11 +281,11 @@ spec:
       middlewares:
         - name: traefik-nextcloud-security
   tls:
-    secretName: nextcloud-urbaman
+    secretName: nextcloud-domain
     options:
       name: traefik-nextcloud-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-nextcloud-web
@@ -294,7 +294,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`nextcloud.urbaman.it`)
+    - match: Host(`nextcloud.domain.com`)
       kind: Rule
       services:
         - name: nextcloud
