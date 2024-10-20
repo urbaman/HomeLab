@@ -53,7 +53,6 @@ Login and setup
   ),
 ```
 
-
 ## Lauch occ cli commands from inside the pod
 
 ```bash

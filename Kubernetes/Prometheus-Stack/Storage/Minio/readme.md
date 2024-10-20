@@ -73,7 +73,7 @@ kubectl create secret generic minio-metrics-bearer-tokens -n minio \
     --from-literal=resource-token=<token-resource>
 ```
 
-Then create the servicemonitors and the dashboards:
+Match the tenant name in the `sm-minio.yaml` file, tThen create the servicemonitors and the dashboards:
 
 ```bash
 kubectl apply -f sm-minio.yaml

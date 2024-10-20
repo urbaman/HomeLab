@@ -1,4 +1,13 @@
 apiVersion: v1
+kind: Secret
+metadata:
+  name: pgadmin-secret
+  namespace: postgresql
+type: Opaque
+data:
+  pgadmin-default-password: c2VjcmV0cGFzc3dvcmQ= # This is "secretpassword", change to your password
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: pgadmin-config-servers
@@ -12,7 +21,7 @@ data:
             "Group": "Servers",
             "Port": 5432,
             "Username": "postgres",
-            "Host": "postgresql.postgresql.svc.cluster.local",
+            "Host": "postgresql-postgresql-ha-pgpool.postgresql.svc.cluster.local",
             "SSLMode": "prefer",
             "MaintenanceDB": "postgres"
           }
@@ -25,7 +34,7 @@ metadata:
   name: pgadmin
   namespace: postgresql
   labels:
-    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/name: postgresql-ha
 spec:
   serviceName: pgadmin-service
   podManagementPolicy: Parallel
@@ -39,18 +48,21 @@ spec:
     metadata:
       labels:
         app: pgadmin
-        app.kubernetes.io/name: postgresql
+        app.kubernetes.io/name: postgresql-ha
     spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: pgadmin
-          image: dpage/pgadmin4:latest
+          image: dpage/pgadmin4:8.2
           imagePullPolicy: Always
           env:
           - name: PGADMIN_DEFAULT_EMAIL
             value: user@domain.com
           - name: PGADMIN_DEFAULT_PASSWORD
-            value: secretpassword
+            valueFrom:
+              secretKeyRef:
+                name: pgadmin-secret
+                key: pgadmin-default-password
           ports:
           - name: pgadmin-port
             containerPort: 80
@@ -95,7 +107,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: pgadmin-domain-com
+  name: pgadmin-domain
   namespace: postgresql
 spec:
   # Certificate will be valid for these domain names
@@ -107,7 +119,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: pgadmin-domain-com
+  secretName: pgadmin-domain
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -184,7 +196,7 @@ spec:
       middlewares:
         - name: traefik-pgadmin-security
   tls:
-    secretName: pgadmin-domain-com
+    secretName: pgadmin-domain
     options:
       name: traefik-pgadmin-tlsoptions
 ---

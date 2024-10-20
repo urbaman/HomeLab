@@ -1,3 +1,88 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitlab-domain-com
+  namespace: gitlab
+spec:
+  # Certificate will be valid for these urbaman names
+  dnsNames:
+  - "gitlab.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: gitlab-domain-com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: registry-domain-com
+  namespace: gitlab
+spec:
+  # Certificate will be valid for these urbaman names
+  dnsNames:
+  - "registry.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: registry-domain-com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitlabshell-domain-com
+  namespace: gitlab
+spec:
+  # Certificate will be valid for these urbaman names
+  dnsNames:
+  - "gitlabshell.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: gitlabshell-domain-com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kas-domain-com
+  namespace: gitlab
+spec:
+  # Certificate will be valid for these urbaman names
+  dnsNames:
+  - "kas.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: kas-domain-com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pages-domain-com
+  namespace: gitlab
+spec:
+  # Certificate will be valid for these urbaman names
+  dnsNames:
+  - "pages.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: pages-domain-com
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRouteTCP
 metadata:
@@ -83,7 +168,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`gitlab.urbaman.it`)
+      match: Host(`gitlab.domain.com`)
       services:
         - name: gitlab-webservice-default
           port: 8181
@@ -91,7 +176,7 @@ spec:
       middlewares:
         - name: gitlab-security
   tls:
-    secretName: gitlab-urbaman
+    secretName: gitlab-domain-com
     options:
       name: gitlab-tlsoptions
 ---
@@ -105,7 +190,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`gitlab.urbaman.it`)
+      match: Host(`gitlab.domain.com`)
       services:
         - name: gitlab-webservice-default
           port: 8181

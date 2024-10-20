@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: node-exporter
+  labels:
+    app: node-exporter
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: 10.0.100.11
+    nodeName: pve1
+  - ip: 10.0.100.12
+    nodeName: pve2
+  - ip: 10.0.100.13
+    nodeName: pve3
+  ports:
+  - name: node-exporter
+    port: 9100
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+  labels:
+    app: node-exporter
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: node-exporter
+    port: 9100
+    targetPort: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    app: node-exporter
+    release: kube-prometheus-stack
+spec:
+  endpoints:
+  - interval: 30s
+    port: node-exporter
+    scheme: http
+    path: "/metrics"
+  jobLabel: pve-cluster
+  selector:
+    matchLabels:
+      app: node-exporter

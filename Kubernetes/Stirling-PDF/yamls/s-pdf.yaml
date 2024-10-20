@@ -34,19 +34,19 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: s-pdf-urbaman
+  name: s-pdf-domain-com
   namespace: s-pdf
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - s-pdf.urbaman.it
+  - s-pdf.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: s-pdf-urbaman
+  secretName: s-pdf-domain-com
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -127,7 +127,7 @@ spec:
       protocol: TCP
       port: 8080
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-s-pdf-https-redirect
@@ -137,7 +137,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-s-pdf-security
@@ -161,7 +161,7 @@ spec:
   serverName: s-pdf 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-s-pdf-tlsoptions
@@ -185,7 +185,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-s-pdf-websecure
@@ -195,7 +195,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`s-pdf.urbaman.it`)
+      match: Host(`s-pdf.domain.com`)
       services:
         - name: s-pdf-service
           port: 8080
@@ -203,11 +203,11 @@ spec:
       middlewares:
         - name: traefik-s-pdf-security
   tls:
-    secretName: s-pdf-urbaman
+    secretName: s-pdf-domain-com
     options:
       name: traefik-s-pdf-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-s-pdf-web
@@ -217,7 +217,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`s-pdf.urbaman.it`)
+      match: Host(`s-pdf.domain.com`)
       services:
         - name: s-pdf-service
           port: 8080

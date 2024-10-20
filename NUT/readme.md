@@ -15,7 +15,6 @@ Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ```
 
-
 ```bash
 sudo apt update
 sudo apt install nut nut-client nut-server
@@ -96,7 +95,6 @@ maxretry = 3
     productid = 0002
     serial = 3xxxxxxxxx
 ```
-
 
 ```bash
 sudo nano /etc/nut/upsmon.conf
@@ -227,7 +225,6 @@ Device Descriptor:
         wMaxPacketSize     0x0008  1x 8 bytes
         bInterval             100
 ```
-
 
 ## NUT CGI Server
 
