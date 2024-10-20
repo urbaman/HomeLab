@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: grafana-urbaman
+  name: grafana-urbaman-it
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
@@ -13,7 +13,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: grafana-urbaman
+  secretName: grafana-urbaman-it
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -91,7 +91,7 @@ spec:
       middlewares:
         - name: monitoring-grafana-security
   tls:
-    secretName: grafana-urbaman
+    secretName: grafana-urbaman-it
     options:
       name: monitoring-grafana-tlsoptions
 ---
@@ -115,7 +115,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prometheus-urbaman
+  name: prometheus-urbaman-it
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
@@ -127,7 +127,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: prometheus-urbaman
+  secretName: prometheus-urbaman-it
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -205,7 +205,7 @@ spec:
       middlewares:
         - name: monitoring-prometheus-security
   tls:
-    secretName: prometheus-urbaman
+    secretName: prometheus-urbaman-it
     options:
       name: monitoring-prometheus-tlsoptions
 ---
@@ -229,7 +229,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: alertmanager-urbaman
+  name: alertmanager-urbaman-it
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
@@ -241,7 +241,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: alertmanager-urbaman
+  secretName: alertmanager-urbaman-it
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -319,7 +319,7 @@ spec:
       middlewares:
         - name: monitoring-alertmanager-security
   tls:
-    secretName: alertmanager-urbaman
+    secretName: alertmanager-urbaman-it
     options:
       name: monitoring-alertmanager-tlsoptions
 ---

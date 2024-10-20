@@ -1,25 +1,54 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: asustornas1-service
+  namespace: traefik-external
+  labels:
+    app: asustornas1-service
+subsets:
+  - addresses:
+      - ip: <IP>
+    ports:
+      - port: 8001
+        name: asustornas1
+        protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: asustornas1-service
+  namespace: traefik-external
+  labels:
+    app: asustornas1-service
+spec:
+  ports:
+    - name: asustornas1
+      protocol: TCP
+      port: 443
+      targetPort: 8001
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: kubetail-domain-com
-  namespace: kubetail
+  name: asustornas1-urbaman-cloud
+  namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - kubetail.domain.com
+  - asustornas1.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: kubetail-domain-com
+  secretName: asustornas1-urbaman-cloud
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-kubetail-https-redirect
-  namespace: kubetail
+  name: traefik-asustornas1-https-redirect
+  namespace: traefik-external
 spec:
   redirectScheme:
     scheme: https
@@ -28,8 +57,8 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-kubetail-security
-  namespace: kubetail
+  name: traefik-asustornas1-security
+  namespace: traefik-external
 spec:
   headers:
     frameDeny: true
@@ -43,17 +72,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-kubetail-transport
-  namespace: kubetail
+  name: traefik-asustornas1-transport
+  namespace: traefik-external
 spec:
-  serverName: kubetail
+  serverName: traefik
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-kubetail-tlsoptions
-  namespace: kubetail
+  name: traefik-asustornas1-tlsoptions
+  namespace: traefik-external
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -76,38 +105,38 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-kubetail-websecure
-  namespace: kubetail
+  name: traefik-asustornas1-websecure
+  namespace: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`kubetail.domain.com`)
+      match: Host(`asustornas1.domain.com`)
       services:
-      - name: kubetail-server
-        port: 80
-        serversTransport: traefik-kubetail-transport
+        - name: asustornas1-service
+          port: 443
+          serversTransport: traefik-asustornas1-transport
       middlewares:
-        - name: traefik-kubetail-security
+        - name: traefik-asustornas1-security
   tls:
-    secretName: kubetail-domain-com
+    secretName: asustornas1-urbaman-cloud
     options:
-      name: traefik-kubetail-tlsoptions
+      name: traefik-asustornas1-tlsoptions
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-kubetail-web
-  namespace: kubetail
+  name: traefik-asustornas1-web
+  namespace: traefik-external
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`kubetail.domain.com`)
+      match: Host(`asustornas1.domain.com`)
       services:
-      - name: kubetail-server
-        port: 80
+        - name: asustornas1-service
+          port: 443
       middlewares:
-        - name: traefik-kubetail-https-redirect
+        - name: traefik-asustornas1-https-redirect

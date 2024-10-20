@@ -6,6 +6,18 @@ metadata:
     name: cloudbeaver
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudbeaver-env-vars
+  namespace: cloudbeaver
+type: Opaque
+data:
+  CB_SERVER_NAME: <ServerName base64>
+  CB_ADMIN_NAME: <admin username base64>
+  CB_ADMIN_PASSWORD: <admin password base64>
+  CB_SERVER_URL: <Server URL base64>
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: cloudbeaver-data
@@ -43,6 +55,9 @@ spec:
           ports:
             - containerPort: 8978
               name: http
+          envFrom:
+            - secretRef:
+                name: cloudbeaver-env-vars
           volumeMounts:
           - mountPath: /opt/cloudbeaver/workspace
             name: cloudbeaver-data
@@ -71,7 +86,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: cloudbeaver-domain
+  name: cloudbeaver-domain-com
   namespace: cloudbeaver
 spec:
   # Certificate will be valid for these domain names
@@ -83,9 +98,9 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: cloudbeaver-domain
+  secretName: cloudbeaver-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-cloudbeaver-https-redirect
@@ -95,7 +110,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-cloudbeaver-security
@@ -119,7 +134,7 @@ spec:
   serverName: cloudbeaver 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-cloudbeaver-tlsoptions
@@ -143,7 +158,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-cloudbeaver-websecure
@@ -161,11 +176,11 @@ spec:
       middlewares:
         - name: traefik-cloudbeaver-security
   tls:
-    secretName: cloudbeaver-domain
+    secretName: cloudbeaver-domain-com
     options:
       name: traefik-cloudbeaver-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-cloudbeaver-web

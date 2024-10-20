@@ -2,7 +2,7 @@
 
 ## Preparation
 
-Create the required s-pdf.domain.com DNS entry both internally (we use pfSense) and externally (we use cloudflare)
+Create the required s-pdf.domain.com DNS entry both internally (we use pfSense) and externally if you expose it (we use cloudflare)
 
 ## Deploy
 

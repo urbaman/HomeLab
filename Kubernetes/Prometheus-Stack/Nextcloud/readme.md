@@ -4,7 +4,7 @@ Finally, we deploy the nextcloud exporter for monitoring, but we need another st
 
 ## Create the Credentials
 
-**Option 1**: not working, create a token
+**Option 1**: best choice, create a token
 
 ```bash
 kubectl exec -it -n nextcloud <nextcloud_pod_name> -- bash
@@ -25,6 +25,6 @@ kubectl apply -f sm-nextcloud.yaml
 Last step: the grafana dashboard.
 
 ```bash
-kubectl create configmap grafana-dashboard-nextcloud -n monitoring --from-file=nextcloud-grafana.json
+kubectl create configmap grafana-dashboard-nextcloud -n monitoring --from-file=grafana-nextcloud.json
 kubectl label configmap grafana-dashboard-nextcloud -n monitoring grafana_dashboard="1"
 ```

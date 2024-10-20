@@ -1,0 +1,268 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hosting1
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-hosting
+  namespace: hosting1
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - domain.com
+  - '*.domain.com'
+  - domain2.com
+  - '*.domain2.com'
+  - domain4.com
+  - '*.domain4.com'
+  - domain7.com
+  - '*.domain7.com'
+  - domain8.com
+  - '*.domain8.com'
+  - domain3.com
+  - mail.domain3.com
+  - wp-manager.domain3.com
+  - www.domain3.com
+  - webmail.domain3.com
+  - domain5.com
+  - '*.domain5.com'
+  - domain6.com
+  - '*.domain6.com'  
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: wildcard-hosting
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: hosting1-svc
+  namespace: hosting1
+subsets:
+- addresses:
+  - ip: 10.0.100.16
+    nodeName: hosting1-svc
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hosting1-svc
+  namespace: hosting1
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: webmin-svc
+  namespace: hosting1
+subsets:
+- addresses:
+  - ip: 10.0.100.16
+    nodeName: webmin-svc
+  ports:
+  - name: webmin
+    port: 2087
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webmin-svc
+  namespace: hosting1
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: webmin
+    port: 443
+    targetPort: 2087
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: usermin-svc
+  namespace: hosting1
+subsets:
+- addresses:
+  - ip: 10.0.100.16
+    nodeName: usermin-svc
+  ports:
+  - name: usermin
+    port: 2083
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usermin-svc
+  namespace: hosting1
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: usermin
+    port: 443
+    targetPort: 2083
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-hosting1-https-redirect
+  namespace: hosting1
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-hosting1-security
+  namespace: hosting1
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-hosting1-transport
+  namespace: hosting1
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-hosting1-tlsoptions
+  namespace: hosting1
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-hosting1-websecure
+  namespace: hosting1
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      services:
+        - name: hosting1-svc
+          port: 443
+          serversTransport: traefik-hosting1-transport
+      middlewares:
+        - name: traefik-hosting1-security
+  tls:
+    secretName: wildcard-hosting
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-hosting1-web
+  namespace: hosting1
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      services:
+        - name: hosting1-svc
+          port: 80
+      middlewares:
+        - name: traefik-hosting1-https-redirect
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-hosting1-webmin
+  namespace: hosting1
+spec:
+  entryPoints:
+    - webmin
+  routes:
+    - kind: Rule
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      services:
+        - name: webmin-svc
+          port: 443
+          serversTransport: traefik-hosting1-transport
+      middlewares:
+        - name: traefik-hosting1-security
+  tls:
+    secretName: wildcard-hosting
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-hosting1-usermin
+  namespace: hosting1
+spec:
+  entryPoints:
+    - usermin
+  routes:
+    - kind: Rule
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      services:
+        - name: usermin-svc
+          port: 443
+          serversTransport: traefik-hosting1-transport
+      middlewares:
+        - name: traefik-hosting1-security
+  tls:
+    secretName: wildcard-hosting
+    options:
+      name: traefik-hosting1-tlsoptions
