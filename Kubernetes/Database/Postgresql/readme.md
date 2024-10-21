@@ -10,7 +10,7 @@ We need to give time for the pods to be ready (due to shared storage latency) in
 helm show values postgresql oci://registry-1.docker.io/bitnamicharts/postgresql > postgresql-values.yaml
 ```
 
-Change Max Connections, Persistence, Metrics, and check max version for apps (Gitlab for example, max version 15.x):
+Change Max Connections, Persistence, Metrics, and check compatible version for apps (Gitlab for example, version 14.x at the moment):
 
 ```yaml
 primary:
