@@ -353,7 +353,7 @@ configuration:
     config:
       region: default
       s3ForcePathStyle: true
-      s3Url: "https://minio-s3.urbaman.it"
+      s3Url: "https://minio-s3.domain.com"
     #  kmsKeyId:
     #  resourceGroup:
     #  The ID of the subscription containing the storage account, if different from the cluster’s subscription. (Azure only)
