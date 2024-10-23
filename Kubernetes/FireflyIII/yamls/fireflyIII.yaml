@@ -5,6 +5,19 @@ metadata:
   labels:
     name: fireflyIII
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fireflyIII-data
+  namespace: fireflyIII
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-ceph-nvme2tb
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,7 +66,7 @@ spec:
       volumes:
         - name: fireflyIII-data
           persistentVolumeClaim:
-            claimName: fireflyIII-pvc
+            claimName: fireflyIII-data
 ---
 kind: Service
 metadata:
@@ -74,7 +87,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: fireflyIII-urbaman
+  name: fireflyIII-domain-com
   namespace: fireflyIII
 spec:
   # Certificate will be valid for these domain names
@@ -86,18 +99,9 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: fireflyIII-urbaman
+  secretName: fireflyIII-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: fireflyIII-basic-auth
-  namespace: fireflyIII
-spec:
-  basicAuth:
-    secret: fireflyIII-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: fireflyIII-https-redirect
@@ -107,7 +111,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: fireflyIII-security
@@ -131,7 +135,7 @@ spec:
   serverName: fireflyIII
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: fireflyIII-tlsoptions
@@ -155,16 +159,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: fireflyIII-basic-auth
-  namespace: fireflyIII
-data:
-  users: |
-    YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
----
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: fireflyIII-websecure
@@ -180,14 +175,13 @@ spec:
           port: 80
           serversTransport: fireflyIII-transport
       middlewares:
-#        - name: fireflyIII-basic-auth
         - name: fireflyIII-security
   tls:
-    secretName: fireflyIII-urbaman
+    secretName: fireflyIII-domain-com
     options:
       name: fireflyIII-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: fireflyIII-web
