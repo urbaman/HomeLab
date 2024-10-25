@@ -30,9 +30,9 @@ global:
 
 ### PostgreSQL
 
-Have a postgreSQL server up and running (see [Postgresql replica cluster with Pgadmin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql)).
+Have a postgreSQL server up and running (see [Postgresql replica cluster with Pgadmin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Database/Postgresql)). See that the gitlab linux package postgres version is met (14.x at the moment).
 
-Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner of the db.
+Create a dedicated user and a dedicated DB (gitlab, gitlab), the user must be owner of the db. Install [needed postgres extensions](https://docs.gitlab.com/ee/install/postgresql_extensions.html).
 
 Create a secret containing the user password (gitlab-postgresql-password, postgres-password).
 

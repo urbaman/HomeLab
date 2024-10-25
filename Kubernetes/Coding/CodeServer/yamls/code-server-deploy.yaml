@@ -65,21 +65,21 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: code-server-urbaman
+  name: code-server-domain-com
   namespace: code-server
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - code-server.urbaman.it
+  - code-server.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: code-server-urbaman
+  secretName: code-server-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-code-server-https-redirect
@@ -89,7 +89,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-code-server-security
@@ -112,7 +112,7 @@ spec:
   serverName: code-server 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-code-server-tlsoptions
@@ -136,7 +136,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-code-server-websecure
@@ -146,7 +146,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`code-server.urbaman.it`)
+      match: Host(`code-server.domain.com`)
       services:
         - name: code-server
           port: 8080
@@ -154,11 +154,11 @@ spec:
       middlewares:
         - name: traefik-code-server-security
   tls:
-    secretName: code-server-urbaman
+    secretName: code-server-domain-com
     options:
       name: traefik-code-server-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-code-server-web
@@ -168,7 +168,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`code-server.urbaman.it`)
+      match: Host(`code-server.domain.com`)
       services:
         - name: code-server
           port: 8080 

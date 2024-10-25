@@ -1,6 +1,6 @@
 global:
   serverTelemetry:
-    prometheusOperator: false
+    prometheusOperator: true
 
 server:
   ingress:

@@ -14,17 +14,16 @@ kubectl apply -f ig-hashicorp-vault.yaml
 To initialise the vault first open a terminal on the container using:
 
 ```bash
-kubectl exec -it -n vault --stdin=true --tty=true vault-0 /bin/bash
+kubectl exec -it -n vault --stdin=true --tty=true vault-0 -- vault operator init
 ```
 
-Now we need to turn off TLS verification as we are accessing vault on localhost, do this by setting up VAULT_SKIP_VERIFY environment variable:
+Make sure you save the unseal keys and root token somewhere safe and then unseal this vault by running
 
 ```bash
-export VAULT_SKIP_VERIFY=1
-vault operator init
+kubectl exec -n vault vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY1
+kubectl exec -n vault vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY2
+kubectl exec -n vault vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY3
 ```
-
-Make sure you save the unseal keys and root token somewhere safe and then unseal this vault by running `vault operator unseal` 3 times and providing 3 of the unseal keys.
 
 ## High Availability
 

@@ -70,7 +70,7 @@ Add the repo, set the values
 ```bash
 helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
 helm repo update
-helm repo show values vmware-tanzu/velero > velero-values.yaml
+helm show values vmware-tanzu/velero > velero-values.yaml
 ```
 
 Install or upgrade
