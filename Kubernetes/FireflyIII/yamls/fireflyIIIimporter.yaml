@@ -50,7 +50,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: fireflyIIIimporter-urbaman
+  name: fireflyIIIimporter-domain-com
   namespace: fireflyIII
 spec:
   # Certificate will be valid for these domain names
@@ -62,18 +62,9 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: fireflyIIIimporter-urbaman
+  secretName: fireflyIIIimporter-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: fireflyIIIimporter-basic-auth
-  namespace: fireflyIII
-spec:
-  basicAuth:
-    secret: fireflyIII-basic-auth
----
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: fireflyIIIimporter-https-redirect
@@ -83,7 +74,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: fireflyIIIimporter-security
@@ -107,7 +98,7 @@ spec:
   serverName: fireflyIIIimporter
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: fireflyIIIimporter-tlsoptions
@@ -131,16 +122,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: fireflyIIIimporter-basic-auth
-  namespace: fireflyIII
-data:
-  users: |
-    YWRtaW46JGFwcjEkZHVjNG9sZ1okNkhOUFJ3ck0vQ0V1WHNMOXd5SDc5MAoK
----
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: fireflyIIIimporter-websecure
@@ -156,14 +138,13 @@ spec:
           port: 80
           serversTransport: fireflyIIIimporter-transport
       middlewares:
-#        - name: fireflyIIIimporter-basic-auth
         - name: fireflyIIIimporter-security
   tls:
-    secretName: fireflyIIIimporter-urbaman
+    secretName: fireflyIIIimporter-domain-com
     options:
       name: fireflyIIIimporter-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: fireflyIIIimporter-web

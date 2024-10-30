@@ -1,10 +1,6 @@
 # Firefly III installation with data importer
 
-After having deployed postgresql with a dedicated db (eventually called firefly), create a volume, pv, pvc in longhorn
-
-- name: fireflyIII (-pv, -pvc)
-- namespace: fireflyIII
-- size: 10Gi
+After having deployed postgresql with a dedicated db (eventually called firefly), create a pv and pvc, size 10Gi
 
 Generate a random 32 character key to set as APP_KEY:
 
