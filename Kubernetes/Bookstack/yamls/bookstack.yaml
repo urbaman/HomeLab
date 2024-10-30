@@ -1,0 +1,207 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: bookstack
+  labels:
+    name: bookstack
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bookstack-pvc
+  namespace: bookstack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstack
+  namespace: bookstack
+  labels:
+    app: bookstack
+    app.kubernetes.io/name: bookstack
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookstack
+  template:
+    metadata:
+      labels:
+        app: bookstack
+        app.kubernetes.io/name: bookstack
+    spec:
+      containers:
+        - name: bookstack
+          image: lscr.io/linuxserver/bookstack:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: APP_URL
+              value: "bookstack.domain.com"
+            - name: DB_HOST
+              value: "mariadb.mariadb.svc.cluster.local"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USERNAME
+              value: "bookstack"
+            - name: DB_PASSWORD
+              value: "<mysql_bookstack_password>"
+            - name: DB_DATABASE
+              value: bookstack
+            - name: APP_KEY
+              value: "base64:cmp1MDg0NTg4NGI0a3V5bnh6ZzFjOXUxNmxwNm00b3A="
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /config
+              name: bookstack-data
+      volumes:
+        - name: bookstack-data
+          persistentVolumeClaim:
+            claimName: bookstack-pvc
+---
+kind: Service
+metadata:
+  name: bookstack
+  namespace: bookstack
+  labels:
+    app: bookstack
+apiVersion: v1
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  selector:
+    app: bookstack
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bookstack-domain-com
+  namespace: bookstack
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - bookstack.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: bookstack-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bookstack-https-redirect
+  namespace: bookstack
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bookstack-security
+  namespace: bookstack
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: bookstack-transport
+  namespace: bookstack
+spec:
+  serverName: bookstack
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: bookstack-tlsoptions
+  namespace: bookstack
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bookstack-websecure
+  namespace: bookstack
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`bookstack.domain.com`)
+      services:
+        - name: bookstack
+          port: 80
+          serversTransport: bookstack-transport
+      middlewares:
+        - name: bookstack-security
+  tls:
+    secretName: bookstack-domain-com
+    options:
+      name: bookstack-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bookstack-web
+  namespace: bookstack
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`bookstack.domain.com`)
+      services:
+        - name: bookstack
+          port: 80
+      middlewares:
+        - name: bookstack-https-redirect

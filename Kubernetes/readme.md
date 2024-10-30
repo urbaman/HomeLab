@@ -189,5 +189,4 @@ Here are the detailed steps to deploy our homelab cluster
 12. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 13. [Calibre server and Calibre web](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 14. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
-15. [Bookstack](https://github.com/linuxserver/docker-bookstack)
-
+15. [Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)

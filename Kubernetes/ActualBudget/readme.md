@@ -1,4 +1,4 @@
-# Actual Busget installation
+# Actual Budget installation
 
 Deploy the yaml file
 
