@@ -16,7 +16,7 @@ ADMIN_TOKEN=some_random_token_as_per_above_explanation
 
 Use the given `vaultwarden-deploy.yaml` file, then go through the admin page and settings with the above token.
 
-Default variables:
+Default variables (be carefull to make numbers and boolean to strings):
 
 ```bash
 DOMAIN=https://vaultwarden.domain.tld
@@ -30,6 +30,7 @@ SMTP_PORT=465
 SMTP_SECURITY=force_tls
 SMTP_USERNAME=<username>
 SMTP_PASSWORD=<password>
+SMTP_ACCEPT_INVALID_CERTS=false
 ```
 
 ## Use MariaDB

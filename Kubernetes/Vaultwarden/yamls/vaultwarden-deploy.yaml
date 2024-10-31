@@ -44,20 +44,18 @@ spec:
           image: quay.io/vaultwarden/server:latest
           imagePullPolicy: IfNotPresent
           env:
-            - name:  TZ
-              value: Europe/Rome
             - name: ADMIN_TOKEN
               value: <TOKEN>
             - name: DOMAIN
-              vaule: https://vaultwarden.domain.com
+              value: https://vaultwarden.domain.com
             - name: TZ
               value: "Europe/Rome"
             - name: SIGNUPS_ALLOWED
-              value: false
+              value: "false"
             - name: INVITATIONS_ALLOWED
-              value: false
+              value: "false"
             - name: SHOW_PASSWORD_HINT
-              value: false
+              value: "false"
             - name: SMTP_HOST
               value: <smtp.domain.com>
             - name: SMTP_FROM
@@ -69,7 +67,9 @@ spec:
             - name: SMTP_USERNAME
               value: <smtp_username>
             - name: SMTP_PASSWORD
-              vaule: <smtp_password>
+              value: <smtp_password>
+            - name: SMTP_ACCEPT_INVALID_CERTS
+              vaule: "true"
           ports:
             - name: http
               containerPort: 80
