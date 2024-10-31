@@ -190,3 +190,4 @@ Here are the detailed steps to deploy our homelab cluster
 13. [Calibre server and Calibre web](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 14. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
 15. [Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
+16. [Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)

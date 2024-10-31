@@ -1,0 +1,213 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: vaultwarden
+  labels:
+    name: vaultwarden
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaultwarden-pvc
+  namespace: vaultwarden
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: rook-ceph-nvme2tb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+  labels:
+    app: vaultwarden
+    app.kubernetes.io/name: vaultwarden
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+        app.kubernetes.io/name: vaultwarden
+    spec:
+      containers:
+        - name: vaultwarden
+          image: quay.io/vaultwarden/server:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: ADMIN_TOKEN
+              value: <TOKEN>
+            - name: DOMAIN
+              vaule: https://vaultwarden.domain.com
+            - name: TZ
+              value: "Europe/Rome"
+            - name: SIGNUPS_ALLOWED
+              value: false
+            - name: INVITATIONS_ALLOWED
+              value: false
+            - name: SHOW_PASSWORD_HINT
+              value: false
+            - name: SMTP_HOST
+              value: <smtp.domain.com>
+            - name: SMTP_FROM
+              value: <vaultwarden@domain.com>
+            - name: SMTP_PORT
+              value: "465"
+            - name: SMTP_SECURITY
+              value: force_tls
+            - name: SMTP_USERNAME
+              value: <smtp_username>
+            - name: SMTP_PASSWORD
+              vaule: <smtp_password>
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: vaultwarden-data
+      volumes:
+        - name: vaultwarden-data
+          persistentVolumeClaim:
+            claimName: vaultwarden-pvc
+---
+kind: Service
+metadata:
+  name: vaultwarden
+  namespace: vaultwarden
+  labels:
+    app: vaultwarden
+apiVersion: v1
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  selector:
+    app: vaultwarden
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vaultwarden-domain-com
+  namespace: vaultwarden
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - vaultwarden.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: vaultwarden-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vaultwarden-https-redirect
+  namespace: vaultwarden
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vaultwarden-security
+  namespace: vaultwarden
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: vaultwarden-transport
+  namespace: vaultwarden
+spec:
+  serverName: vaultwarden
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: vaultwarden-tlsoptions
+  namespace: vaultwarden
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vaultwarden-websecure
+  namespace: vaultwarden
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`vaultwarden.domain.com`)
+      services:
+        - name: vaultwarden
+          port: 80
+          serversTransport: vaultwarden-transport
+      middlewares:
+        - name: vaultwarden-security
+  tls:
+    secretName: vaultwarden-domain-com
+    options:
+      name: vaultwarden-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vaultwarden-web
+  namespace: vaultwarden
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`vaultwarden.domain.com`)
+      services:
+        - name: vaultwarden
+          port: 80
+      middlewares:
+        - name: vaultwarden-https-redirect
