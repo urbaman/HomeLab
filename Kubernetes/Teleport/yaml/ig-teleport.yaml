@@ -1,4 +1,22 @@
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: teleport-domain-com
+  namespace: teleport-cluster
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - "teleport.domain.com"
+  - "*.teleport.domain.com"
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: teleport-domain-com
+---
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-teleport-cluster-https-redirect
@@ -8,7 +26,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-teleport-cluster-security
@@ -33,7 +51,7 @@ metadata:
 spec:
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-teleport-cluster-tlsoptions
@@ -57,7 +75,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-teleport-cluster-websecure
@@ -67,7 +85,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: HostRegexp(`teleport.domain.com`, `{subdomain:[a-z]+}.teleport.domain.com`, `{subdomain:[a-z0-9]+}.teleport.cluster.local`)
+      match: HostRegexp(`teleport.domain.com`) || HostRegexp(`{subdomain:[a-z]+}.teleport.domain.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.teleport.cluster.local`)
       services:
         - name: teleport-cluster
           port: 443
@@ -75,11 +93,11 @@ spec:
       middlewares:
         - name: traefik-teleport-cluster-security
   tls:
-    secretName: teleport-urbaman
+    secretName: teleport-domain-com
     options:
       name: traefik-teleport-cluster-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-teleport-cluster-web
@@ -89,7 +107,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: HostRegexp(`teleport.domain.com`, `{subdomain:[a-z]+}.teleport.domain.com`, `{subdomain:[a-z0-9]+}.teleport.cluster.local`)
+      match: HostRegexp(`teleport.domain.com`) || HostRegexp(`{subdomain:[a-z]+}.teleport.domain.com`) || HostRegexp(`{subdomain:[a-z0-9]+}.teleport.cluster.local`)
       services:
         - name: teleport-cluster
           port: 443

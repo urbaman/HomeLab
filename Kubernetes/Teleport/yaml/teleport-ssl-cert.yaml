@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: teleport-domain
+  name: teleport-domain-com
   namespace: teleport-cluster
 spec:
   # Certificate will be valid for these domain names
@@ -14,4 +14,4 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: teleport-domain
+  secretName: teleport-domain-com

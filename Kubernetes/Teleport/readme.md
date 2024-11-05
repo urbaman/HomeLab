@@ -16,7 +16,7 @@ helm repo add teleport https://charts.releases.teleport.dev
 helm repo update
 ```
 
-- Create a certmanager certificate for both teleport.domain.com and *.teleport.domain.com
+- Create a certmanager certificate for both teleport.domain.com and *.teleport.domain.com (already present in ig-teleport.yaml, you can use that now to create all of the traefik implementation)
 
 ```bash
 kubectl apply -f teleport-ssl-cert.yaml
@@ -42,7 +42,7 @@ kubectl apply -f ig-teleport.yaml
 Create a user superadmin with all of the roles
 
 ```bash
-kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu,nutadmin
+kubectl exec -ti -n teleport-cluster deployment/teleport-cluster-auth -- tctl users add username --roles=access,editor,auditor --logins=root,ubuntu,nutadmin,nasadmin
 ```
 
 Go to the shown link to generate the password and the MFA, you'll login and see the kubernetes cluster as accessible.

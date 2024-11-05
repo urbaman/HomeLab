@@ -145,7 +145,7 @@ apps:
     context: k8s
     env: monitoring
   name: grafana
-  uri: https://grafana.urbaman.it
+  uri: https://grafana.domain.com
 
 # appResources(list) -- is a set of labels the agent will monitor. Any application
 # matching those labels will be proxied by the agent. See [the Teleport
