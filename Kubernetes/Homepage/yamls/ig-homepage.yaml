@@ -1,35 +1,35 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: gethomepage-urbaman
-  namespace: gethomepage
+  name: homepage-domain-com
+  namespace: homepage
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - gethomepage.domain.com
+  - homepage.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: gethomepage-urbaman
+  secretName: homepage-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-gethomepage-https-redirect
-  namespace: gethomepage
+  name: traefik-homepage-https-redirect
+  namespace: homepage
 spec:
   redirectScheme:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-gethomepage-security
-  namespace: gethomepage
+  name: traefik-homepage-security
+  namespace: homepage
 spec:
   headers:
     frameDeny: true
@@ -43,17 +43,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-gethomepage-transport
-  namespace: gethomepage
+  name: traefik-homepage-transport
+  namespace: homepage
 spec:
-  serverName: gethomepage 
+  serverName: homepage 
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-gethomepage-tlsoptions
-  namespace: gethomepage
+  name: traefik-homepage-tlsoptions
+  namespace: homepage
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -73,41 +73,41 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-gethomepage-websecure
-  namespace: gethomepage 
+  name: traefik-homepage-websecure
+  namespace: homepage 
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`gethomepage.domain.com`)
+      match: Host(`homepage.domain.com`)
       services:
-        - name: gethomepage
+        - name: homepage
           port: 3000
-            #          serversTransport: traefik-gethomepage-transport
+            #          serversTransport: traefik-homepage-transport
       middlewares:
-        - name: traefik-gethomepage-security
+        - name: traefik-homepage-security
   tls:
-    secretName: gethomepage-urbaman
+    secretName: homepage-domain-com
     options:
-      name: traefik-gethomepage-tlsoptions
+      name: traefik-homepage-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-gethomepage-web
-  namespace: gethomepage
+  name: traefik-homepage-web
+  namespace: homepage
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`gethomepage.domain.com`)
+      match: Host(`homepage.domain.com`)
       services:
-        - name: gethomepage
+        - name: homepage
           port: 3000 
       middlewares:
-        - name: traefik-gethomepage-https-redirect
+        - name: traefik-homepage-https-redirect
