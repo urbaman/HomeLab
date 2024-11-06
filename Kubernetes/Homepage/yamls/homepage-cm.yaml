@@ -328,6 +328,7 @@ data:
               type: pfsense
               fields: ["load", "memory", "wanStatus", "disk"]
               url: https://pfsense1.domain.com
+              version: 2
               username: admin
               password: <password>
               wan: ix0
@@ -339,6 +340,7 @@ data:
               type: pfsense
               fields: ["load", "memory", "wanStatus", "disk"]
               url: https://pfsense2.domain.com
+              version: 2
               username: admin
               password: <password>
               wan: ix0
