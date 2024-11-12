@@ -1,15 +1,15 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: fireflyIII
+  name: firefly
   labels:
-    name: fireflyIII
+    name: firefly
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: fireflyIII-data
-  namespace: fireflyIII
+  name: firefly-data
+  namespace: firefly
 spec:
   accessModes:
     - ReadWriteOnce
@@ -21,24 +21,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fireflyIII
-  namespace: fireflyIII
+  name: firefly
+  namespace: firefly
   labels:
-    app: fireflyIII
+    app: firefly
 spec:
   strategy:
     type: Recreate
   replicas: 1
   selector:
     matchLabels:
-      app: fireflyIII
+      app: firefly
   template:
     metadata:
       labels:
-        app: fireflyIII
+        app: firefly
     spec:
       containers:
-        - name: fireflyIII
+        - name: firefly
           image: fireflyiii/core:latest
           imagePullPolicy: IfNotPresent
           env:
@@ -56,24 +56,26 @@ spec:
             value: "CHANGEME"
           - name: DB_PASSWORD
             value: "CHANGEME"
+          - name: TRUSTED_PROXIES
+            value: "**"
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
           volumeMounts:
             - mountPath: /var/www/html/storage/upload
-              name: fireflyIII-data
+              name: firefly-data
       volumes:
-        - name: fireflyIII-data
+        - name: firefly-data
           persistentVolumeClaim:
-            claimName: fireflyIII-data
+            claimName: firefly-data
 ---
 kind: Service
 metadata:
-  name: fireflyIII
-  namespace: fireflyIII
+  name: firefly
+  namespace: firefly
   labels:
-    app: fireflyIII
+    app: firefly
 apiVersion: v1
 spec:
   ports:
@@ -82,30 +84,30 @@ spec:
       port: 80
       targetPort: http
   selector:
-    app: fireflyIII
+    app: firefly
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: fireflyIII-domain-com
-  namespace: fireflyIII
+  name: firefly-domain-com
+  namespace: firefly
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - fireflyIII.domain.com
+  - firefly.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: fireflyIII-domain-com
+  secretName: firefly-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: fireflyIII-https-redirect
-  namespace: fireflyIII
+  name: firefly-https-redirect
+  namespace: firefly
 spec:
   redirectScheme:
     scheme: https
@@ -114,8 +116,8 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: fireflyIII-security
-  namespace: fireflyIII
+  name: firefly-security
+  namespace: firefly
 spec:
   headers:
     frameDeny: true
@@ -129,17 +131,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: fireflyIII-transport
-  namespace: fireflyIII
+  name: firefly-transport
+  namespace: firefly
 spec:
-  serverName: fireflyIII
+  serverName: firefly
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: fireflyIII-tlsoptions
-  namespace: fireflyIII
+  name: firefly-tlsoptions
+  namespace: firefly
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -162,38 +164,38 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: fireflyIII-websecure
-  namespace: fireflyIII
+  name: firefly-websecure
+  namespace: firefly
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`fireflyIII.domain.com`)
+      match: Host(`firefly.domain.com`)
       services:
-        - name: fireflyIII
+        - name: firefly
           port: 80
-          serversTransport: fireflyIII-transport
+          serversTransport: firefly-transport
       middlewares:
-        - name: fireflyIII-security
+        - name: firefly-security
   tls:
-    secretName: fireflyIII-domain-com
+    secretName: firefly-domain-com
     options:
-      name: fireflyIII-tlsoptions
+      name: firefly-tlsoptions
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: fireflyIII-web
-  namespace: fireflyIII
+  name: firefly-web
+  namespace: firefly
 spec:
   entryPoints:
     - web
   routes:
     - kind: Rule
-      match: Host(`fireflyIII.domain.com`)
+      match: Host(`firefly.domain.com`)
       services:
-        - name: fireflyIII
+        - name: firefly
           port: 80
       middlewares:
-        - name: fireflyIII-https-redirect
+        - name: firefly-https-redirect
