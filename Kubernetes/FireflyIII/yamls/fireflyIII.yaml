@@ -58,6 +58,20 @@ spec:
             value: "CHANGEME"
           - name: TRUSTED_PROXIES
             value: "**"
+          - name: MAIL_MAILER
+            value: "smtp"
+          - name: MAIL_HOST
+            value: "smtp.domain.com"
+          - name: MAIL_PORT
+            value: "465"
+          - name: MAIL_FROM
+            value: "firefly@domain.com"
+          - name: MAIL_USERNAME
+            value: "<username>"
+          - name: MAIL_PASSWORD
+            value: "<password>"
+          - name: MAIL_ENCRYPTION
+            value: "ssl"
           ports:
             - name: http
               containerPort: 80
