@@ -27,6 +27,8 @@ spec:
   - www.domain3.com
   - webmail.domain3.com
   - admin.domain3.com
+  - autoconfig.domain3.com
+  - autodiscover.domain3.com
   - domain5.com
   - '*.domain5.com'
   - domain6.com
@@ -195,7 +197,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`autoconfig.domain3.com`) || Host(`autodiscover.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
       services:
         - name: hosting1-svc
           port: 443
@@ -217,7 +219,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`autoconfig.domain3.com`) || Host(`autodiscover.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
       services:
         - name: hosting1-svc
           port: 80
@@ -234,7 +236,7 @@ spec:
     - webmin
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`autoconfig.domain3.com`) || Host(`autodiscover.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
       services:
         - name: webmin-svc
           port: 443
@@ -256,7 +258,7 @@ spec:
     - usermin
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
+      match: Host(`domain3.com`) || Host(`www.domain3.com`) || Host(`wp-manager.domain3.com`) || Host(`mail.domain3.com`) || Host(`webmail.domain3.com`) || Host(`admin.domain3.com`) || Host(`autoconfig.domain3.com`) || Host(`autodiscover.domain3.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain8.com`) || Host(`www.domain.com`) || Host(`www.domain2.com`) || Host(`www.domain4.com`) || Host(`www.domain7.com`) || Host(`www.domain8.com`) || Host(`domain5.com`) || Host(`www.domain5.com`) || Host(`newsletter.domain5.com`) || Host(`crm.domain5.com`)
       services:
         - name: usermin-svc
           port: 443
