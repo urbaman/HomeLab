@@ -1,8 +1,39 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: netbox-service
+  labels:
+    app: netbox-service
+  namespace: traefik-external
+subsets:
+- addresses:
+  - ip: <netbox-ip>
+    nodeName: netbox-service
+  ports:
+  - name: netbox
+    port: 443
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbox-service
+  labels:
+    app: netbox-service
+  namespace: traefik-external
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: netbox
+    port: 443
+    targetPort: 443
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: netbox-domain-com
-  namespace: netbox
+  namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
@@ -19,7 +50,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-netbox-https-redirect
-  namespace: netbox
+  namespace: traefik-external
 spec:
   redirectScheme:
     scheme: https
@@ -29,7 +60,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-netbox-security
-  namespace: netbox
+  namespace: traefik-external
 spec:
   headers:
     frameDeny: true
@@ -44,7 +75,7 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: traefik-netbox-transport
-  namespace: netbox
+  namespace: traefik-external
 spec:
   serverName: traefik
   insecureSkipVerify: true
@@ -53,7 +84,7 @@ apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-netbox-tlsoptions
-  namespace: netbox
+  namespace: traefik-external
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -77,7 +108,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-netbox-websecure
-  namespace: netbox
+  namespace: traefik-external
 spec:
   entryPoints:
     - websecure
@@ -85,8 +116,8 @@ spec:
     - kind: Rule
       match: Host(`netbox.domain.com`)
       services:
-        - name: netbox
-          port: 80
+        - name: netbox-service
+          port: 443
           serversTransport: traefik-netbox-transport
       middlewares:
         - name: traefik-netbox-security
@@ -99,7 +130,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-netbox-web
-  namespace: netbox
+  namespace: traefik-external
 spec:
   entryPoints:
     - web
@@ -107,7 +138,7 @@ spec:
     - kind: Rule
       match: Host(`netbox.domain.com`)
       services:
-        - name: netbox
-          port: 80
+        - name: netbox-service
+          port: 443
       middlewares:
         - name: traefik-netbox-https-redirect
