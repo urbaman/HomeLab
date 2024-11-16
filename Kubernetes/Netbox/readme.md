@@ -62,6 +62,8 @@ metrics:
     enabled: false
     additionalLabels:
       release: kube-prometheus-stack
+postgresql:
+  enabled: false
 externalDatabase:
   host: prostgresql.postgresql.svc.cluster.local
   port: 5432
@@ -70,6 +72,10 @@ externalDatabase:
   password: "<password>"
   existingSecretName: ""
   existingSecretKey: postgresql-password
+redis:
+  enabled: false
+tasksRedis:
+  host: redis-master.redis.svc.cluster.local
 
 
 
