@@ -32,12 +32,11 @@ docker run --name semaphore \
 -v semaphore_data:/var/lib/semaphore \
 -v semaphore_config:/etc/semaphore \
 --network semaphore_network \
--e SEMAPHORE_EMAIL_ALERT=True \
+-e SEMAPHORE_EMAIL_ALERT=true \
 -e SEMAPHORE_EMAIL_SENDER=semaphoreui@urbaman.it \
 -e SEMAPHORE_EMAIL_HOST=mail.urbaman.it \
 -e SEMAPHORE_EMAIL_PORT=465 \
 -e SEMAPHORE_EMAIL_USERNAME=k8sadmin@urbaman.it \
 -e SEMAPHORE_EMAIL_PASSWORD=gGrbS1Vw6ha60juMe \
--e SEMAPHORE_EMAIL_SECURE=True \
--e SEMAPHORE_ACCESS_KEY_ENCRYPTION=<key> \
+-e SEMAPHORE_EMAIL_SECURE=true \
 -d semaphoreui/semaphore:v2.10.35

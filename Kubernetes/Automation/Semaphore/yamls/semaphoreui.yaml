@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: semaphoreui
+  namespace: semaphoreui
+type: Opaque
+data:
+  db_password: <db_password>
+  admin_password: <admin_password>
+  email_password: <email_password>
