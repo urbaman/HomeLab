@@ -3,20 +3,20 @@
 ## External behind Traefik
 
 ```bash
-kubectl apply -f ig-netbox.yaml
+kubectl apply -f ig-netbox-external.yaml
 ```
 
 ## Internal via helm chart
 
 Follow [this guide](https://github.com/bootc/netbox-chart).
 
-Create a 40 hexadecimal characters string for the admin API token:
+Create a 40 hexadecimal characters string for the admin API token (not working):
 
 ```bash
 head -c 40 /dev/urandom | xxd -p -c 40
-bash
+```
 
-Get the values.
+Get the values:
 
 ```bash
 helm show values --devel oci://ghcr.io/netbox-community/netbox-chart/netbox > netbox-values.yaml
@@ -25,15 +25,18 @@ vi netbox-values.yaml
 
 Set the following values:
 
-superuser.password: <passoword>
-superuser.apiToken: <APItoken (see above)>
-email.server: mail.domain.com
-email.port: <25,465,587>
-email.username: <smtp username>
-email.password: <smtp password>
-email.useSSL: <true (465)>
-email.useTLS: <true/false>
-email.from: netbox@domain.com
+```yaml
+superuser:
+  password: <passoword>
+#  apiToken: <APItoken (see above)>
+email:
+  server: mail.domain.com
+  port: <25,465,587>
+  username: <smtp username>
+  password: <smtp password>
+  useSSL: <true (465)>
+  useTLS: <true/false>
+  from: netbox@domain.com
 loginRequired: true
 plugins:
   - plugin1
@@ -65,7 +68,7 @@ metrics:
 postgresql:
   enabled: false
 externalDatabase:
-  host: prostgresql.postgresql.svc.cluster.local
+  host: postgresql.postgresql.svc.cluster.local
   port: 5432
   database: netbox
   username: netbox
@@ -75,7 +78,14 @@ externalDatabase:
 redis:
   enabled: false
 tasksRedis:
+  database: "1"
   host: redis-master.redis.svc.cluster.local
+  password: "<password>"
+```
 
+Install the chart and the treaefik ingressRoute:
 
-
+```bash
+helm upgrade -i netbox -n netbox --create-namespace --devel oci://ghcr.io/netbox-community/netbox-chart/netbox -f netbox-values.yaml
+kubectl apply -f ig-netbox.yaml
+```
