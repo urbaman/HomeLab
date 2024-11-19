@@ -1,10 +1,256 @@
 apiVersion: v1
-kind: Secret
+kind: Namespace
 metadata:
   name: semaphoreui
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: semaphoreui-secrets
   namespace: semaphoreui
 type: Opaque
 data:
-  db_password: <db_password>
-  admin_password: <admin_password>
-  email_password: <email_password>
+  SEMAPHORE_DB_PASS: <db_passwordBase64>
+  SEMAPHORE_ADMIN_PASSWORD: <admin_passwordBase64>
+  SEMAPHORE_EMAIL_PASSWORD: <email_passwordBase64>
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: semaphoreui-config-pvc
+  namespace: semaphoreui
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: asustornas1-nfs
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: semaphoreui-data-pvc
+  namespace: semaphoreui
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: asustornas1-nfs
+  resources:
+    requests:
+      storage: 5Ti
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: semaphoreui
+  namespace: semaphoreui 
+  labels:
+    app: semaphoreui
+    app.kubernetes.io/name: semaphoreui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: semaphoreui 
+  template:
+    metadata:
+      labels:
+        app: semaphoreui
+        app.kubernetes.io/name: semaphoreui
+    spec:
+      volumes:
+      - name: semaphoreui-config
+        persistentVolumeClaim: 
+          claimName: semaphoreui-config-pvc
+      - name: semaphoreui-data
+        persistentVolumeClaim: 
+          claimName: semaphoreui-data-pvc
+      containers:
+        - image: semaphoreui/semaphore:latest
+          name: semaphoreui 
+          ports:
+            - containerPort: 3000
+#          resources:
+#            limits:
+#              cpu: 1000m
+#              memory: 2Gi
+#            requests:
+#              cpu: 500m
+#              memory: 1Mi
+          env:
+            - name: SEMAPHORE_DB_DIALECT
+              value: mysql
+            - name: SEMAPHORE_DB_HOST
+              value: mariadb.mariadb.svc.cluster.local
+            - name: SEMAPHORE_DB_NAME
+              value: semaphoreui
+            - name: SEMAPHORE_DB_USER
+              value: semaphoreui
+            - name: SEMAPHORE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: SEMAPHORE_DB_PASS
+                  name: semaphoreui-secrets
+            - name: SEMAPHORE_ADMIN
+              value: admin
+            - name: SEMAPHORE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SEMAPHORE_ADMIN_PASSWORD
+                  name: semaphoreui-secrets
+            - name: SEMAPHORE_ADMIN_NAME
+              value: "Admin"
+            - name: SEMAPHORE_ADMIN_EMAIL
+              value: admin@domain.com
+            - name: SEMAPHORE_EMAIL_ALERT
+              value: true
+            - name: SEMAPHORE_EMAIL_HOST
+              value: "smtp.domain.com"
+            - name: SEMAPHORE_EMAIL_SECURE
+              value: true
+            - name: SEMAPHORE_EMAIL_PORT
+              value: "465"
+            - name: SEMAPHORE_EMAIL_SENDER
+              value: "semaphoreui@domain.com"
+            - name: SEMAPHORE_EMAIL_USERNAME
+              value: username@domain.com
+            - name: SEMAPHORE_EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SEMAPHORE_EMAIL_PASSWORD
+                  name: semaphoreui-secrets 
+          volumeMounts:
+            - mountPath: /var/lib/semaphore
+              name: semaphoreui-data
+            - mountPath: /etc/semaphore
+              name: semaphoreui-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: semaphoreui
+  namespace: semaphoreui
+  labels:
+    app: semaphoreui
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: semaphoreui
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: semaphoreui-domain-com
+  namespace: semaphoreui
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - semaphoreui.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: semaphoreui-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-semaphoreui-https-redirect
+  namespace: semaphoreui
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-semaphoreui-security
+  namespace: semaphoreui
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+    customFrameOptionsValue: sameorigin
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-semaphoreui-transport
+  namespace: semaphoreui
+spec:
+  serverName: semaphoreui
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-semaphoreui-tlsoptions
+  namespace: semaphoreui
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-semaphoreui-websecure
+  namespace: semaphoreui
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`semaphoreui.domain.com`)
+      kind: Rule
+      services:
+        - name: semaphoreui
+          port: 3000
+          serversTransport: traefik-semaphoreui-transport
+      middlewares:
+        - name: traefik-semaphoreui-security
+  tls:
+    secretName: semaphoreui-domain-com
+    options:
+      name: traefik-semaphoreui-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-semaphoreui-web
+  namespace: semaphoreui
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`semaphoreui.domain.com`)
+      kind: Rule
+      services:
+        - name: semaphoreui
+          port: 3000
+      middlewares:
+        - name: traefik-semaphoreui-https-redirect
