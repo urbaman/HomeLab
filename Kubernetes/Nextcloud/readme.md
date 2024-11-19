@@ -17,12 +17,12 @@ After having set up all of the prerequisites, we start our process.
 We start by getting the base64 version of our strings. Get the Redis password from the Redis deployment.
 
 ```bash
-echo 'admin-password' | base64
-echo 'dbname' | base64
-echo 'dbusername' | base64
-echo 'mysql-password' | base64
-echo 'redis-password' | base64
-echo 'smtp-password' | base64
+echo -n 'admin-password' | base64
+echo -n 'dbname' | base64
+echo -n 'dbusername' | base64
+echo -n 'mysql-password' | base64
+echo -n 'redis-password' | base64
+echo -n 'smtp-password' | base64
 ```
 
 ## Nextcloud deployment
