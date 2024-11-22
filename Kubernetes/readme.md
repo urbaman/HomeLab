@@ -67,7 +67,7 @@ Here are the detailed steps to deploy our homelab cluster
 2. [ArgoCD](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ArgoCD)
 3. [Hashcorp Vault](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/HashicorpVault)
 4. [External Secrets](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ExternalSecrets)
-5. [Semaphore UI - Ansible Gui](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Semaphore)
+5. [*Semaphore UI - Ansible Gui](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Semaphore)
 
 #### Coding
 
@@ -180,7 +180,7 @@ Here are the detailed steps to deploy our homelab cluster
 2. [Homer homelab dashboard](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homer)
 3. [it-tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/It-tools)
 4. [Homepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homepage)
-5. [Netbox](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Netbox)
+5. [*Netbox](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Netbox)
 6. [Drawio](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Drawio)
 7. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
 8. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
@@ -188,8 +188,8 @@ Here are the detailed steps to deploy our homelab cluster
 10. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
 11. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
 12. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
-13. [Calibre server and Calibre web](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+13. [*Calibre server and Calibre web](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
 14. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
-15. [Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
-16. [Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
-17. [OpenProject](https://github.com/opf/helm-charts/tree/main/charts/openproject)
+15. [*Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
+16. [*Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
+17. [*OpenProject](https://github.com/opf/helm-charts/tree/main/charts/openproject)
