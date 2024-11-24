@@ -192,4 +192,4 @@ Here are the detailed steps to deploy our homelab cluster
 14. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
 15. [*Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
 16. [*Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
-17. [*OpenProject](https://github.com/opf/helm-charts/tree/main/charts/openproject)
+17. [*OpenProject](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Openproject)
