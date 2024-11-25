@@ -8,8 +8,6 @@ kubectl apply -f ig-netbox-external.yaml
 
 ## Internal via helm chart
 
-Follow [this guide](https://github.com/bootc/netbox-chart).
-
 Create a 40 hexadecimal characters string for the admin API token (not working):
 
 ```bash

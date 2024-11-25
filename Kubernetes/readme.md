@@ -193,3 +193,4 @@ Here are the detailed steps to deploy our homelab cluster
 15. [*Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
 16. [*Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
 17. [*OpenProject](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Openproject)
+18. [*Shlink URL shortener](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Shlink)

@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: shlink-web-client
+  namespace: shlink
+type: Opaque
+data: # All to base64
+  SHLINK_SERVER_API_KEY: <SHLINK_SERVER_API_KEY>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shlink-web-client
+  namespace: shlink
+spec:
+  selector:
+    matchLabels:
+      app: shlink-web-client
+  template:
+    metadata:
+      labels:
+        app: shlink-web-client
+    spec:
+      containers:
+      - name: shlink-web-client
+        image: shlinkio/shlink-web-client:latest
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SHLINK_SERVER_URL
+            value: https://shlink.domain.com
+          - name: SHLINK_SERVER_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: SHLINK_SERVER_API_KEY
+                name: shlink-web-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shlink-web-client
+  namespace: shlink
+spec:
+  selector:
+    app: shlink-web-client
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: shlink-web-client-domain-com
+  namespace: shlink
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - shlink-web-client.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: shlink-web-client-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-shlink-web-client-https-redirect
+  namespace: shlink
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-shlink-web-client-security
+  namespace: shlink
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-shlink-web-client-transport
+  namespace: shlink
+spec:
+  serverName: traefik
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-shlink-web-client-tlsoptions
+  namespace: shlink
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-shlink-web-client-websecure
+  namespace: shlink
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`shlink-web-client.domain.com`)
+      services:
+        - name: shlink-web-client
+          port: 8080
+          serversTransport: traefik-shlink-web-client-transport
+      middlewares:
+        - name: traefik-shlink-web-client-security
+  tls:
+    secretName: shlink-web-client-domain-com
+    options:
+      name: traefik-shlink-web-client-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-shlink-web-client-web
+  namespace: shlink
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`shlink-web-client.domain.com`)
+      services:
+        - name: shlink-web-client
+          port: 8080
+      middlewares:
+        - name: traefik-shlink-web-client-https-redirect
