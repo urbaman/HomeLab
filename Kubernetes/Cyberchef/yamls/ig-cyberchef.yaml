@@ -1,25 +1,25 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: k8dashboard-domain-com
-  namespace: kubernetes-dashboard
+  name: cyberchef-domain-com
+  namespace: cyberchef
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - k8dashboard.domain.com
+  - cyberchef.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: k8dashboard-domain-com
+  secretName: cyberchef-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: k8dashboard-https-redirect
-  namespace: kubernetes-dashboard
+  name: cyberchef-https-redirect
+  namespace: cyberchef
 spec:
   redirectScheme:
     scheme: https
@@ -28,8 +28,8 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: k8dashboard-security
-  namespace: kubernetes-dashboard
+  name: cyberchef-security
+  namespace: cyberchef
 spec:
   headers:
     frameDeny: true
@@ -43,17 +43,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: k8dashboard-transport
-  namespace: kubernetes-dashboard
+  name: cyberchef-transport
+  namespace: cyberchef
 spec:
-  serverName: k8dashboard
+  serverName: cyberchef
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: k8dashboard-tlsoptions
-  namespace: kubernetes-dashboard
+  name: cyberchef-tlsoptions
+  namespace: cyberchef
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -76,38 +76,38 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: k8dashboard-websecure
-  namespace: kubernetes-dashboard
+  name: cyberchef-websecure
+  namespace: cyberchef
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`k8dashboard.domain.com`)
+  - match: Host(`cyberchef.domain.com`)
     kind: Rule
     services:
-    - name: kubernetes-dashboard-kong-proxy
-      port: 443 
-      serversTransport: k8dashboard-transport
+    - name: cyberchef
+      port: 80 
+      serversTransport: cyberchef-transport
     middlewares:
-      - name: k8dashboard-security
+      - name: cyberchef-security
   tls:
-    secretName: k8dashboard-domain-com
+    secretName: cyberchef-domain-com
     options:
-      name: k8dashboard-tlsoptions
+      name: cyberchef-tlsoptions
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: k8dashboard-web
-  namespace: kubernetes-dashboard
+  name: cyberchef-web
+  namespace: cyberchef
 spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`k8dashboard.domain.com`)
+  - match: Host(`cyberchef.domain.com`)
     kind: Rule
     services:
-    - name: kubernetes-dashboard-kong-proxy
-      port: 443 
+    - name: cyberchef
+      port: 80 
     middlewares:
-      - name: k8dashboard-https-redirect
+      - name: cyberchef-https-redirect
