@@ -16,7 +16,7 @@ image:
   pullSecrets: []
     # - name: ""
   # -- docker image tag
-  tag: ""
+  tag: "latest"
 
 # -- Annotations to be added to pods
 podAnnotations: {}
