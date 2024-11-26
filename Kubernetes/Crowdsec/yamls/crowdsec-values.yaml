@@ -37,7 +37,15 @@ config:
       #   filter: "evt.Line.Labels.type == 'myProgram'"
       #   onsuccess: next_stage
       #   ....
-    s02-enrich: {}
+    s02-enrich:
+      whitelist-my-ips.yaml: |
+        name: crowdsecurity/whitelist-my-ips
+        description: "Whitelist of my IPs"
+        whitelist:
+          reason: "My IPs"
+          ip:
+            - "xx.xx.xx.xx"
+            - "yy.yy.yy.yy"
   # -- to better understand how to write a scenario, you can take a look at https://docs.crowdsec.net/docs/next/scenarios/intro
   scenarios: {}
     # myScenario.yaml: |
@@ -357,8 +365,8 @@ agent:
       value: "crowdsecurity/cri-logs"
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"
-    - name: DISABLE_PARSERS
-      value: "crowdsecurity/whitelists"
+    # - name: DISABLE_PARSERS
+    #   value: "crowdsecurity/whitelists"
     # by default we configure the docker-logs parser to be able to parse docker logs in k8s
     # by default we disable local API on the agent pod
     # - name: SCENARIOS

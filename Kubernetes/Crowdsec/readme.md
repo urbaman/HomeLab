@@ -10,7 +10,7 @@ helm repo update
 helm show values crowdsec/crowdsec > crowdsec-values.yaml
 ```
 
-Change the Enroll Key to the one created above in `crowdsec-values.yaml` file
+Change the Enroll Key to the one created above in `crowdsec-values.yaml` file, set IPs to whitelist in `config.parsers.s02-enrich` and comment the `DISABLE_PARSERS` env variable for the agent to whitelist internal IPs
 
 ```bash
 helm upgrade -i crowdsec crowdsec/crowdsec -f crowdsec-values.yaml -n crowdsec --create-namespace
