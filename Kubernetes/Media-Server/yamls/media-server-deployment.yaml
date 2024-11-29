@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Namepace
 metadata:
   name: media-server
+---
 # Persistent Volume Claim for all Media
 apiVersion: v1
 kind: PersistentVolumeClaim

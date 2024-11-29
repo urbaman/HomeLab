@@ -20,7 +20,7 @@ kubectl label configmap grafana-dashboard-proxmox-bs -n monitoring grafana_dashb
 
 # PBS with PBS Exporter
 
-Create an API Token in PBS, define the variables in the exporter-pbs.yaml
+Create a user `exporter@pbs`, an associated API Token `exporter` in PBS, both with Audit Role Privileges, define the variables in the `exporter-pbs.yaml`
 
 ```bash
 kubectl apply -f exporter-pbs.yaml
