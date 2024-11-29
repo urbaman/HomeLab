@@ -1,20 +1,10 @@
 # Proxmox Backup Monitoring with prometheus and pushgateway
 
-## Install prometheus pushgateway on kubernetes
+## Requisites
 
-```bash
-helm show values prometheus-community/prometheus-pushgateway > pushgateway-values.yaml
-```
+Install Pushgateway
 
-Define the namespace to monitoring, the Service Monitor to true and add the release=kube-prometheus-stack additional label to the Service Monitor.
-
-```bash
-helm upgrade -i prometheus-pushgateway prometheus-community/prometheus-pushgateway --values pushgateway-values.yaml -n monitoring
-```
-
-Then, create the ingressroute from the yaml template
-
-## Proxmox Backup Server exporter
+## Exporter
 
 Install the Proxmox Backup Server Exporter from [here](https://github.com/rare-magma/pbs-exporter)
 
@@ -26,4 +16,21 @@ Install the Proxmox Backup Server Exporter from [here](https://github.com/rare-m
 ```bash
 kubectl create configmap grafana-dashboard-proxmox-bs -n monitoring --from-file=grafana-proxmox-backup-server.json
 kubectl label configmap grafana-dashboard-proxmox-bs -n monitoring grafana_dashboard="1"
+```
+
+# PBS with PBS Exporter
+
+Create an API Token in PBS, define the variables in the exporter-pbs.yaml
+
+```bash
+kubectl apply -f exporter-pbs.yaml
+```
+
+See [here](https://github.com/natrontech/pbs-exporter)
+
+Add the dashboard
+
+```bash
+kubectl create configmap grafana-dashboard-pbs -n monitoring --from-file=grafana-pbs-v2.json
+kubectl label configmap grafana-dashboard-pbs -n monitoring grafana_dashboard="1"
 ```

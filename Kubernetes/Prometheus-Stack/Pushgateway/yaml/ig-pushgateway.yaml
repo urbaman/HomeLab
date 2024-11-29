@@ -1,21 +1,21 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: pushgateway-urbaman
+  name: pushgateway-domain-com
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - pushgateway.urbaman.it
+  - pushgateway.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: pushgateway-urbaman
+  secretName: pushgateway-domain-com
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-pushgateway-https-redirect
@@ -25,7 +25,7 @@ spec:
     scheme: https
     permanent: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-pushgateway-security
@@ -49,7 +49,7 @@ spec:
   serverName: pushgateway
   insecureSkipVerify: true
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: monitoring-pushgateway-tlsoptions
@@ -73,7 +73,7 @@ spec:
     - CurveP384
   sniStrict: false
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-pushgateway-websecure
@@ -83,7 +83,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`pushgateway.urbaman.it`)
+      match: Host(`pushgateway.domain.com`)
       services:
       - name: prometheus-pushgateway
         port: 9091
@@ -91,11 +91,11 @@ spec:
       middlewares:
         - name: monitoring-pushgateway-security
   tls:
-    secretName: pushgateway-urbaman
+    secretName: pushgateway-domain-com
     options:
       name: monitoring-pushgateway-tlsoptions
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-pushgateway-web
@@ -105,7 +105,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`pushgateway.urbaman.it`)
+      match: Host(`pushgateway.domain.com`)
       services:
       - name: prometheus-pushgateway
         port: 9091
