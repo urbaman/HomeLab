@@ -59,6 +59,10 @@ Here are the detailed steps to deploy our homelab cluster
 
 1. [Storage planning](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Storage)
 
+### Command line tips
+
+1. [Kubectl tips](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Kubectl)
+
 ### Deploying the tools
 
 #### Automation
@@ -196,3 +200,4 @@ Here are the detailed steps to deploy our homelab cluster
 18. [OpenProject](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Openproject)
 19. [Shlink URL shortener](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Shlink)
 20. [Privatebin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Privatebin)
+21. [Local AI](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/LocalAI)

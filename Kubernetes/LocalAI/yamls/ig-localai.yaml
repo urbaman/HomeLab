@@ -1,0 +1,113 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-ai-domain-com
+  namespace: local-ai
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - local-ai.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: local-ai-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local-ai-traefik-https-redirect
+  namespace: local-ai
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local-ai-traefik-security
+  namespace: local-ai
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: local-ai-traefik-transport
+  namespace: local-ai
+spec:
+  serverName: local-ai
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: local-ai-traefik-tlsoptions
+  namespace: local-ai
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: local-ai-traefik-websecure
+  namespace: local-ai
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`local-ai.domain.com`)
+      services:
+      - name: local-ai
+        port: 80
+        serversTransport: local-ai-traefik-transport
+      middlewares:
+        - name: local-ai-traefik-security
+  tls:
+    secretName: local-ai-domain-com
+    options:
+      name: local-ai-traefik-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: local-ai-traefik-web
+  namespace: local-ai
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`local-ai.domain.com`)
+      services:
+      - name: local-ai
+        port: 80
+      middlewares:
+        - name: local-ai-traefik-https-redirect
