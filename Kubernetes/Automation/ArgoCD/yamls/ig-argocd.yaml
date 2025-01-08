@@ -92,7 +92,7 @@ spec:
       middlewares:
         - name: argocd-security
     - kind: Rule
-      match: Host(`argocd.domain.com`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argocd.domain.com`) && Header(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server
