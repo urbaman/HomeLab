@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: roundcube
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: roundcube-secret
+  namespace: roundcube
+type: Opaque
+data:
+  DB_USER: <db user base64>
+  DB_PASSWORD: <db password base64>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roundcube
+  namespace: roundcube
+  labels:
+    app: roundcube
+spec:
+  type: ClusterIP
+  selector:
+    app: roundcube
+  ports:
+  - name: http
+    port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roundcube
+  namespace: roundcube
+  labels:
+    app: roundcube
+    app.kubernetes.io/name: roundcube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: roundcube
+  template:
+    metadata:
+      labels:
+        app: roundcube
+        app.kubernetes.io/name: roundcube
+    spec:
+      containers:
+        - name: roundcube
+          image: roundcube/roundcubemail:latest
+          imagePullPolicy: Always
+          env:
+            - name: ROUNDCUBEMAIL_DB_TYPE
+              value: pgsql
+            - name: ROUNDCUBEMAIL_DB_HOST
+              value: postgresql.postgresql.svc.cluster.local
+            - name: ROUNDCUBEMAIL_DB_PORT
+              value: "5432"
+            - name: ROUNDCUBEMAIL_DB_NAME
+              value: roundcube
+            - name: ROUNDCUBEMAIL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: roundcube-secret
+                  key: DB_USER
+            - name: ROUNDCUBEMAIL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: roundcube-secret
+                  key: DB_PASSWORD
+            - name: ROUNDCUBEMAIL_DEFAULT_HOST
+              value: ssl://mail.maildomain.com
+            - name: ROUNDCUBEMAIL_DEFAULT_PORT
+              value: "993"
+            - name: ROUNDCUBEMAIL_SMTP_SERVER
+              value: ssl://mail.maildomain.com
+            - name: ROUNDCUBEMAIL_SMTP_PORT
+              value: "587"
+            - name: ROUNDCUBEMAIL_SKIN
+              value: elastic
+            - name: ROUNDCUBEMAIL_PLUGINS
+              value: archive,zipdownload
+          ports:
+            - containerPort: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: webmail-domain-com
+  namespace: roundcube
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - webmail.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: webmail-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-roundcube-https-redirect
+  namespace: roundcube
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-roundcube-security
+  namespace: roundcube
+spec:
+  headers:
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-roundcube-transport
+  namespace: roundcube
+spec:
+  serverName: roundcube 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-roundcube-tlsoptions
+  namespace: roundcube
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-roundcube-websecure
+  namespace: roundcube 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`webmail.domain.com`)
+      services:
+        - name: roundcube
+          port: 80
+          serversTransport: traefik-roundcube-transport
+      middlewares:
+        - name: traefik-roundcube-security
+  tls:
+    secretName: webmail-domain-com
+    options:
+      name: traefik-roundcube-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-roundcube-web
+  namespace: roundcube
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`webmail.domain.com`)
+      services:
+        - name: roundcube
+          port: 80
+      middlewares:
+        - name: traefik-roundcube-https-redirect
