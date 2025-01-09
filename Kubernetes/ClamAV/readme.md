@@ -5,7 +5,7 @@ Install the helm chart
 ```bash
 helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts
 helm repo update
-helm upgrade -i -n clamav clamav --create-namespace wiremind/clamav --set resources.limits.cpu=100m --set resources.limits.memory=256Mi --set resources.requests.cpu=50m --set resources.requests.memory=128Mi --set hpa.memory=80 --set hpa.cpu=80
+helm upgrade -i -n clamav clamav --create-namespace wiremind/clamav --set --set hpa.enabled=false
 ```
 
 ## Check from a client
