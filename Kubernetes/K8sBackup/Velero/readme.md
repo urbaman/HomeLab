@@ -65,7 +65,7 @@ kubectl create secret generic -n velero velero-minio-secret --from-file=config=.
 kubectl create secret generic -n velero velero-contabo-secret --from-file=config=./veleroContaboSecret
 ```
 
-Add the repo, set the values
+Add the repo, set the values for backup locatiuons, set nodeAgent to true and snapshots to false (note: probably doable with nfs-csi instead of nfs-provisioner)
 
 ```bash
 helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
