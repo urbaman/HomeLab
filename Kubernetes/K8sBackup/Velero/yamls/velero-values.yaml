@@ -410,18 +410,20 @@ configuration:
   # See https://velero.io/docs/v1.6/api-types/volumesnapshotlocation/
   volumeSnapshotLocation:
     # name is the name of the volume snapshot location where snapshots are being taken. Required.
-  - name:
+  - name: minio-internal
     # provider is the name for the volume snapshot provider.
-    provider:
+    provider: aws
     credential:
       # name of the secret used by this volumeSnapshotLocation.
-      name:
+      name: velero-minio-secret
       # name of key that contains the secret data to be used.
-      key:
+      key: config
     # Additional provider-specific configuration. See link above
     # for details of required/optional fields for your provider.
-    config: {}
-  #    region:
+    config:
+      region: default
+      s3ForcePathStyle: true
+      s3Url: "https://minio-s3.domain.com"
   #    apiTimeout:
   #    resourceGroup:
   #    The ID of the subscription where volume snapshots should be stored, if different from the cluster’s subscription. If specified, also requires `configuration.volumeSnapshotLocation.config.resourceGroup`to be set. (Azure only)
@@ -429,6 +431,34 @@ configuration:
   #    incremental:
   #    snapshotLocation:
   #    project:
+
+    # annotations allows adding arbitrary annotations to this VolumeSnapshotLocation resource. Optional.
+    annotations: {}
+
+  - name: contabo-external
+    # provider is the name for the volume snapshot provider.
+    provider: aws
+    credential:
+      # name of the secret used by this volumeSnapshotLocation.
+      name: velero-contabo-secret
+      # name of key that contains the secret data to be used.
+      key: config
+    # Additional provider-specific configuration. See link above
+    # for details of required/optional fields for your provider.
+    config:
+      region: eu
+      s3ForcePathStyle: true
+      s3Url: "https://eu2.contabostorage.com"
+  #    apiTimeout:
+  #    resourceGroup:
+  #    The ID of the subscription where volume snapshots should be stored, if different from the cluster’s subscription. If specified, also requires `configuration.volumeSnapshotLocation.config.resourceGroup`to be set. (Azure only)
+  #    subscriptionId:
+  #    incremental:
+  #    snapshotLocation:
+  #    project:
+
+    # annotations allows adding arbitrary annotations to this VolumeSnapshotLocation resource. Optional.
+    annotations: {}
 
   # These are server-level settings passed as CLI flags to the `velero server` command. Velero
   # uses default values if they're not passed in, so they only need to be explicitly specified
@@ -452,7 +482,7 @@ configuration:
   # How long to wait by default before backups can be garbage collected. Default: 72h
   defaultBackupTTL:
   # Name of the default volume snapshot location.
-  defaultVolumeSnapshotLocations:
+  defaultVolumeSnapshotLocations: "aws:minio-internal"
   # `velero server` default: empty
   disableControllers:
   # `velero server` default: 1h

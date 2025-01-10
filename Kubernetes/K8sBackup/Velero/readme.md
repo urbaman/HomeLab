@@ -130,3 +130,7 @@ velero schedule create <storage-location>-test-nginx-b4 --include-namespaces tes
 ## Retention
 
 Usually 30d, set `--ttl <DURATION>` to specify
+
+## UI
+
+See Cloudcasa, register and deploy the agent
