@@ -73,6 +73,10 @@ Here are the detailed steps to deploy our homelab cluster
 4. [External Secrets](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ExternalSecrets)
 5. [Semaphore UI - Ansible Gui](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Semaphore)
 
+#### Identity Provider
+
+1. [Authentik](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Authentik)
+
 #### Coding
 
 1. [VScode (code-server)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Coding/CodeServer)
