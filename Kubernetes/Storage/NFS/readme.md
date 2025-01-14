@@ -1,4 +1,6 @@
-# Deploy the NFS subdir provisioner for dynamic pv
+# Install an NFS provider
+
+Install the NFS csi driver, as it's the now de facto k8s project for NFS.
 
 ## Preparation
 
@@ -18,7 +20,18 @@ Export list for nfs.urbaman.it:
 /HDD5T/nfsshare/exports/SDD2T clientips/24
 ```
 
-## Installation
+## Deploy the NFS subdir provisioner for dynamic pv (deprecated)
+
+### Limitations and pitfalls
+
+The software is subject to some limitations, listed below:
+
+- The storage space provided is not guaranteed: you can allocate more than the total shared size via NFS, because there is no check for it.
+- The provisioned storage limit is not enforced. The application can expand to use all the available storage regardless of the provisioned size.
+- Storage resize/expansion operations are not presently supported in any form. You will end up in an error state: Ignoring the PVC: didn't find a plugin capable of expanding the volume; waiting for an external controller to process this PVC.
+- The read-write permissions are not governed by the access-mode parameter, but by the settings used in the NFS configuration
+
+### Installation
 
 We can install a provisioner for every share we want to use.
 
@@ -47,6 +60,29 @@ NAME                 PROVISIONER                                         RECLAIM
 hdd5t-nfs-client     k8s-sigs.io/hdd5t-nfs-subdir-external-provisioner   Delete          Immediate           true                   3m50s
 longhorn (default)   driver.longhorn.io                                  Delete          Immediate           true                   85d
 sdd2t-nfs-client     k8s-sigs.io/sdd2t-nfs-subdir-external-provisioner   Delete          Immediate           true                   3m46s
+```
+
+## Deploy NFS Csi Driver
+
+Kubeadm:
+
+```bash
+helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+helm upgrade -i csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace csi-driver-nfs --create-namespace --set externalSnapshotter.enabled=true
+```
+
+Microk8s:
+
+```bash
+helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+helm upgrade -i csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace csi-driver-nfs --create-namespace --set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet --set externalSnapshotter.enabled=true
+```
+
+Add a StorageClass and a VolumeSnapshotClass (change the details)
+
+```bash
+kubectl apply -f sc-csi-nfs.yaml
+kubectl apply -f snapshotclass-csi-nfs.yaml
 ```
 
 ## Verify
