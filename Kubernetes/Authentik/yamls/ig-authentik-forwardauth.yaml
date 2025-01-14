@@ -1,0 +1,31 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-app-websecure
+  namespace: app-namespace
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`app.domain.com`)
+      priority: 10
+      services:
+        - kind: Service
+          name: app
+          serversTransport: traefik-app-transport
+      middlewares:
+        - name: traefik-app-security
+        - name: traefik-app-authentik
+    - kind: Rule
+      match: Host(`app.domain.com`) && PathPrefix(`/outpost.goauthentik.io/`)
+      priority: 15
+      services:
+        - kind: Service
+          name: ak-outpost-authentik-embedded-outpost
+          namespace: authentik
+          port: 9000
+  tls:
+    secretName: traefik-urbaman-it
+    options:
+      name: traefik-app-tlsoptions
