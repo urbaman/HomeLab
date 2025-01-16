@@ -206,3 +206,5 @@ Here are the detailed steps to deploy our homelab cluster
 20. [Shlink URL shortener](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Shlink)
 21. [Privatebin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Privatebin)
 22. [Local AI](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/LocalAI)
+23. [Obsidian (to do)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Obsidian)
+24. [Github Desktop (to do)](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/LocalAI)
