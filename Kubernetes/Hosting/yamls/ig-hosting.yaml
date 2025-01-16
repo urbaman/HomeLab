@@ -197,7 +197,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Hostregexp(`(admin|webmail|mail|autodiscover|autoconfig)+\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
+      match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
         - name: hosting1-svc
           port: 443
@@ -219,7 +219,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Hostregexp(`(admin|webmail|mail|autodiscover|autoconfig)+\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
+      match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
         - name: hosting1-svc
           port: 80
@@ -236,7 +236,7 @@ spec:
     - webmin
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Hostregexp(`(admin|webmail|mail|autodiscover|autoconfig)+\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
+      match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
         - name: webmin-svc
           port: 443
@@ -258,7 +258,7 @@ spec:
     - usermin
   routes:
     - kind: Rule
-      match: Host(`domain3.com`) || Hostregexp(`(admin|webmail|mail|autodiscover|autoconfig)+\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
+      match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
         - name: usermin-svc
           port: 443
