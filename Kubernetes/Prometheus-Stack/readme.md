@@ -1,4 +1,4 @@
-# Monitoring with Prometheus-stack (Prometheus and Grafana)
+# Monitoring with Prometheus-stack (Prometheus and Grafana) - Without Rancher
 
 Start checking the bind address of kube-proxy, kube-scheduler, kube-control-monitor
 
