@@ -8,7 +8,7 @@ Also set higher resource limits and requests (double memory values).
 ```bash
 #helm repo add bitnami https://charts.bitnami.com/bitnami
 #helm repo update
-helm show values postgresql oci://registry-1.docker.io/bitnamicharts/postgresql > postgresql-values.yaml
+helm show values oci://registry-1.docker.io/bitnamicharts/postgresql > postgresql-values.yaml
 ```
 
 Change Max Connections, Persistence, Metrics, and check compatible version for apps (Gitlab for example, version 14.x at the moment):
