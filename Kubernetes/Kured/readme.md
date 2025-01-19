@@ -1,5 +1,7 @@
 # kured
 
+## With kubectl
+
 Get the yaml file to customize:
 
 ```bash
@@ -67,3 +69,15 @@ kubectl apply -f "kured-$latest-dockerhub.yaml"
 ```
 
 Set unattended-upgrades not to reboot.
+
+## With helm
+
+Add the repo, retrieve the values and set the configuration (see above), metrics, servicemonitor and servicemonitor' labels.
+
+```bash
+helm repo add kubereboot https://kubereboot.github.io/charts
+helm repo update
+helm show values kubereboot/kured > kured-values.yaml
+vi kured-values.yaml
+helm upgrade -i kured -n kured --create-namespace kubereboot/kured -f kured-values.yaml
+```
