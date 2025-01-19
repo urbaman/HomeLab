@@ -17,6 +17,6 @@ kubectl apply -f sm-nodeexporter.yaml
 ## Install the grafana dashboard
 
 ```bash
-kubectl create configmap grafana-dashboard-nfs-cluster --from-file=grafana-nfs-cluster.json
-kubectl label configmap grafana-dashboard-nfs-cluster grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-nfs-cluster -n monitoring --from-file=grafana-nfs-cluster.json
+kubectl label configmap grafana-dashboard-nfs-cluster -n monitoring grafana_dashboard="1"
 ```

@@ -589,7 +589,7 @@ snapshotsEnabled: false
 deployNodeAgent: true
 
 nodeAgent:
-  podVolumePath: /var/lib/kubelet/pods
+  podVolumePath: /var/lib/kubelet/pods # /var/snap/microk8s/common/var/lib/kubelet/pods for microk8s
   privileged: false
   # Pod priority class name to use for the node-agent daemonset. Optional.
   priorityClassName: ""
