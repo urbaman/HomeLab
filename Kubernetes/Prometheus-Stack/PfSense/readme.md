@@ -1,7 +1,11 @@
-# PfSense with SNMP
+# PfSense with node-exporter
 
-Follow this guides:
+Install the node exporter in PfSense, then apply the endpoint, service and servicemonitor, finally create the dashboard(s).
 
-- [https://www.willyhu.tw/images/pfsense-states-grafana.png](https://www.willyhu.tw/images/pfsense-states-grafana.png)
-- [https://brendonmatheson.com/2021/02/07/step-by-step-guide-to-connecting-prometheus-to-pfsense-via-snmp.html](https://brendonmatheson.com/2021/02/07/step-by-step-guide-to-connecting-prometheus-to-pfsense-via-snmp.html)
-- [https://brendonmatheson.com/2022/06/11/updated-grafana-dashboard-pfsense-network-activity.html](https://brendonmatheson.com/2022/06/11/updated-grafana-dashboard-pfsense-network-activity.html)
+```bash
+kubectl apply -f sm-pfsense.yaml
+kubectl create configmap grafana-dashboard-pfsense-node-exporter -n monitoring --from-file=grafana-pfsense.json
+kubectl label configmap grafana-dashboard-pfsense-node-exporter -n monitoring grafana_dashboard="1"
+kubectl create configmap grafana-dashboard-pfsense-node-exporter2 -n monitoring --from-file=grafana-pfsense2.json
+kubectl label configmap grafana-dashboard-pfsense-node-exporter2 -n monitoring grafana_dashboard="1"
+```
