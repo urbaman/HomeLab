@@ -10,3 +10,5 @@ Proxmox Clusters with enough nodes and resources (proper 10G+ networks for Ceph,
 After many tries, I decided to stick with Ceph, as it's native with Proxmox and because of my disk distribution (mostly 2 disks of same tipe and dimension per node, so can't passthrough them to all of the k8s workers, and it could be a real pain to differentiate them by tipe/dimension on all of those other storage solutions).
 
 This way I can easily get all that I need on a stable and performant distributed storage.
+
+**Update 2025**: Using NFS to a NAS with NFS CSI, and microceph with rook for DBs and other faster-access or non-NFS compliant implementations

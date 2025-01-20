@@ -1,4 +1,4 @@
-# Rook with Proxmox Ceph
+# Rook with external Ceph (proxmox or microceph)
 
 Check rbd and nbd modules existence on the nodes:
 
@@ -108,7 +108,7 @@ kubectl apply -f rook-mysql.yaml
 kubectl apply -f rook-wordpress.yaml
 ```
 
-## Microk8s
+## Microk8s - using the Add-on
 
 Add the addon with the latest rook version, then follow the instructions.
 
