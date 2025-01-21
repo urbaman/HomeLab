@@ -33,6 +33,8 @@ helm upgrade -i authentik -n authentik --create-namespace authentik/authentik -f
 kubectl apply -f ig-authentik.yaml
 ```
 
+The enbedded outpost gets created together with a dedicated ingress in the authentik namespace. Go and change the tls certificate with the one created in `ig-authentik.yaml`
+
 ## Proxy provider
 
 **Provider**
