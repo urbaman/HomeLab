@@ -35,6 +35,14 @@ On all nodes, add the dedicated drives to the cluster
 sudo microceph disk add <path to disk> --wipe
 ```
 
+## Create an RBD pool for images (k8s volumes)
+
+```bash
+sudo ceph osd pool create block_pool
+sudo ceph osd lspools
+sudo rbd pool init block_pool
+```
+
 ## Dashboard enablement
 
 ```bash
