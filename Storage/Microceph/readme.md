@@ -29,10 +29,11 @@ sudo microceph cluster join <join token>
 
 ## Add OSDs
 
-On all nodes, add the dedicated drives to the cluster
+On all nodes, add the dedicated drives to the cluster, and set the replica count to 2 (being an homelab)
 
 ```bash
 sudo microceph disk add <path to disk> --wipe
+sudo microceph.ceph config set global osd_pool_default_size 2
 ```
 
 ## Create an RBD pool for images (k8s volumes)
