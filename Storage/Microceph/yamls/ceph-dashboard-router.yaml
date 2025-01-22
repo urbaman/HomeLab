@@ -1,0 +1,93 @@
+http:
+  routers:
+    ceph-dashboard-websecure:
+      rule: "Host(`ceph-dashboard.domain.com`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - traefik-external-traefik-ceph-dashboard-security@kubernetescrd
+      service: ceph-main
+      tls:
+        certResolver: cloudflare
+        options: traefik-external-traefik-ceph-dashboard-tlsoptions@kubernetescrd
+    ceph-dashboard-web:
+      rule: "Host(`ceph-dashboard.domain.com`)"
+      entryPoints:
+        - web
+      middlewares:
+        - traefik-external-traefik-ceph-dashboard-https-redirect@kubernetescrd
+      service: ceph-main
+  services:
+    ceph-main:
+      failover:
+        healthCheck: {}
+        service: ceph-01
+        fallback: ceph-failover-01
+    ceph-failover-01:
+      failover:
+        healthCheck: {}
+        service: ceph-02
+        fallback: ceph-failover-02
+    ceph-failover-02:
+      failover:
+        healthCheck: {}
+        service: ceph-03
+        fallback: ceph-failover-03
+    ceph-failover-03:
+      failover:
+        healthCheck: {}
+        service: ceph-04
+        fallback: ceph-failover-04
+    ceph-failover-04:
+      failover:
+        healthCheck: {}
+        service: ceph-05
+        fallback: ceph-06
+    ceph-01:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP1:8080"
+    ceph-02:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP2:8080"
+    ceph-03:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP3:8080"
+    ceph-04:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP4:8080"
+    ceph-05:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP5:8080"
+    ceph-06:
+      loadBalancer:
+        healthCheck:
+          path: /#/login
+          interval: 10s
+          timeout: 3s
+        servers:
+          - url: "http://IP6:8080"

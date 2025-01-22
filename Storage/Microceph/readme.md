@@ -45,4 +45,17 @@ sudo microceph.ceph dashboard ac-user-create -i /var/snap/microceph/current/conf
 rm /var/snap/microceph/current/conf/password.txt
 ```
 
-Eventually deploy a proxy (traefik ingressroute example provided ig-ceph-dashboard.yaml for K8s or microk8s)
+Go to any mgr ip, port 8080 inn http only
+
+## Eventually deploy a proxy for SSL
+
+Example through traefik in kubernetes using file provider for loadbalancing and healthcheck between ceph nodes (the feature does not work in kubernetes ingress or ingressroute crd)
+
+1. Enable file provider in the traefik helm chart
+2. Enable the persistence pvc mounted in the default /data directory
+3. Enable certresolver (see treafik deployment for clouflare) with /data as the directory storage for ssl certs
+4. After the deployment, edit the traefik deployment and force the file provider directory in /data/rules
+5. If you use NFS as storageclass, give the right permissions on the pvc created
+6. Create the ceph-dashboard-router.yaml file in the /rules directory in the pvc
+7. Deploy the ig-ceph-dashboard.yaml (if you want to keep middlewares and tlsoptions on kubernetescrd instead of file)
+8. Rollout restart the traefik deployment, and/or delete the traefik pod if the deployment has already been restarted after the customization

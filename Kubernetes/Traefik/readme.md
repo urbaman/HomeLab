@@ -231,7 +231,7 @@ deployment:
   imagePullSecrets: []
   initContainers:
     - name: volume-permissions
-      image: busybox:1.31.1
+      image: busybox:1.37.0
       command: ["sh", "-c", "chmod -Rv 600 /ssl-certs/*"]
       volumeMounts:
         - name: ssl-certs
@@ -263,7 +263,7 @@ additionalArguments:
   - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
   - --certificatesresolvers.cloudflare.acme.email=yourmail@example.com
   - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1
-  - --certificatesresolvers.cloudflare.acme.storage=/ssl-certs/acme-cloudflare.json
+  - --certificatesresolvers.cloudflare.acme.storage=/data/acme-cloudflare.json
 ```
 
 ```yaml
@@ -278,10 +278,10 @@ env:
     secretKeyRef:
       key: email
       name: cloudflare-dnschallenge-credentials
-- name: CF_API_KEY
+- name: CF_DNS_API_TOKEN
   valueFrom:
     secretKeyRef:
-      key: apiKey
+      key: apiToken
       name: cloudflare-dnschallenge-credentials
 ```
 
