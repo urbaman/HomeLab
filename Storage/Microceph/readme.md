@@ -59,3 +59,9 @@ Example through traefik in kubernetes using file provider for loadbalancing and 
 6. Create the ceph-dashboard-router.yaml file in the /rules directory in the pvc
 7. Deploy the ig-ceph-dashboard.yaml (if you want to keep middlewares and tlsoptions on kubernetescrd instead of file)
 8. Rollout restart the traefik deployment, and/or delete the traefik pod if the deployment has already been restarted after the customization
+
+## Enabling prometheus
+
+ceph mgr module enable prometheus
+
+You'll find the metrics on http://<IP>:9283/metrics, you can setup the scraping and monitoring in kubernetes (rancher or kube-prometheus-stack) following the ceph monitoring guide
