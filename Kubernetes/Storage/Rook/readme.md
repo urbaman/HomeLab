@@ -127,5 +127,5 @@ kubectl get pods -n rook-ceph
 Then import the cluster
 
 ```bash
-microk8s connect-external-ceph --ceph-conf ceph.conf --keyring ceph.client.admin.keyring --rbd-pool Ceph-NVMe2TB
+microk8s connect-external-ceph --namespace <namespace> --ceph-conf /path/to/ceph.conf --keyring /path/to/ceph.client.admin.keyring --rbd-pool <pool-name>
 ```
