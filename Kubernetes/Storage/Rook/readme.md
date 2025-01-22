@@ -115,7 +115,7 @@ Add the addon with the latest rook version, then follow the instructions.
 Copy the `ceph.client.admin.keyring` and `ceph.conf` files from /etc/ceph on one of the proxmox nodes to the working directory, then install
 
 ```bash
-microk8s enable rook-ceph --rook-version v1.14.9
+sudo microk8s enable rook-ceph --rook-version v1.16.2
 ```
 
 Wait for the operator pod to be running
@@ -127,5 +127,5 @@ kubectl get pods -n rook-ceph
 Then import the cluster
 
 ```bash
-microk8s connect-external-ceph --namespace <namespace> --ceph-conf /path/to/ceph.conf --keyring /path/to/ceph.client.admin.keyring --rbd-pool <pool-name>
+sudo microk8s connect-external-ceph --namespace <namespace> --ceph-conf /path/to/ceph.conf --keyring /path/to/ceph.keyring --rbd-pool <pool-name> --no-rbd-pool-auto-create
 ```
