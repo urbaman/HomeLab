@@ -70,3 +70,30 @@ You'll probably need to go through the password resetting tool, then it will ask
 ## Expose through Traefik
 
 Define an entrypoint for postgresql (port 5432) in Traefik, then deploy the `ig-postgresql.yaml` file
+
+## Upgrade to mayor version:
+
+```bash
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+helm upgrade postgresql bitnami/postgresql \
+  --set image.tag=12.8.0-debian-10-r90 \ #new image
+  --set containerSecurityContext.runAsUser=0 \
+  --set diagnosticMode.enabled=true \
+  --set postgresqlPassword=$POSTGRESQL_PASSWORD
+kubectl exec -it -n postgresql postgresql-0 -- bash
+postgres --version
+. /opt/bitnami/scripts/libos.sh
+ensure_group_exists postgres -i 1001
+ensure_user_exists postgres -i 1001 -g postgres
+#root@postgresql-postgresql-0:/tmp# mv /bitnami/postgresql/data /bitnami/postgresql/olddata
+#root@postgresql-postgresql-0:/tmp# mkdir -p /bitnami/postgresql/data mkdir -p /bitnami/postgresql/oldbin
+#root@postgresql-postgresql-0:/tmp# chown -R postgres:postgres /bitnami/postgresql/data /bitnami/postgresql/olddata
+#root@postgresql-postgresql-0:/# cd /tmp/
+#root@postgresql-postgresql-0:/# curl --remote-name --silent https://downloads.bitnami.com/files/stacksmith/postgresql-11.13.0-14-linux-amd64-debian-10.tar.gz
+#root@postgresql-postgresql-0:/# tar --extract --directory /bitnami/postgresql/oldbin/ --file postgresql-11.13.0-14-linux-amd64-debian-10.tar.gz --strip-components=4 postgresql-11.13.0-14-linux-amd64-debian-10/files/postgresql/bin
+#root@postgresql-postgresql-0:/tmp# gosu postgres initdb -E UTF8 -D /bitnami/postgresql/data -U postgres
+#(...)
+#root@postgresql-postgresql-0:/tmp# gosu postgres pg_upgrade -c -b /bitnami/postgresql/oldbin -B /opt/bitnami/postgresql/bin -d /bitnami/postgresql/olddata -D /bitnami/postgresql/data
+#(...)
+pg_upgrade
+```
