@@ -14,13 +14,16 @@ helm show values oci://registry-1.docker.io/bitnamicharts/postgresql > postgresq
 Change Max Connections, Persistence, Metrics, and check compatible version for apps (Gitlab for example, version 14.x at the moment):
 
 ```yaml
+image:
+  teg: 14.15.0-debian-12-r8
 primary:
   extraEnvVars:
     - name: POSTGRESQL_MAX_CONNECTIONS
-      value: 1024
+      value: "1024"
   persistence:
     storageClass: "asustornas1-nfs"
     size: 15Gi
+  resourcePreset: "medium"
 metrics:
   enabled: true
   serviceMonitor:
@@ -71,29 +74,83 @@ You'll probably need to go through the password resetting tool, then it will ask
 
 Define an entrypoint for postgresql (port 5432) in Traefik, then deploy the `ig-postgresql.yaml` file
 
-## Upgrade to mayor version:
+## Upgrade to mayor version
 
 ```bash
-export POSTGRES_PASSWORD=$(kubectl get secret --namespace default postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
-helm upgrade postgresql bitnami/postgresql \
-  --set image.tag=12.8.0-debian-10-r90 \ #new image
-  --set containerSecurityContext.runAsUser=0 \
-  --set diagnosticMode.enabled=true \
-  --set postgresqlPassword=$POSTGRESQL_PASSWORD
 kubectl exec -it -n postgresql postgresql-0 -- bash
 postgres --version
-. /opt/bitnami/scripts/libos.sh
-ensure_group_exists postgres -i 1001
-ensure_user_exists postgres -i 1001 -g postgres
-#root@postgresql-postgresql-0:/tmp# mv /bitnami/postgresql/data /bitnami/postgresql/olddata
-#root@postgresql-postgresql-0:/tmp# mkdir -p /bitnami/postgresql/data mkdir -p /bitnami/postgresql/oldbin
-#root@postgresql-postgresql-0:/tmp# chown -R postgres:postgres /bitnami/postgresql/data /bitnami/postgresql/olddata
-#root@postgresql-postgresql-0:/# cd /tmp/
-#root@postgresql-postgresql-0:/# curl --remote-name --silent https://downloads.bitnami.com/files/stacksmith/postgresql-11.13.0-14-linux-amd64-debian-10.tar.gz
-#root@postgresql-postgresql-0:/# tar --extract --directory /bitnami/postgresql/oldbin/ --file postgresql-11.13.0-14-linux-amd64-debian-10.tar.gz --strip-components=4 postgresql-11.13.0-14-linux-amd64-debian-10/files/postgresql/bin
-#root@postgresql-postgresql-0:/tmp# gosu postgres initdb -E UTF8 -D /bitnami/postgresql/data -U postgres
-#(...)
-#root@postgresql-postgresql-0:/tmp# gosu postgres pg_upgrade -c -b /bitnami/postgresql/oldbin -B /opt/bitnami/postgresql/bin -d /bitnami/postgresql/olddata -D /bitnami/postgresql/data
-#(...)
-pg_upgrade
 ```
+
+Set the same version in <pg-version>, set the new image version in <pg-new-image>
+
+- Deploy the new db with the following flags (and the same root password: `--set auth.postgresPassword=$POSTGRESQL_PASSWORD`):
+
+```yaml
+primary:
+  containerSecurityContext:
+    runAsUser: 0
+    runAsNonRoot: false
+diagnosticMode:
+  enabled: true
+```
+
+- Update the old db with the following flags:
+
+```yaml
+primary:
+  containerSecurityContext:
+    runAsUser: 0
+    runAsNonRoot: false
+diagnosticMode:
+  enabled: true
+```
+
+- Stop the old db:
+
+```bash
+kubectl exec -it -n <namespace> <old_pod> -- bash
+pg_ctl stop
+exit
+```
+
+- Copy `/opt/bitnami/bin` in `/opt/bitnami/oldbin` and `/bitnami/data` in `/bitnami/olddata` from old to new
+
+```bash
+mkdir /path #create tem path
+mkdir /path/oldbin #create temp path for bin
+kubectl cp <namespace><old_pod>:/opt/bitnami/bin /path
+kubectl cp <namespace><old_pod>:/bitnami/postgresql/bin /path/oldbin
+mv /path/data /path/olddata
+kubectl cp /path <namespace><new_pod>:/bitnami
+```
+
+- eventually, create the following symlinks in the new pod, and give the right permissions to the olddata directory
+
+```bash
+kubectl exec -it -n <namespace> <new_pod> -- bash
+ln -sf /bitnami/oldbin/geod /bitnami/oldbin/invgeod
+ln -sf /bitnami/oldbin/proj /bitnami/oldbin/invproj
+ln -sf /bitnami/oldbin/postgres /bitnami/oldbin/postmaster
+chown -R postgres:postgres /bitnami/olddata
+```
+
+- Start the upgrade
+
+```bash
+pg_upgrade -c -b /bitnami/oldbin -B /opt/bitnami/postgresql/bin -d /bitnami/olddata -D /bitnami/postgresql/data
+exit
+```
+
+- Update the new db with:
+
+```yaml
+primary:
+  containerSecurityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
+diagnosticMode:
+  enabled: false
+```
+
+- Verify the connection to new db
+- Eventually, copy the old svc, delete the old chart and recreate the svc pointing to the new one so all old connections can work
