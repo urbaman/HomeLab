@@ -118,7 +118,16 @@ rm mydb_backup.dump
 **NB:** You can also try without the client deployment, using the new db deployemnt directly:
 
 ```bash
-kubectl exec -it -n postgresql postgresql-client-0 -- pg_dumpall -U postgres -h postgresql-<old>.postgresql.svc.cluster.local --clean --file=mydb_backup.dump
-kubectl exec -it -n postgresql postgresql-client-0 -- psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
-kubectl exec -it -n postgresql postgresql-client-0 -- rm mydb_backup.dump
+kubectl exec -it -n postgresql postgresql-<new>-0 -- /bin/bash
+pg_dumpall -U postgres -h postgresql-<old>.postgresql.svc.cluster.local --clean --file=mydb_backup.dump
+psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
+rm mydb_backup.dump
+```
+
+Or (even better?):
+
+```bash
+kubectl exec -it -n postgresql postgresql-<new>-0 -- pg_dumpall -U postgres -h postgresql-<old>.postgresql.svc.cluster.local --clean --file=mydb_backup.dump
+kubectl exec -it -n postgresql postgresql-<new>-0 -- psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
+kubectl exec -it -n postgresql postgresql-<new>-0 -- rm mydb_backup.dump
 ```

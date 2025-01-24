@@ -359,6 +359,8 @@ helm repo update
 helm upgrade -i gitlab gitlab/gitlab -n gitlab --create-namespace --values gitlab-values.yaml
 ```
 
+If you are in a homelab,elete all of the horizontal pod autoscalers, and set all the deployments to replicas=1
+
 ## Post-installation
 
 Login with user `root` and the following secret:
