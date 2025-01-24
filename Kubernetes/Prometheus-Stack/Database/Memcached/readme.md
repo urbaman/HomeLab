@@ -1,5 +1,7 @@
 # Monitoring Memcached
 
+Remember to activate the servicemonitor in the helm values, and add the namespace to the prometheus operator, then add the dashboards
+
 ```bash
 kubectl create configmap grafana-dashboard-memcached-pods -n monitoring --from-file=memcached_pods.json
 kubectl label configmap grafana-dashboard-memcached-pods -n monitoring grafana_dashboard="1"
