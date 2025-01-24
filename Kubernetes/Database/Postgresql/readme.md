@@ -35,7 +35,7 @@ metrics:
 Then install
 
 ```bash
-helm upgrade -i postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --namespace postgresql --create-namespace -f postgresql-values.yaml
+helm upgrade -i postgresql-<major-version> oci://registry-1.docker.io/bitnamicharts/postgresql --namespace postgresql --create-namespace -f postgresql-values.yaml
 ```
 
 ## Connection
@@ -44,6 +44,14 @@ Get the password for the postgres (admin) user
 
 ```bash
 kubectl get secret -n postgresql postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode
+```
+
+Copy the svc, and deploy it again changing the name to postgresql
+
+```bash
+kubectl get svc -n postgresql postgresql-<major-version> -o yaml > postgresql-defualt-svc.yaml
+vi postgresql-defualt-svc.yaml
+kubectl apply -f postgresql-defualt-svc.yaml
 ```
 
 Access the postgresql service on port 5432 (eventually through kubectl proxy) with user postgres and just found password
@@ -65,7 +73,7 @@ kubectl exec -it -n postgresql <POSTGRESQL_POD> -- psql -d postgres -U postgres 
 Change the password in the secret, set the pgadmin_default_email, the postgresql server(s) info in the configmap, change the domains in the certificate and ingressroutes, then apply the yaml.
 
 ```bash
-kubectl apply -n pgadmin.yaml
+kubectl apply -f pgadmin.yaml
 ```
 
 You'll probably need to go through the password resetting tool, then it will ask for the postgres user password (select to save it)
@@ -76,81 +84,41 @@ Define an entrypoint for postgresql (port 5432) in Traefik, then deploy the `ig-
 
 ## Upgrade to mayor version
 
-```bash
-kubectl exec -it -n postgresql postgresql-0 -- bash
-postgres --version
-```
-
-Set the same version in <pg-version>, set the new image version in <pg-new-image>
-
-- Deploy the new db with the following flags (and the same root password: `--set auth.postgresPassword=$POSTGRESQL_PASSWORD`):
+- Deploy the new db with the same root password: `--set auth.postgresPassword=$POSTGRESQL_PASSWORD`
+- Delete the old postgresql svc, and re-create it from the postgresql-<new> one
+- Deploy a new db `postrgesql-client` release name, the same image as the new db and the following values:
 
 ```yaml
 primary:
   containerSecurityContext:
     runAsUser: 0
     runAsNonRoot: false
+    readOnlyRootFilesystem: false
+  persistence:
+    enable: false
+  resourcesPreset: "nano"
 diagnosticMode:
   enabled: true
 ```
 
-- Update the old db with the following flags:
-
-```yaml
-primary:
-  containerSecurityContext:
-    runAsUser: 0
-    runAsNonRoot: false
-diagnosticMode:
-  enabled: true
-```
-
-- Stop the old db:
+- Disable the login property of all the non-postgres roles on the old db (I use pgAdmin) **NB:** If you already swapped the postgresql svc, this shouldn't be necessary
+- Connect to the postgresql-client and run the upgrade
 
 ```bash
-kubectl exec -it -n <namespace> <old_pod> -- bash
-pg_ctl stop
-exit
+kubectl exec -it -n postgresql postgresql-client-0 -- /bin/bash
+pg_dumpall -U postgres -h postgresql-<old>.postgresql.svc.cluster.local --clean --file=mydb_backup.dump
+psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
+rm mydb_backup.dump
 ```
 
-- Copy `/opt/bitnami/bin` in `/opt/bitnami/oldbin` and `/bitnami/data` in `/bitnami/olddata` from old to new
-
-```bash
-mkdir /path #create tem path
-mkdir /path/oldbin #create temp path for bin
-kubectl cp <namespace><old_pod>:/opt/bitnami/bin /path
-kubectl cp <namespace><old_pod>:/bitnami/postgresql/bin /path/oldbin
-mv /path/data /path/olddata
-kubectl cp /path <namespace><new_pod>:/bitnami
-```
-
-- eventually, create the following symlinks in the new pod, and give the right permissions to the olddata directory
-
-```bash
-kubectl exec -it -n <namespace> <new_pod> -- bash
-ln -sf /bitnami/oldbin/geod /bitnami/oldbin/invgeod
-ln -sf /bitnami/oldbin/proj /bitnami/oldbin/invproj
-ln -sf /bitnami/oldbin/postgres /bitnami/oldbin/postmaster
-chown -R postgres:postgres /bitnami/olddata
-```
-
-- Start the upgrade
-
-```bash
-pg_upgrade -c -b /bitnami/oldbin -B /opt/bitnami/postgresql/bin -d /bitnami/olddata -D /bitnami/postgresql/data
-exit
-```
-
-- Update the new db with:
-
-```yaml
-primary:
-  containerSecurityContext:
-    runAsUser: 1001
-    runAsNonRoot: true
-diagnosticMode:
-  enabled: false
-```
-
-- Verify the connection to new db
+- Verify the connection to the new db, and re-enable the login property of the roles (I use pgAdmin)
+- Verify all the apps using the database
 - Eventually, copy the old svc, delete the old chart and recreate the svc pointing to the new one so all old connections can work
+
+**NB:** You can also try without the client deployment, using the new db deployemnt directly:
+
+```bash
+kubectl exec -it -n postgresql postgresql-client-0 -- pg_dumpall -U postgres -h postgresql-<old>.postgresql.svc.cluster.local --clean --file=mydb_backup.dump
+kubectl exec -it -n postgresql postgresql-client-0 -- psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
+kubectl exec -it -n postgresql postgresql-client-0 -- rm mydb_backup.dump
+```
