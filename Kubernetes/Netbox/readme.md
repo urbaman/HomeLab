@@ -8,10 +8,10 @@ kubectl apply -f ig-netbox-external.yaml
 
 ## Internal via helm chart
 
-Create a 40 hexadecimal characters string for the admin API token (not working):
+Create a 40 hexadecimal characters string for the admin API token:
 
 ```bash
-head -c 40 /dev/urandom | xxd -p -c 40
+export LC_CTYPE=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 40; echo
 ```
 
 Get the values:

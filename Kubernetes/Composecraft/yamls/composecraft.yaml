@@ -1,0 +1,178 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: composecraft
+  labels:
+    name: composecraft
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: composecraft-env-vars
+  namespace: composecraft
+type: Opaque
+data:
+  CORE_ONLY: <true-base64>
+  URL: <url-base64>
+  MONGODB_URI: <mongodb-uri-base64>
+  SECRET_KEY: <secret-key-64-base64>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: composecraft
+  namespace: composecraft
+  labels:
+    app: composecraft
+    app.kubernetes.io/name: composecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: composecraft
+  template:
+    metadata:
+      labels:
+        app: composecraft
+        app.kubernetes.io/name: composecraft
+    spec:
+      containers:
+        - name: composecraft
+          image: composecraft/composecraft:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            - secretRef:
+                name: composecraft-env-vars
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: composecraft
+  name: composecraft
+  namespace: composecraft
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: composecraft
+  type: ClusterIP 
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: composecraft-domain-com
+  namespace: composecraft
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - composecraft.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: composecraft-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-composecraft-https-redirect
+  namespace: composecraft
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-composecraft-security
+  namespace: composecraft
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-composecraft-transport
+  namespace: composecraft
+spec:
+  serverName: composecraft 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-composecraft-tlsoptions
+  namespace: composecraft
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-composecraft-websecure
+  namespace: composecraft 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`composecraft.domain.com`)
+      services:
+        - name: composecraft
+          port: 3000
+          serversTransport: traefik-composecraft-transport
+      middlewares:
+        - name: traefik-composecraft-security
+  tls:
+    secretName: composecraft-domain-com
+    options:
+      name: traefik-composecraft-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-composecraft-web
+  namespace: composecraft
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`composecraft.domain.com`)
+      services:
+        - name: composecraft
+          port: 3000
+      middlewares:
+        - name: traefik-composecraft-https-redirect
