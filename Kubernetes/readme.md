@@ -215,7 +215,7 @@ Here are the detailed steps to deploy our homelab cluster
 23. [Composecraft](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Composecraft)
 24. [Obsidian (to do)](https://mariushosting.com/how-to-install-obsidian-on-your-synology-nas/)
 25. [Github Desktop (to do)](https://mariushosting.com/how-to-install-github-desktop-on-your-synology-nas/)
-26. [QRcode Generator (to do)](https://mariushosting.com/how-to-install-qr-code-generator-on-your-synology-nas/)
+26. [QRcode Generator](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/QRCodeGenerator)
 27. [Reactive Resume (to do)](https://mariushosting.com/how-to-install-reactive-resume-v4-on-your-synology-nas/)
 28. [Paperless NGX (to do)](https://mariushosting.com/synology-install-paperless-ngx-with-office-files-support/)
 29. [RSS (to do )](https://mariushosting.com/how-to-install-rss-on-your-synology-nas/)
