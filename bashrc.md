@@ -1,6 +1,6 @@
 # Impostazioni Bashrc
 
-Editare /root/.bashrc (o editare il file nella cartella dell'utente voluto), aggiungendo in fondo le seguenti righe:
+Editare .bashrc (o editare il file nella cartella dell'utente voluto), aggiungendo in fondo le seguenti righe:
 
 ```bash
 alias ls='ls --color=auto'
@@ -8,6 +8,8 @@ export PS1="\e[1;34m[\u@\H \w]\$ \e[m "
 ```
 
 ## Make bash prompt like ParrotOS'
+
+Edit the .bashrc file, replacing the `PS1` variable settings.
 
 ```bash
 if [ "$color_prompt" = yes ]; then
