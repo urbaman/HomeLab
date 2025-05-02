@@ -1875,6 +1875,138 @@ spec:
            - mountPath: /config
              name: jellyfin-config
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+  namespace: media-server
+spec:
+  type: LoadBalancer
+  ports:
+    - targetPort: 8096
+      name: http-8096
+      port: 8096
+      protocol: TCP
+  selector:
+    app: jellyfin
+---
+# jellyfin Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jellyfin-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - jellyfin.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: jellyfin-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-jellyfin-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-jellyfin-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-jellyfin-transport
+  namespace: media-server
+spec:
+  serverName: jellyfin 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-jellyfin-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-jellyfin-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`jellyfin.urbaman.it`)
+      services:
+        - name: jellyfin
+          port: 8096
+          serversTransport: traefik-jellyfin-transport
+      middlewares:
+        - name: traefik-jellyfin-security
+  tls:
+    secretName: jellyfin-urbaman-it
+    options:
+      name: traefik-jellyfin-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-jellyfin-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`jellyfin.urbaman.it`)
+      services:
+        - name: jellyfin
+          port: 8096
+      middlewares:
+        - name: traefik-jellyfin-https-redirect
+---
 # Plex Deployment
 apiVersion: apps/v1
 kind: Deployment
