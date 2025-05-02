@@ -1,0 +1,2636 @@
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: media-server
+---
+# Persistent Volume Claim for all Media
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-server-data-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Ti
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Bazarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bazarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Calibre configs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: calibre-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Lidarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lidarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Plex configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Plex configs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Prowlarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Radarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Readarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: readarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Sonarr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Tansmission configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: transmission-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Unpackerr configs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: unpackerr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Overseerr configs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: overseerr-config-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Plex Transcoding
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-transcoding-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: asustornas1-nfs
+---
+# Persistent Volume Claim for Plex Transcoding
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-cache-pvc
+  namespace: media-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: asustornas1-nfs
+---
+# Transmission Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: media-server
+  labels:
+    app: transmission
+    app.kubernetes.io/name: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transmission
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: transmission
+        app.kubernetes.io/name: transmission
+    spec:
+      volumes:
+      - name: transmission-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: transmission-config
+        persistentVolumeClaim:
+          claimName: transmission-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/transmission:latest
+          name: transmission
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 9091
+             name: http-9091
+             protocol: TCP
+           - containerPort: 51413
+             name: http-51413
+             protocol: TCP
+           - containerPort: 51413
+             name: udp-51413
+             protocol: UDP
+          volumeMounts:
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: transmission-data
+           - mountPath: /watch/transmission
+             subPath: watch/transmission
+             name: transmission-data
+           - mountPath: /config
+             name: transmission-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+  labels:
+    app: transmission
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9091
+      targetPort: 9091
+      protocol: TCP
+      name: http
+  selector:
+    app: transmission
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-peers-tcp
+  labels:
+    app: transmission
+  namespace: media-server
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 51413
+      targetPort: 51413
+      protocol: TCP
+      name: peers-tcp
+  selector:
+    app: transmission
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission-peers-udp
+  labels:
+    app: transmission
+  namespace: media-server
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 51413
+      targetPort: 51413
+      protocol: UDP
+      name: peers-udp
+  selector:
+    app: transmission
+---
+# Transmission Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: transmission-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - transmission.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: transmission-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-transmission-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-transmission-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-transmission-transport
+  namespace: media-server
+spec:
+  serverName: transmission 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-transmission-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-transmission-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`transmission.urbaman.it`)
+      services:
+        - name: transmission
+          port: 9091
+          serversTransport: traefik-transmission-transport
+      middlewares:
+        - name: traefik-transmission-security
+  tls:
+    secretName: transmission-urbaman-it
+    options:
+      name: traefik-transmission-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-transmission-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`transmission.urbaman.it`)
+      services:
+        - name: transmission
+          port: 9091
+      middlewares:
+        - name: traefik-transmission-https-redirect
+---
+# Flaresolverr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaresolverr
+  namespace: media-server
+  labels:
+    app: flaresolverr
+    app.kubernetes.io/name: flaresolverr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaresolverr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: flaresolverr
+        app.kubernetes.io/name: flaresolverr
+    spec:
+      containers:
+        - image: ghcr.io/flaresolverr/flaresolverr:latest
+          name: flaresolverr
+          imagePullPolicy: Always
+          env:
+            - name: LOG_LEVEL
+              value: info
+          ports:
+           - containerPort: 8191
+             name: http-8191
+             protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  labels:
+    app: flaresolverr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8191
+      targetPort: 8191
+      protocol: TCP
+      name: http
+  selector:
+    app: flaresolverr
+---
+# Flaresolverr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: flaresolverr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - flaresolverr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: flaresolverr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-flaresolverr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-flaresolverr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-flaresolverr-transport
+  namespace: media-server
+spec:
+  serverName: flaresolverr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-flaresolverr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-flaresolverr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`flaresolverr.urbaman.it`)
+      services:
+        - name: flaresolverr
+          port: 8191
+          serversTransport: traefik-flaresolverr-transport
+      middlewares:
+        - name: traefik-flaresolverr-security
+  tls:
+    secretName: flaresolverr-urbaman-it
+    options:
+      name: traefik-flaresolverr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-flaresolverr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`flaresolverr.urbaman.it`)
+      services:
+        - name: flaresolverr
+          port: 8191
+      middlewares:
+        - name: traefik-flaresolverr-https-redirect
+---
+# Prowlarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: media-server
+  labels:
+    app: prowlarr
+    app.kubernetes.io/name: prowlarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+        app.kubernetes.io/name: prowlarr
+    spec:
+      volumes:
+      - name: prowlarr-config
+        persistentVolumeClaim:
+          claimName: prowlarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/prowlarr:latest
+          name: prowlarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 9696
+             name: http-9696
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: prowlarr-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9696
+      targetPort: 9696
+      protocol: TCP
+      name: http
+  selector:
+    app: prowlarr
+---
+# Prowlarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prowlarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - prowlarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: prowlarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-prowlarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-prowlarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-prowlarr-transport
+  namespace: media-server
+spec:
+  serverName: prowlarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-prowlarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-prowlarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`prowlarr.urbaman.it`)
+      services:
+        - name: prowlarr
+          port: 9696
+          serversTransport: traefik-prowlarr-transport
+      middlewares:
+        - name: traefik-prowlarr-security
+  tls:
+    secretName: prowlarr-urbaman-it
+    options:
+      name: traefik-prowlarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-prowlarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`prowlarr.urbaman.it`)
+      services:
+        - name: prowlarr
+          port: 9696
+      middlewares:
+        - name: traefik-prowlarr-https-redirect
+---
+# Sonarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: media-server
+  labels:
+    app: sonarr
+    app.kubernetes.io/name: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sonarr
+        app.kubernetes.io/name: sonarr
+    spec:
+      volumes:
+      - name: sonarr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: sonarr-config
+        persistentVolumeClaim:
+          claimName: sonarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/sonarr:latest
+          name: sonarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 8989
+             name: http-8989
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: sonarr-config
+           - mountPath: /tv
+             subPath: library/tv
+             name: sonarr-data
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: sonarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  labels:
+    app: sonarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8989
+      targetPort: 8989
+      protocol: TCP
+      name: http
+  selector:
+    app: sonarr
+---
+# Sonarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sonarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - sonarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: sonarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-sonarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-sonarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-sonarr-transport
+  namespace: media-server
+spec:
+  serverName: sonarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-sonarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-sonarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`sonarr.urbaman.it`)
+      services:
+        - name: sonarr
+          port: 8989
+          serversTransport: traefik-sonarr-transport
+      middlewares:
+        - name: traefik-sonarr-security
+  tls:
+    secretName: sonarr-urbaman-it
+    options:
+      name: traefik-sonarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-sonarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`sonarr.urbaman.it`)
+      services:
+        - name: sonarr
+          port: 8989
+      middlewares:
+        - name: traefik-sonarr-https-redirect
+---
+# Radarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: media-server
+  labels:
+    app: radarr
+    app.kubernetes.io/name: radarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: radarr
+        app.kubernetes.io/name: radarr
+    spec:
+      volumes:
+      - name: radarr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: radarr-config
+        persistentVolumeClaim:
+          claimName: radarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/radarr:latest
+          name: radarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 7878
+             name: http-7878
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: radarr-config
+           - mountPath: /movies
+             subPath: library/movies
+             name: radarr-data
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: radarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radarr
+  labels:
+    app: radarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7878
+      targetPort: 7878
+      protocol: TCP
+      name: http
+  selector:
+    app: radarr
+---
+# Radarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: radarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - radarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: radarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-radarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-radarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-radarr-transport
+  namespace: media-server
+spec:
+  serverName: radarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-radarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-radarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`radarr.urbaman.it`)
+      services:
+        - name: radarr
+          port: 7878
+          serversTransport: traefik-radarr-transport
+      middlewares:
+        - name: traefik-radarr-security
+  tls:
+    secretName: radarr-urbaman-it
+    options:
+      name: traefik-radarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-radarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`radarr.urbaman.it`)
+      services:
+        - name: radarr
+          port: 7878
+      middlewares:
+        - name: traefik-radarr-https-redirect
+---
+# Lidarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+  namespace: media-server
+  labels:
+    app: lidarr
+    app.kubernetes.io/name: lidarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lidarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: lidarr
+        app.kubernetes.io/name: lidarr
+    spec:
+      volumes:
+      - name: lidarr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: lidarr-config
+        persistentVolumeClaim:
+          claimName: lidarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/lidarr:latest
+          name: lidarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 8686
+             name: http-8686
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: lidarr-config
+           - mountPath: /music
+             subPath: library/music
+             name: lidarr-data
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: lidarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lidarr
+  labels:
+    app: lidarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8686
+      targetPort: 8686
+      protocol: TCP
+      name: http
+  selector:
+    app: lidarr
+---
+# Lidarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lidarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - lidarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: lidarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-lidarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-lidarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-lidarr-transport
+  namespace: media-server
+spec:
+  serverName: lidarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-lidarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-lidarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`lidarr.urbaman.it`)
+      services:
+        - name: lidarr
+          port: 8686
+          serversTransport: traefik-lidarr-transport
+      middlewares:
+        - name: traefik-lidarr-security
+  tls:
+    secretName: lidarr-urbaman-it
+    options:
+      name: traefik-lidarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-lidarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`lidarr.urbaman.it`)
+      services:
+        - name: lidarr
+          port: 8686
+      middlewares:
+        - name: traefik-lidarr-https-redirect
+---
+# Readarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readarr
+  namespace: media-server
+  labels:
+    app: readarr
+    app.kubernetes.io/name: readarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: readarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: readarr
+        app.kubernetes.io/name: readarr
+    spec:
+      volumes:
+      - name: readarr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: readarr-config
+        persistentVolumeClaim:
+          claimName: readarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/readarr:develop
+          name: readarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 8787
+             name: http-8787
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: readarr-config
+           - mountPath: /books
+             subPath: library/books
+             name: readarr-data
+           - mountPath: /downloads/transmission
+             subPath: downloads/transmission
+             name: readarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readarr
+  labels:
+    app: readarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8787
+      targetPort: 8787
+      protocol: TCP
+      name: http
+  selector:
+    app: readarr
+---
+# Readarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: readarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - readarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: readarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-readarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-readarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-readarr-transport
+  namespace: media-server
+spec:
+  serverName: readarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-readarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-readarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`readarr.urbaman.it`)
+      services:
+        - name: readarr
+          port: 8787
+          serversTransport: traefik-readarr-transport
+      middlewares:
+        - name: traefik-readarr-security
+  tls:
+    secretName: readarr-urbaman-it
+    options:
+      name: traefik-readarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-readarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`readarr.urbaman.it`)
+      services:
+        - name: readarr
+          port: 8787
+      middlewares:
+        - name: traefik-readarr-https-redirect
+---
+# Bazarr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+  namespace: media-server
+  labels:
+    app: bazarr
+    app.kubernetes.io/name: bazarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bazarr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: bazarr
+        app.kubernetes.io/name: bazarr
+    spec:
+      volumes:
+      - name: bazarr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: bazarr-config
+        persistentVolumeClaim:
+          claimName: bazarr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/bazarr:latest
+          name: bazarr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 6767
+             name: http-6767
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: bazarr-config
+           - mountPath: /movies
+             subPath: library/movies
+             name: bazarr-data
+           - mountPath: /tv
+             subPath: library/tv
+             name: bazarr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr
+  labels:
+    app: bazarr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6767
+      targetPort: 6767
+      protocol: TCP
+      name: http
+  selector:
+    app: bazarr
+---
+# Bazarr Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bazarr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - bazarr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: bazarr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-bazarr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-bazarr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-bazarr-transport
+  namespace: media-server
+spec:
+  serverName: bazarr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-bazarr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-bazarr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`bazarr.urbaman.it`)
+      services:
+        - name: bazarr
+          port: 6767
+          serversTransport: traefik-bazarr-transport
+      middlewares:
+        - name: traefik-bazarr-security
+  tls:
+    secretName: bazarr-urbaman-it
+    options:
+      name: traefik-bazarr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-bazarr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`bazarr.urbaman.it`)
+      services:
+        - name: bazarr
+          port: 6767
+      middlewares:
+        - name: traefik-bazarr-https-redirect
+---
+# Unpackerr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unpackerr
+  namespace: media-server
+  labels:
+    app: unpackerr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unpackerr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: unpackerr
+        app.kubernetes.io/name: unpackerr
+    spec:
+      volumes:
+      - name: unpackerr-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: unpackerr-config
+        persistentVolumeClaim:
+          claimName: unpackerr-config-pvc
+      containers:
+        - image: ghcr.io/hotio/unpackerr:latest
+          name: unpackerr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: UMASK
+              value: "002"
+          ports:
+           - containerPort: 5656
+             name: http-5656
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: unpackerr-config
+           - mountPath: /data
+             subPath: downloads/transmission/complete
+             name: unpackerr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unpackerr
+  labels:
+    app: unpackerr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5656
+      targetPort: 5656
+      protocol: TCP
+      name: http
+  selector:
+    app: unpackerr
+---
+# Jellyfin Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: media-server
+  labels:
+    app: jellyfin
+    app.kubernetes.io/name: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+        app.kubernetes.io/name: jellyfin
+    spec:
+      volumes:
+      - name: jellyfin-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: jellyfin-cache
+        persistentVolumeClaim:
+          claimName: jellyfin-cache-pvc
+      - name: jellyfin-config
+        persistentVolumeClaim:
+          claimName: jellyfin-config-pvc
+      nodeName: mk8s1 #foo-node # schedule pod to specific node
+      containers:
+        - image: jellyfin/jellyfin
+          name: jellyfin
+          imagePullPolicy: Always
+          resources:
+            limits:
+              #              nvidia.com/gpu: 1 # requesting 1 Nvidia GPUs
+              gpu.intel.com/i915: 1 # requesting 1 Intel GPUs
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: JELLYFIN_PublishedServerUrl
+              value: "jellyfin.urbaman.it"
+                #           - name: NVIDIA_VISIBLE_DEVICES
+                #             value: "all"
+                #           - name: NVIDIA_DRIVER_CAPABILITIES
+                #             value: "compute,video,utility"
+          ports:
+           - containerPort: 8096
+             name: http-8096
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /media
+             subPath: library
+             name: jellyfin-data
+           - mountPath: /cache
+             name: jellyfin-cache
+           - mountPath: /config
+             name: jellyfin-config
+---
+# Plex Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: media-server
+  labels:
+    app: plex
+    app.kubernetes.io/name: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: plex
+        app.kubernetes.io/name: plex
+    spec:
+      volumes:
+      - name: plex-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      - name: plex-transcoding
+        persistentVolumeClaim:
+          claimName: plex-transcoding-pvc
+      - name: plex-config
+        persistentVolumeClaim:
+          claimName: plex-config-pvc
+      nodeName: mk8s1 #foo-node # schedule pod to specific node
+      containers:
+        - image: plexinc/pms-docker
+          name: plex
+          imagePullPolicy: Always
+          resources:
+            limits:
+              #              nvidia.com/gpu: 1 # requesting 1 Nvidia GPUs
+              gpu.intel.com/i915: 1 # requesting 1 Intel GPUs
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PLEX_UID
+              value: "1000"
+            - name: PLEX_GID
+              value: "1000"
+            - name: ADVERTISE_IP
+              value: "http://10.0.100.203:32400"
+            - name: PLEX_CLAIM
+              value: "claim-SHVRKTuyMmeecApwPLzy"
+                #           - name: NVIDIA_VISIBLE_DEVICES
+                #             value: "all"
+                #           - name: NVIDIA_DRIVER_CAPABILITIES
+                #             value: "compute,video,utility"
+          ports:
+           - containerPort: 32400
+             name: http-32400
+             protocol: TCP
+           - containerPort: 8324
+             name: http-8324
+             protocol: TCP
+           - containerPort: 32469
+             name: http-32469
+             protocol: TCP
+           - containerPort: 1900
+             name: udp-1900
+             protocol: UDP
+           - containerPort: 32410
+             name: udp-32410
+             protocol: UDP
+           - containerPort: 32412
+             name: udp-32412
+             protocol: UDP
+           - containerPort: 32413
+             name: udp-32413
+             protocol: UDP
+           - containerPort: 32414
+             name: udp-32414
+             protocol: UDP
+          volumeMounts:
+           - mountPath: /data
+             subPath: library
+             name: plex-data
+           - mountPath: /transcode
+             name: plex-transcoding
+           - mountPath: /config
+             name: plex-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  labels:
+    app: plex
+  namespace: media-server
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 10.0.100.203
+spec:
+  type: LoadBalancer
+  ports:
+    - targetPort: 32400
+      name: http-32400
+      port: 32400
+      protocol: TCP
+    - targetPort: 8324
+      name: http-8324
+      port: 8324
+      protocol: TCP
+    - targetPort: 32469
+      name: http-32469
+      port: 32469
+      protocol: TCP
+    - targetPort: 1900
+      name: udp-1900
+      port: 1900
+      protocol: UDP
+    - targetPort: 32410
+      name: udp-32410
+      port: 32410
+      protocol: UDP
+    - targetPort: 32412
+      name: udp-32412
+      port: 32412
+      protocol: UDP
+    - targetPort: 32413
+      name: udp-32413
+      port: 32413
+      protocol: UDP
+    - targetPort: 32414
+      name: udp-32414
+      port: 32414
+      protocol: UDP
+  selector:
+    app: plex
+---
+# Plex Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: plex-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - plex.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: plex-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-plex-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-plex-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-plex-transport
+  namespace: media-server
+spec:
+  serverName: plex 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-plex-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-plex-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`plex.urbaman.it`)
+      services:
+        - name: plex
+          port: 32400
+          serversTransport: traefik-plex-transport
+      middlewares:
+        - name: traefik-plex-security
+  tls:
+    secretName: plex-urbaman-it
+    options:
+      name: traefik-plex-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-plex-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`plex.urbaman.it`)
+      services:
+        - name: plex
+          port: 32400
+      middlewares:
+        - name: traefik-plex-https-redirect
+---
+# Overseerr Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: overseerr
+  namespace: media-server
+  labels:
+    app: overseerr
+    app.kubernetes.io/name: overseerr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: overseerr
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: overseerr
+        app.kubernetes.io/name: overseerr
+    spec:
+      volumes:
+      - name: overseerr-config
+        persistentVolumeClaim:
+          claimName: overseerr-config-pvc
+      containers:
+        - image: lscr.io/linuxserver/overseerr:latest
+          name: overseerr
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 5055
+             name: http-5055
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /config
+             name: overseerr-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: overseerr
+  labels:
+    app: overseerr
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5055
+      targetPort: 5055
+      protocol: TCP
+      name: http
+  selector:
+    app: overseerr
+---
+# Overseer Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: overseerr-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - overseerr.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: overseerr-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-overseerr-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-overseerr-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-overseerr-transport
+  namespace: media-server
+spec:
+  serverName: overseerr 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-overseerr-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-overseerr-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`overseerr.urbaman.it`)
+      services:
+        - name: overseerr
+          port: 5055
+          serversTransport: traefik-overseerr-transport
+      middlewares:
+        - name: traefik-overseerr-security
+  tls:
+    secretName: overseerr-urbaman-it
+    options:
+      name: traefik-overseerr-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-overseerr-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`overseerr.urbaman.it`)
+      services:
+        - name: overseerr
+          port: 5055
+      middlewares:
+        - name: traefik-overseerr-https-redirect
+---
+# Calibre Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre
+  namespace: media-server
+  labels:
+    app: calibre
+    app.kubernetes.io/name: calibre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calibre
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: calibre
+        app.kubernetes.io/name: calibre
+    spec:
+      volumes:
+      - name: calibre-config
+        persistentVolumeClaim:
+          claimName: calibre-config-pvc
+      - name: calibre-data
+        persistentVolumeClaim:
+          claimName: media-server-data-pvc
+      containers:
+        - image: lscr.io/linuxserver/calibre:latest
+          name: calibre
+          imagePullPolicy: Always
+          env:
+            - name:  TZ
+              value: Europe/Rome
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+           - containerPort: 8081
+             name: http-8081
+             protocol: TCP
+           - containerPort: 8181
+             name: http-8181
+             protocol: TCP
+          volumeMounts:
+           - mountPath: /library
+             subPath: library/books
+             name: calibre-data
+           - mountPath: /config
+             name: calibre-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calibre
+  labels:
+    app: calibre
+  namespace: media-server
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: http-8081
+    - port: 8181
+      targetPort: 8181
+      protocol: TCP
+      name: http-8181
+  selector:
+    app: calibre
+---
+# Calibre Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: calibre-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - calibre.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: calibre-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-calibre-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-calibre-security
+  namespace: media-server
+spec:
+  headers:
+    #    frameDeny: true
+    customFrameOptionsValue: SAMEORIGIN
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+    accessControlAllowMethods:
+      - GET
+      - OPTIONS
+      - PUT
+    accessControlMaxAge: 100
+    hostsProxyHeaders:
+      - "X-Forwarded-Host"
+    referrerPolicy: "same-origin"
+    permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+    customResponseHeaders:
+      X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex," # disable search engines from indexing home server
+      server: "" # hide server info from visitors
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-calibre-transport
+  namespace: media-server
+spec:
+  serverName: calibre 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-calibre-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-calibre-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`calibre.urbaman.it`)
+      services:
+        - name: calibre
+          port: 8181
+          scheme: https
+          serversTransport: traefik-calibre-transport
+      middlewares:
+        - name: traefik-calibre-security
+  tls:
+    secretName: calibre-urbaman-it
+    options:
+      name: traefik-calibre-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-calibre-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`calibre.urbaman.it`)
+      services:
+        - name: calibre
+          port: 8181
+      middlewares:
+        - name: traefik-calibre-https-redirect
+---
+# Calibre webserver Traefik
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: calibre-ws-urbaman-it
+  namespace: media-server
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - calibre-ws.urbaman.it
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: calibre-ws-urbaman-it
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-calibre-ws-https-redirect
+  namespace: media-server
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-calibre-ws-security
+  namespace: media-server
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-calibre-ws-transport
+  namespace: media-server
+spec:
+  serverName: calibre-ws 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-calibre-ws-tlsoptions
+  namespace: media-server
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-calibre-ws-websecure
+  namespace: media-server 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`calibre-ws.urbaman.it`)
+      services:
+        - name: calibre
+          port: 8081
+          serversTransport: traefik-calibre-ws-transport
+      middlewares:
+        - name: traefik-calibre-ws-security
+  tls:
+    secretName: calibre-ws-urbaman-it
+    options:
+      name: traefik-calibre-ws-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-calibre-ws-web
+  namespace: media-server
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`calibre-ws.urbaman.it`)
+      services:
+        - name: calibre
+          port: 8081
+      middlewares:
+        - name: traefik-calibre-ws-https-redirect
+
+
+
