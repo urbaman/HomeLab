@@ -99,6 +99,12 @@ config:
   docker:
   settings:
 
+env:
+  - name: TZ
+    value: Europe/Rome
+  - name: HOMEPAGE_ALLOWED_HOSTS
+    value: homepage.urbaman.it
+
 persistence:
   logs:
     enabled: true
