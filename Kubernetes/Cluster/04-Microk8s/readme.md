@@ -109,7 +109,7 @@ su $USER
 ```bash
 microk8s helm repo add kube-vip https://kube-vip.github.io/helm-charts
 microk8s helm repo update
-microk8s helm install kube-vip kube-vip/kube-vip --namespace kube-system -f values.yaml
+microk8s helm upgrade -i kube-vip kube-vip/kube-vip --namespace kube-system -f kubevip-values.yaml
 ```
 
 The file values.yaml [can be found here](https://raw.githubusercontent.com/kube-vip/helm-charts/refs/heads/main/charts/kube-vip/values.yaml)
