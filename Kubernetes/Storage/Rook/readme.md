@@ -129,3 +129,9 @@ Then import the cluster
 ```bash
 sudo microk8s connect-external-ceph --namespace <namespace> --ceph-conf /path/to/ceph.conf --keyring /path/to/ceph.keyring --rbd-pool <pool-name> --no-rbd-pool-auto-create
 ```
+
+If you have microceph running on the same cluster, use something like
+
+```bash
+sudo microk8s connect-external-ceph --rbd-pool microk8s-pool --rbd-pool-auto-create --namespace microceph
+```
