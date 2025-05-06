@@ -6,7 +6,7 @@ Give them the correct (root:root, 0777) permissions through chown and chmod.
 
 We will also create a dedicated pvc for Plex transcoding on a faster storage (nvme is better), it can be RDB type storage (Ceph).
 
-This deployment will install:
+This deployment will install (select Plex or Jellyfin):
 
 - [x] Transmission for torrent download
 - [x] Flaresolverr
@@ -18,6 +18,7 @@ This deployment will install:
 - [x] Bazarr
 - [x] Unpackerr
 - [x] Plex Media server with GPU transcoding
+- [x] Jellyfin with GPU transcoding
 - [x] Overseer
 - [x] Calibre
 - [x] CalibreWS
