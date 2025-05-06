@@ -22,7 +22,7 @@ data:
   PAPERLESS_TIKA_ENDPOINT: <http://tika:9998 in base64>
   PAPERLESS_ADMIN_USER: <username in base64>
   PAPERLESS_ADMIN_PASSWORD: <password in base64>
-  PAPERLESS_ADMIN_: <mail@domain.com in base64>
+  PAPERLESS_ADMIN_MAIL: <mail@domain.com in base64>
   PAPERLESS_USE_X_FORWARD_HOST: <true in base64>
   PAPERLESS_EMAIL_HOST: <ssl://mail.maildomain.com in base64
   PAPERLESS_EMAIL_PORT: <587
@@ -138,7 +138,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: paperless-gotenberg
-  namespace: paperless-gotenberg
+  namespace: paperless-ngx
   labels:
     app: paperless-gotenberg
     app.kubernetes.io/name: paperless-gotenberg
@@ -165,7 +165,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: paperless-tika
-  namespace: paperless-tika
+  namespace: paperless-ngx
   labels:
     app: paperless-tika
     app.kubernetes.io/name: paperless-tika
@@ -210,7 +210,7 @@ metadata:
   labels:
     app: paperless-gotenberg
   name: paperless-gotenberg
-  namespace: paperless-gotenberg
+  namespace: paperless-ngx
 spec:
   ports:
   - name: http
@@ -227,7 +227,7 @@ metadata:
   labels:
     app: paperless-tika
   name: paperless-tika
-  namespace: paperless-tika
+  namespace: paperless-ngx
 spec:
   ports:
   - name: http
