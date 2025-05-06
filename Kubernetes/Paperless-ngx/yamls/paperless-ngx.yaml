@@ -1,0 +1,353 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: paperless-ngx
+  labels:
+    name: paperless-ngx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: paperless-ngx-env-vars
+  namespace: paperless-ngx
+type: Opaque
+data:
+  PAPERLESS_REDIS: <redis://<username>:<password>@<host>:<port>  in base64>
+  PAPERLESS_DBHOST: <postgresql host in base64>
+  PAPERLESS_DBNAME: <postgresql name in base64>
+  PAPERLESS_DBUSER: <postgresql user in base64>
+  PAPERLESS_DBPASSWORD: <postgresql password in base64>
+  PAPERLESS_TIKA_ENABLED: <1 in base64>
+  PAPERLESS_TIKA_GOTENBERG_ENDPOINT: <http://gotenberg:3000 in base64>
+  PAPERLESS_TIKA_ENDPOINT: <http://tika:9998 in base64>
+  PAPERLESS_ADMIN_USER: <username in base64>
+  PAPERLESS_ADMIN_PASSWORD: <password in base64>
+  PAPERLESS_ADMIN_: <mail@domain.com in base64>
+  PAPERLESS_USE_X_FORWARD_HOST: <true in base64>
+  PAPERLESS_EMAIL_HOST: <ssl://mail.maildomain.com in base64
+  PAPERLESS_EMAIL_PORT: <587
+  PAPERLESS_EMAIL_HOST_USER: <user in base64>
+  PAPERLESS_EMAIL_FROM: <paperless-ngx@domain.com in base64>
+  PAPERLESS_EMAIL_HOST_PASSWORD: <password in base64>
+  PAPERLESS_EMAIL_USE_SSL: <true in base64>
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-data
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-media
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-export
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperless-ngx-consume
+  namespace: paperless-ngx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-ngx
+  namespace: paperless-ngx
+  labels:
+    app: paperless-ngx
+    app.kubernetes.io/name: paperless-ngx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-ngx
+  template:
+    metadata:
+      labels:
+        app: paperless-ngx
+        app.kubernetes.io/name: paperless-ngx
+    spec:
+      containers:
+        - name: paperless-ngx
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - secretRef:
+                name: paperless-ngx-env-vars
+          volumeMounts:
+          - mountPath: /usr/src/paperless/data
+            name: paperless-ngx-data
+          - mountPath: /usr/src/paperless/media
+            name: paperless-ngx-media
+          - mountPath: /usr/src/paperless/export
+            name: paperless-ngx-export
+          - mountPath: /usr/src/paperless/consume
+            name: paperless-ngx-consume
+      volumes:
+      - name: paperless-ngx-data
+        persistentVolumeClaim:
+          claimName: paperless-ngx-data
+      - name: paperless-ngx-media
+        persistentVolumeClaim:
+          claimName: paperless-media-data
+      - name: paperless-ngx-export
+        persistentVolumeClaim:
+          claimName: paperless-export-data
+      - name: paperless-ngx-consume
+        persistentVolumeClaim:
+          claimName: paperless-ngx-consume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-gotenberg
+  namespace: paperless-gotenberg
+  labels:
+    app: paperless-gotenberg
+    app.kubernetes.io/name: paperless-gotenberg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-gotenberg
+  template:
+    metadata:
+      labels:
+        app: paperless-gotenberg
+        app.kubernetes.io/name: paperless-gotenberg
+    spec:
+      containers:
+        - name: paperless-gotenberg
+          image: docker.io/gotenberg/gotenberg:8.19
+          ports:
+            - containerPort: 3000
+              name: http
+          command: ["gotenberg --chromium-disable-javascript=true --chromium-allow-list=file:///tmp/.*"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless-tika
+  namespace: paperless-tika
+  labels:
+    app: paperless-tika
+    app.kubernetes.io/name: paperless-tika
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-tika
+  template:
+    metadata:
+      labels:
+        app: paperless-tika
+        app.kubernetes.io/name: paperless-tika
+    spec:
+      containers:
+        - name: paperless-tika
+          image: docker.io/apache/tika:latest
+          ports:
+            - containerPort: 9998
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: paperless-ngx
+  name: paperless-ngx
+  namespace: paperless-ngx
+spec:
+  ports:
+  - name: http
+    port: 8000
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: paperless-ngx
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: paperless-gotenberg
+  name: paperless-gotenberg
+  namespace: paperless-gotenberg
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: paperless-gotenberg
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: paperless-tika
+  name: paperless-tika
+  namespace: paperless-tika
+spec:
+  ports:
+  - name: http
+    port: 9998
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: paperless-tika
+  type: ClusterIP
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: paperless-ngx-domain-com
+  namespace: paperless-ngx
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - paperless-ngx.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: paperless-ngx-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-paperless-ngx-https-redirect
+  namespace: paperless-ngx
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-paperless-ngx-security
+  namespace: paperless-ngx
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-paperless-ngx-transport
+  namespace: paperless-ngx
+spec:
+  serverName: paperless-ngx 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-paperless-ngx-tlsoptions
+  namespace: paperless-ngx
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-paperless-ngx-websecure
+  namespace: paperless-ngx 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`paperless-ngx.domain.com`)
+      services:
+        - name: paperless-ngx
+          port: 8000
+          serversTransport: traefik-paperless-ngx-transport
+      middlewares:
+        - name: traefik-paperless-ngx-security
+  tls:
+    secretName: paperless-ngx-domain-com
+    options:
+      name: traefik-paperless-ngx-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-paperless-ngx-web
+  namespace: paperless-ngx
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`paperless-ngx.domain.com`)
+      services:
+        - name: paperless-ngx
+          port: 8000
+      middlewares:
+        - name: traefik-paperless-ngx-https-redirect
