@@ -1,0 +1,206 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: freshrss
+  labels:
+    name: freshrss
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: freshrss-data
+  namespace: freshrss
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: freshrss-extensions
+  namespace: freshrss
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: asustornas1-nfs-csi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshrss
+  namespace: freshrss
+  labels:
+    app: freshrss
+    app.kubernetes.io/name: freshrss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freshrss
+  template:
+    metadata:
+      labels:
+        app: freshrss
+        app.kubernetes.io/name: freshrss
+    spec:
+      containers:
+        - name: freshrss
+          image: freshrss/freshrss
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: TZ
+              value: "Europe/Rome"
+            - name: CRON_MIN
+              value: "1,31"
+          volumeMounts:
+          - mountPath: /var/www/FreshRSS/data
+            name: freshrss-data
+          - mountPath: /var/www/FreshRSS/extensions
+            name: freshrss-extensions
+      volumes:
+      - name: freshrss-data
+        persistentVolumeClaim:
+          claimName: freshrss-data
+      - name: freshrss-extensions
+        persistentVolumeClaim:
+          claimName: freshrss-extensions
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: freshrss
+  name: freshrss
+  namespace: freshrss
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: freshrss
+  type: ClusterIP
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: freshrss-domain-com
+  namespace: freshrss
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - freshrss.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: freshrss-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-freshrss-https-redirect
+  namespace: freshrss
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-freshrss-security
+  namespace: freshrss
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-freshrss-transport
+  namespace: freshrss
+spec:
+  serverName: freshrss 
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: traefik-freshrss-tlsoptions
+  namespace: freshrss
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-freshrss-websecure
+  namespace: freshrss 
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`freshrss.domain.com`)
+      services:
+        - name: freshrss
+          port: 80
+          serversTransport: traefik-freshrss-transport
+      middlewares:
+        - name: traefik-freshrss-security
+  tls:
+    secretName: freshrss-domain-com
+    options:
+      name: traefik-freshrss-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-freshrss-web
+  namespace: freshrss
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`freshrss.domain.com`)
+      services:
+        - name: freshrss
+          port: 80
+      middlewares:
+        - name: traefik-freshrss-https-redirect

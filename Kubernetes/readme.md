@@ -184,4 +184,5 @@ Here are the detailed steps to deploy our homelab cluster
 27. [QRcode Generator](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/QRCodeGenerator)
 28. [Reactive Resume (to do)](https://mariushosting.com/how-to-install-reactive-resume-v4-on-your-synology-nas/)
 29. [RSS (to do )](https://mariushosting.com/how-to-install-rss-on-your-synology-nas/)
-30. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)
+30. [FreshRSS](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FreshRSS)
+31. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)
