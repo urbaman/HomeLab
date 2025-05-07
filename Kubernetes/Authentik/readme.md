@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-You better have a dedicated postgres db with dedicated user and a redis server.
+You better have a dedicated postgres db with dedicated user and a redis server with a dedicated db.
 
 Create a random secret_key:
 
@@ -22,7 +22,7 @@ To the traefik deployment (or directly in the helm chart)
 
 ## Helm deploy
 
-In the authentik-values.yaml file, set the secret-key value, metrics and servicemonitor to true, servicemonitor labels to release: kube-prometheus-stack, geoip.enabled to true, fill the maxmind apikey values, and the email specifics for the notifications, and/or whatever you need
+In the authentik-values.yaml file, set the secret-key value, metrics and servicemonitor to true, servicemonitor labels to release: kube-prometheus-stack, geoip.enabled to true, fill the maxmind apikey values, and the email specifics for the notifications, and/or whatever you need. Also set the global env variable `AUTHENTIK_REDIS__DB` to the dedicated redis db (eg `"15"`).
 
 ```bash
 helm repo add authentik https://charts.goauthentik.io
@@ -37,14 +37,16 @@ The enbedded outpost gets created together with a dedicated ingress in the authe
 
 ## Proxy provider
 
-**Provider**
+### Provider
+
 - Name: Home forward auth
 - Authorization flow: default-provider-authorization-explicit-consent
 - Type: Forward auth (domain level)
 - Authentication URL: https://authentik.domain.com
 - Cookie domain: domain.com
 
-**Application**
+### Application
+
 - Name: Home
 - Provider: Home forward auth
 - Launch URL: blank://blank (this hides the application in the library page, “my applications”)
