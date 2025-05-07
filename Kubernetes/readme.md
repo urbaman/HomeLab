@@ -185,4 +185,5 @@ Here are the detailed steps to deploy our homelab cluster
 28. [Reactive Resume (to do)](https://mariushosting.com/how-to-install-reactive-resume-v4-on-your-synology-nas/)
 29. [RSS (to do )](https://mariushosting.com/how-to-install-rss-on-your-synology-nas/)
 30. [FreshRSS](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FreshRSS)
-31. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)
+31. [Karakeep bookmark organizer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Karakeep)
+32. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)
