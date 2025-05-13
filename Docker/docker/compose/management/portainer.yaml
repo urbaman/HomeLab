@@ -1,0 +1,41 @@
+services:
+  # Portainer - WebUI for Containers
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:latest # Use portainer-ee if you have a Business Edition license key
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["core", "all"]
+    networks:
+    #  - dnet
+      - traefik
+      - portainer
+    command: -H unix:///var/run/docker.sock # # Use Docker Socket Proxy instead for improved security
+    #command: -H tcp://socket-proxy:2375
+#    ports:
+#      - "9000:9000"
+#      - "8002:8000"
+#      - "9443:9443"
+    dns:
+      - 192.168.4.100
+      - 127.0.0.11
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # # Use Docker Socket Proxy instead for improved security
+      - $DATADIR/portainer/data:/data # Change to local directory if you want to save/transfer config locally
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.portainer-router.entrypoints=websecure"
+      - "traefik.http.routers.portainer-router.rule=Host(`portainer.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.portainer-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.portainer-router.service=portainer-svc"
+      - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
+
+

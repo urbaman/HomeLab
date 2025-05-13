@@ -1,0 +1,26 @@
+#version: "3.9"
+ 
+# NETWORKS
+networks:
+  traefik:
+    external: true
+  portainer:
+    external: true
+#  dnet:
+#    external: true
+ 
+# SECRETS
+secrets:
+  cf_dns_api_token:
+    file: $SECRETSDIR/cf_dns_api_token
+ 
+# SERVICES
+
+include:
+# NETWORK
+  # Traefik 3 - Reverse Proxy
+  - compose/network/traefik.yaml
+
+# MANAGEMENT
+  # Portainer - Docker management
+  - compose/management/portainer.yaml
