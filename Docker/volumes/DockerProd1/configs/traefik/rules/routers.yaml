@@ -1,0 +1,117 @@
+http:
+  routers:
+    asustornas1-router:
+      rule: "Host(`asustornas1.urbaman.cloud`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: asustornas1-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+    hosting1-https-router:
+      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-https-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "urbaman.it"
+            sans:
+              - "admin.urbaman.it"
+              - "webmail.urbaman.it"
+              - "mail.urbaman.it"
+              - "autodiscover.urbaman.it"
+              - "autoconfig.urbaman.it"
+              - "www.urbaman.it"
+              - "wp-manager.urbaman.it"
+          - main: "fateitalia.it"
+            sans:
+              - "*.fateitalia.it"
+          - main: "indiecongdr.it"
+            sans:
+              - "*.indiecongdr.it"
+          - main: "dreamlord.it"
+            sans:
+              - "*.dreamlord.it"
+          - main: "koboldinabox.com"
+            sans:
+              - "*.koboldinabox.com"
+          - main: "gamechefpummarola.eu"
+            sans:
+              - "*.gamechefpummarola.eu"
+    hosting1-usermin-router:
+      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      entryPoints:
+        - usermin
+      middlewares:
+        - secure-headers@file
+      service: hosting1-usermin-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "urbaman.it"
+            sans:
+              - "admin.urbaman.it"
+              - "webmail.urbaman.it"
+              - "mail.urbaman.it"
+              - "autodiscover.urbaman.it"
+              - "autoconfig.urbaman.it"
+              - "www.urbaman.it"
+              - "wp-manager.urbaman.it"
+          - main: "fateitalia.it"
+            sans:
+              - "*.fateitalia.it"
+          - main: "indiecongdr.it"
+            sans:
+              - "*.indiecongdr.it"
+          - main: "dreamlord.it"
+            sans:
+              - "*.dreamlord.it"
+          - main: "koboldinabox.com"
+            sans:
+              - "*.koboldinabox.com"
+          - main: "gamechefpummarola.eu"
+            sans:
+              - "*.gamechefpummarola.eu"
+    hosting1-webmin-router:
+      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      entryPoints:
+        - webmin
+      middlewares:
+        - secure-headers@file
+      service: hosting1-webmin-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "urbaman.it"
+            sans:
+              - "admin.urbaman.it"
+              - "webmail.urbaman.it"
+              - "mail.urbaman.it"
+              - "autodiscover.urbaman.it"
+              - "autoconfig.urbaman.it"
+              - "www.urbaman.it"
+              - "wp-manager.urbaman.it"
+          - main: "fateitalia.it"
+            sans:
+              - "*.fateitalia.it"
+          - main: "indiecongdr.it"
+            sans:
+              - "*.indiecongdr.it"
+          - main: "dreamlord.it"
+            sans:
+              - "*.dreamlord.it"
+          - main: "koboldinabox.com"
+            sans:
+              - "*.koboldinabox.com"
+          - main: "gamechefpummarola.eu"
+            sans:
+              - "*.gamechefpummarola.eu"

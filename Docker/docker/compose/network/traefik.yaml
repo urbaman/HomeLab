@@ -78,6 +78,9 @@ services:
       - --log=true
       - --log.filePath=/logs/traefik.log
       - --log.level=INFO # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --log.compress=true
+      - --log.maxBackups=3
+      - --log.maxAge=3
       - --accessLog=true
       - --accessLog.filePath=/logs/access.log
       - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
@@ -96,6 +99,7 @@ services:
       - --providers.file.watch=true # Only works on top level files in the rules folder
       # - --certificatesResolvers.dns-cloudflare.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server - uncomment when testing
       - --certificatesresolvers.dns-cloudflare.acme.storage=acme.json
+      - --certificatesresolvers.dns-cloudflare.acme.email=urbaman@gmail.com
       - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.provider=cloudflare
       - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.resolvers=8.8.8.8:53,1.1.1.1:53,1.0.0.1:53
       - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.propagation.delayBeforeChecks=90 # To delay DNS check and reduce LE hitrate
@@ -118,10 +122,9 @@ services:
     environment:
       - TZ=${TZ}
         #- CLOUDFLARE_DNS_API_TOKEN=cloudflare_api_token
-      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
+      - CF_DNS_API_TOKEN=JE_x_kprqvanniCDRrv8N4lUCWJDlQKxG61Al89Z
       - DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
-    secrets:
-      - cf_dns_api_token
+      - DOMAINNAME_2
     labels:
       - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
