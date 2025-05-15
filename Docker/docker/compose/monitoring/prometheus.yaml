@@ -1,0 +1,40 @@
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - '$CONFIGDIR/prometheus:/etc/prometheus'
+      - '$DATADIR/prometheus:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - monitoring
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.prometheus-router.entrypoints=websecure"
+      - "traefik.http.routers.prometheus-router.rule=Host(`prometheus.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.prometheus-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.prometheus-router.service=prometheus-service"
+      - "traefik.http.services.prometheus-service.loadbalancer.server.port=9090"
+
+        #volumes:
+        #  prometheus-data:
+        #    external: true
+        #  prometheus-config:
+        #    external: true

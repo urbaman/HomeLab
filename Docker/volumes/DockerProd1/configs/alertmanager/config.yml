@@ -1,0 +1,28 @@
+global:
+  resolve_timeout: '5m'
+route:
+  group_by: ['namespace']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: 'null'
+  routes:
+  - receiver: 'null'
+    matchers:
+      - alertname =~ "InfoInhibitor|Watchdog"
+  - receiver: 'mail'
+receivers:
+  - name: 'null'
+  - name: 'mail'
+    email_configs:
+    - to: 'admin@urbaman.it'
+      from: 'alertmanager@urbaman.it'
+      smarthost: mail.urbaman.it:587
+      auth_username: 'admin@urbaman.it'
+      auth_identity: 'admin@urbaman.it'
+      auth_password: ')1f?zd97SKGI'
+      send_resolved: true
+      tls_config:
+        insecure_skip_verify: true
+      headers:
+        subject: 'Prometheus Mail Alerts'

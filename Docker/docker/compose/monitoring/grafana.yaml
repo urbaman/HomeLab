@@ -1,0 +1,38 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana
+    volumes:
+      - '/mnt/DockerProd/data/grafana:/var/lib/grafana'
+      - '/mnt/DockerProd/configs/grafana:/etc/grafana/provisioning'
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_ALERTING_ENABLED=false
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - TZ=${TZ}
+    restart: unless-stopped
+    user: '1000'
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - monitoring
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.grafana-router.entrypoints=websecure"
+      - "traefik.http.routers.grafana-router.rule=Host(`grafana.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.grafana-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.grafana-router.service=grafana-service"
+      - "traefik.http.services.grafana-service.loadbalancer.server.port=3000"
+
+        #volumes:
+        #  grafana-data:
+        #    external: true 
+        #  grafana-provisioning:
+        #    external: true

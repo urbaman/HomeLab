@@ -1,0 +1,36 @@
+services:
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - '$CONFIGDIR/alertmanager:/etc/alertmanager'
+      - '$DATADIR/alertmanager:/alertmanager'
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    networks:
+      - monitoring
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      # HTTP Routers
+      - "traefik.http.routers.alertmanager-router.entrypoints=websecure"
+      - "traefik.http.routers.alertmanager-router.rule=Host(`alertmanager.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.alertmanager-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.alertmanager-router.service=alertmanager-service"
+      - "traefik.http.services.alertmanager-service.loadbalancer.server.port=9093"
+
+        #volumes:
+        #  alertmanager-data:
+        #    external: true
+        #  alertmanager-config:
+        #    external: true
