@@ -1,0 +1,188 @@
+services:
+  wazuh.manager:
+    image: wazuh/wazuh-manager:4.12.0
+    hostname: wazuh.manager
+    restart: always
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 655360
+        hard: 655360
+    ports:
+      - "1514:1514"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
+    networks:
+      - security
+    environment:
+      - INDEXER_URL=https://wazuh.indexer:9200
+      - INDEXER_USERNAME=admin
+      - INDEXER_PASSWORD=jNaam*9MTEBKJMP4
+      - FILEBEAT_SSL_VERIFICATION_MODE=full
+      - SSL_CERTIFICATE_AUTHORITIES=/etc/ssl/root-ca.pem
+      - SSL_CERTIFICATE=/etc/ssl/filebeat.pem
+      - SSL_KEY=/etc/ssl/filebeat.key
+      - API_USERNAME=wazuh-wui
+      - API_PASSWORD=3uu1!2vRwE4Q7QGj
+    volumes:
+      - 'wazuh_api_configuration:/var/ossec/api/configuration'
+      - 'wazuh_etc:/var/ossec/etc'
+      - 'wazuh_logs:/var/ossec/logs'
+      - 'wazuh_queue:/var/ossec/queue'
+      - 'wazuh_var_multigroups:/var/ossec/var/multigroups'
+      - 'wazuh_integrations:/var/ossec/integrations'
+      - 'wazuh_active_response:/var/ossec/active-response/bin'
+      - 'wazuh_agentless:/var/ossec/agentless'
+      - 'wazuh_wodles:/var/ossec/wodles'
+      - 'filebeat_etc:/etc/filebeat'
+      - '/filebeat_var:/var/lib/filebeat'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/root-ca-manager.pem:/etc/ssl/root-ca.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key'
+      - '$CONFIGDIR/wazuh/wazuh_cluster/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf'
+
+  wazuh.indexer:
+    image: wazuh/wazuh-indexer:4.12.0
+    hostname: wazuh.indexer
+    restart: always
+    ports:
+      - "9200:9200"
+    networks:
+      - security
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - 'wazuh-indexer-data:/var/lib/wazuh-indexer'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/certs/root-ca.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.key'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/admin.pem:/usr/share/wazuh-indexer/certs/admin.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/certs/admin-key.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/opensearch.yml'
+      - '$CONFIGDIR/wazuh/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/opensearch-security/internal_users.yml'
+
+  wazuh.dashboard:
+    image: wazuh/wazuh-dashboard:4.12.0
+    hostname: wazuh.dashboard
+    restart: always
+    ports:
+      - "8080:5601"
+    networks:
+      - security
+    environment:
+      - INDEXER_USERNAME=admin
+      - INDEXER_PASSWORD=jNaam*9MTEBKJMP4
+      - WAZUH_API_URL=https://wazuh.manager
+      - DASHBOARD_USERNAME=kibanaserver
+      - DASHBOARD_PASSWORD=KANLd%mxvAbdcO#3
+      - API_USERNAME=wazuh-wui
+      - API_PASSWORD=3uu1!2vRwE4Q7QGj
+    volumes:
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.dashboard.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.dashboard-key.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem'
+      - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-dashboard/certs/root-ca.pem'
+      - '$CONFIGDIR/wazuh/wazuh_dashboard/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml'
+      - '$CONFIGDIR/wazuh/wazuh_dashboard/wazuh.yml:/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml'
+      - 'wazuh-dashboard-config:/usr/share/wazuh-dashboard/data/wazuh/config'
+      - 'wazuh-dashboard-custom:/usr/share/wazuh-dashboard/plugins/wazuh/public/assets/custom'
+    depends_on:
+      - wazuh.indexer
+    links:
+      - wazuh.indexer:wazuh.indexer
+      - wazuh.manager:wazuh.manager
+
+volumes:
+  wazuh_api_configuration:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_api_configuration
+  wazuh_etc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_etc
+  wazuh_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_logs
+  wazuh_queue:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_queue
+  wazuh_var_multigroups:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_var_multigroups
+  wazuh_integrations:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_integrations
+  wazuh_active_response:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_active_response
+  wazuh_agentless:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_agentless
+  wazuh_wodles:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh_wodles
+  filebeat_etc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/filebeat_etc
+  filebeat_var:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/filebeat_var
+  wazuh-indexer-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $DATADIR/wazuh/wazuh-indexer-data
+  wazuh-dashboard-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh-dashboard-config
+  wazuh-dashboard-custom:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $CONFIGDIR/wazuh/wazuh-dashboard-custom
