@@ -19,6 +19,7 @@ services:
     labels:
       - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
+      - "traefik.docker.network=portainer"
       # HTTP Routers
       - "traefik.http.routers.portainer-router.entrypoints=websecure"
       - "traefik.http.routers.portainer-router.rule=Host(`portainer.$DOMAINNAME_1`)"

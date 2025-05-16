@@ -26,6 +26,7 @@ services:
     labels:
       - "org.label-schema.group=monitoring"      
       - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
       # HTTP Routers
       - "traefik.http.routers.cadvisor-router.entrypoints=websecure"
       - "traefik.http.routers.cadvisor-router.rule=Host(`cadvisor.$DOMAINNAME_1`)"

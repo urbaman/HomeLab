@@ -43,6 +43,9 @@ services:
       - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem'
       - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key'
       - '$CONFIGDIR/wazuh/wazuh_cluster/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf'
+    labels:
+      - "org.label-schema.group=security"
+
 
   wazuh.indexer:
     image: wazuh/wazuh-indexer:4.12.0
@@ -70,13 +73,15 @@ services:
       - '$CONFIGDIR/wazuh/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/certs/admin-key.pem'
       - '$CONFIGDIR/wazuh/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/opensearch.yml'
       - '$CONFIGDIR/wazuh/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/opensearch-security/internal_users.yml'
+    labels:
+      - "org.label-schema.group=security"
 
   wazuh.dashboard:
     image: wazuh/wazuh-dashboard:4.12.0
     hostname: wazuh.dashboard
     restart: always
     ports:
-      - "8080:5601"
+      - "5601"
     networks:
       - security
     environment:
@@ -100,6 +105,19 @@ services:
     links:
       - wazuh.indexer:wazuh.indexer
       - wazuh.manager:wazuh.manager
+    labels:
+      - "org.label-schema.group=security"
+      - "traefik.enable=true"
+      - "traefik.docker.network=security"
+      # HTTP Routers
+      - "traefik.http.routers.wazuh-router.entrypoints=websecure"
+      - "traefik.http.routers.wazuh-router.rule=Host(`wazuh.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.wazuh-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.wazuh-router.service=wazuh-svc"
+      - "traefik.http.services.wazuh-svc.loadbalancer.server.port=5601"
+      - "traefik.http.services.wazuh-svc.loadbalancer.server.scheme=https"
 
 volumes:
   wazuh_api_configuration:

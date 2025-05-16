@@ -20,6 +20,7 @@ services:
     labels:
       - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
       # HTTP Routers
       - "traefik.http.routers.alertmanager-router.entrypoints=websecure"
       - "traefik.http.routers.alertmanager-router.rule=Host(`alertmanager.$DOMAINNAME_1`)"

@@ -22,6 +22,7 @@ services:
     labels:
       - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
       # HTTP Routers
       - "traefik.http.routers.grafana-router.entrypoints=websecure"
       - "traefik.http.routers.grafana-router.rule=Host(`grafana.$DOMAINNAME_1`)"

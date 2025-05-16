@@ -24,6 +24,7 @@ services:
     labels:
       - "org.label-schema.group=monitoring"
       - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
       # HTTP Routers
       - "traefik.http.routers.prometheus-router.entrypoints=websecure"
       - "traefik.http.routers.prometheus-router.rule=Host(`prometheus.$DOMAINNAME_1`)"
