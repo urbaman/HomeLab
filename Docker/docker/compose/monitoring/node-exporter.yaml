@@ -16,6 +16,10 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.processes'
+      - '--collector.interrupts'
+      - '--collector.systemd'
+      - '--collector.tcpstat'
     restart: unless-stopped
     networks:
       - monitoring
