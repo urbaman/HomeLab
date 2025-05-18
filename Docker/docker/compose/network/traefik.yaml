@@ -62,6 +62,27 @@ services:
       - --entryPoints.webmin.address=:2087/tcp
       - --entryPoints.webmin.proxyProtocol.insecure=true
       - --entryPoints.webmin.forwardedHeaders.insecure=true
+        #- --entrypoints.webmin.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-1514.address=:1514/tcp
+      - --entryPoints.wazuh-1514.proxyProtocol.insecure=true
+      - --entryPoints.wazuh-1514.forwardedHeaders.insecure=true
+        #- --entrypoints.wazuh-1514.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-1515.address=:1515/tcp
+      - --entryPoints.wazuh-1515.proxyProtocol.insecure=true
+      - --entryPoints.wazuh-1515.forwardedHeaders.insecure=true
+        #- --entrypoints.wazuh-1515.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-514.address=:514/udp
+      - --entryPoints.wazuh-514.proxyProtocol.insecure=true
+      - --entryPoints.wazuh-514.forwardedHeaders.insecure=true
+        #- --entrypoints.wazuh-514.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-55000.address=:55000/tcp
+      - --entryPoints.wazuh-55000.proxyProtocol.insecure=true
+      - --entryPoints.wazuh-55000.forwardedHeaders.insecure=true
+        #- --entrypoints.wazuh-55000.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-9200.address=:9200/tcp
+      - --entryPoints.wazuh-9200.proxyProtocol.insecure=true
+      - --entryPoints.wazuh-9200.forwardedHeaders.insecure=true
+        #- --entrypoints.wazuh-9200.http.middlewares=traefik-bouncer@file
       - --api=true
       - --api.dashboard=true
       - --ping=true
@@ -120,6 +141,12 @@ services:
       - "2083:2083"
       # Webmin
       - "2087:2087"
+      # Wazuh
+      - "1514:1514"
+      - "1515:1515"
+      - "514:514/udp"
+      - "52000:52000"
+      - "9200:9200"
     volumes:
       - $CONFIGDIR/traefik/rules:/rules # Dynamic File Provider directory
       - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy
