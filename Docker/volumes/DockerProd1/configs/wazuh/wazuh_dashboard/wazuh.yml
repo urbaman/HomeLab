@@ -3,6 +3,6 @@ hosts:
       url: "https://wazuh.manager"
       port: 55000
       username: wazuh-wui
-      password: "3uu1!2vRwE4Q7QGj"
+      password: "<api-password"
       run_as: false
-enrollment.dns: "wazuh.urbaman.it"
+enrollment.dns: "wazuh.domain.com"
