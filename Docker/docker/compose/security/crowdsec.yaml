@@ -1,0 +1,22 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec
+    container_name: crowdsec
+    environment:
+      PGID: "1000"
+      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve"
+    expose:
+      - "8080"
+    volumes:
+      - $DATADIR/crowdsec:/var/lib/crowdsec/data
+      - /var/log/auth.log:/logs/auth.log:ro
+      - /var/log/syslog:/logs/syslog:ro
+      - $CONFIGDIR/crowdsec:/etc/crowdsec
+    restart: unless-stopped
+    labels:
+      - traefik.enable=false
+    networks:
+      - traefik
+      - security
+      - monitoring
+      - portainer

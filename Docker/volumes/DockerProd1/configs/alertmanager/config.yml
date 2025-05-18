@@ -15,12 +15,12 @@ receivers:
   - name: 'null'
   - name: 'mail'
     email_configs:
-    - to: 'admin@urbaman.it'
-      from: 'alertmanager@urbaman.it'
-      smarthost: mail.urbaman.it:587
-      auth_username: 'admin@urbaman.it'
-      auth_identity: 'admin@urbaman.it'
-      auth_password: ')1f?zd97SKGI'
+    - to: 'admin@domain.com'
+      from: 'alertmanager@domain.com'
+      smarthost: mail.domain.com:587
+      auth_username: 'admin@domain.com'
+      auth_identity: 'admin@domain.com'
+      auth_password: '<password>'
       send_resolved: true
       tls_config:
         insecure_skip_verify: true

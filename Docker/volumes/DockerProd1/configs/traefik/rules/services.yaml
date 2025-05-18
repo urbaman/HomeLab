@@ -3,16 +3,16 @@ http:
     asustornas1-service:
       loadBalancer:
         servers:
-          - url: "https://10.0.100.31:8001"
+          - url: "https://ASUSTOR-IP:8001"
     hosting1-https-service:
       loadBalancer:
         servers:
-          - url: "https://10.0.100.16"
+          - url: "https://HOSTING-IP"
     hosting1-usermin-service:
       loadBalancer:
         servers:
-          - url: "https://10.0.100.16:2083"
+          - url: "https://HOSTING-IP:2083"
     hosting1-webmin-service:
       loadBalancer:
         servers:
-          - url: "https://10.0.100.16:2087"
+          - url: "https://HOSTING-IP:2087"

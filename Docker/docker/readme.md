@@ -49,3 +49,9 @@ Make other relevant changes to the compose file, like adding networks or the lik
 Follow the documentation for certs creation, and deploy. See that all directory permissions are are ok.
 
 Finally, follow the [documentation to change the passwords](https://documentation.wazuh.com/current/deployment-options/docker/wazuh-container.html#change-pwd-existing-usr).
+
+## Crowdsec
+
+Just start the container, then add the plugin and the middleware to traefik.
+
+Add a whitelist for ips and cidrs, add a mail notification.
