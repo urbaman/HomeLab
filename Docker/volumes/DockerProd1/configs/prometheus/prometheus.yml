@@ -51,3 +51,38 @@ scrape_configs:
     static_configs:
       - targets:
         - alertmanager:9093
+
+  - job_name: 'crowdsec_docker'
+    static_configs:
+      - targets: ['crowdsec:6060']
+        labels:
+          machine: 'docker'
+
+  - job_name: 'crowdsec_pfsense'
+    static_configs:
+      - targets: ['10.0.100.1:6060']
+        labels:
+          machine: 'pfsense'
+
+  - job_name: 'pfsense'
+    static_configs:
+      - targets: ['10.0.100.1:9100']
+        labels:
+          machine: 'pfsense'
+
+  - job_name: 'pbs1'
+    static_configs:
+      - targets: ['pbs1-exporter:10019']
+        labels:
+          machine: 'pbs1'
+
+  - job_name: 'pve_cluster'
+    metrics_path: "/pve"
+    static_configs:
+      - targets: ['10.0.100.11:9221'] # ,'10.0.100.12:9221','10.0.100.13:9221']
+        labels:
+          machine: 'pve_cluster'
+    params:
+      module: [default]
+      cluster: ['1']
+      node: ['1']

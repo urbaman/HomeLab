@@ -1,0 +1,22 @@
+services:
+  pbs1-exporter:
+    image: ghcr.io/natrontech/pbs-exporter
+    container_name: pbs1-exporter
+    pull_policy: always
+    environment:
+      - TZ=${TZ}
+      - PBS_API_TOKEN=${PBS_API_TOKEN}
+      - PBS_ENDPOINT=https://pbs1.urbaman.cloud:8007
+      - PBS_INSECURE=false
+      - PBS_API_TOKEN_NAME=exporter
+      - PBS_USERNAME=exporter@pbs
+        #- PBS_METRICS_PATH="/pbs1-metrics"
+    expose:
+      - 10019
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - monitoring
+    labels:
+      - "org.label-schema.group=monitoring"

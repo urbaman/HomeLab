@@ -11,6 +11,7 @@ services:
       - $DATADIR/crowdsec:/var/lib/crowdsec/data
       - /var/log/auth.log:/logs/auth.log:ro
       - /var/log/syslog:/logs/syslog:ro
+      - $LOGDIR/traefik/access.log:/var/log/traefik/access.log:ro
       - $CONFIGDIR/crowdsec:/etc/crowdsec
     restart: unless-stopped
     labels:
