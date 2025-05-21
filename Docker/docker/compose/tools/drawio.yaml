@@ -1,0 +1,23 @@
+services:
+  drawio:
+    container_name: drawio
+    image: jgraph/drawio:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.drawio-router.entrypoints=websecure"
+      - "traefik.http.routers.drawio-router.rule=Host(`drawio.$DOMAINNAME_1`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.drawio-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.drawio-router.service=drawio-service"
+      - "traefik.http.services.drawio-service.loadbalancer.server.port=8080"
+

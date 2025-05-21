@@ -20,4 +20,5 @@ services:
       - traefik
       - security
       - monitoring
-      - portainer
+      - management
+      - tools

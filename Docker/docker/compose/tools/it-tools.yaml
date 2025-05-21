@@ -1,0 +1,23 @@
+services:
+  it-tools:
+    container_name: it-tools
+    image: corentinth/it-tools:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.it-tools-router.entrypoints=websecure"
+      - "traefik.http.routers.it-tools-router.rule=Host(`it-tools.$DOMAINNAME_1`)" # HostRegexp:it-tools.${DOMAINNAME_1},{catchall:.*}" # Host(`it-tools.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.it-tools-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.it-tools-router.service=it-tools-service"
+      - "traefik.http.services.it-tools-service.loadbalancer.server.port=80"
+

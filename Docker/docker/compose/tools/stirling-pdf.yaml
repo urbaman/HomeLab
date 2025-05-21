@@ -1,0 +1,38 @@
+services:
+  s-pdf:
+    container_name: s-pdf
+    image: frooodle/s-pdf:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools
+    volumes:
+      - $DATADIR/stirling-pdf:/usr/share/tessdata
+      - $CONFIGDIR/stirling-pdf:/configs
+      - $LOGDIR/stirling-pdf:/logs
+    environment:
+      - DOCKER_ENABLE_SECURITY=true
+      - SECURITY_ENABLE_LOGIN=true
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=true
+      - SECURITY_CSRFDISABLED=true
+      - UI_APPNAME=StirlingPDF
+      - UI_HOMEDESCRIPTION=Stirling PDF tools
+      - UI_APPNAMENAVBAR=Stirling PDF Tools
+      - SYSTEM_MAXFILESIZE=10000
+      - METRICS_ENABLED=true
+      - SYSTEM_GOOGLEVISIBILITY=false
+      - SYSTEM_DEFAULTLOCALE=it_IT
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.s-pdf-router.entrypoints=websecure"
+      - "traefik.http.routers.s-pdf-router.rule=Host(`s-pdf.$DOMAINNAME_1`)" # HostRegexp:s-pdf.${DOMAINNAME_1},{catchall:.*}" # Host(`s-pdf.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.s-pdf-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.s-pdf-router.service=s-pdf-service"
+      - "traefik.http.services.s-pdf-service.loadbalancer.server.port=8080"
+

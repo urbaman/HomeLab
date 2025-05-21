@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     # profiles: ["core", "all"]
     networks:
-      - portainer
+      - management
     command: -H unix:///var/run/docker.sock # # Use Docker Socket Proxy instead for improved security
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # # Use Docker Socket Proxy instead for improved security
@@ -17,9 +17,9 @@ services:
     environment:
       - TZ=${TZ}
     labels:
-      - "org.label-schema.group=monitoring"
+      - "org.label-schema.group=management"
       - "traefik.enable=true"
-      - "traefik.docker.network=portainer"
+      - "traefik.docker.network=management"
       # HTTP Routers
       - "traefik.http.routers.portainer-router.entrypoints=websecure"
       - "traefik.http.routers.portainer-router.rule=Host(`portainer.$DOMAINNAME_1`)"

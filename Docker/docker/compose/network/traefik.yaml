@@ -11,9 +11,10 @@ services:
     networks:
 #      - dnet
       - traefik
-      - portainer
+      - management
       - monitoring
       - security
+      - tools
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true
