@@ -59,3 +59,4 @@ include:
   # It-Tools
   - compose/tools/it-tools.yaml
   # Stirling PDF
+  - compose/tools/stirling-pdf.yaml
