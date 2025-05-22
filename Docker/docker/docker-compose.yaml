@@ -14,12 +14,14 @@ networks:
     external: true
   databases:
     external: true
-
+#  dnet:
+#    external: true
+ 
 # SECRETS
 secrets:
   cf_dns_api_token:
     file: $SECRETSDIR/cf_dns_api_token
-
+ 
 # SERVICES
 
 include:
