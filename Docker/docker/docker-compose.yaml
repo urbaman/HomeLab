@@ -4,16 +4,22 @@
 networks:
   traefik:
     external: true
-  portainer:
+  management:
+    external: true
+  monitoring:
+    external: true
+  security:
+    external: true
+  tools:
     external: true
 #  dnet:
 #    external: true
- 
+
 # SECRETS
 secrets:
   cf_dns_api_token:
     file: $SECRETSDIR/cf_dns_api_token
- 
+
 # SERVICES
 
 include:
@@ -24,3 +30,27 @@ include:
 # MANAGEMENT
   # Portainer - Docker management
   - compose/management/portainer.yaml
+
+# MONITORING
+  # Cadvisor
+  - compose/monitoring/cadvisor.yaml
+  # Grafana
+  - compose/monitoring/grafana.yaml
+  # Prometheus
+  - compose/monitoring/prometheus.yaml
+  # Node-Exporter
+  - compose/monitoring/node-exporter.yaml
+  # Alertmanager
+  - compose/monitoring/alertmanager.yaml
+  # Pbs1-Exporter
+  - compose/monitoring/pbs1-exporter.yaml
+
+# SECURITY
+  # Wazuh
+  - compose/security/wazuh.yaml
+  - compose/security/crowdsec.yaml
+
+# Tools
+  - compose/tools/drawio.yaml
+  - compose/tools/it-tools.yaml
+  - compose/tools/stirling-pdf.yaml
