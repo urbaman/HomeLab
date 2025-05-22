@@ -4,7 +4,15 @@
 networks:
   traefik:
     external: true
-  portainer:
+  management:
+    external: true
+  monitoring:
+    external: true
+  security:
+    external: true
+  tools:
+    external: true
+  databases:
     external: true
 #  dnet:
 #    external: true
@@ -24,3 +32,33 @@ include:
 # MANAGEMENT
   # Portainer - Docker management
   - compose/management/portainer.yaml
+
+# MONITORING
+  # Cadvisor
+  - compose/monitoring/cadvisor.yaml
+  # Grafana
+  - compose/monitoring/grafana.yaml
+  # Prometheus
+  - compose/monitoring/prometheus.yaml
+  # Node-Exporter
+  - compose/monitoring/node-exporter.yaml
+  # Alertmanager
+  - compose/monitoring/alertmanager.yaml
+  # Pbs1-Exporter
+  - compose/monitoring/pbs1-exporter.yaml
+
+# SECURITY
+  # Wazuh
+  - compose/security/wazuh.yaml
+  # Crowdsec
+  - compose/security/crowdsec.yaml
+# Databases
+  # MariaDB
+  - compose/databases/mariadb.yaml
+# Tools
+  # Draw.io
+  - compose/tools/drawio.yaml
+  # It-Tools
+  - compose/tools/it-tools.yaml
+  # Stirling PDF
+  - compose/tools/stirling-pdf.yaml

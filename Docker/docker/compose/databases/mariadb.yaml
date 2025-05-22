@@ -1,0 +1,28 @@
+services:
+  # MariaDB 
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - databases
+    volumes:
+      - $DATADIR/mariadb:/var/lib/mysql
+      - $CONFIGDIR/mariadb:/etc/mysql
+    environment:
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PWD}
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+    labels:
+      - "org.label-schema.group=databases"
+      - "traefik.enable=true"
+      - "traefik.docker.network=databases"
+      - "traefik.tcp.routers.mysql-router.entrypoints=mysql"
+      - "traefik.tcp.routers.mysql-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mysql-router.service=mysql-service"
+      - "traefik.tcp.services.mysql-service.loadbalancer.server.port=3306"
+

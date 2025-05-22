@@ -15,6 +15,7 @@ services:
       - monitoring
       - security
       - tools
+      - databases
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true
@@ -41,19 +42,19 @@ services:
       - --entryPoints.gitlab-shell.forwardedHeaders.insecure=true
       - --entrypoints.gitlab-shell.http.middlewares=traefik-bouncer@file
       - --entryPoints.memcached.address=:11211/tcp
-      - --entryPoints.memcached.proxyProtocol.insecure=true
+        #- --entryPoints.memcached.proxyProtocol.insecure=true
       - --entryPoints.memcached.forwardedHeaders.insecure=true
       - --entrypoints.memcached.http.middlewares=traefik-bouncer@file
       - --entryPoints.mysql.address=:3306/tcp
-      - --entryPoints.mysql.proxyProtocol.insecure=true
+        #- --entryPoints.mysql.proxyProtocol.insecure=true
       - --entryPoints.mysql.forwardedHeaders.insecure=true
       - --entrypoints.mysql.http.middlewares=traefik-bouncer@file
       - --entryPoints.postgresql.address=:5432/tcp
-      - --entryPoints.postgresql.proxyProtocol.insecure=true
+        #- --entryPoints.postgresql.proxyProtocol.insecure=true
       - --entryPoints.postgresql.forwardedHeaders.insecure=true
       - --entrypoints.postgresql.http.middlewares=traefik-bouncer@file
       - --entryPoints.redis.address=:6379/tcp
-      - --entryPoints.redis.proxyProtocol.insecure=true
+        #- --entryPoints.redis.proxyProtocol.insecure=true
       - --entryPoints.redis.forwardedHeaders.insecure=true
       - --entrypoints.redis.http.middlewares=traefik-bouncer@file
       - --entryPoints.usermin.address=:2083/tcp
@@ -65,23 +66,23 @@ services:
       - --entryPoints.webmin.forwardedHeaders.insecure=true
       - --entrypoints.webmin.http.middlewares=traefik-bouncer@file
       - --entryPoints.wazuh-1514.address=:1514/tcp
-      - --entryPoints.wazuh-1514.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-1514.proxyProtocol.insecure=true
       - --entryPoints.wazuh-1514.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-1514.http.middlewares=traefik-bouncer@file
       - --entryPoints.wazuh-1515.address=:1515/tcp
-      - --entryPoints.wazuh-1515.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-1515.proxyProtocol.insecure=true
       - --entryPoints.wazuh-1515.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-1515.http.middlewares=traefik-bouncer@file
       - --entryPoints.wazuh-514.address=:514/udp
-      - --entryPoints.wazuh-514.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-514.proxyProtocol.insecure=true
       - --entryPoints.wazuh-514.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-514.http.middlewares=traefik-bouncer@file
       - --entryPoints.wazuh-55000.address=:55000/tcp
-      - --entryPoints.wazuh-55000.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-55000.proxyProtocol.insecure=true
       - --entryPoints.wazuh-55000.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-55000.http.middlewares=traefik-bouncer@file
       - --entryPoints.wazuh-9200.address=:9200/tcp
-      - --entryPoints.wazuh-9200.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-9200.proxyProtocol.insecure=true
       - --entryPoints.wazuh-9200.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-9200.http.middlewares=traefik-bouncer@file
       - --api=true
