@@ -1,0 +1,17 @@
+services:
+  postgres:
+    container_name: postgres
+    image: ghcr.io/immich-app/postgres:17-vectorchord0.3.0-pgvectors0.3.0
+    pull_policy: always
+    networks:
+      - databases
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
+      DB_STORAGE_TYPE: 'HDD'
+    volumes:
+      # Do not edit the next line. If you want to change the database storage location on your system, edit the value of DB_DATA_LOCATION in the .env file
+      - $DATADIR/postgresql:/var/lib/postgresql/data
+    restart: always

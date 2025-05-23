@@ -46,6 +46,8 @@ include:
   - compose/monitoring/alertmanager.yaml
   # Pbs1-Exporter
   - compose/monitoring/pbs1-exporter.yaml
+  # MariaDB Exporter
+  - compose/monitoring/mariadb-exporter.yaml
 
 # SECURITY
   # Wazuh
@@ -55,6 +57,9 @@ include:
 # Databases
   # MariaDB
   - compose/databases/mariadb.yaml
+  # Postgresql - immich version
+    #- compose/databases/postgresql.yaml
+
 # Tools
   # Draw.io
   - compose/tools/drawio.yaml
@@ -62,3 +67,5 @@ include:
   - compose/tools/it-tools.yaml
   # Stirling PDF
   - compose/tools/stirling-pdf.yaml
+  # Exalidraw
+  - compose/tools/exalidraw.yaml
