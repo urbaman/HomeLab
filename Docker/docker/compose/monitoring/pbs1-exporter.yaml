@@ -8,8 +8,8 @@ services:
       - PBS_API_TOKEN=${PBS_API_TOKEN}
       - PBS_ENDPOINT=https://pbs1.urbaman.cloud:8007
       - PBS_INSECURE=false
-      - PBS_API_TOKEN_NAME=exporter
-      - PBS_USERNAME=exporter@pbs
+      - PBS_API_TOKEN_NAME=${PBS_API_TOKEN_NAME}
+      - PBS_USERNAME=${PBS_USERNAME}
         #- PBS_METRICS_PATH="/pbs1-metrics"
     expose:
       - 10019

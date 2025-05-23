@@ -1,0 +1,34 @@
+services:
+  mariadb-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mariadb-exporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    command: 
+     - --config.my-cnf=/cfg/.my.cnf
+     - --mysqld.address=mariadb:3306
+     - --collect.info_schema.processlist 
+     - --collect.info_schema.innodb_metrics 
+     - --collect.info_schema.tablestats 
+     - --collect.info_schema.tables 
+     - --collect.info_schema.userstats 
+     - --collect.engine_innodb_status
+     - --collect.perf_schema.eventsstatements
+     - --collect.perf_schema.file_events
+     - --collect.perf_schema.indexiowaits
+     - --collect.perf_schema.tableiowaits
+     - --collect.perf_schema.tablelocks
+     - --collect.info_schema.query_response_time
+     - --collect.perf_schema.eventsstatementssum
+    networks:
+      - monitoring
+      - databases
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - $CONFIGDIR/mariadb-exporter/.my.cnf:/cfg/.my.cnf:ro
+    labels:
+      - "org.label-schema.group=monitoring"
+
