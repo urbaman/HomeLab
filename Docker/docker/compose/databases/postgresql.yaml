@@ -15,3 +15,11 @@ services:
       # Do not edit the next line. If you want to change the database storage location on your system, edit the value of DB_DATA_LOCATION in the .env file
       - $DATADIR/postgresql:/var/lib/postgresql/data
     restart: always
+    labels:
+      - "org.label-schema.group=databases"
+      - "traefik.enable=true"
+      - "traefik.docker.network=databases"
+      - "traefik.tcp.routers.postgresql-router.entrypoints=postgresql"
+      - "traefik.tcp.routers.postgresql-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgresql-router.service=postgresql-service"
+      - "traefik.tcp.services.postgresql-service.loadbalancer.server.port=5432"
