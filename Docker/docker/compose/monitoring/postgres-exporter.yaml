@@ -1,0 +1,28 @@
+services:
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: postgres-exporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - databases
+    command:
+     - --collector.postmaster
+     - --collector.long_running_transactions
+     - --collector.process_idle
+     - --collector.stat_activity_autovacuum
+     - --collector.stat_statements
+     - --collector.stat_wal_receiver
+     - --collector.statio_user_indexes
+     - --collector.statio_user_tables
+    environment:
+      - TZ=${TZ}
+      - DATA_SOURCE_URI=postgres:5432/postgres?sslmode=disable
+      - DATA_SOURCE_USER=postgres
+      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD}
+    labels:
+      - "org.label-schema.group=monitoring"
+
