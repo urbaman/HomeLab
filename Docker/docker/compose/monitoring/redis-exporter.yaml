@@ -1,0 +1,16 @@
+services:
+  redisexporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - databases
+    environment:
+      - TZ=${TZ}
+      - REDIS_ADDR=redis://valkey:6379
+    labels:
+      - "org.label-schema.group=monitoring"

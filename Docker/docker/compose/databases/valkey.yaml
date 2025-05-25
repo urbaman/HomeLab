@@ -1,0 +1,27 @@
+services:
+  valkey:
+    container_name: valkey
+    image: docker.io/valkey/valkey
+    pull_policy: always
+    networks:
+      - databases
+    security_opt:
+      - no-new-privileges:true
+    command:
+      - --save 60 1
+      - --loglevel warning
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - $DATADIR/valkey:/data
+    healthcheck:
+      test: redis-cli ping || exit 1
+    restart: always
+    labels:
+      - "org.label-schema.group=databases"
+      - "traefik.enable=true"
+      - "traefik.docker.network=databases"
+      - "traefik.tcp.routers.valkey-router.entrypoints=redis"
+      - "traefik.tcp.routers.valkey-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.valkey-router.service=valkey-service"
+      - "traefik.tcp.services.valkey-service.loadbalancer.server.port=6379"

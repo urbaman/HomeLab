@@ -1,0 +1,47 @@
+services:
+
+  immich-server:
+    container_name: immich
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+      #extends: cpu
+      #  file: hwaccel.transcoding.yml
+      #  service: nvenc # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+    volumes:
+      # Do not edit the next line. If you want to change the media storage location on your system, edit the value of UPLOAD_LOCATION in the .env file
+      - $DATADIR/immich:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    healthcheck:
+      disable: false
+    networks:
+      - tools
+      - databases
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+                - compute
+                - video
+    environment:
+      - DB_HOSTNAME=postgres
+      - DB_DATABASE_NAME=${IMMICH_DB}
+      - DB_USERNAME=${IMMICH_DB_USER}
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
+      - REDIS_HOSTNAME=valkey
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
+      # HTTP Routers
+      - "traefik.http.routers.immich-router.entrypoints=websecure"
+      - "traefik.http.routers.immich-router.rule=Host(`immich.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.immich-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.immich-router.service=immich-service"
+      - "traefik.http.services.immich-service.loadbalancer.server.port=2283"
+
