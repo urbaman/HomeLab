@@ -33,9 +33,9 @@ services:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
       - REDIS_HOSTNAME=valkey
     labels:
-      - "org.label-schema.group=monitoring"
+      - "org.label-schema.group=tools"
       - "traefik.enable=true"
-      - "traefik.docker.network=monitoring"
+      - "traefik.docker.network=tools"
       # HTTP Routers
       - "traefik.http.routers.immich-router.entrypoints=websecure"
       - "traefik.http.routers.immich-router.rule=Host(`immich.$DOMAINNAME_1`)"

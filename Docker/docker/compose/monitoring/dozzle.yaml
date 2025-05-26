@@ -1,0 +1,33 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    pull_policy: always
+    container_name: dozzle
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - traefik
+      - monitoring
+    environment:
+      - DOZZLE_LEVEL=info
+      - DOZZLE_TAILSIZE=300
+      - DOZZLE_FILTER="status=running"
+      # - DOZZLE_FILTER: "label=log_me" # limits logs displayed to containers with this label
+      # - DOCKER_HOST: tcp://socket-proxy:2375
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=monitoring"
+      - "traefik.enable=true"
+      - "traefik.docker.network=monitoring"
+      # HTTP Routers
+      - "traefik.http.routers.dozzle-router.entrypoints=websecure"
+      - "traefik.http.routers.dozzle-router.rule=Host(`dozzle.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.dozzle-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.dozzle-router.service=dozzle-service"
+      - "traefik.http.services.dozzle-service.loadbalancer.server.port=8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Use Docker Socket Proxy instead for improved security
+
