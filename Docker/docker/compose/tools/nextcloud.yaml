@@ -1,0 +1,58 @@
+services:
+  
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - traefik
+      - databases
+      - security
+      - tools
+    volumes:
+      - $DATADIR/nextcloud:/var/www/html/data
+      - $CONFIGDIR/nextcloud:/var/www/html/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextcloud
+      - POSTGRES_PASSWORD=${POSTGRES_NC_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - NEXTCLOUD_ADMIN_USER=${NC_ADMIN_USER}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NC_ADMIN_PASSWORD}
+      - REDIS_HOST=valkey
+      - SMTP_HOST=mail.urbaman.it
+      - SMTP_NAME=nextcloud@urbaman.it
+      - SMTP_PASSWORD=${NC_SMTP_PASSWORD}
+      - SMTP_PORT=587
+      - MAIL_FROM_ADDRESS=nextcloud@urbaman.it
+      - MAIL_DOMAIN=urbaman.it
+      - PHP_MEMORY_LIMIT=2048M
+      - PHP_UPLOAD_LIMIT=16G
+      - TRUSTED_PROXIES=10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22
+      - OVERWRITEHOST=nextcloud.urbaman.it
+      - OVERWRITEPROTOCOL=https
+      - OVERWRITECLIURL=https://nextcloud.domain.com
+      - APACHE_DISABLE_REWRITE_IP=1
+      - FORWARDED_FOR_HEADERS=HTTP_CF_CONNECTING_IP HTTP_X_FORWARDED_FOR
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.nextcloud-router.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud-router.rule=Host(`nextcloud.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.nextcloud-router.middlewares=secure-headers@file"
+      - "traefik.http.middlewares.sameorigin.headers.customFrameOptionsValue=sameorigin"
+      - "traefik.http.routers.nextcloud-router.middlewares=sameorigin"
+        #- "traefik.http.routers.nextcloud-router.middlewares=middlewares-buffer@file"
+      # HTTP Services
+      - "traefik.http.routers.nextcloud-router.service=nextcloud-service"
+      - "traefik.http.services.nextcloud-service.loadbalancer.server.port=80"
+
+

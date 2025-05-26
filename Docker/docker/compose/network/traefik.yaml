@@ -85,6 +85,14 @@ services:
         #- --entryPoints.wazuh-9200.proxyProtocol.insecure=true
       - --entryPoints.wazuh-9200.forwardedHeaders.insecure=true
       - --entrypoints.wazuh-9200.http.middlewares=traefik-bouncer@file
+      - --entryPoints.talk-udp.address=:3478/udp
+        #- --entryPoints.wazuh-514.proxyProtocol.insecure=true
+      - --entryPoints.talk-udp.forwardedHeaders.insecure=true
+      - --entrypoints.talk-udp.http.middlewares=traefik-bouncer@file
+      - --entryPoints.talk-tcp.address=:3478/tcp
+        #- --entryPoints.wazuh-55000.proxyProtocol.insecure=true
+      - --entryPoints.talk-tcp.forwardedHeaders.insecure=true
+      - --entrypoints.talk-tcp.http.middlewares=traefik-bouncer@file
       - --api=true
       - --api.dashboard=true
       - --ping=true
@@ -151,6 +159,8 @@ services:
       - "514:514/udp"
       - "52000:52000"
       - "9200:9200"
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
     volumes:
       - $CONFIGDIR/traefik/rules:/rules # Dynamic File Provider directory
       - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy

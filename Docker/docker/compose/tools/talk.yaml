@@ -1,0 +1,42 @@
+services:
+  talk:
+    container_name: talk
+    image: ghcr.io/nextcloud-releases/aio-talk:latest
+    pull_policy: always
+    init: true
+    networks:
+      - traefik
+      - tools
+    expose:
+      - 8081/tcp
+      - 3478/udp
+      - 3478/tcp 
+    environment:
+      - TZ=${TZ}
+      - NC_DOMAIN=${NC_DOMAIN}
+      - TALK_HOST=${TALK_HOST}
+      - TURN_SECRET={TALK_TURN_SECRET}
+      - SIGNALING_SECRET=${TALK_SIGNALING_SECRET}
+      - TALK_PORT=3478
+      - INTERNAL_SECRET=${TALK_INTERNAL_SECRET}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.talk-router.entrypoints=websecure"
+      - "traefik.http.routers.talk-router.rule=Host(`talk.$DOMAINNAME_1`)" # HostRegexp:talk.${DOMAINNAME_1},{catchall:.*}" # Host(`talk.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.talk-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.talk-router.service=talk-service"
+      - "traefik.http.services.talk-service.loadbalancer.server.port=8081"
+      # Talk udp
+      - "traefik.udp.routers.talk-udp-router.entrypoints=talk-udp"
+      - "traefik.udp.routers.talk-udp-router.service=talk-udp-service"
+      - "traefik.udp.services.talk-udp-service.loadbalancer.server.port=3478"
+      # Talk tcp
+      - "traefik.tcp.routers.talk-tcp-router.entrypoints=talk-tcp"
+      - "traefik.tcp.routers.talk-tcp-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.talk-tcp-router.service=talk-tcp-service"
+      - "traefik.tcp.services.talk-tcp-service.loadbalancer.server.port=3478"

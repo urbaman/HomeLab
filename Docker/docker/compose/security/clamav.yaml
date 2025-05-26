@@ -1,0 +1,18 @@
+services:
+  clamav:
+    image: clamav/clamav:latest_base
+    pull_policy: always
+    container_name: clamav
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - security 
+    environment:
+      # - DOZZLE_FILTER: "label=log_me" # limits logs displayed to containers with this label
+      # - DOCKER_HOST: tcp://socket-proxy:2375
+      - TZ=${TZ}
+    volumes:
+      - $DATADIR/clamav/db:/var/lib/clamav
+    labels:
+      - "org.label-schema.group=security"

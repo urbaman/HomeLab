@@ -1,0 +1,26 @@
+services:
+  collabora:
+    container_name: collabora
+    image: collabora/code:latest
+    pull_policy: always
+      #privileged: true
+    cap_add:
+      - MKNOD
+    networks:
+      - traefik
+      - tools
+    environment:
+      - TZ=${TZ}
+      - "extra-params=--o:ssl.enable=false --o:ssl.termination=true"
+      - username=${COLLABORA_USERNAME}
+      - password=${COLLABORA_PASSWORD}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      - "traefik.http.routers.collabora-router.entrypoints=websecure"
+      - "traefik.http.routers.collabora-router.rule=Host(`collabora.$DOMAINNAME_1`)" 
+      - "traefik.http.routers.collabora-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.collabora-router.service=collabora-service"
+      - "traefik.http.services.collabora-service.loadbalancer.server.scheme=https"
+      - "traefik.http.services.collabora-service.loadbalancer.server.port=9980"
