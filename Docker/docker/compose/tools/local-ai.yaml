@@ -1,0 +1,38 @@
+services:
+  local-ai:
+    container_name: local-ai
+    image: localai/localai:latest-gpu-nvidia-cuda-12-extras
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    environment:
+      - TZ=${TZ}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/readyz"]
+      interval: 1m
+      timeout: 20m
+      retries: 5
+    volumes:
+      - $DATADIR/local-ai/models:/build/models
+        #  - $DATADIR/images/:/tmp/generated/images/
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.local-ai-router.entrypoints=websecure"
+      - "traefik.http.routers.local-ai-router.rule=Host(`local-ai.$DOMAINNAME_1`)" # HostRegexp:local-ai.${DOMAINNAME_1},{catchall:.*}" # Host(`local-ai.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.local-ai-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.local-ai-router.service=local-ai-service"
+      - "traefik.http.services.local-ai-service.loadbalancer.server.port=8080"
+

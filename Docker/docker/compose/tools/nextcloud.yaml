@@ -12,9 +12,17 @@ services:
       - databases
       - security
       - tools
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     volumes:
       - $DATADIR/nextcloud:/var/www/html/data
       - $CONFIGDIR/nextcloud:/var/www/html/config
+      - $CONFIGDIR/nextcloud-php/opcache-recommed.ini:/usr/local/etc/php/conf.d/opcache-recommed.ini
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - TZ=${TZ}

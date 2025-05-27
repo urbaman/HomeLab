@@ -48,17 +48,28 @@ include:
   - compose/monitoring/pbs1-exporter.yaml
   # MariaDB Exporter
   - compose/monitoring/mariadb-exporter.yaml
+  # Postgres Exporter
+  - compose/monitoring/postgres-exporter.yaml
+  # Redis Exporter for Valkey
+  - compose/monitoring/redis-exporter.yaml
+  # Dozzle
+  - compose/monitoring/dozzle.yaml
 
 # SECURITY
   # Wazuh
   - compose/security/wazuh.yaml
   # Crowdsec
   - compose/security/crowdsec.yaml
+  # Crowdsec
+  - compose/security/clamav.yaml
+
 # Databases
   # MariaDB
   - compose/databases/mariadb.yaml
   # Postgresql - immich version
-    #- compose/databases/postgresql.yaml
+  - compose/databases/postgresql.yaml
+  # Valkey (Redis)
+  - compose/databases/valkey.yaml
 
 # Tools
   # Draw.io
@@ -69,3 +80,13 @@ include:
   - compose/tools/stirling-pdf.yaml
   # Exalidraw
   - compose/tools/exalidraw.yaml
+  # Immich
+  - compose/tools/immich.yaml
+  # Collabora
+  - compose/tools/collabora.yaml
+  # Nextcloud
+  - compose/tools/nextcloud.yaml
+  # Talk for Nextcloud
+  - compose/tools/talk.yaml
+  # Loacl-AI
+  - compose/tools/local-ai.yaml
