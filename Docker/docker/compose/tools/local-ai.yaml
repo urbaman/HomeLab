@@ -5,7 +5,7 @@ services:
     pull_policy: always
     networks:
       - traefik
-      - tools 
+      - tools
     environment:
       - TZ=${TZ}
       - LOCALAI-THREADS=8
