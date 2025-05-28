@@ -16,6 +16,7 @@ services:
       - security
       - tools
       - databases
+      - storage
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true

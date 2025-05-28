@@ -1,0 +1,39 @@
+services:
+  minio:
+    container_name: minio
+    image: minio/minio
+    pull_policy: always
+    networks:
+      - traefik
+      - storage
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - TZ=${TZ}
+      - MINIO_ROOT_USER=${MINIO_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}
+      - MINIO_VOLUMES="/mnt/data"
+      - MINIO_OPTS="--console-address :9001"
+    volumes:
+      - $DATADIR//minio:/mnt/data
+    command: server --console-address ":9001"
+    labels:
+      - "org.label-schema.group=storage"
+      - "traefik.enable=true"
+      - "traefik.docker.network=storage"
+      # HTTP Routers
+      - "traefik.http.routers.minio-tenant-router.entrypoints=websecure"
+      - "traefik.http.routers.minio-tenant-router.rule=Host(`minio-tenant.$DOMAINNAME_1`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.$DOMAINNAME_1`)"
+      - "traefik.http.routers.minio-s3-router.entrypoints=websecure"
+      - "traefik.http.routers.minio-s3-router.rule=Host(`minio-s3.$DOMAINNAME_1`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.minio-tenant-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.minio-s3-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.minio-tenant-router.service=minio-tenant-service"
+      - "traefik.http.services.minio-tenant-service.loadbalancer.server.port=9001"
+      - "traefik.http.routers.minio-s3-router.service=minio-s3-service"
+      - "traefik.http.services.minio-s3-service.loadbalancer.server.port=9000"
+
+

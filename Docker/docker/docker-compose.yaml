@@ -14,6 +14,8 @@ networks:
     external: true
   databases:
     external: true
+  storage:
+    external: true
 #  dnet:
 #    external: true
  
@@ -62,6 +64,10 @@ include:
   - compose/security/crowdsec.yaml
   # Crowdsec
   - compose/security/clamav.yaml
+
+# Storage
+  # Minio
+  - compose/storage/minio.yaml
 
 # Databases
   # MariaDB
