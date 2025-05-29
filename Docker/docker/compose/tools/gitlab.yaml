@@ -1,0 +1,119 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ee:latest
+    container_name: gitlab
+    restart: always
+    pull_policy: always
+    networks:
+      - traefik
+      - tools
+      - databases
+      - monitoring
+    environment:
+      GITLAB_DB_PASSWORD: ${GITLAB_DB_PASSWORD}
+      MINIO_USER: ${MINIO_USER}
+      MINIO_PASSWORD: ${MINIO_PASSWORD}
+      DOMAINNAME_1: ${DOMAINNAME_1}
+      GITLAB_SMTP_PASSWORD: ${GITLAB_SMTP_PASSWORD}
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['object_store']['enabled'] = true
+        gitlab_rails['object_store']['proxy_download'] = false
+        gitlab_rails['object_store']['connection'] = {
+                  'provider' => "AWS",
+                  'region' => "us-east-1",
+                  'endpoint' => "https://minio-s3.#{ENV['DOMAINNAME_1']}",
+                  'aws_access_key_id' => ENV['MINIO_USER'],
+                  'aws_secret_access_key' => ENV['MINIO_PASSWORD'],
+                  'path_style' => true
+                }
+        gitlab_rails['object_store']['objects']['artifacts']['bucket'] = "gitlab-artifacts"
+        gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = "gitlab-mr-diffs"
+        gitlab_rails['object_store']['objects']['lfs']['bucket'] = "gitlab-lfs"
+        gitlab_rails['object_store']['objects']['uploads']['bucket'] = "gitlab-uploads"
+        gitlab_rails['object_store']['objects']['packages']['bucket'] = "gitlab-packages"
+        gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = "gitlab-dependency-proxy"
+        gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = "gitlab-terraform-state"
+        gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = "gitlab-ci-secure-files"
+        gitlab_rails['object_store']['objects']['pages']['bucket'] = "gitlab-pages"
+        registry['storage'] = {
+          's3' => {
+                'accesskey' => ENV['MINIO_USER'],
+                'secretkey' => ENV['MINIO_PASSWORD'],
+                'bucket' => "gitlab-registry",
+                'region' => "us-east-1",
+                'regionendpoint' => "https://minio-s3.#{ENV['DOMAINNAME_1']}"
+          }
+        }
+        gitlab_rails['backup_upload_connection'] = {
+          'provider' => "AWS",
+          'region' => "us-east-1",
+          'aws_access_key_id' => ENV['MINIO_USER'],
+          'aws_secret_access_key' => ENV['MINIO_PASSWORD'],
+          'endpoint'              => "https://minio-s3.#{ENV['DOMAINNAME_1']}"
+        }
+        gitlab_rails['backup_upload_remote_directory'] = "gitlab-backups"
+        gitlab_rails['gitlab_shell_ssh_port'] = 2232
+        postgresql['enable'] = false
+        gitlab_rails['db_adapter'] = "postgresql"
+        gitlab_rails['db_encoding'] = "UTF8"
+        gitlab_rails['db_host'] = "postgres"
+        gitlab_rails['db_port'] = 5432
+        gitlab_rails['db_username'] = "gitlab"
+        gitlab_rails['db_password'] = ENV['GITLAB_DB_PASSWORD']
+        redis['enable'] = false
+        gitlab_rails['redis_host'] = "valkey"
+        gitlab_rails['redis_port'] = 6379
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = "mail.#{ENV['DOMAINNAME_1']}"
+        gitlab_rails['smtp_port'] = 587
+        gitlab_rails['smtp_user_name'] = "admin@#{ENV['DOMAINNAME_1']}"
+        gitlab_rails['smtp_password'] = ENV['GITLAB_SMTP_PASSWORD']
+        gitlab_rails['smtp_domain'] = ENV['DOMAINNAME_1']
+        gitlab_rails['smtp_authentication'] = "login"
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['gitlab_email_from'] = "gitlab@#{ENV['DOMAINNAME_1']}"
+        gitlab_rails['gitlab_email_reply_to'] = "noreply@#{ENV['DOMAINNAME_1']}"
+        external_url "https://gitlab.#{ENV['DOMAINNAME_1']}"
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        gitlab_pages['enable'] = true
+        pages_external_url "https://pages.#{ENV['DOMAINNAME_1']}"
+        pages_nginx['ssl'] = false
+        pages_nginx['listen_https'] = false
+        gitlab_pages['listen_proxy'] = '0.0.0.0:8090'
+        gitlab_pages['internal_gitlab_server'] = 'http://localhost:8080'
+    expose:
+      - '80'
+      - '443'
+      - '2232'
+      - '8090'
+    volumes:
+      - '$CONFIGDIR/gitlab:/etc/gitlab'
+      - '$LOGDIR/gitlab:/var/log/gitlab'
+      - '$DATADIR/gitlab:/var/opt/gitlab'
+    shm_size: '256m'
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.gitlab-router.entrypoints=websecure"
+      - "traefik.http.routers.gitlab-router.rule=Host(`gitlab.$DOMAINNAME_1`)" # HostRegexp:gitlab.${DOMAINNAME_1},{catchall:.*}" # Host(`gitlab.ENV['DOMAINNAME_1']`)"
+      # Middlewares
+      - "traefik.http.routers.gitlab-router.middlewares=gitlab-secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.gitlab-router.service=gitlab-service"
+      - "traefik.http.services.gitlab-service.loadbalancer.server.port=80"
+      # HTTP Routers
+      - "traefik.http.routers.gitlab-pages-router.entrypoints=websecure"
+      - "traefik.http.routers.gitlab-pages-router.rule=Host(`pages.$DOMAINNAME_1`)" # HostRegexp:gitlab.${DOMAINNAME_1},{catchall:.*}" # Host(`gitlab.ENV['DOMAINNAME_1']`)"
+      # Middlewares
+      - "traefik.http.routers.gitlab-pages-router.middlewares=gitlab-secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.gitlab-pages-router.service=gitlab-pages-service"
+      - "traefik.http.services.gitlab-pages-service.loadbalancer.server.port=8090"
+      - "traefik.tcp.routers.gitlab-shell-router.entrypoints=gitlab-shell"
+      - "traefik.tcp.routers.gitlab-shell-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.gitlab-shell-router.service=gitlab-shell-service"
+      - "traefik.tcp.services.gitlab-shell-service.loadbalancer.server.port=2232"
+    

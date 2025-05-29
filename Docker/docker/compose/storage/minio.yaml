@@ -6,9 +6,10 @@ services:
     networks:
       - traefik
       - storage
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+      - monitoring
+    expose:
+      - "9000"
+      - "9001"
     environment:
       - TZ=${TZ}
       - MINIO_ROOT_USER=${MINIO_USER}
@@ -16,7 +17,7 @@ services:
       - MINIO_VOLUMES="/mnt/data"
       - MINIO_OPTS="--console-address :9001"
     volumes:
-      - $DATADIR//minio:/mnt/data
+      - $DATADIR/minio:/mnt/data
     command: server --console-address ":9001"
     labels:
       - "org.label-schema.group=storage"

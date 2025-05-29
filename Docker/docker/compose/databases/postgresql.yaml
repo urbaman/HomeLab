@@ -14,6 +14,7 @@ services:
     volumes:
       # Do not edit the next line. If you want to change the database storage location on your system, edit the value of DB_DATA_LOCATION in the .env file
       - $DATADIR/postgresql:/var/lib/postgresql/data
+      - $CONFIGDIR/postgresql:/etc/postgresql
     restart: always
     labels:
       - "org.label-schema.group=databases"
