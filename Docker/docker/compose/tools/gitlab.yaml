@@ -82,11 +82,38 @@ services:
         pages_nginx['listen_https'] = false
         gitlab_pages['listen_proxy'] = '0.0.0.0:8090'
         gitlab_pages['internal_gitlab_server'] = 'http://localhost:8080'
+        prometheus['enable'] = false
+        node_exporter['listen_address'] = '0.0.0.0:9100'
+        gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
+        gitlab_exporter['listen_address'] = '0.0.0.0'
+        gitlab_exporter['listen_port'] = '9168'
+        registry['debug_addr'] = '0.0.0.0:5001'
+        sidekiq['listen_address'] = '0.0.0.0'
+        redis_exporter['listen_address'] = '0.0.0.0:9121'
+        postgres_exporter['listen_address'] = '0.0.0.0:9187'
+        gitaly['configuration'] = {
+          prometheus_listen_addr: '0.0.0.0:9236',
+        }
+        gitlab_rails['prometheus_address'] = 'prometheus:9090'
+        nginx['status']['options'] = {
+              "server_tokens" => "off",
+              "access_log" => "off",
+              "allow" => ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"],
+              "deny" => "all",
+        }
+        gitlab_rails['monitoring_whitelist'] = ['10.0.0.0/8', '192.168.0.0/16', '172.16.0.0/12']
     expose:
       - '80'
       - '443'
       - '2232'
       - '8090'
+      - '8060'
+      - '9100'
+      - '9229'
+      - '8082'
+      - '9168'
+      - '9236'
+      - '5001'
     volumes:
       - '$CONFIGDIR/gitlab:/etc/gitlab'
       - '$LOGDIR/gitlab:/var/log/gitlab'
