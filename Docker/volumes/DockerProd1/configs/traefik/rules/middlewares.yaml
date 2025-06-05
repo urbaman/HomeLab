@@ -9,9 +9,17 @@ http:
         stsIncludeSubdomains: true
         stsPreload: true
         stsSeconds: 31536000
+    secure-headers-no-frame-deny:
+      headers:
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
     traefik-bouncer:
       plugin:
         bouncer:
           enabled: true
-          crowdsecLapiKey: bouncer-enrollment-key
+          crowdsecLapiKey: utfgHvJF5fuDI3+7uBSI+iXKAK3tEP9DX4KX/TH6pBk
           crowdsecLapiHost: crowdsec:8080

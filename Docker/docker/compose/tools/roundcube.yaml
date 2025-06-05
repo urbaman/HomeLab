@@ -1,0 +1,34 @@
+services:
+
+  roundcube:
+    container_name: roundcube
+    image: roundcube/roundcubemail:latest 
+    restart: always
+    networks:
+      - tools
+      - databases
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=pgsql
+      - ROUNDCUBEMAIL_DB_HOST=postgres
+      - ROUNDCUBEMAIL_DB_PORT=5432
+      - ROUNDCUBEMAIL_DB_NAME=roundcube
+      - ROUNDCUBEMAIL_DB_USER=roundcube
+      - ROUNDCUBEMAIL_DB_PASSWORD=${ROUNDCUBE_DB_PASSWORD}
+      - ROUNDCUBEMAIL_DEFAULT_HOST=ssl://mail.${DOMAINNAME_1}
+      - ROUNDCUBEMAIL_DEFAULT_PORT=993
+      - ROUNDCUBEMAIL_SMTP_SERVER=ssl://mail..${DOMAINNAME_1}
+      - ROUNDCUBEMAIL_SMTP_PORT=587
+      - ROUNDCUBEMAIL_SKIN=elastic
+      - ROUNDCUBEMAIL_PLUGINS=archive,zipdownload
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.roundcube-router.entrypoints=websecure"
+      - "traefik.http.routers.roundcube-router.rule=Host(`webmail.$DOMAINNAME_2`)"
+      # Middlewares
+      - "traefik.http.routers.roundcube-router.middlewares=secure-headers-no-frame-deny@file"
+      # HTTP Services
+      - "traefik.http.routers.roundcube-router.service=roundcube-service"
+      - "traefik.http.services.roundcube-service.loadbalancer.server.port=80"

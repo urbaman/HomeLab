@@ -52,7 +52,10 @@ services:
           'endpoint'              => "https://minio-s3.#{ENV['DOMAINNAME_1']}"
         }
         gitlab_rails['backup_upload_remote_directory'] = "gitlab-backups"
-        gitlab_rails['gitlab_shell_ssh_port'] = 2232
+        registry['enable'] = true
+        registry['registry_http_addr'] = "0.0.0.0:5000"
+        registry['debug_addr'] = "0.0.0.0:5001"
+        gitlab_rails['registry_host'] = "registry.urbaman.it"
         postgresql['enable'] = false
         gitlab_rails['db_adapter'] = "postgresql"
         gitlab_rails['db_encoding'] = "UTF8"
@@ -73,9 +76,12 @@ services:
         gitlab_rails['smtp_enable_starttls_auto'] = true
         gitlab_rails['gitlab_email_from'] = "gitlab@#{ENV['DOMAINNAME_1']}"
         gitlab_rails['gitlab_email_reply_to'] = "noreply@#{ENV['DOMAINNAME_1']}"
-        external_url "https://gitlab.#{ENV['DOMAINNAME_1']}"
+        external_url = "https://gitlab.#{ENV['DOMAINNAME_1']}"
+        registry_external_url = "https://registry.#{ENV['DOMAINNAME_1']}"
         nginx['listen_port'] = 80
         nginx['listen_https'] = false
+        registry_nginx['redirect_http_to_https'] = true
+        registry_nginx['listen_port'] = 5678
         gitlab_pages['enable'] = true
         pages_external_url "https://pages.#{ENV['DOMAINNAME_1']}"
         pages_nginx['ssl'] = false
@@ -83,11 +89,11 @@ services:
         gitlab_pages['listen_proxy'] = '0.0.0.0:8090'
         gitlab_pages['internal_gitlab_server'] = 'http://localhost:8080'
         prometheus['enable'] = false
+        node_exporter['enable'] = true
         node_exporter['listen_address'] = '0.0.0.0:9100'
         gitlab_workhorse['prometheus_listen_addr'] = "0.0.0.0:9229"
         gitlab_exporter['listen_address'] = '0.0.0.0'
         gitlab_exporter['listen_port'] = '9168'
-        registry['debug_addr'] = '0.0.0.0:5001'
         sidekiq['listen_address'] = '0.0.0.0'
         redis_exporter['listen_address'] = '0.0.0.0:9121'
         postgres_exporter['listen_address'] = '0.0.0.0:9187'
@@ -105,7 +111,7 @@ services:
     expose:
       - '80'
       - '443'
-      - '2232'
+      - '22'
       - '8090'
       - '8060'
       - '9100'
@@ -114,6 +120,7 @@ services:
       - '9168'
       - '9236'
       - '5001'
+      - '5000'
     volumes:
       - '$CONFIGDIR/gitlab:/etc/gitlab'
       - '$LOGDIR/gitlab:/var/log/gitlab'
@@ -127,7 +134,7 @@ services:
       - "traefik.http.routers.gitlab-router.entrypoints=websecure"
       - "traefik.http.routers.gitlab-router.rule=Host(`gitlab.$DOMAINNAME_1`)" # HostRegexp:gitlab.${DOMAINNAME_1},{catchall:.*}" # Host(`gitlab.ENV['DOMAINNAME_1']`)"
       # Middlewares
-      - "traefik.http.routers.gitlab-router.middlewares=gitlab-secure-headers@file"
+      - "traefik.http.routers.gitlab-router.middlewares=secure-headers-no-frame-deny@file"
       # HTTP Services
       - "traefik.http.routers.gitlab-router.service=gitlab-service"
       - "traefik.http.services.gitlab-service.loadbalancer.server.port=80"
@@ -135,12 +142,20 @@ services:
       - "traefik.http.routers.gitlab-pages-router.entrypoints=websecure"
       - "traefik.http.routers.gitlab-pages-router.rule=Host(`pages.$DOMAINNAME_1`)" # HostRegexp:gitlab.${DOMAINNAME_1},{catchall:.*}" # Host(`gitlab.ENV['DOMAINNAME_1']`)"
       # Middlewares
-      - "traefik.http.routers.gitlab-pages-router.middlewares=gitlab-secure-headers@file"
+      - "traefik.http.routers.gitlab-pages-router.middlewares=secure-headers-no-frame-deny@file"
       # HTTP Services
       - "traefik.http.routers.gitlab-pages-router.service=gitlab-pages-service"
       - "traefik.http.services.gitlab-pages-service.loadbalancer.server.port=8090"
+      # HTTP Routers
+      - "traefik.http.routers.gitlab-registry-router.entrypoints=websecure"
+      - "traefik.http.routers.gitlab-registry-router.rule=Host(`registry.$DOMAINNAME_1`)" # HostRegexp:gitlab.${DOMAINNAME_1},{catchall:.*}" # Host(`gitlab.ENV['DOMAINNAME_1']`)"
+      # Middlewares
+      - "traefik.http.routers.gitlab-registry-router.middlewares=secure-headers-no-frame-deny@file"
+      # HTTP Services
+      - "traefik.http.routers.gitlab-registry-router.service=gitlab-registry-service"
+      - "traefik.http.services.gitlab-registry-service.loadbalancer.server.port=5000"
       - "traefik.tcp.routers.gitlab-shell-router.entrypoints=gitlab-shell"
       - "traefik.tcp.routers.gitlab-shell-router.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.gitlab-shell-router.service=gitlab-shell-service"
-      - "traefik.tcp.services.gitlab-shell-service.loadbalancer.server.port=2232"
+      - "traefik.tcp.services.gitlab-shell-service.loadbalancer.server.port=22"
     
