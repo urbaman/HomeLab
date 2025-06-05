@@ -1,7 +1,7 @@
 http:
   routers:
     asustornas1-router:
-      rule: "Host(`asustornas1.urbaman.cloud`)"
+      rule: "Host(`asustornas1.domain1.com`)"
       entryPoints:
         - websecure
       middlewares:
@@ -11,7 +11,7 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
     hosting1-https-router:
-      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Hostregexp(`.+\.domain5\.com`) || Host(`domain3.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain6.com`) || Host(`domain5.com`)
       entryPoints:
         - websecure
       middlewares:
@@ -21,32 +21,32 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "urbaman.it"
+          - main: "domain2.com"
             sans:
-              - "admin.urbaman.it"
-              - "webmail.urbaman.it"
-              - "mail.urbaman.it"
-              - "autodiscover.urbaman.it"
-              - "autoconfig.urbaman.it"
-              - "www.urbaman.it"
-              - "wp-manager.urbaman.it"
-          - main: "fateitalia.it"
+              - "admin.domain2.com"
+              - "webmail.domain2.com"
+              - "mail.domain2.com"
+              - "autodiscover.domain2.com"
+              - "autoconfig.domain2.com"
+              - "www.domain2.com"
+              - "wp-manager.domain2.com"
+          - main: "domain3.com"
             sans:
-              - "*.fateitalia.it"
-          - main: "indiecongdr.it"
+              - "*.domain3.com"
+          - main: "domain4.com"
             sans:
-              - "*.indiecongdr.it"
-          - main: "dreamlord.it"
+              - "*.domain4.com"
+          - main: "domain7.com"
             sans:
-              - "*.dreamlord.it"
-          - main: "koboldinabox.com"
+              - "*.domain7.com"
+          - main: "domain6.com"
             sans:
-              - "*.koboldinabox.com"
-          - main: "gamechefpummarola.eu"
+              - "*.domain6.com"
+          - main: "domain5.com"
             sans:
-              - "*.gamechefpummarola.eu"
+              - "*.domain5.com"
     hosting1-usermin-router:
-      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Hostregexp(`.+\.domain5\.com`) || Host(`domain3.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain6.com`) || Host(`domain5.com`)
       entryPoints:
         - usermin
       middlewares:
@@ -56,32 +56,32 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "urbaman.it"
+          - main: "domain2.com"
             sans:
-              - "admin.urbaman.it"
-              - "webmail.urbaman.it"
-              - "mail.urbaman.it"
-              - "autodiscover.urbaman.it"
-              - "autoconfig.urbaman.it"
-              - "www.urbaman.it"
-              - "wp-manager.urbaman.it"
-          - main: "fateitalia.it"
+              - "admin.domain2.com"
+              - "webmail.domain2.com"
+              - "mail.domain2.com"
+              - "autodiscover.domain2.com"
+              - "autoconfig.domain2.com"
+              - "www.domain2.com"
+              - "wp-manager.domain2.com"
+          - main: "domain3.com"
             sans:
-              - "*.fateitalia.it"
-          - main: "indiecongdr.it"
+              - "*.domain3.com"
+          - main: "domain4.com"
             sans:
-              - "*.indiecongdr.it"
-          - main: "dreamlord.it"
+              - "*.domain4.com"
+          - main: "domain7.com"
             sans:
-              - "*.dreamlord.it"
-          - main: "koboldinabox.com"
+              - "*.domain7.com"
+          - main: "domain6.com"
             sans:
-              - "*.koboldinabox.com"
-          - main: "gamechefpummarola.eu"
+              - "*.domain6.com"
+          - main: "domain5.com"
             sans:
-              - "*.gamechefpummarola.eu"
+              - "*.domain5.com"
     hosting1-webmin-router:
-      rule: Host(`urbaman.it`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.it`) || Hostregexp(`.+\.fateitalia\.it`) || Hostregexp(`.+\.indiecongdr\.it`) || Hostregexp(`.+\.dreamlord\.it`) || Hostregexp(`.+\.koboldinabox\.com`) || Hostregexp(`.+\.gamechefpummarola\.eu`) || Host(`fateitalia.it`) || Host(`indiecongdr.it`) || Host(`dreamlord.it`) || Host(`koboldinabox.com`) || Host(`gamechefpummarola.eu`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Hostregexp(`.+\.domain5\.com`) || Host(`domain3.com`) || Host(`domain4.com`) || Host(`domain7.com`) || Host(`domain6.com`) || Host(`domain5.com`)
       entryPoints:
         - webmin
       middlewares:
@@ -91,27 +91,27 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "urbaman.it"
+          - main: "domain2.com"
             sans:
-              - "admin.urbaman.it"
-              - "webmail.urbaman.it"
-              - "mail.urbaman.it"
-              - "autodiscover.urbaman.it"
-              - "autoconfig.urbaman.it"
-              - "www.urbaman.it"
-              - "wp-manager.urbaman.it"
-          - main: "fateitalia.it"
+              - "admin.domain2.com"
+              - "webmail.domain2.com"
+              - "mail.domain2.com"
+              - "autodiscover.domain2.com"
+              - "autoconfig.domain2.com"
+              - "www.domain2.com"
+              - "wp-manager.domain2.com"
+          - main: "domain3.com"
             sans:
-              - "*.fateitalia.it"
-          - main: "indiecongdr.it"
+              - "*.domain3.com"
+          - main: "domain4.com"
             sans:
-              - "*.indiecongdr.it"
-          - main: "dreamlord.it"
+              - "*.domain4.com"
+          - main: "domain7.com"
             sans:
-              - "*.dreamlord.it"
-          - main: "koboldinabox.com"
+              - "*.domain7.com"
+          - main: "domain6.com"
             sans:
-              - "*.koboldinabox.com"
-          - main: "gamechefpummarola.eu"
+              - "*.domain6.com"
+          - main: "domain5.com"
             sans:
-              - "*.gamechefpummarola.eu"
+              - "*.domain5.com"
