@@ -1,0 +1,29 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: homepage
+    networks:
+      - traefik
+      - tools
+    volumes:
+      - $CONFIGDIR/homepage/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations, see alternative methods
+    environment:
+      - TZ={$TZ}
+      - HOMEPAGE_ALLOWED_HOSTS=homepage.${DOMAINNAME_1}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.homepage-router.entrypoints=websecure"
+      - "traefik.http.routers.homepage-router.rule=Host(`homepage.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.homepage-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.homepage-router.service=homepage-service"
+      - "traefik.http.services.homepage-service.loadbalancer.server.port=3000"

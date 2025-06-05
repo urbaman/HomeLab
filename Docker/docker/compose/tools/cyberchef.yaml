@@ -1,0 +1,25 @@
+services:
+  cyberchef:
+    image: ghcr.io/gchq/cyberchef:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: cyberchef
+    networks:
+      - traefik
+      - tools
+    environment:
+      - TZ={$TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.cyberchef-router.entrypoints=websecure"
+      - "traefik.http.routers.cyberchef-router.rule=Host(`cyberchef.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.cyberchef-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.cyberchef-router.service=cyberchef-service"
+      - "traefik.http.services.cyberchef-service.loadbalancer.server.port=80
