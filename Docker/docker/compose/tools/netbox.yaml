@@ -1,0 +1,116 @@
+services:
+  netbox: &netbox
+    image: docker.io/netboxcommunity/netbox:latest
+    container_name: netbox
+    user: "unit:root"
+    expose:
+      - "8080"
+    networks:
+      - traefik
+      - tools
+      - databases
+      - monitoring
+    healthcheck:
+      test: curl -f http://localhost:8080/login/ || exit 1
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+        #volumes:
+      #- $CONFIGDIR/netbox:/etc/netbox/config
+      #- $DATADIR/netbox/media:/opt/netbox/netbox/media:rw
+      #- $DATADIR/netbox/reports:/opt/netbox/netbox/reports:rw
+      #- $DATADIR/netbox/scripts:/opt/netbox/netbox/scripts:rw
+    environment:
+      - TZ={$TZ}
+      - ALLOWED_HOSTS=netbox netbox.${DOMAINNAME_1} localhost ::1 127.0.0.1
+      - CORS_ORIGIN_ALLOW_ALL=True
+      - DB_HOST=postgres
+      - DB_NAME=netbox
+      - DB_PASSWORD=${NETBOX_DB_PASSWORD}
+      - DB_USER=netbox
+      - DB_WAIT_DEBUG=1
+      - EMAIL_FROM=netbox@urbaman.it
+      - EMAIL_PASSWORD=${NETBOX_EMAIL_PASSWORD}
+      - EMAIL_PORT=587
+      - EMAIL_SERVER=mail.${DOMAINNAME_1}
+        # EMAIL_SSL_CERTFILE=
+        # EMAIL_SSL_KEYFILE=
+      - EMAIL_TIMEOUT=5
+      - EMAIL_USERNAME=netboxadmin@urbaman.it
+# EMAIL_USE_SSL and EMAIL_USE_TLS are mutually exclusive, i.e. they can't both be `true`!
+      - EMAIL_USE_SSL=false
+      - EMAIL_USE_TLS=true
+      - GRAPHQL_ENABLED=true
+      - HOUSEKEEPING_INTERVAL=86400
+      - MEDIA_ROOT=/opt/netbox/netbox/media
+      - METRICS_ENABLED=true
+      - REDIS_CACHE_DATABASE=1
+      - REDIS_CACHE_HOST=valkey
+      - REDIS_CACHE_INSECURE_SKIP_TLS_VERIFY=false
+        #- REDIS_CACHE_PASSWORD=t4Ph722qJ5QHeQ1qfu36
+      - REDIS_CACHE_SSL=false
+      - REDIS_DATABASE=1
+      - REDIS_HOST=valkey
+      - REDIS_INSECURE_SKIP_TLS_VERIFY=false
+        #- REDIS_PASSWORD=H733Kdjndks81
+      - REDIS_SSL=false
+      - RELEASE_CHECK_URL=https://api.github.com/repos/netbox-community/netbox/releases
+      - SECRET_KEY=${NETBOX_SECRET_KEY} #'r(m)9nLGnz$(_q3N4z1k(EFsMCjjjzx08x9VhNVcfd%6RF#r!6DE@+V5Zk2X'
+      - SKIP_SUPERUSER=true
+      - WEBHOOKS_ENABLED=true
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.netbox-router.entrypoints=websecure"
+      - "traefik.http.routers.netbox-router.rule=Host(`netbox.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.netbox-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.netbox-router.service=netbox-service"
+      - "traefik.http.services.netbox-service.loadbalancer.server.port=8080"
+  netbox-worker:
+    <<: *netbox
+    container_name: netbox-worker
+    depends_on:
+      netbox:
+        condition: service_healthy
+    networks:
+      - traefik
+      - tools
+      - databases
+    command:
+      - /opt/netbox/venv/bin/python
+      - /opt/netbox/netbox/manage.py
+      - rqworker
+    healthcheck:
+      test: ps -aux | grep -v grep | grep -q rqworker || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=false"
+      - "traefik.docker.network=tools"
+  netbox-housekeeping:
+    <<: *netbox
+    container_name: netbox-housekeeping
+    depends_on:
+      netbox:
+        condition: service_healthy
+    networks:
+      - traefik
+      - tools
+      - databases
+    command:
+      - /opt/netbox/housekeeping.sh
+    healthcheck:
+      test: ps -aux | grep -v grep | grep -q housekeeping || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=false"
+      - "traefik.docker.network=tools"

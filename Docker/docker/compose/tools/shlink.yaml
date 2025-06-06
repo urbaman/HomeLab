@@ -23,7 +23,6 @@ services:
       - GEOLITE_LICENSE_KEY=${GEOLITE_LICENSE_KEY}
       - REDIS_SERVERS=tcp://valkey:6379
       - REDIS_PUB_SUB_ENABLED=true
-      - SHELL_VERBOSITY=3
     labels:
       - "org.label-schema.group=tools"
       - "traefik.enable=true"

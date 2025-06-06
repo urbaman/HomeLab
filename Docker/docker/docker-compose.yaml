@@ -106,3 +106,5 @@ include:
   - compose/tools/cyberchef.yaml
   # Shlink
   - compose/tools/shlink.yaml
+  # Netbox
+  - compose/tools/netbox.yaml
