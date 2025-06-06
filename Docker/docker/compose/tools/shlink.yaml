@@ -1,0 +1,66 @@
+services:
+  shlink:
+    image: shlinkio/shlink:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: shlink
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ={$TZ}
+      - DEFAULT_DOMAIN=shlink.${DOMAINNAME_1}
+      - IS_HTTPS_ENABLED=true
+      - INITIAL_APY_KEY=${SHLINK_API_KEY}
+      - DB_DRIVER=postgres
+      - DB_HOST=postgres
+      - DB_NAME=shlink
+      - DB_USER=shlink
+      - DB_PASSWORD=${SHLINK_DB_PASSWORD}
+      - GEOLITE_LICENSE_KEY=${GEOLITE_LICENSE_KEY}
+      - REDIS_SERVERS=tcp://valkey:6379
+      - REDIS_PUB_SUB_ENABLED=true
+      - SHELL_VERBOSITY=3
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.shlink-router.entrypoints=websecure"
+      - "traefik.http.routers.shlink-router.rule=Host(`shlink.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.shlink-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.shlink-router.service=shlink-service"
+      - "traefik.http.services.shlink-service.loadbalancer.server.port=8080"
+
+  shlink-web-client:
+    image: shlinkio/shlink-web-client:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: shlink-web-client
+    networks:
+      - traefik
+      - tools
+    environment:
+      - TZ={$TZ}
+      - SHLINK_SERVER_URL=shlink.${DOMAINNAME_1}
+      - SHLINK_SERVER_API_KEY=${SHLINK_API_KEY}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.shlink-web-client-router.entrypoints=websecure"
+      - "traefik.http.routers.shlink-web-client-router.rule=Host(`shlink-web-client.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.shlink-web-client-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.shlink-web-client-router.service=shlink-web-client-service"
+      - "traefik.http.services.shlink-web-client-service.loadbalancer.server.port=8080"
+

@@ -96,3 +96,13 @@ include:
   - compose/tools/talk.yaml
   # Loacl-AI
   - compose/tools/local-ai.yaml
+  # Gitlab
+  - compose/tools/gitlab.yaml
+  # Roundcube
+  - compose/tools/roundcube.yaml
+  # Homepage
+  - compose/tools/homepage.yaml
+  # Cyberchef
+  - compose/tools/cyberchef.yaml
+  # Shlink
+  - compose/tools/shlink.yaml
