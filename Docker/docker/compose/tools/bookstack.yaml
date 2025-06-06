@@ -1,0 +1,46 @@
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: bookstack
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - MAIL_DRIVER=smtp
+      - MAIL_HOST=mail.${DOMAINNAME_1}
+      - MAIL_PORT=587
+      - MAIL_ENCRYPTION=tls
+      - MAIL_USERNAME=${BOOKSTACK_SMTP_USER}
+      - MAIL_PASSWORD=${BOOKSTACK_SMTP_PASSWORD}
+      - MAIL_FROM=bookstack@${DOMAINNAME_1}
+      - MAIL_FROM_NAME=BookStack
+      - QUEUE_CONNECTION=database
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://bookstack.${DOMAINNAME_1}
+      - APP_KEY=${BOOKSTACK_APP_KEY}
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=bookstack
+      - DB_PASSWORD=${BOOKSTACK_DB_PASSWORD}
+      - DB_DATABASE=bookstack
+    volumes:
+      - $CONFIGDIR/bookstack:/config
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.bookstack-router.entrypoints=websecure"
+      - "traefik.http.routers.bookstack-router.rule=Host(`bookstack.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.bookstack-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.bookstack-router.service=bookstack-service"
+      - "traefik.http.services.bookstack-service.loadbalancer.server.port=80"
