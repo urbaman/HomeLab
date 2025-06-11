@@ -1,0 +1,30 @@
+---
+services:
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    volumes:
+      - $CONFIGDIR/mediaserver/readarr:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 8787
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.readarr-router.entrypoints=websecure"
+      - "traefik.http.routers.readarr-router.rule=Host(`readarr.$DOMAINNAME_1`)" # HostRegexp:readarr.${DOMAINNAME_1},{catchall:.*}" # Host(`readarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.readarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.readarr-router.service=readarr-service"
+      - "traefik.http.services.readarr-service.loadbalancer.server.port=8787"

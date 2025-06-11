@@ -1,0 +1,30 @@
+---
+services:
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    volumes:
+      - $CONFIGDIR/mediaserver/bazarr:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 6767
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.bazarr-router.entrypoints=websecure"
+      - "traefik.http.routers.bazarr-router.rule=Host(`bazarr.$DOMAINNAME_1`)" # HostRegexp:bazarr.${DOMAINNAME_1},{catchall:.*}" # Host(`bazarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.bazarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.bazarr-router.service=bazarr-service"
+      - "traefik.http.services.bazarr-service.loadbalancer.server.port=6767"

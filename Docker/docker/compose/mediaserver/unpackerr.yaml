@@ -1,0 +1,16 @@
+---
+services:
+  unpackerr:
+    image: ghcr.io/hotio/unpackerr:latest
+    container_name: unpackerr
+    volumes:
+      - $CONFIGDIR/mediaserver/unpackerr:/config
+      - $DATADIR/mediaserver/torrents/complete:/data #optional
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=002
+    labels:
+      - "org.label-schema.group=mediaserver"

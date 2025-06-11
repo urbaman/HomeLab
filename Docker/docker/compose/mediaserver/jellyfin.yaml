@@ -1,0 +1,37 @@
+---
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    volumes:
+      - $CONFIGDIR/mediaserver/jellyfin:/config
+      - $DATADIR/mediaserver/media:/downloads #optional
+      - $DATADIR/jellyfin:/cache
+    expose:
+      - 8096
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=jellyfin.${DOMAINNAME_1}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
+      - "traefik.http.routers.jellyfin-router.rule=Host(`jellyfin.$DOMAINNAME_1`)" # HostRegexp:jellyfin.${DOMAINNAME_1},{catchall:.*}" # Host(`jellyfin.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.jellyfin-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
+      - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"

@@ -1,0 +1,30 @@
+---
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    volumes:
+      - $CONFIGDIR/mediaserver/prowlarr:/config
+        #      - $DATADIR/mediaserver/media:/downloads #optional
+    expose:
+      - 9696
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.prowlarr-router.entrypoints=websecure"
+      - "traefik.http.routers.prowlarr-router.rule=Host(`prowlarr.$DOMAINNAME_1`)" # HostRegexp:prowlarr.${DOMAINNAME_1},{catchall:.*}" # Host(`prowlarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.prowlarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.prowlarr-router.service=prowlarr-service"
+      - "traefik.http.services.prowlarr-service.loadbalancer.server.port=9696"

@@ -1,0 +1,30 @@
+---
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    volumes:
+      - $CONFIGDIR/mediaserver/sonarr:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 8989
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.sonarr-router.entrypoints=websecure"
+      - "traefik.http.routers.sonarr-router.rule=Host(`sonarr.$DOMAINNAME_1`)" # HostRegexp:sonarr.${DOMAINNAME_1},{catchall:.*}" # Host(`sonarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.sonarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.sonarr-router.service=sonarr-service"
+      - "traefik.http.services.sonarr-service.loadbalancer.server.port=8989"

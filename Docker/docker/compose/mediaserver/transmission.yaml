@@ -1,0 +1,34 @@
+---
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    volumes:
+      - $CONFIGDIR/mediaserver/transmission:/config
+      - $DATADIR/mediaserver/torrents:/downloads #optional
+      - $DATADIR/mediaserver/torrents/watch:/watch
+    expose:
+      - 9091
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.transmission-router.entrypoints=websecure"
+      - "traefik.http.routers.transmission-router.rule=Host(`transmission.$DOMAINNAME_1`)" # HostRegexp:transmission.${DOMAINNAME_1},{catchall:.*}" # Host(`transmission.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.transmission-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.transmission-router.service=transmission-service"
+      - "traefik.http.services.transmission-service.loadbalancer.server.port=9091"

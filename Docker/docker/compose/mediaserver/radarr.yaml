@@ -1,0 +1,30 @@
+---
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    volumes:
+      - $CONFIGDIR/mediaserver/radarr:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 7878
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.radarr-router.entrypoints=websecure"
+      - "traefik.http.routers.radarr-router.rule=Host(`radarr.$DOMAINNAME_1`)" # HostRegexp:radarr.${DOMAINNAME_1},{catchall:.*}" # Host(`radarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.radarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.radarr-router.service=radarr-service"
+      - "traefik.http.services.radarr-service.loadbalancer.server.port=7878"

@@ -1,0 +1,33 @@
+---
+services:
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    volumes:
+      - $CONFIGDIR/mediaserver/flaresolverr:/config
+      - $DATADIR/mediaserver/usenet:/downloads #optional
+    expose:
+      - 8191
+      - 8192
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+      - monitoring
+    environment:
+      - TZ=${TZ}
+      - LOG_LEVEL=info
+      - PROMETHEUS_ENABLED=true
+      - PROMETHEUS_PORT=8192
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.flaresolverr-router.entrypoints=websecure"
+      - "traefik.http.routers.flaresolverr-router.rule=Host(`flaresolverr.$DOMAINNAME_1`)" # HostRegexp:flaresolverr.${DOMAINNAME_1},{catchall:.*}" # Host(`flaresolverr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.flaresolverr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.flaresolverr-router.service=flaresolverr-service"
+      - "traefik.http.services.flaresolverr-service.loadbalancer.server.port=8191"

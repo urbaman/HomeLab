@@ -1,0 +1,30 @@
+---
+services:
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    volumes:
+      - $CONFIGDIR/mediaserver/lidarr:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 8686
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.lidarr-router.entrypoints=websecure"
+      - "traefik.http.routers.lidarr-router.rule=Host(`lidarr.$DOMAINNAME_1`)" # HostRegexp:lidarr.${DOMAINNAME_1},{catchall:.*}" # Host(`lidarr.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.lidarr-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.lidarr-router.service=lidarr-service"
+      - "traefik.http.services.lidarr-service.loadbalancer.server.port=8686"
