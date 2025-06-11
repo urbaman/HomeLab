@@ -1,0 +1,30 @@
+---
+services:
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    volumes:
+      - $CONFIGDIR/mediaserver/sabnzbd:/config
+      - $DATADIR/mediaserver/usenet:/downloads #optional
+    expose:
+      - 8080
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.sabnzbd-router.entrypoints=websecure"
+      - "traefik.http.routers.sabnzbd-router.rule=Host(`sabnzbd.$DOMAINNAME_1`)" # HostRegexp:sabnzbd.${DOMAINNAME_1},{catchall:.*}" # Host(`sabnzbd.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.sabnzbd-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.sabnzbd-router.service=sabnzbd-service"
+      - "traefik.http.services.sabnzbd-service.loadbalancer.server.port=8080"
