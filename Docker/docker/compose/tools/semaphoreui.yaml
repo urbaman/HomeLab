@@ -1,0 +1,46 @@
+services:
+  semaphoreui:
+    image: semaphoreui/semaphore:latest 
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: semaphoreui
+    expose:
+      - 3000
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - SEMAPHORE_EMAIL_HOST=mail.${DOMAINNAME_1}
+      - SEMAPHORE_EMAIL_PORT=587
+      - SEMAPHORE_EMAIL_SECURE=true
+      - SEMAPHORE_EMAIL_USERNAME=${SEMAPHORE_SMTP_USER}
+      - SEMAPHORE_EMAIL_PASSWORD=${SEMAPHORE_SMTP_PASSWORD}
+      - SEMAPHORE_EMAIL_SENDER=semaphoreui@${DOMAINNAME_1}
+      - SEMAPHORE_DB_DIALECT=postgres
+      - SEMAPHORE_DB_HOST=postgres
+      - SEMAPHORE_DB_USER=semaphoreui
+      - SEMAPHORE_DB_PASS=${SEMAPHORE_DB_PASSWORD}
+      - SEMAPHORE_DB_NAME=semaphoreui
+      - SEMAPHORE_ADMIN=admin
+      - SEMAPHORE_ADMIN_PASSWORD=${SEMAPHORE_ADMIN_PASSWORD}
+      - SEMAPHORE_ADMIN_NAME=Admin
+      - SEMAPHORE_ADMIN_EMAIL=admin@${DOMAINNAME_1}
+    volumes:
+      - $CONFIGDIR/semaphoreui:/config
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.semaphoreui-router.entrypoints=websecure"
+      - "traefik.http.routers.semaphoreui-router.rule=Host(`semaphoreui.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.semaphoreui-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.semaphoreui-router.service=semaphoreui-service"
+      - "traefik.http.services.semaphoreui-service.loadbalancer.server.port=3000"
+
