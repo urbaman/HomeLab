@@ -1,0 +1,46 @@
+services:
+  openproject:
+    image: openproject/openproject:16-slim
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: openproject
+    networks:
+      - traefik
+      - tools
+      - databases
+    command: "./docker/prod/web" # start with "bin/rails db:migrate RAILS_ENV=production" to create the db and complete the migrations, then restart with "./docker/prod/web"
+    environment:
+      - TZ=${TZ}
+      - OPENPROJECT_HTTPS=false
+      - OPENPROJECT_HOST__NAME=openproject.$DOMAINNAME_1
+      - OPENPROJECT_HSTS=false
+      - RAILS_CACHE_STORE=memcache
+      - OPENPROJECT_CACHE__MEMCACHE__SERVER="memcached:11211"
+      - DATABASE_URL=postgres://openproject:$OPENPROJECT_DB_PASSWORD@postgres/openproject
+      - RAILS_MIN_THREADS=4
+      - RAILS_MAX_THREADS=16
+      - OPENPROJECT_EMAIL__DELIVERY__METHOD=smtp
+      - OPENPROJECT_SMTP__ADDRESS=mail.$DOMAINNAME_1
+      - OPENPROJECT_SMTP__PORT=587
+      - OPENPROJECT_SMTP__DOMAIN=openproject.$DOMAINNAME_1
+      - OPENPROJECT_SMTP__AUTHENTICATION=plain
+      - OPENPROJECT_SMTP__USER__NAME=${OPENPROJECT_SMTP_USER}
+      - OPENPROJECT_SMTP__PASSWORD=${OPENPROJECT_SMTP_PASSWORD}
+      - OPENPROJECT_SMTP__ENABLE__STARTTLS__AUTO=true
+    volumes:
+      - $DATADIR/openproject:/var/openproject/assets
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.openproject-router.entrypoints=websecure"
+      - "traefik.http.routers.openproject-router.rule=Host(`openproject.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.openproject-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.openproject-router.service=openproject-service"
+      - "traefik.http.services.openproject-service.loadbalancer.server.port=8080"
+
