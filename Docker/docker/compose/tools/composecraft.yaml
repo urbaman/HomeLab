@@ -1,0 +1,34 @@
+services:
+  composecraft:
+    image: composecraft/composecraft:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: composecraft
+    networks:
+      - traefik
+      - tools
+      - databases
+    expose:
+      - "3000"
+    environment:
+      - TZ=${TZ}
+      - URL=https://composecraft.$DOMAINNAME_1
+      - SECRET_KEY=${COMPOSECRAFT_SECRET_KEY}
+      - MONGODB_URI=mongo://root:$MONGO_INITDB_ROOT_PASSWORD@db
+    volumes:
+      - $CONFIGDIR/composecraft:/config
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.composecraft-router.entrypoints=websecure"
+      - "traefik.http.routers.composecraft-router.rule=Host(`composecraft.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.composecraft-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.composecraft-router.service=composecraft-service"
+      - "traefik.http.services.composecraft-service.loadbalancer.server.port=3000"
+

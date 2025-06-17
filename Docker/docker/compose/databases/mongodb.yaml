@@ -1,0 +1,24 @@
+services:
+  mongo:
+    container_name: mongo
+    image: mongo
+    pull_policy: always
+    networks:
+      - databases
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=${TZ}
+      - MONGO_INITDB_ROOT_USERNAME=admin 
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - $DATADIR/mongo:/data/db
+    restart: always
+    labels:
+      - "org.label-schema.group=databases"
+      - "traefik.enable=true"
+      - "traefik.docker.network=databases"
+      - "traefik.tcp.routers.mongo-router.entrypoints=mongo"
+      - "traefik.tcp.routers.mongo-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mongo-router.service=mongo-service"
+      - "traefik.tcp.services.mongo-service.loadbalancer.server.port=27017"
