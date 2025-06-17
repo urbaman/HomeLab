@@ -1,0 +1,48 @@
+services:
+  vaultwarden:
+    image: quay.io/vaultwarden/server:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: vaultwarden
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - DOMAIN=https://vaultwarden.$DOMAINNAME_1
+      - SIGNUPS_ALLOWED=false
+      - INVITATIONS_ALLOWED=false
+      - SHOW_PASSWORD_HINT=false
+      - SMTP_HOST=mail.$DOMAINNAME_1
+      - SMTP_FROM=vaultwarden@$DOMAINNAME_1
+      - SMTP_PORT=587
+      - SMTP_SECURITY=starttls
+      - SMTP_USERNAME=${VAULTWARDEN_SMTP_USER}
+      - SMTP_PASSWORD=${VAULTWARDEN_SMTP_PASSWORD}
+      - SMTP_ACCEPT_INVALID_CERTS=false
+      - DATABASE_URL=postgresql://vaultwarden:$VAULTWARDEN_DB_PASSWORD@postgres/vaultwarden
+      - ENABLE_DB_WAL=false
+      - PUSH_ENABLED=true
+      - PUSH_INSTALLATION_ID=${VAULTWARDEN_PUSH_INSTALLATION_ID}
+      - PUSH_INSTALLATION_KEY=${VAULTWARDEN_PUSH_INSTALLATION_KEY}
+      - PUSH_RELAY_URI=https://api.bitwarden.eu # For EU only
+      - PUSH_IDENTITY_URI=https://identity.bitwarden.eu # For EU only
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+    volumes:
+      - $DATADIR/vaultwarden:/data
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.vaultwarden-router.entrypoints=websecure"
+      - "traefik.http.routers.vaultwarden-router.rule=Host(`vaultwarden.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.vaultwarden-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.vaultwarden-router.service=vaultwarden-service"
+      - "traefik.http.services.vaultwarden-service.loadbalancer.server.port=80"
+

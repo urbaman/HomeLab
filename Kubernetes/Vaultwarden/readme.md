@@ -24,7 +24,7 @@ TZ="Europe/Rome"
 SIGNUPS_ALLOWED=false
 INVITATIONS_ALLOWED=false
 SHOW_PASSWORD_HINT=false
-SMTP_HOST=<smtp.domain.tld>
+SMTP_HOST=<mail.domain.tld>
 SMTP_FROM=<vaultwarden@domain.tld>
 SMTP_PORT=465
 SMTP_SECURITY=force_tls
@@ -47,7 +47,7 @@ ENABLE_DB_WAL='false'
 Create db and user, set the following variables:
 
 ```bash
-DATABASE_URL=postgresql://[[user]:[password]@]host[:port][/database]
+DATABASE_URL=postgresql://<user>:<password>@<host>:<port></database>
 ENABLE_DB_WAL='false'
 ```
 
