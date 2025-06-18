@@ -1,0 +1,18 @@
+services:
+  memcached-exporter:
+    image: quay.io/prometheus/memcached-exporter:latest
+    container_name: memcached-exporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - databases
+    environment:
+      - TZ=${TZ}
+    command:
+      - --memcached.address=memcached:11211
+    labels:
+      - "org.label-schema.group=monitoring"
+

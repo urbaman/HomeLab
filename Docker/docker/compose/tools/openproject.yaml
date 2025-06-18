@@ -13,11 +13,13 @@ services:
     command: "./docker/prod/web" # start with "bin/rails db:migrate RAILS_ENV=production" to create the db and complete the migrations, then restart with "./docker/prod/web"
     environment:
       - TZ=${TZ}
-      - OPENPROJECT_HTTPS=false
+      - OPENPROJECT_HTTPS=true
       - OPENPROJECT_HOST__NAME=openproject.$DOMAINNAME_1
       - OPENPROJECT_HSTS=false
-      - RAILS_CACHE_STORE=memcache
-      - OPENPROJECT_CACHE__MEMCACHE__SERVER="memcached:11211"
+      - OPENPROJECT_RAILS__CACHE__STORE=memcache
+      - OPENPROJECT_CACHE__MEMCACHE__SERVER=memcached:11211
+      - CACHE_MEMCACHE_SERVER=memcached:11211
+      - RALS_CACHE_STORE=memcache
       - DATABASE_URL=postgres://openproject:$OPENPROJECT_DB_PASSWORD@postgres/openproject
       - RAILS_MIN_THREADS=4
       - RAILS_MAX_THREADS=16
