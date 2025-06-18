@@ -1,0 +1,27 @@
+services:
+  privatebin:
+    container_name: privatebin
+    image: privatebin/nginx-fpm-alpine
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    volumes:
+      - $CONFIGDIR/privatebin:/srv/cfg
+      - $DATADIR/privatebin:/srv/data
+    environment:
+      - TZ=${TZ}
+      - PHP_TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.privatebin-router.entrypoints=websecure"
+      - "traefik.http.routers.privatebin-router.rule=Host(`privatebin.$DOMAINNAME_1`)" # HostRegexp:privatebin.${DOMAINNAME_1},{catchall:.*}" # Host(`privatebin.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.privatebin-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.privatebin-router.service=privatebin-service"
+      - "traefik.http.services.privatebin-service.loadbalancer.server.port=8080"
+

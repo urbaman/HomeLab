@@ -1,0 +1,25 @@
+services:
+  actual-budget:
+    container_name: actual-budget
+    image: actualbudget/actual-server:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - $DATADIR/actual-budget:/data
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.actual-budget-router.entrypoints=websecure"
+      - "traefik.http.routers.actual-budget-router.rule=Host(`actual-budget.$DOMAINNAME_1`)" # HostRegexp:actual-budget.${DOMAINNAME_1},{catchall:.*}" # Host(`actual-budget.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.actual-budget-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.actual-budget-router.service=actual-budget-service"
+      - "traefik.http.services.actual-budget-service.loadbalancer.server.port=5006"
+
