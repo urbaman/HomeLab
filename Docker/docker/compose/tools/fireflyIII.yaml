@@ -1,0 +1,72 @@
+services:
+  firefly:
+    image: fireflyiii/core:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: firefly
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - APP_KEY=${FIREFLY_APP_KEY}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_CONNECTION=pgsql
+      - DB_DATABASE=firefly
+      - DB_USERNAME=firefly
+      - DB_PASSWORD=${FIREFLY_DB_PASSWORD}
+      - TRUSTED_PROXIES="**"
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=mail.$DOMAINNAME_1
+      - MAIL_PORT=587
+      - MAIL_FROM=firefly@$DOMAINNAME_1
+      - MAIL_USERNAME=${FIREFLY_SMTP_USER}
+      - MAIL_PASSWORD=${FIREFLY_SMTP_PASSWORD}
+      - MAIL_ENCRYPTION=tls
+    volumes:
+      - $DATADIR/firefly:/var/www/html/storage/upload
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.firefly-router.entrypoints=websecure"
+      - "traefik.http.routers.firefly-router.rule=Host(`firefly.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.firefly-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.firefly-router.service=firefly-service"
+      - "traefik.http.services.firefly-service.loadbalancer.server.port=8080"
+
+  firefly-importer:
+    image: fireflyiii/data-importer:latest
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    container_name: firefly-importer
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - FIREFLY_III_ACCESS_TOKEN=${FIREFLY_ACCESS_TOKEN}
+      - FIREFLY_III_URL=http://firefly:8080
+      - TRUSTED_PROXIES="**"
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.firefly-importer-router.entrypoints=websecure"
+      - "traefik.http.routers.firefly-importer-router.rule=Host(`fireflyimporter.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.firefly-importer-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.firefly-importer-router.service=firefly-importer-service"
+      - "traefik.http.services.firefly-importer-service.loadbalancer.server.port=8080"
