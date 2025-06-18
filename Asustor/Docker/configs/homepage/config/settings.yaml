@@ -11,4 +11,14 @@ quicklaunch:
   hideInternetSearch: true
   hideVisitURL: true
 headerStyle: boxed
+layout:
+  Media:
+    style: row
+    columns: 2
+  Strumenti:
+    style: row
+    columns: 4
+  Monitoring:
+    style: row
+    columns: 3
 

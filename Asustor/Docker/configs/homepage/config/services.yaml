@@ -28,7 +28,7 @@
           type: portainer
           url: https://portainer.urbaman.cloud
           env: 1
-          key: ptr_2EuN/LNvJbElQyeAQs/0ssA5rTO/8YCBuDb8uBkFYgk=
+          key: <porteiner_key>
     - Dozzle:
         href: https://dozzle.urbaman.cloud
         description: Docker log reader
@@ -58,7 +58,7 @@
         widget:
           type: pihole
           url: https://pihole.urbaman.cloud
-          key: 3dc684147909199a5d258b84e0df0b23bb75de01f33e38c2f616be04a7c4bd67
+          key: <key>
 
 - Tools:
     - Stirling-PDF:
@@ -109,7 +109,7 @@
           type: grafana
           url: https://grafana.urbaman.cloud
           username: admin
-          password: grafanaadmin
+          password: <password>
     - Prometheus:
         href: https://prometheus.urbaman.cloud
         description: Prometheus monitoring metrics

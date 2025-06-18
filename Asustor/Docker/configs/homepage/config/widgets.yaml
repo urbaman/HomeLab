@@ -26,4 +26,5 @@
       hourCycle: h23
 - search:
     provider: google
+    showSearchSuggestions: true
     target: _blank
