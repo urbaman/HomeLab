@@ -1,0 +1,19 @@
+services:
+  mongodb-exporter:
+    image: percona/mongodb_exporter:0.44
+    container_name: mongodb-exporter
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - monitoring
+      - databases
+    environment:
+      - TZ=${TZ}
+      - MONGODB_URI=mongodb://admin:$MONGO_INITDB_ROOT_PASSWORD@mongo
+    command:
+      - --collect-all
+    labels:
+      - "org.label-schema.group=monitoring"
+

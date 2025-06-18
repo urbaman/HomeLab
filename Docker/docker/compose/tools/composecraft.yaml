@@ -16,7 +16,7 @@ services:
       - TZ=${TZ}
       - URL=https://composecraft.$DOMAINNAME_1
       - SECRET_KEY=${COMPOSECRAFT_SECRET_KEY}
-      - MONGODB_URI=mongo://root:$MONGO_INITDB_ROOT_PASSWORD@db
+      - MONGODB_URI=mongodb://admin:$MONGO_INITDB_ROOT_PASSWORD@mongo
     volumes:
       - $CONFIGDIR/composecraft:/config
     labels:

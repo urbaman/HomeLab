@@ -1,0 +1,20 @@
+services:
+  memcached:
+    container_name: memcached
+    image: memcached
+    pull_policy: always
+    networks:
+      - databases
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=${TZ}
+    restart: always
+    labels:
+      - "org.label-schema.group=databases"
+      - "traefik.enable=true"
+      - "traefik.docker.network=databases"
+      - "traefik.tcp.routers.memcached-router.entrypoints=redis"
+      - "traefik.tcp.routers.memcached-router.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.memcached-router.service=memcached-service"
+      - "traefik.tcp.services.memcached-service.loadbalancer.server.port=11211"
