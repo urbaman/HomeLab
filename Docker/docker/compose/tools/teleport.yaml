@@ -1,0 +1,39 @@
+services:
+  
+  teleport:
+    container_name: teleport
+    image: public.ecr.aws/gravitational/teleport-distroless:17.5.2
+    pull_policy: always
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - traefik
+      - tools
+    volumes:
+      - $DATADIR/teleport:/var/lib/teleport
+      - $CONFIGDIR/teleport:/etc/teleport
+    ports:
+      - "3080:3080"
+      - "3025:3025"
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.teleport-router.entrypoints=websecure"
+      - "traefik.http.routers.teleport-router.rule=HostRegexp(`teleport.$DOMAINNAME_1`) || Hostregexp(`{subdomain:[a-z0-9]+}.teleport.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.teleport-router.middlewares=secure-headers-https@file"
+      - "traefik.http.routers.teleport-router.tls.options=tls-opts-no-snistrict@file"
+      - "traefik.http.routers.teleport-router.tls.domains[0].main=teleport.$DOMAINNAME_1"
+      - "traefik.http.routers.teleport-router.tls.domains[0].sans=*.teleport.$DOMAINNAME_1"
+        #- "traefik.http.routers.teleport-router.middlewares=middlewares-buffer@file"
+      # HTTP Services
+      - "traefik.http.routers.teleport-router.service=teleport-service"
+      - "traefik.http.services.teleport-service.loadbalancer.server.port=3080"
+      - "traefik.http.services.teleport-service.loadbalancer.server.scheme=https"
+
+

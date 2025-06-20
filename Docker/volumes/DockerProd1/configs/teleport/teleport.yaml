@@ -1,0 +1,50 @@
+version: v3
+teleport:
+  nodename: teleport.domain.com
+  data_dir: /var/lib/teleport
+  join_params:
+    token_name: ""
+    method: token
+  log:
+    output: stderr
+    severity: INFO
+    format:
+      output: text
+  ca_pin: ""
+  diag_addr: ""
+auth_service:
+  cluster_name: teleport.domain.com
+  enabled: "yes"
+  listen_addr: 0.0.0.0:3025
+  proxy_listener_mode: multiplex
+ssh_service:
+  enabled: "yes"
+proxy_service:
+  enabled: "yes"
+  public_addr: teleport.domain.com:443
+app_service:
+  enabled: true
+  apps:
+  - name: alertmanager
+    uri: https://alertmanager.domain.com
+    labels:
+      env: monitoring
+      context: homelab
+  - name: prometheus
+    uri: https://prometheus.domain.com/query
+    labels:
+      env: monitoring
+      context: homelab
+  - name: grafana
+    uri: https://grafana.domain.com
+    labels:
+      env: monitoring
+      context: homelab
+    rewrite:
+      headers:
+      - "Origin: https://grafana.domain.com"
+      - "Host: grafana.domain.com"
+db_service:
+  enabled: false
+kubernetes_service:
+  enabled: false
