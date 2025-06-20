@@ -16,6 +16,8 @@ networks:
     external: true
   storage:
     external: true
+  mediaserver:
+    external: true
 #  dnet:
 #    external: true
  
@@ -56,6 +58,11 @@ include:
   - compose/monitoring/redis-exporter.yaml
   # Dozzle
   - compose/monitoring/dozzle.yaml
+  # Mongodb Exporter
+  - compose/monitoring/mongodb-exporter.yaml
+  # Memcached exporter
+  - compose/monitoring/memcached-exporter.yaml
+  
 
 # SECURITY
   # Wazuh
@@ -76,6 +83,10 @@ include:
   - compose/databases/postgresql.yaml
   # Valkey (Redis)
   - compose/databases/valkey.yaml
+  # MongoDB
+  - compose/databases/mongodb.yaml
+  # Memcached
+  - compose/databases/memcached.yaml
 
 # Tools
   # Draw.io
@@ -85,7 +96,7 @@ include:
   # Stirling PDF
   - compose/tools/stirling-pdf.yaml
   # Exalidraw
-  - compose/tools/exalidraw.yaml
+  - compose/tools/excalidraw.yaml
   # Immich
   - compose/tools/immich.yaml
   # Collabora
@@ -108,3 +119,41 @@ include:
   - compose/tools/shlink.yaml
   # Netbox
   - compose/tools/netbox.yaml
+  # Bookstack
+  - compose/tools/bookstack.yaml
+  # n8n
+  - compose/tools/n8n.yaml
+  # Semaphore UI
+  - compose/tools/semaphoreui.yaml
+  # FreshRSS
+  - compose/tools/freshrss.yaml
+  # Compose Craft
+  - compose/tools/composecraft.yaml
+  # Vaultwarden
+  - compose/tools/vaultwarden.yaml
+  # Openproject
+  - compose/tools/openproject.yaml
+  # Privatebin
+  - compose/tools/privatebin.yaml
+  # Paperless-ngx
+  - compose/tools/paperless-ngx.yaml
+  # Actual-budget
+  - compose/tools/actual-budget.yaml
+  # Firefly III
+  - compose/tools/fireflyIII.yaml
+  # Teleport
+  - compose/tools/teleport.yaml
+
+# Mediaserver
+  - compose/mediaserver/sabnzbd.yaml
+  - compose/mediaserver/transmission.yaml
+  - compose/mediaserver/flaresolverr.yaml
+  - compose/mediaserver/prowlarr.yaml
+  - compose/mediaserver/sonarr.yaml
+  - compose/mediaserver/radarr.yaml
+  - compose/mediaserver/lidarr.yaml
+  - compose/mediaserver/readarr.yaml
+  - compose/mediaserver/bazarr.yaml
+  - compose/mediaserver/unpackerr.yaml
+  - compose/mediaserver/jellyfin.yaml
+  - compose/mediaserver/jellyseerr.yaml

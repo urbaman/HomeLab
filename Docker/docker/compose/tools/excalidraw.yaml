@@ -1,0 +1,33 @@
+services:
+  excalidraw:
+    container_name: excalidraw
+    image: excalidraw/excalidraw:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.excalidraw-router.entrypoints=websecure"
+      - "traefik.http.routers.excalidraw-router.rule=Host(`ecxalidraw.$DOMAINNAME_1`)" # HostRegexp:excalidraw.${DOMAINNAME_1},{catchall:.*}" # Host(`excalidraw.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.excalidraw-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.excalidraw-router.service=excalidraw-service"
+      - "traefik.http.services.excalidraw-service.loadbalancer.server.port=80"
+      - homepage.group=Tools
+      - homepage.name=Excalidraw
+      - homepage.icon=excalidraw.svg
+      - homepage.href=https://excalidraw.$DOMAINNAME_1
+      - homepage.description=Excalidraw
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
+
