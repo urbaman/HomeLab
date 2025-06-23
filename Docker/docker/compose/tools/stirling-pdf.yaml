@@ -35,4 +35,14 @@ services:
       # HTTP Services
       - "traefik.http.routers.s-pdf-router.service=s-pdf-service"
       - "traefik.http.services.s-pdf-service.loadbalancer.server.port=8080"
+      - homepage.group=Office
+      - homepage.name=Stirlink PDF
+      - homepage.icon=stirling-pdf.svg
+      - homepage.href=https://s-pdf.$DOMAINNAME_1
+      - homepage.description=Stirling PDF
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

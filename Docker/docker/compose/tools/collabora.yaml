@@ -24,7 +24,7 @@ services:
       - "traefik.http.routers.collabora-router.service=collabora-service"
       - "traefik.http.services.collabora-service.loadbalancer.server.scheme=https"
       - "traefik.http.services.collabora-service.loadbalancer.server.port=9980"
-      - homepage.group=Tools
+      - homepage.group=Office
       - homepage.name=Collabora
       - homepage.icon=collabora-online.svg
       - homepage.href=https://collabora.$DOMAINNAME_1

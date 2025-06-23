@@ -22,7 +22,7 @@ services:
       #- $DATADIR/netbox/scripts:/opt/netbox/netbox/scripts:rw
     environment:
       - TZ={$TZ}
-      - ALLOWED_HOSTS=netbox netbox.${DOMAINNAME_1} localhost ::1 127.0.0.1
+      - ALLOWED_HOSTS=netbox netbox.${DOMAINNAME_1} localhost ::1 127.0.0.1, netbox.teleport.${DOMAINNAME_1}
       - CORS_ORIGIN_ALLOW_ALL=True
       - DB_HOST=postgres
       - DB_NAME=netbox
@@ -47,12 +47,12 @@ services:
       - REDIS_CACHE_DATABASE=1
       - REDIS_CACHE_HOST=valkey
       - REDIS_CACHE_INSECURE_SKIP_TLS_VERIFY=false
-        #- REDIS_CACHE_PASSWORD=${NETBOX_REDIS_CACHE_PASSWORD}
+        #- REDIS_CACHE_PASSWORD=t4Ph722qJ5QHeQ1qfu36
       - REDIS_CACHE_SSL=false
       - REDIS_DATABASE=1
       - REDIS_HOST=valkey
       - REDIS_INSECURE_SKIP_TLS_VERIFY=false
-        #- REDIS_PASSWORD=${NETBOX_REDIS_PASSWORD}
+        #- REDIS_PASSWORD=H733Kdjndks81
       - REDIS_SSL=false
       - RELEASE_CHECK_URL=https://api.github.com/repos/netbox-community/netbox/releases
       - SECRET_KEY=${NETBOX_SECRET_KEY} #'r(m)9nLGnz$(_q3N4z1k(EFsMCjjjzx08x9VhNVcfd%6RF#r!6DE@+V5Zk2X'
@@ -70,6 +70,16 @@ services:
       # HTTP Services
       - "traefik.http.routers.netbox-router.service=netbox-service"
       - "traefik.http.services.netbox-service.loadbalancer.server.port=8080"
+      - homepage.group=Management
+      - homepage.name=Netbox
+      - homepage.icon=netbox.svg
+      - homepage.href=https://netbox.$DOMAINNAME_1
+      - homepage.description=Netbox
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
   netbox-worker:
     <<: *netbox
     container_name: netbox-worker

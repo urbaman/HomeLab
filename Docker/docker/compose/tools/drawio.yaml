@@ -20,7 +20,7 @@ services:
       # HTTP Services
       - "traefik.http.routers.drawio-router.service=drawio-service"
       - "traefik.http.services.drawio-service.loadbalancer.server.port=8080"
-      - homepage.group=Tools
+      - homepage.group=Graphics
       - homepage.name=Drawio
       - homepage.icon=draw-io.svg
       - homepage.href=https://drawio.$DOMAINNAME_1

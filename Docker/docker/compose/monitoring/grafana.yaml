@@ -31,6 +31,16 @@ services:
       # HTTP Services
       - "traefik.http.routers.grafana-router.service=grafana-service"
       - "traefik.http.services.grafana-service.loadbalancer.server.port=3000"
+      - homepage.group=Monitoring
+      - homepage.name=Grafana
+      - homepage.icon=grafana.svg
+      - homepage.href=https://grafana.$DOMAINNAME_1
+      - homepage.description=Grafana
+      - homepage.showStats=true
+      - homepage.widget.type=grafana
+      - homepage.widget.url=https://grafana.$DOMAINNAME_1
+      - homepage.widget.username=${GRAFANA_USER}
+      - homepage.widget.password=${GRAFANA_PASSWORD}
 
         #volumes:
         #  grafana-data:

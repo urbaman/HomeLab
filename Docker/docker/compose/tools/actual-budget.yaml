@@ -22,7 +22,7 @@ services:
       # HTTP Services
       - "traefik.http.routers.actual-budget-router.service=actual-budget-service"
       - "traefik.http.services.actual-budget-service.loadbalancer.server.port=5006"
-      - homepage.group=Tools
+      - homepage.group=Finance
       - homepage.name=Actual Budget
       - homepage.icon=actual-budget.svg
       - homepage.href=https://actual-budget.$DOMAINNAME_1

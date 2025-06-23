@@ -1,0 +1,102 @@
+---
+
+services:
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2025.6.2
+    restart: unless-stopped
+    command: server
+    container_name: authentik-server
+    networks:
+      - management
+      - databases
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_REDIS__HOST: valkey
+      AUTHENTIK_REDIS__DB: 2 # Set to a dedicated DB
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_PG_USER}
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_PG_DB}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+      AUTHENTIK_EMAIL__HOST: mail.$DOMAINNAME_1
+      AUTHENTIK_EMAIL__PORT: 587
+      # Optionally authenticate (don't add quotation marks to your password)
+      AUTHENTIK_EMAIL__USERNAME: ${AUTHENTIK_SMTP_USER}
+      AUTHENTIK_EMAIL__PASSWORD: ${AUTHENTIK_SMTP_PASS}
+      # Use StartTLS
+      AUTHENTIK_EMAIL__USE_TLS: true
+      # Use SSL
+      AUTHENTIK_EMAIL__USE_SSL: false
+      AUTHENTIK_EMAIL__TIMEOUT: 10
+      # Email address authentik will send from, should have a correct @domain
+      AUTHENTIK_EMAIL__FROM: authentik@$DOMAINNAME_1
+    volumes:
+      - authentik-media:/media
+      - authentik-custom-templates:/templates
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    labels:
+      - "org.label-schema.group=management"
+      - "traefik.enable=true"
+      - "traefik.docker.network=management"
+      # HTTP Routers
+      - "traefik.http.routers.authentik-router.entrypoints=websecure"
+      - "traefik.http.routers.authentik-router.rule=Host(`authentik.$DOMAINNAME_1`)||HostRegexp(`{subdomain:[a-z0-9-]+}.$DOMAINNAME_1`) && PathPrefix(`/outpost.goauthentik.io/`)"
+      # Middlewares
+      - "traefik.http.routers.authentik-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.authentik-router.service=authentik-service"
+      - "traefik.http.services.authentik-service.loadbalancer.server.port=9000"
+      - homepage.group=Management
+      - homepage.name=Authentik
+      - homepage.icon=draw-io.svg
+      - homepage.href=https://authentik.$DOMAINNAME_1
+      - homepage.description=Authentik
+      - homepage.showStats=true
+      - homepage.widget.type=authentik
+      - homepage.widget.url=https://authentik.$DOMAINNAME_1
+      - homepage.widget.key=${AUTHENTIK_API_TOKEN}
+        #- homepage.widget.fields=["field1","field2"] # optional
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2025.6.2
+    restart: unless-stopped
+    command: worker
+    container_name: authentik-worker
+    networks:
+      - management
+      - databases
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_REDIS__HOST: valkey
+      AUTHENTIK_REDIS__DB: 2 # Set to a dedicated DB
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_PG_USER}
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_PG_DB}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - authentik-media:/media
+      - authentik-certs:/certs
+      - authentik-custom-templates:/templates
+
+volumes:
+  authentik-media:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $DATADIR/authentik/media
+  authentik-certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $DATADIR/authentik/certs
+  authentik-custom-templates:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $DATADIR/authentik/custom-templates

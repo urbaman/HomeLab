@@ -48,6 +48,16 @@ services:
       # HTTP Services
       - "traefik.http.routers.paperless-ngx-router.service=paperless-ngx-service"
       - "traefik.http.services.paperless-ngx-service.loadbalancer.server.port=8000"
+      - homepage.group=Office
+      - homepage.name=Paperless Ngx
+      - homepage.icon=paperless-ngx.svg
+      - homepage.href=https://paperless-ngx.$DOMAINNAME_1
+      - homepage.description=Paperless Ngx
+      - homepage.showStats=true
+      - homepage.widget.type=paperlessngx
+      - homepage.widget.url=https://paperless-ngx.$DOMAINNAME_1
+      - homepage.widget.key=${PAPERLESS_NGX_API_TOKEN}
+        #- homepage.widget.fields=["field1","field2"] # optiona
 
   gotenberg:
     container_name: gotenberg

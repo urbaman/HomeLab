@@ -40,3 +40,13 @@ services:
       - "traefik.tcp.routers.talk-tcp-router.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.talk-tcp-router.service=talk-tcp-service"
       - "traefik.tcp.services.talk-tcp-service.loadbalancer.server.port=3478"
+      - homepage.group=Office
+      - homepage.name=Nextcloud Talk
+      - homepage.icon=nextcloud-talk.png
+      - homepage.href=https://talk.$DOMAINNAME_1
+      - homepage.description=Nextcloud Talk
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona

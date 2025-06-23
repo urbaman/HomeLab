@@ -20,7 +20,7 @@ services:
       # HTTP Services
       - "traefik.http.routers.excalidraw-router.service=excalidraw-service"
       - "traefik.http.services.excalidraw-service.loadbalancer.server.port=80"
-      - homepage.group=Tools
+      - homepage.group=Graphics
       - homepage.name=Excalidraw
       - homepage.icon=excalidraw.svg
       - homepage.href=https://excalidraw.$DOMAINNAME_1

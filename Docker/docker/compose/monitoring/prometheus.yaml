@@ -33,6 +33,15 @@ services:
       # HTTP Services
       - "traefik.http.routers.prometheus-router.service=prometheus-service"
       - "traefik.http.services.prometheus-service.loadbalancer.server.port=9090"
+      - homepage.group=Monitoring
+      - homepage.name=Prometheus
+      - homepage.icon=prometheus.png
+      - homepage.href=https://prometheus.$DOMAINNAME_1
+      - homepage.description=Prometheus
+      - homepage.widget.type=prometheus
+      - homepage.widget.url=https://prometheus.$DOMAINNAME_1
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
 
         #volumes:
         #  prometheus-data:

@@ -30,3 +30,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.jellyseerr-router.service=jellyseerr-service"
       - "traefik.http.services.jellyseerr-service.loadbalancer.server.port=5055"
+      - homepage.group=Media
+      - homepage.name=Jellyseerr
+      - homepage.icon=jellyseerr.svg
+      - homepage.href=https://jellyseerr.$DOMAINNAME_1
+      - homepage.description=Jellyseerr
+      - homepage.showStats=true
+      - homepage.widget.type=jellyseerr
+      - homepage.widget.url=https://jellyseerr.$DOMAINNAME_1
+      - homepage.widget.key=${JELLYSEERR_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional

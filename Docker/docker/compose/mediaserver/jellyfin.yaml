@@ -9,6 +9,8 @@ services:
       - $DATADIR/jellyfin:/cache
     expose:
       - 8096
+    ports:
+      - "1900:1900/udp"
     restart: unless-stopped
     networks:
       - traefik
@@ -35,3 +37,18 @@ services:
       # HTTP Services
       - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
       - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin.svg
+      - homepage.href=https://jellyfin.$DOMAINNAME_1
+      - homepage.description=Jellyfin
+      - homepage.showStats=true
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=https://jellyfin.$DOMAINNAME_1
+      - homepage.widget.key=${JELLYFIN_API_KEY}
+      - homepage.widget.enableBlocks=true # optional, defaults to false
+      - homepage.widget.enableNowPlaying=true # optional, defaults to true
+      - homepage.widget.enableUser=true # optional, defaults to false
+      - homepage.widget.showEpisodeNumber=true # optional, defaults to false
+      - homepage.widget.expandOneStreamToTwoRows=false # optional, defaults to true
+        #- homepage.widget.fields=["field1","field2"] # optional

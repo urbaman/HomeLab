@@ -30,4 +30,15 @@ services:
       # HTTP Services
       - "traefik.http.routers.freshrss-router.service=freshrss-service"
       - "traefik.http.services.freshrss-service.loadbalancer.server.port=80"
+      - homepage.group=News
+      - homepage.name=FreshRSS
+      - homepage.icon=freshrss.svg
+      - homepage.href=https://freshrss.$DOMAINNAME_1
+      - homepage.description=FreshRSS
+      - homepage.showStats=true
+      - homepage.widget.type=freshrss
+      - homepage.widget.url=https://freshrss.$DOMAINNAME_1
+      - homepage.widget.username=${FRESHRSS_ADMIN_USERNAME}
+      - homepage.widget.password=${FRESHRSS_ADMIN_PASSWORD}
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

@@ -5,6 +5,12 @@ services:
     environment:
       PGID: "1000"
       COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve"
+    networks:
+      - traefik
+      - security
+      - monitoring
+      - management
+      - tools
     expose:
       - "8080"
     volumes:
@@ -15,10 +21,16 @@ services:
       - $CONFIGDIR/crowdsec:/etc/crowdsec
     restart: unless-stopped
     labels:
+      - "org.label-schema.group=security"
       - traefik.enable=false
-    networks:
-      - traefik
-      - security
-      - monitoring
-      - management
-      - tools
+      - homepage.group=Security
+      - homepage.name=Crowdsec
+      - homepage.icon=crowdsec.svg
+      - homepage.href=https://app.crowdsec.net
+      - homepage.description=Crowdsec
+      - homepage.showStats=true
+      - homepage.widget.type=crowdsec
+      - homepage.widget.url=http://crowdsec:8080
+      - homepage.widget.username=localhost
+      - homepage.widget.password=${CROWDSEC_API_PASSWORD}
+        #- homepage.widget.fields=["field1","field2"] # optiona

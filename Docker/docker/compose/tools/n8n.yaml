@@ -32,3 +32,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.n8n-router.service=n8n-service"
       - "traefik.http.services.n8n-service.loadbalancer.server.port=5678"
+      - homepage.group=DevOps
+      - homepage.name=n8n
+      - homepage.icon=sh-n8n.svg
+      - homepage.href=https://n8n.$DOMAINNAME_1
+      - homepage.description=n8n
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona

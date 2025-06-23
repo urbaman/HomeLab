@@ -1,0 +1,48 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/info-widgets/
+
+#- resources:
+#    cpu: true
+#    memory: true
+#    disk: /
+#- search:
+#    provider: duckduckgo
+#    target: _blank
+- logo:
+    icon: mdi-folder-home-outline  #si-homeassistantcommunitystore-#41BDF5   #mdi-home-outline-#0328fc
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    expanded: true
+    cputemp: true
+    uptime: true
+#- Kubernetes:
+#    cluster:
+#      show: true
+#      cpu: true
+#      memory: true
+#      showLabel: true
+#      label: "cluster"
+#    nodes:
+#      show: true
+#      cpu: true
+#      memory: true
+#      showLabel: true
+- openmeteo:
+    label: Anzola dell'Emilia
+    latitude: 44.5473
+    longitude: 11.1956
+    timezone: Europe/Rome
+    units: metric
+    cache: 5
+- datetime:
+    text_size: xl
+    format:
+      dateStyle: long
+      timeStyle: long
+      hourCycle: h23
+- search:
+    provider: google
+    target: _blank

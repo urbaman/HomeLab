@@ -17,6 +17,7 @@ services:
       - tools
       - databases
       - storage
+      - mediaserver
 #    network_mode: bridge
     command: # CLI arguments
       - --global.checkNewVersion=true
@@ -58,6 +59,10 @@ services:
         #- --entryPoints.redis.proxyProtocol.insecure=true
       - --entryPoints.redis.forwardedHeaders.insecure=true
       - --entrypoints.redis.http.middlewares=traefik-bouncer@file
+      - --entryPoints.mongo.address=:27017/tcp
+        #- --entryPoints.mongo.proxyProtocol.insecure=true
+      - --entryPoints.mongo.forwardedHeaders.insecure=true
+      - --entrypoints.mongo.http.middlewares=traefik-bouncer@file
       - --entryPoints.usermin.address=:2083/tcp
       - --entryPoints.usermin.proxyProtocol.insecure=true
       - --entryPoints.usermin.forwardedHeaders.insecure=true
@@ -162,6 +167,7 @@ services:
       - "9200:9200"
       - "3478:3478/udp"
       - "3478:3478/tcp"
+      - "27017:27017"
     volumes:
       - $CONFIGDIR/traefik/rules:/rules # Dynamic File Provider directory
       - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy
@@ -184,4 +190,14 @@ services:
       - "traefik.http.routers.traefik-router.service=api@internal"
       # Middlewares
       - "traefik.http.routers.traefik-router.middlewares=secure-headers@file"
+      - homepage.group=Networking
+      - homepage.name=Traefik
+      - homepage.icon=traefik.svg
+      - homepage.href=https://traefik.$DOMAINNAME_1
+      - homepage.description=Traefik
+      - homepage.showStats=true
+      - homepage.widget.type=traefik
+      - homepage.widget.url=https://traefik.$DOMAINNAME_1
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

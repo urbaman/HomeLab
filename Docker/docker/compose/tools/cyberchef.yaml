@@ -23,7 +23,7 @@ services:
       # HTTP Services
       - "traefik.http.routers.cyberchef-router.service=cyberchef-service"
       - "traefik.http.services.cyberchef-service.loadbalancer.server.port=80"
-      - homepage.group=Tools
+      - homepage.group=DevOps
       - homepage.name=Cyberchef
       - homepage.icon=cyberchef.svg
       - homepage.href=https://cyberchef.$DOMAINNAME_1

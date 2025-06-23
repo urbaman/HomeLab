@@ -28,3 +28,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.radarr-router.service=radarr-service"
       - "traefik.http.services.radarr-service.loadbalancer.server.port=7878"
+      - homepage.group=Media
+      - homepage.name=Radarr
+      - homepage.icon=radarr.svg
+      - homepage.href=https://radarr.$DOMAINNAME_1
+      - homepage.description=Radarr
+      - homepage.showStats=true
+      - homepage.widget.type=radarr
+      - homepage.widget.url=https://radarr.$DOMAINNAME_1
+      - homepage.widget.key=${RADARR_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional

@@ -35,5 +35,15 @@ services:
       - "traefik.http.routers.teleport-router.service=teleport-service"
       - "traefik.http.services.teleport-service.loadbalancer.server.port=3080"
       - "traefik.http.services.teleport-service.loadbalancer.server.scheme=https"
+      - homepage.group=Networking
+      - homepage.name=Teleport
+      - homepage.icon=teleport.svg
+      - homepage.href=https://teleport.$DOMAINNAME_1
+      - homepage.description=Teleport
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 
 

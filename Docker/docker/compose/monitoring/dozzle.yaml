@@ -28,6 +28,15 @@ services:
       # HTTP Services
       - "traefik.http.routers.dozzle-router.service=dozzle-service"
       - "traefik.http.services.dozzle-service.loadbalancer.server.port=8080"
+      - homepage.group=Monitoring
+      - homepage.name=Dozzle
+      - homepage.icon=dozzle.png
+      - homepage.href=https://dozzle.$DOMAINNAME_1
+      - homepage.description=Dozzle
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Use Docker Socket Proxy instead for improved security
 

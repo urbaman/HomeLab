@@ -28,3 +28,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.bazarr-router.service=bazarr-service"
       - "traefik.http.services.bazarr-service.loadbalancer.server.port=6767"
+      - homepage.group=Media
+      - homepage.name=Bazarr
+      - homepage.icon=bazarr.svg
+      - homepage.href=https://bazarr.$DOMAINNAME_1
+      - homepage.description=Bazarr
+      - homepage.showStats=true
+      - homepage.widget.type=bazarr
+      - homepage.widget.url=https://bazarr.$DOMAINNAME_1
+      - homepage.widget.key=${BAZARR_API_KEY}
+        #- homepage.widget.fields=["missingEpisodes", "missingMovies"] # optional

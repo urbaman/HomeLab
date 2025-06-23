@@ -45,4 +45,14 @@ services:
       # HTTP Services
       - "traefik.http.routers.vaultwarden-router.service=vaultwarden-service"
       - "traefik.http.services.vaultwarden-service.loadbalancer.server.port=80"
+      - homepage.group=Security
+      - homepage.name=Vaultwarden
+      - homepage.icon=vaultwarden.svg
+      - homepage.href=https://vaultwarden.$DOMAINNAME_1
+      - homepage.description=Vaultwarden
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

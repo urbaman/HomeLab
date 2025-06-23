@@ -47,6 +47,7 @@ services:
       - OVERWRITECLIURL=https://nextcloud.urbaman.it
       - APACHE_DISABLE_REWRITE_IP=1
       - FORWARDED_FOR_HEADERS=HTTP_CF_CONNECTING_IP HTTP_X_FORWARDED_FOR
+      - PHP_OPCACHE_MEMORY_CONSUMPTION=256
     labels:
       - "org.label-schema.group=tools"
       - "traefik.enable=true"
@@ -62,5 +63,15 @@ services:
       # HTTP Services
       - "traefik.http.routers.nextcloud-router.service=nextcloud-service"
       - "traefik.http.services.nextcloud-service.loadbalancer.server.port=80"
+      - homepage.group=Office
+      - homepage.name=Nextcloud
+      - homepage.icon=nextcloud.svg
+      - homepage.href=https://nextcloud.$DOMAINNAME_1
+      - homepage.description=Nextcloud
+      - homepage.showStats=true
+      - homepage.widget.type=nextcloud
+      - homepage.widget.url=https://nextcloud.$DOMAINNAME_1
+      - homepage.widget.key=${NC_ACCESS_TOKEN}
+        #- homepage.widget.fields=["field1","field2"] # optiona
 
 

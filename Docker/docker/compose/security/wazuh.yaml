@@ -141,6 +141,16 @@ services:
       - "traefik.http.routers.wazuh-router.service=wazuh-service"
       - "traefik.http.services.wazuh-service.loadbalancer.server.port=443"
       - "traefik.http.services.wazuh-service.loadbalancer.server.scheme=https"
+      - homepage.group=Security
+      - homepage.name=Wazuh
+      - homepage.icon=wazuh.svg
+      - homepage.href=https://wazuh.$DOMAINNAME_1
+      - homepage.description=Wazuh
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 
 volumes:
   wazuh_api_configuration:

@@ -31,3 +31,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.flaresolverr-router.service=flaresolverr-service"
       - "traefik.http.services.flaresolverr-service.loadbalancer.server.port=8191"
+      - homepage.group=Media
+      - homepage.name=Flaresolverr
+      - homepage.icon=flaresolverr.svg
+      - homepage.href=https://flaresolverr.$DOMAINNAME_1
+      - homepage.description=Flaresolverr
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional

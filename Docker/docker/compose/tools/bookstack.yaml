@@ -44,7 +44,7 @@ services:
       # HTTP Services
       - "traefik.http.routers.bookstack-router.service=bookstack-service"
       - "traefik.http.services.bookstack-service.loadbalancer.server.port=80"
-      - homepage.group=Tools
+      - homepage.group=Office
       - homepage.name=Bookstack
       - homepage.icon=bookstack.svg
       - homepage.href=https://bookstack.$DOMAINNAME_1

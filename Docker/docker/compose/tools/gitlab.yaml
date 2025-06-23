@@ -158,4 +158,15 @@ services:
       - "traefik.tcp.routers.gitlab-shell-router.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.gitlab-shell-router.service=gitlab-shell-service"
       - "traefik.tcp.services.gitlab-shell-service.loadbalancer.server.port=22"
+      - homepage.group=DevOps
+      - homepage.name=Gitlab
+      - homepage.icon=gitlab.svg
+      - homepage.href=https://gitlab.$DOMAINNAME_1
+      - homepage.description=Gitlab
+      - homepage.showStats=true
+      - homepage.widget.type=gitlab
+      - homepage.widget.url=https://gitlab.$DOMAINNAME_1
+      - homepage.widget.key=${GITLAB_API_ACCESS_TOKEN}
+      - homepage.widget.user_id=1
+        #- homepage.widget.fields=["field1","field2"] # optiona
     

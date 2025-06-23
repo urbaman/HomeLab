@@ -28,3 +28,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.sabnzbd-router.service=sabnzbd-service"
       - "traefik.http.services.sabnzbd-service.loadbalancer.server.port=8080"
+      - homepage.group=Media
+      - homepage.name=SABnzbd
+      - homepage.icon=sabnzbd.svg
+      - homepage.href=https://sabnzbd.$DOMAINNAME_1
+      - homepage.description=SABnzbd
+      - homepage.showStats=true
+        #- homepage.widget.type=sabnzbd
+        #- homepage.widget.url=https://sabnzbd.$DOMAINNAME_1
+        #- homepage.widget.key=${SABNZBD_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional

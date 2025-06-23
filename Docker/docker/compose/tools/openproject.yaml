@@ -19,7 +19,7 @@ services:
       - OPENPROJECT_RAILS__CACHE__STORE=memcache
       - OPENPROJECT_CACHE__MEMCACHE__SERVER=memcached:11211
       - CACHE_MEMCACHE_SERVER=memcached:11211
-      - RALS_CACHE_STORE=memcache
+      - RALS_CACHE_STORE=memcach"0
       - DATABASE_URL=postgres://openproject:$OPENPROJECT_DB_PASSWORD@postgres/openproject
       - RAILS_MIN_THREADS=4
       - RAILS_MAX_THREADS=16
@@ -45,4 +45,14 @@ services:
       # HTTP Services
       - "traefik.http.routers.openproject-router.service=openproject-service"
       - "traefik.http.services.openproject-service.loadbalancer.server.port=8080"
+      - homepage.group=Office
+      - homepage.name=Openproject
+      - homepage.icon=openproject.svg
+      - homepage.href=https://openproject.$DOMAINNAME_1
+      - homepage.description=Openproject
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

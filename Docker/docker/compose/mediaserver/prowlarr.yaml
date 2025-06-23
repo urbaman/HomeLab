@@ -28,3 +28,13 @@ services:
       # HTTP Services
       - "traefik.http.routers.prowlarr-router.service=prowlarr-service"
       - "traefik.http.services.prowlarr-service.loadbalancer.server.port=9696"
+      - homepage.group=Media
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.svg
+      - homepage.href=https://prowlarr.$DOMAINNAME_1
+      - homepage.description=Prowlarr
+      - homepage.showStats=true
+      - homepage.widget.type=prowlarr
+      - homepage.widget.url=https://prowlarr.$DOMAINNAME_1
+      - homepage.widget.key=${PROWLARR_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional

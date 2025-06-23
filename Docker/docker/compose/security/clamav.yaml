@@ -16,3 +16,13 @@ services:
       - $DATADIR/clamav/db:/var/lib/clamav
     labels:
       - "org.label-schema.group=security"
+      - homepage.group=Security
+      - homepage.name=Clamav
+      - homepage.icon=clam-av.svg
+        #- homepage.href=https://wazuh.$DOMAINNAME_1
+      - homepage.description=Clamav
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona

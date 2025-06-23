@@ -20,4 +20,14 @@ services:
       # HTTP Services
       - "traefik.http.routers.it-tools-router.service=it-tools-service"
       - "traefik.http.services.it-tools-service.loadbalancer.server.port=80"
+      - homepage.group=DevOps
+      - homepage.name=It Tools
+      - homepage.icon=it-tools.svg
+      - homepage.href=https://it-tools.$DOMAINNAME_1
+      - homepage.description=It Tools
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

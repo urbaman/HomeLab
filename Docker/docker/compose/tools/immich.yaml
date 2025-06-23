@@ -44,6 +44,17 @@ services:
       # HTTP Services
       - "traefik.http.routers.immich-router.service=immich-service"
       - "traefik.http.services.immich-service.loadbalancer.server.port=2283"
+      - homepage.group=Media
+      - homepage.name=Immich
+      - homepage.icon=immich.svg
+      - homepage.href=https://immich.$DOMAINNAME_1
+      - homepage.description=Immich
+      - homepage.showStats=true
+      - homepage.widget.type=immich
+      - homepage.widget.url=https://immich.$DOMAINNAME_1
+      - homepage.widget.key=${IMMICH_HOMEPAGE_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional
+      - homepage.widget.version=2
 
 
 

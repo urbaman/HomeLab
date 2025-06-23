@@ -35,6 +35,16 @@ services:
       # HTTP Services
       - "traefik.http.routers.shlink-router.service=shlink-service"
       - "traefik.http.services.shlink-service.loadbalancer.server.port=8080"
+      - homepage.group=Office
+      - homepage.name=Shlink
+      - homepage.icon=shlink.svg
+      - homepage.href=https://shlink.$DOMAINNAME_1
+      - homepage.description=Shlink
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 
   shlink-web-client:
     image: shlinkio/shlink-web-client:latest
@@ -62,4 +72,14 @@ services:
       # HTTP Services
       - "traefik.http.routers.shlink-web-client-router.service=shlink-web-client-service"
       - "traefik.http.services.shlink-web-client-service.loadbalancer.server.port=8080"
+      - homepage.group=Office
+      - homepage.name=Shlink Web Client
+      - homepage.icon=shlink.svg
+      - homepage.href=https://shlink-web-client.$DOMAINNAME_1
+      - homepage.description=Shlink Web Client
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
 

@@ -1,0 +1,97 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/settings/
+
+title: My Homelab Homepage
+language: it
+showStats: true
+statusStyle: "dot"
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+  hideVisitURL: true
+headerStyle: boxed
+layout:
+  News:
+    icon: mdi-newspaper-variant-multiple-outline
+    style: row
+    columns: 4
+    tab: Tools
+  Media:
+    icon: mdi-multimedia
+    style: row
+    columns: 4
+    tab: Tools
+  Tools:
+    icon: mdi-tools
+    style: row
+    columns: 4
+    tab: Tools
+  Finance:
+    icon: mdi-finance
+    style: row
+    columns: 4
+    tab: Tools
+  Graphics:
+    icon: mdi-draw
+    style: row
+    columns: 4
+    tab: Tools
+  Office:
+    icon: mdi-office-building-cog-outline
+    style: row
+    columns: 4
+    tab: Tools
+  Management:
+    icon: mdi-server
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Networking:
+    icon: mdi-lan
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Storage:
+    icon: mdi-nas
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Security:
+    icon: mdi-shield-lock-outline
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Docker:
+    icon: mdi-docker
+    style: row
+    columns: 4
+    tab: Infrastructure
+  DevOps:
+    icon: mdi-cog-outline
+    style: row
+    columns: 4
+    tab: Development
+  AI & ML:
+    icon: mdi-head-lightbulb-outline
+    style: row
+    columns: 4
+    tab: Development
+  Monitoring:
+    icon: mdi-alert-decagram-outline
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Hosting:
+    icon: mdi-wan
+    style: row
+    columns: 4
+    tab: Infrastructure
+  Domotics:
+    icon: mdi-home-automation
+    style: row
+    columns: 4
+    tab: Tools
+#providers:
+#  openweathermap: openweathermapapikey
+#  weatherapi: weatherapiapikey
