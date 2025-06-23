@@ -7,6 +7,7 @@
         description: pfSense networking
         href: https://pfsense1.domain.com
         icon: pfsense.svg
+        siteMonitor: https://pfsense1.domain.com
         widget:
           type: pfsense
           fields: ["load", "memory", "wanStatus", "disk"]
@@ -21,6 +22,7 @@
         description: Proxmox VE Cluster
         href: https://pve1.domain.com:8006
         icon: proxmox.svg
+        siteMonitor: https://pve1.domain.com:8006
         widget:
           type: proxmox
           url: https://pve1.domain.com:8006
@@ -31,6 +33,7 @@
         description: Proxmox Backup Server
         href: https://pbs1.domain.com:8007
         icon: proxmox.svg
+        siteMonitor: https://pbs1.domain.com:8007
         widget:
           type: proxmoxbackupserver
           url: https://pbs1.domain.com:8007
@@ -40,34 +43,41 @@
         description: Asustor NAS
         href: https://asustornas1.domain.com
         icon: asustor.svg
+        siteMonitor: https://asustornas1.domain.com
     - Nut 1:
         description: NUT 1
         href: http://<API_KEY>/cgi-bin/nut/upsstats.cgi
         icon: nut.svg
+        siteMonitor: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
     - Nut 2:
         description: NUT 2
         href: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
         icon: nut.svg
+        siteMonitor: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
     - Nut 3:
         description: NUT 3
         href: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
         icon: nut.svg
+        siteMonitor: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
 
 - Hosting:
     - Virtualmin:
         description: Proxmox VE Cluster
-        href: https://www.urbaman.it:2087
+        href: https://www.domain.com:2087
         icon: virtualmin.svg
+        siteMonitor: https://www.domain.com:2087
     - Proxmox Mail Gateway:
         description: Proxmox Mail Gateway
         href: https://pmg1.domain.com:8006
         icon: proxmox.svg
+        siteMonitor: https://pmg1.domain.com:8006
 
 - Domotics:
     - Homeassistant:
         description: Homeassistant
         href: http://<DOMAIN OR IP>:8123/lovelace/default_view
         icon: home-assistant.svg
+        siteMonitor: http://<DOMAIN OR IP>:8123
         widget:
           type: homeassistant
           url: http://<DOMAIN OR IP>:8123

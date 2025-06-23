@@ -1,0 +1,40 @@
+services:
+  cloudbeaver:
+    container_name: cloudbeaver
+    image: dbeaver/cloudbeaver:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+      - CB_SERVER_NAME="CloudBeaver CE Server"
+      - CB_SERVER_URL=https://cloudbeaver.$DOMAINNAME_1
+      - CB_ADMIN_NAME=${CB_ADMIN_NAME}
+      - CB_ADMIN_PASSWORD=${CB_ADMIN_PASSWORD}
+    volumes:
+      - $DATADIR/cloudbeaver:/opt/cloudbeaver/workspace
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.cloudbeaver-router.entrypoints=websecure"
+      - "traefik.http.routers.cloudbeaver-router.rule=Host(`cloudbeaver.$DOMAINNAME_1`)" # HostRegexp:cloudbeaver.${DOMAINNAME_1},{catchall:.*}" # Host(`cloudbeaver.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.cloudbeaver-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.cloudbeaver-router.service=cloudbeaver-service"
+      - "traefik.http.services.cloudbeaver-service.loadbalancer.server.port=8978"
+      - homepage.group=Management
+      - homepage.name=Cloudbeaver
+      - homepage.icon=cloudbeaver.svg
+      - homepage.href=https://cloudbeaver.$DOMAINNAME_1
+      - homepage.description=Cloudbeaver
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+

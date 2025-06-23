@@ -1,0 +1,36 @@
+services:
+  dbgate:
+    container_name: dbgate
+    image: dbgate/dbgate:latest
+    pull_policy: always
+    networks:
+      - traefik
+      - tools
+      - databases
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - $DATADIR/dbgate:/root/.dbgate
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.dbgate-router.entrypoints=websecure"
+      - "traefik.http.routers.dbgate-router.rule=Host(`dbgate.$DOMAINNAME_1`)" # HostRegexp:dbgate.${DOMAINNAME_1},{catchall:.*}" # Host(`dbgate.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.dbgate-router.middlewares=secure-headers@file"
+      # HTTP Services
+      - "traefik.http.routers.dbgate-router.service=dbgate-service"
+      - "traefik.http.services.dbgate-service.loadbalancer.server.port=3000"
+      - homepage.group=Management
+      - homepage.name=DB Gate
+      - homepage.icon=sh-dbgate.png
+      - homepage.href=https://dbgate.$DOMAINNAME_1
+      - homepage.description=DB Gate
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+
