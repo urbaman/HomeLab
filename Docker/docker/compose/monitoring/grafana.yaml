@@ -11,6 +11,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_ALERTING_ENABLED=false
       - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_SERVER_ROOT_URL=https://grafana.$DOMAINNAME_1
       - TZ=${TZ}
     restart: unless-stopped
     user: '1000'

@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.radarr-router.rule=Host(`radarr.$DOMAINNAME_1`)" # HostRegexp:radarr.${DOMAINNAME_1},{catchall:.*}" # Host(`radarr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.radarr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.radarr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.radarr-router.service=radarr-service"
       - "traefik.http.services.radarr-service.loadbalancer.server.port=7878"
@@ -35,6 +36,6 @@ services:
       - homepage.description=Radarr
       - homepage.showStats=true
       - homepage.widget.type=radarr
-      - homepage.widget.url=https://radarr.$DOMAINNAME_1
+      - homepage.widget.url=http://radarr:7878
       - homepage.widget.key=${RADARR_API_KEY}
         #- homepage.widget.fields=["field1","field2"] # optional

@@ -17,6 +17,7 @@ services:
       - "traefik.http.routers.drawio-router.rule=Host(`drawio.$DOMAINNAME_1`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.drawio-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.drawio-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.drawio-router.service=drawio-service"
       - "traefik.http.services.drawio-service.loadbalancer.server.port=8080"

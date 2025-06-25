@@ -33,7 +33,8 @@ services:
       - "traefik.http.routers.jellyfin-router.entrypoints=websecure"
       - "traefik.http.routers.jellyfin-router.rule=Host(`jellyfin.$DOMAINNAME_1`)" # HostRegexp:jellyfin.${DOMAINNAME_1},{catchall:.*}" # Host(`jellyfin.$DOMAINNAME_1`)"
       # Middlewares
-      - "traefik.http.routers.jellyfin-router.middlewares=secure-headers@file"
+      #- "traefik.http.routers.homepage-router.middlewares=authentik-traefik@file"
+      - "traefik.http.routers.jellyfin-router.middlewares=secure-headers-frame-domain@file"
       # HTTP Services
       - "traefik.http.routers.jellyfin-router.service=jellyfin-service"
       - "traefik.http.services.jellyfin-service.loadbalancer.server.port=8096"

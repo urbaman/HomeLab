@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.prowlarr-router.rule=Host(`prowlarr.$DOMAINNAME_1`)" # HostRegexp:prowlarr.${DOMAINNAME_1},{catchall:.*}" # Host(`prowlarr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.prowlarr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.prowlarr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.prowlarr-router.service=prowlarr-service"
       - "traefik.http.services.prowlarr-service.loadbalancer.server.port=9696"
@@ -35,6 +36,6 @@ services:
       - homepage.description=Prowlarr
       - homepage.showStats=true
       - homepage.widget.type=prowlarr
-      - homepage.widget.url=https://prowlarr.$DOMAINNAME_1
+      - homepage.widget.url=http://prowlarr:9696
       - homepage.widget.key=${PROWLARR_API_KEY}
         #- homepage.widget.fields=["field1","field2"] # optional

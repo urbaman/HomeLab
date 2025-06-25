@@ -20,6 +20,7 @@ services:
       - "traefik.http.routers.cyberchef-router.rule=Host(`cyberchef.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.cyberchef-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.cyberchef-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.cyberchef-router.service=cyberchef-service"
       - "traefik.http.services.cyberchef-service.loadbalancer.server.port=80"

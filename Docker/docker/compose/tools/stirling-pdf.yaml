@@ -36,7 +36,7 @@ services:
       - "traefik.http.routers.s-pdf-router.service=s-pdf-service"
       - "traefik.http.services.s-pdf-service.loadbalancer.server.port=8080"
       - homepage.group=Office
-      - homepage.name=Stirlink PDF
+      - homepage.name=Stirling PDF
       - homepage.icon=stirling-pdf.svg
       - homepage.href=https://s-pdf.$DOMAINNAME_1
       - homepage.description=Stirling PDF

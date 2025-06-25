@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.bazarr-router.rule=Host(`bazarr.$DOMAINNAME_1`)" # HostRegexp:bazarr.${DOMAINNAME_1},{catchall:.*}" # Host(`bazarr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.bazarr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.bazarr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.bazarr-router.service=bazarr-service"
       - "traefik.http.services.bazarr-service.loadbalancer.server.port=6767"
@@ -35,6 +36,6 @@ services:
       - homepage.description=Bazarr
       - homepage.showStats=true
       - homepage.widget.type=bazarr
-      - homepage.widget.url=https://bazarr.$DOMAINNAME_1
+      - homepage.widget.url=http://bazarr:6767
       - homepage.widget.key=${BAZARR_API_KEY}
         #- homepage.widget.fields=["missingEpisodes", "missingMovies"] # optional

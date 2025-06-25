@@ -32,6 +32,7 @@ services:
       - "traefik.http.routers.cadvisor-router.rule=Host(`cadvisor.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.cadvisor-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.cadvisor-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.cadvisor-router.service=cadvisor-service"
       - "traefik.http.services.cadvisor-service.loadbalancer.server.port=8080"

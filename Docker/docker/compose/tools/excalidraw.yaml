@@ -14,9 +14,10 @@ services:
       - "traefik.docker.network=tools"
       # HTTP Routers
       - "traefik.http.routers.excalidraw-router.entrypoints=websecure"
-      - "traefik.http.routers.excalidraw-router.rule=Host(`ecxalidraw.$DOMAINNAME_1`)" # HostRegexp:excalidraw.${DOMAINNAME_1},{catchall:.*}" # Host(`excalidraw.$DOMAINNAME_1`)"
+      - "traefik.http.routers.excalidraw-router.rule=Host(`excalidraw.$DOMAINNAME_1`)" # HostRegexp:excalidraw.${DOMAINNAME_1},{catchall:.*}" # Host(`excalidraw.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.excalidraw-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.excalidraw-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.excalidraw-router.service=excalidraw-service"
       - "traefik.http.services.excalidraw-service.loadbalancer.server.port=80"

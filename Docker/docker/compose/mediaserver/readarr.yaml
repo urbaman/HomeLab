@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.readarr-router.rule=Host(`readarr.$DOMAINNAME_1`)" # HostRegexp:readarr.${DOMAINNAME_1},{catchall:.*}" # Host(`readarr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.readarr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.readarr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.readarr-router.service=readarr-service"
       - "traefik.http.services.readarr-service.loadbalancer.server.port=8787"
@@ -35,6 +36,6 @@ services:
       - homepage.description=Readarr
       - homepage.showStats=true
       - homepage.widget.type=readarr
-      - homepage.widget.url=https://readarr.$DOMAINNAME_1
+      - homepage.widget.url=http://readarr:8787
       - homepage.widget.key=${READARR_API_KEY}
         #- homepage.widget.fields=["field1","field2"] # optional

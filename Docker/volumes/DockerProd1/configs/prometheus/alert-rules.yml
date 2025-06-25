@@ -119,13 +119,13 @@ groups:
       summary: Container high throttle rate (instance {{ $labels.instance }})
       description: "Container is being throttled\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   - alert: ContainerHighLowChangeCpuUsage
-    expr: (abs((sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m])) * 100) - (sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m] offset 1m)) * 100)) or abs((sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m])) * 100) - (sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[5m] offset 1m)) * 100))) > 25
+    expr: (abs((sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m])) * 100) - (sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m] offset 1m)) * 100)) or abs((sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[1m])) * 100) - (sum by (instance, name) (rate(container_cpu_usage_seconds_total{name!=""}[5m] offset 1m)) * 100))) > 50
     for: 0m
     labels:
       severity: info
     annotations:
       summary: Container high low change CPU usage (instance {{ $labels.instance }})
-      description: "This alert rule monitors the absolute change in CPU usage within a time window and triggers an alert when the change exceeds 25%.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      description: "This alert rule monitors the absolute change in CPU usage within a time window and triggers an alert when the change exceeds 50%.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 - name: Host
   rules:
   - alert: HostOutOfMemory
@@ -271,4 +271,22 @@ groups:
     annotations:
       summary: Host OOM kill detected (instance {{ $labels.instance }})
       description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+- name: minio-alerts
+  rules:
+  - alert: NodesOffline
+    expr: avg_over_time(minio_cluster_nodes_offline_total{job="minio-job"}[5m]) > 0
+    for: 10m
+    labels:
+      severity: warn
+    annotations:
+      summary: "Node down in MinIO deployment"
+      description: "Node(s) in cluster {{ $labels.instance }} offline for more than 5 minutes"
 
+  - alert: DisksOffline
+    expr: avg_over_time(minio_cluster_drive_offline_total{job="minio-job"}[5m]) > 0
+    for: 10m
+    labels:
+      severity: warn
+    annotations:
+      summary: "Disks down in MinIO deployment"
+      description: "Disks(s) in cluster {{ $labels.instance }} offline for more than 5 minutes"

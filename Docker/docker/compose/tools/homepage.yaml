@@ -24,6 +24,7 @@ services:
       - "traefik.http.routers.homepage-router.rule=Host(`homepage.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.homepage-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.homepage-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.homepage-router.service=homepage-service"
       - "traefik.http.services.homepage-service.loadbalancer.server.port=3000"

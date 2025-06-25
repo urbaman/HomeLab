@@ -28,6 +28,7 @@ services:
       - "traefik.http.routers.flaresolverr-router.rule=Host(`flaresolverr.$DOMAINNAME_1`)" # HostRegexp:flaresolverr.${DOMAINNAME_1},{catchall:.*}" # Host(`flaresolverr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.flaresolverr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.flaresolverr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.flaresolverr-router.service=flaresolverr-service"
       - "traefik.http.services.flaresolverr-service.loadbalancer.server.port=8191"

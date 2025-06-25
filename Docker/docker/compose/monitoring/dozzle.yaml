@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.dozzle-router.rule=Host(`dozzle.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.dozzle-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.dozzle-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.dozzle-router.service=dozzle-service"
       - "traefik.http.services.dozzle-service.loadbalancer.server.port=8080"

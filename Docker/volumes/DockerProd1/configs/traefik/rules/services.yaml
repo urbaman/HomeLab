@@ -3,16 +3,16 @@ http:
     asustornas1-service:
       loadBalancer:
         servers:
-          - url: "https://<ASUSTOR_IP>:8001"
+          - url: "https://<ASUSTORNAS_IP>:8001"
     hosting1-https-service:
       loadBalancer:
         servers:
-          - url: "https://<HOSTING-IP>"
+          - url: "https://<VIRTUALMIN_IP>"
     hosting1-usermin-service:
       loadBalancer:
         servers:
-          - url: "https://<HOSTING-IP>:2083"
+          - url: "https://<VIRTUALMIN_IP>:2083"
     hosting1-webmin-service:
       loadBalancer:
         servers:
-          - url: "https://<HOSTING-IP>:2087"
+          - url: "https://<VIRTUALMIN_IP>:2087"

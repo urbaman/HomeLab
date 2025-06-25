@@ -186,10 +186,16 @@ services:
       # HTTP Routers
       - "traefik.http.routers.traefik-router.entrypoints=websecure"
       - "traefik.http.routers.traefik-router.rule=Host(`traefik.$DOMAINNAME_1`)"
+      - "traefik.http.routers.traefik-ip-router.entrypoints=websecure"
+      - "traefik.http.routers.traefik-ip-router.rule=Host(`traefik`)"
+      - "traefik.http.routers.traefik-ip-router.tls.certresolver="
       # Services - API
       - "traefik.http.routers.traefik-router.service=api@internal"
+      - "traefik.http.routers.traefik-ip-router.service=api@internal"
       # Middlewares
       - "traefik.http.routers.traefik-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.traefik-router.middlewares=authentik-traefik@file"
+      - "traefik.http.routers.traefik-ip-router.middlewares=secure-headers@file"
       - homepage.group=Networking
       - homepage.name=Traefik
       - homepage.icon=traefik.svg
@@ -197,7 +203,7 @@ services:
       - homepage.description=Traefik
       - homepage.showStats=true
       - homepage.widget.type=traefik
-      - homepage.widget.url=https://traefik.$DOMAINNAME_1
+      - homepage.widget.url=https://traefik
         #- homepage.widget.key=yourembyapikeyhere
         #- homepage.widget.fields=["field1","field2"] # optiona
 

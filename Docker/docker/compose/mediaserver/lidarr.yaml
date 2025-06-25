@@ -25,6 +25,7 @@ services:
       - "traefik.http.routers.lidarr-router.rule=Host(`lidarr.$DOMAINNAME_1`)" # HostRegexp:lidarr.${DOMAINNAME_1},{catchall:.*}" # Host(`lidarr.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.lidarr-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.lidarr-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.lidarr-router.service=lidarr-service"
       - "traefik.http.services.lidarr-service.loadbalancer.server.port=8686"
@@ -35,6 +36,6 @@ services:
       - homepage.description=Lidarr
       - homepage.showStats=true
       - homepage.widget.type=lidarr
-      - homepage.widget.url=https://lidarr.$DOMAINNAME_1
+      - homepage.widget.url=http://lidarr:8686
       - homepage.widget.key=${LIDARR_API_KEY}
         #- homepage.widget.fields=["field1","field2"] # optional

@@ -26,6 +26,7 @@ services:
       - "traefik.http.routers.alertmanager-router.rule=Host(`alertmanager.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.alertmanager-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.alertmanager-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.alertmanager-router.service=alertmanager-service"
       - "traefik.http.services.alertmanager-service.loadbalancer.server.port=9093"

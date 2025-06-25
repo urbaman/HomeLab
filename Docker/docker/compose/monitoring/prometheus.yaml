@@ -19,6 +19,7 @@ services:
     restart: unless-stopped
     networks:
       - monitoring
+      - tools
     environment:
       - TZ=${TZ}
     labels:
@@ -30,6 +31,7 @@ services:
       - "traefik.http.routers.prometheus-router.rule=Host(`prometheus.$DOMAINNAME_1`)"
       # Middlewares
       - "traefik.http.routers.prometheus-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.prometheus-router.middlewares=authentik-traefik@file"
       # HTTP Services
       - "traefik.http.routers.prometheus-router.service=prometheus-service"
       - "traefik.http.services.prometheus-service.loadbalancer.server.port=9090"
@@ -39,7 +41,7 @@ services:
       - homepage.href=https://prometheus.$DOMAINNAME_1
       - homepage.description=Prometheus
       - homepage.widget.type=prometheus
-      - homepage.widget.url=https://prometheus.$DOMAINNAME_1
+      - homepage.widget.url=http://prometheus:9090
         #- homepage.widget.key=yourembyapikeyhere
         #- homepage.widget.fields=["field1","field2"]
 
