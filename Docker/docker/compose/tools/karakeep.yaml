@@ -1,0 +1,81 @@
+services:
+  karakeep:
+    image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
+    restart: unless-stopped
+    container_name: karakeep
+    networks:
+      - tools
+    volumes:
+      # By default, the data is stored in a docker volume called "data".
+      # If you want to mount a custom directory, change the volume mapping to:
+      # - /path/to/your/directory:/data
+      - $DATADIR/karakeep:/data
+    ports:
+      - 3000:3000
+    environment:
+      MEILI_ADDR: http://meilisearch:7700
+      BROWSER_WEB_URL: http://chrome:9222
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_LOCAL_URL: http://localhost:3000
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      OAUTH_CLIENT_ID: ${KARAKEEP_OAUTH_CLIENT_ID}
+      OAUTH_CLIENT_SECRET: ${KARAKEEP_OAUTH_CLIENT_SECRET}
+      OAUTH_WELLKNOWN_URL: https://authentik.urbaman.it/application/o/karakeep-oauth/.well-known/openid-configuration
+      OAUTH_PROVIDER_NAME: authentik
+      OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING: true
+      OAUTH_SCOPE: "openid profile email"
+      # OPENAI_API_KEY: ...
+
+      # You almost never want to change the value of the DATA_DIR variable.
+      # If you want to mount a custom directory, change the volume mapping above instead.
+      DATA_DIR: /data # DON'T CHANGE THIS
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.karakeep-router.entrypoints=websecure"
+      - "traefik.http.routers.karakeep-router.rule=Host(`karakeep.$DOMAINNAME_1`)" # HostRegexp:karakeep.${DOMAINNAME_1},{catchall:.*}" # Host(`karakeep.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.karakeep-router.middlewares=secure-headers@file"
+      #- "traefik.http.routers.karakeep-router.middlewares=authentik-traefik@file"
+      # HTTP Services
+      - "traefik.http.routers.karakeep-router.service=karakeep-service"
+      - "traefik.http.services.karakeep-service.loadbalancer.server.port=3000"
+      - homepage.group=Office
+      - homepage.name=Karakeep
+      - homepage.icon=karakeep.svg
+      - homepage.href=https://karakeep.$DOMAINNAME_1
+      - homepage.description=Karakeep
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+  
+  chrome:
+    image: gcr.io/zenika-hub/alpine-chrome:123
+    restart: unless-stopped
+    container_name: chrome
+    networks:
+      - tools
+    command:
+      - --no-sandbox
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+      - --hide-scrollbars
+  
+  meilisearch:
+    image: getmeili/meilisearch:v1.13.3
+    container_name: meilisearch
+    networks:
+      - tools
+    restart: unless-stopped
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - $DATADIR/meilisearch:/meili_data

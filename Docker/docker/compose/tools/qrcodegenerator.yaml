@@ -1,0 +1,38 @@
+services:
+  qr-code-generator:
+    container_name: qr-code-generator
+    image: bizzycolah/qrcode-generator:latest
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    security_opt:
+      - no-new-privileges:true
+    pull_policy: always
+    networks:
+      - traefik
+      - tools 
+    environment:
+      - TZ=${TZ}
+    labels:
+      - "org.label-schema.group=tools"
+      - "traefik.enable=true"
+      - "traefik.docker.network=tools"
+      # HTTP Routers
+      - "traefik.http.routers.qr-code-generator-router.entrypoints=websecure"
+      - "traefik.http.routers.qr-code-generator-router.rule=Host(`qr-code-generator.$DOMAINNAME_1`)" # HostRegexp:qr-code-generator.${DOMAINNAME_1},{catchall:.*}" # Host(`qr-code-generator.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.qr-code-generator-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.qr-code-generator-router.middlewares=authentik-traefik@file"
+      # HTTP Services
+      - "traefik.http.routers.qr-code-generator-router.service=qr-code-generator-service"
+      - "traefik.http.services.qr-code-generator-service.loadbalancer.server.port=80"
+      - homepage.group=Office
+      - homepage.name=Qr Code Generator
+      - homepage.icon=barcodebuddy.png
+      - homepage.href=https://qr-code-generator.$DOMAINNAME_1
+      - homepage.description=Qr Code Generator
+      - homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+
