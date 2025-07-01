@@ -3,11 +3,11 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     command:
-      - "-docker_only"
-        #      - "-housekeeping_interval=30s"
+      - '--docker_only=true'
+      - '--housekeeping_interval=10s'
         #      - "-disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
         #      - "-allow_dynamic_housekeeping=false"
-      - "-logtostderr"
+        #- '-logtostderr'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro

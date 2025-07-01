@@ -29,6 +29,7 @@ services:
       AUTHENTIK_EMAIL__TIMEOUT: 10
       # Email address authentik will send from, should have a correct @domain
       AUTHENTIK_EMAIL__FROM: authentik@$DOMAINNAME_1
+      AUTHENTIK_LOG_LEVEL: warn
     volumes:
       - authentik-media:/media
       - authentik-custom-templates:/templates
@@ -74,6 +75,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_PG_USER}
       AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_PG_DB}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+      AUTHENTIK_LOG_LEVEL: warn
     user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

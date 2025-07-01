@@ -1,0 +1,53 @@
+---
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - $CONFIGDIR/mediaserver/calibre:/config
+      - $DATADIR/mediaserver:/data #optional
+    expose:
+      - 8080
+      - 8081
+      - 8181
+    restart: unless-stopped
+    networks:
+      - traefik
+      - mediaserver
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+        #- DOCKER_MODS=linuxserver/mods:universal-package-install
+        #- INSTALL_PACKAGES=libxinerama1
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.calibre-router.entrypoints=websecure"
+      - "traefik.http.routers.calibre-router.rule=Host(`calibre.$DOMAINNAME_1`)" # HostRegexp:calibre.${DOMAINNAME_1},{catchall:.*}" # Host(`calibre.$DOMAINNAME_1`)"
+      - "traefik.http.routers.calibre-ws-router.entrypoints=websecure"
+      - "traefik.http.routers.calibre-ws-router.rule=Host(`calibre-ws.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.calibre-router.middlewares=secure-headers-calibre@file"
+        #- "traefik.http.routers.calibre-router.middlewares=authentik-traefik@file"
+      - "traefik.http.routers.calibre-ws-router.middlewares=secure-headers-calibre@file"
+        #- "traefik.http.routers.calibre-ws-router.middlewares=authentik-traefik@file"
+      # HTTP Services
+      - "traefik.http.routers.calibre-router.service=calibre-service"
+      - "traefik.http.services.calibre-service.loadbalancer.server.port=8080"
+      - "traefik.http.routers.calibre-ws-router.service=calibre-ws-service"
+      - "traefik.http.services.calibre-ws-service.loadbalancer.server.port=8081"
+      - homepage.group=Media
+      - homepage.name=Calibre
+      - homepage.icon=calibre.svg
+      - homepage.href=https://calibre.$DOMAINNAME_1
+      - homepage.description=Calibre
+      - homepage.showStats=true
+        #- homepage.widget.type=calibre
+        #- homepage.widget.url=http://calibre:8081
+        #- homepage.widget.key=${SONARR_API_KEY}
+        #- homepage.widget.fields=["field1","field2"] # optional

@@ -6,20 +6,24 @@ services:
     environment:
       - TZ=${TZ}
     security_opt:
-      - no-new-privileges:true
+      - apparmor:unconfined
+        #  - no-new-privileges:true
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro
+      - /run/udev/data:/run/udev/data:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
       - '--collector.processes'
       - '--collector.interrupts'
       - '--collector.systemd'
       - '--collector.tcpstat'
+      - '--log.level=warn'
     restart: unless-stopped
     networks:
       - monitoring

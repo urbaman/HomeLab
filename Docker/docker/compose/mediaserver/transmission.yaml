@@ -5,7 +5,7 @@ services:
     container_name: transmission
     volumes:
       - $CONFIGDIR/mediaserver/transmission:/config
-      - $DATADIR/mediaserver/torrents:/downloads #optional
+      - $DATADIR/mediaserver/torrents:/torrents #optional
       - $DATADIR/mediaserver/torrents/watch:/watch
     expose:
       - 9091

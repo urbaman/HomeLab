@@ -36,6 +36,8 @@ include:
 # MANAGEMENT
   # Portainer - Docker management
   - compose/management/portainer.yaml
+  # Authentik
+  - compose/management/authentik.yaml
 
 # MONITORING
   # Cadvisor
@@ -87,6 +89,10 @@ include:
   - compose/databases/mongodb.yaml
   # Memcached
   - compose/databases/memcached.yaml
+  # Cloudbeaver
+  - compose/databases/cloudbeaver.yaml
+  # DB Gate
+  - compose/databases/dbgate.yaml
 
 # Tools
   # Draw.io
@@ -157,3 +163,4 @@ include:
   - compose/mediaserver/unpackerr.yaml
   - compose/mediaserver/jellyfin.yaml
   - compose/mediaserver/jellyseerr.yaml
+  - compose/mediaserver/calibre.yaml

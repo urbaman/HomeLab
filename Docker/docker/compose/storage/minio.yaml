@@ -14,11 +14,10 @@ services:
       - TZ=${TZ}
       - MINIO_ROOT_USER=${MINIO_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}
-      - MINIO_VOLUMES="/mnt/data"
       - MINIO_OPTS="--console-address :9001"
     volumes:
-      - $DATADIR/minio:/mnt/data
-    command: server --console-address ":9001"
+      - $DATADIR/minio:/data
+    command: server /data --console-address ":9001"
     labels:
       - "org.label-schema.group=storage"
       - "traefik.enable=true"
