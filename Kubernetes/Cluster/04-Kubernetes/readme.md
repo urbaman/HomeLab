@@ -197,13 +197,13 @@ sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 Download the Kubernetes public signing key:
 
 ```bash
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 ```
 
 Add the Kubernetes apt repository:
 
 ```bash
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
 Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
@@ -260,7 +260,6 @@ kube-vip manifest pod \
     --interface $INTERFACE \
     --address $VIP \
     --controlplane \
-    --services \
     --arp \
     --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
 exit
@@ -287,8 +286,8 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
 networking:
-  podSubnet: "10.10.0.0/16" # change this (see below)
-  serviceSubnet: "10.1.0.0/16" # change this (see below)
+  podSubnet: "10.1.0.0/16" # change this (see below)
+  serviceSubnet: "10.2.0.0/16" # change this (see below)
 etcd:
   external:
     endpoints:
@@ -302,7 +301,7 @@ Note: The difference between stacked etcd and external etcd here is that the ext
 
 Remember to change the controlPlaneEndpoint, podSubnet (equal to following calico IP CIDR), etcd endpoints (equal to the endpoints of the external etcd)
 
-Note: the podSubnet (CIDR of IPs assigned to the pods) must be a private network CIDR (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) of other local network CIDRs already in use. I use 10.0.x.x and 192.168.1.x, so I assign 192.168.0.0/16 to kubernetes internal network. Also keep in mind that kubernetes by default assigns a /24 set of IPs to each node, so there will in my case 24-12=12, 2^12=4.096 nodes in the cluster, each with a 65-110 pods max. Please note that there's quite a bit of IPs wasted, as top cluster nodes is 1000 and I do only 6. Being in my own nome network simplifies a little bit, but beware the network implications of these settings.
+Note: the podSubnet (CIDR of IPs assigned to the pods) must be a private network CIDR (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) or other local network CIDRs already in use. I use 10.0.x.x and 192.168.1.x, so I assign 192.168.0.0/16 to kubernetes internal network. Also keep in mind that kubernetes by default assigns a /24 set of IPs to each node, so there will be in my case 24-12=12, 2^12=4.096 nodes in the cluster, each with a 65-110 pods max. Please note that there's quite a bit of IPs wasted, as top cluster nodes is 1000 and I do only 6. Being in my own nome network simplifies a little bit, but beware the network implications of these settings.
 
 The following steps are similar to the stacked etcd setup:
 
