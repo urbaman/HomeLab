@@ -318,6 +318,12 @@ The following steps are similar to the stacked etcd setup:
 sudo kubeadm init --config kubeadm-config.yaml --upload-certs
 ```
 
+Or, if you plan to use ebpf with your cni, you can prevent the deployment of kube-proxy (you need it to install calico with the operator):
+
+```bash
+sudo kubeadm init --config kubeadm-config.yaml --upload-certs --skip-phases=addon/kube-proxy
+```
+
 Write the output join commands that are returned to a text file for later use.
 
 For kube-vip: finally setup the loadbalancer DNS to the VIP.
