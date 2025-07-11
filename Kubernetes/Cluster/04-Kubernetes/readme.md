@@ -252,7 +252,7 @@ On the first CP node:
 
 ```bash
 sudo su
-export VIP=192.168.0.40
+export VIP=10.0.100.90
 export INTERFACE=eth0
 KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
 alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
@@ -284,10 +284,19 @@ Create a file called kubeadm-config.yaml with the following contents (modify IPs
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: "k8cp.urbaman.it:6443" # change this (see below)
+controlPlaneEndpoint: "k8cp.domain.com:6443" # change this (see below)
 networking:
   podSubnet: "10.1.0.0/16" # change this (see below)
   serviceSubnet: "10.2.0.0/16" # change this (see below)
+apiServer:
+  certSANs:
+  - "Cluster loadbalancer IP"
+  - "Control-plane-1 IP"
+  - "Control-plane-2 IP"
+  - "Control-plane-3 IP"
+  ...
+  - "kubernetes.default"
+  - "k8s.domain.com"
 etcd:
   external:
     endpoints:
@@ -360,7 +369,7 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 calicoctl create -f - < my_manifest.yaml
 ```
 
-#### Enable ebpf mode (not working)
+#### Enable ebpf mode
 
 Create a configmap with informations on the cluster service:
 
@@ -376,7 +385,7 @@ metadata:
   name: kubernetes-services-endpoint
   namespace: tigera-operator
 data:
-  KUBERNETES_SERVICE_HOST: '<API server host>'
+  KUBERNETES_SERVICE_HOST: '<Cluster loadbalancer IP>'
   KUBERNETES_SERVICE_PORT: '<API server port>'
 ```
 
