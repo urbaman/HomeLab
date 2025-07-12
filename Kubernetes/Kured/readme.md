@@ -53,7 +53,7 @@ I will set the following arguments:
             - --reboot-sentinel=/var/run/reboot-required
             - --alert-filter-regexp=^(RebootRequired|Watchdog|InfoInhibitor)$
             - --end-time=17:00
-            - --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1
+            - --notify-url=smtp://username:password@host:port/?fromAddress=fromAddress&toAddresses=recipient1&Auth=Plain
             - --prometheus-url=http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
             - --reboot-days=mo,tu,we,th,fr
             - --start-time=10:00

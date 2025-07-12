@@ -3,7 +3,7 @@
 ## Install the dcpm-exporter (only for the device plugin (the operator already has it deployed))
 
 ```bash
-helm repo add https://nvidia.github.io/dcgm-exporter/helm-charts
+helm repo add gpu-helm-charts https://nvidia.github.io/dcgm-exporter/helm-charts
 helm show values gpu-helm-charts/dcgm-exporter > dcgm-exporter-values.yaml
 vi dcgm-exporter-values.yaml
 ```
@@ -37,7 +37,7 @@ nodeSelector:
 ```
 
 ```bash
-helm upgrade -i -n nvidia-device-plugin dcgm-exporter gpu-helm-charts/dcgm-exporter --values dcgm-exporter-values.yaml
+helm upgrade -i -n gpu-operator dcgm-exporter gpu-helm-charts/dcgm-exporter --values dcgm-exporter-values.yaml
 ```
 
 ## Add the grafana dashboard
