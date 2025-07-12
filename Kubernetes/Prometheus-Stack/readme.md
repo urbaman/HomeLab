@@ -126,7 +126,7 @@ And define Alertmanager notifications by email:
       email_configs:
       - to: 'tomail@domain.com'
         from: 'frommail@domain.com'
-        smarthost: smtp.domain.com:587
+        smarthost: mail.domain.com:587
         auth_username: 'tomail@domain.com'
         auth_identity: 'tomail@domain.com'
         auth_password: 'password'
