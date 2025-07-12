@@ -68,6 +68,7 @@ Kubeadm:
 
 ```bash
 helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+helm repo update
 helm upgrade -i csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace csi-driver-nfs --create-namespace --set externalSnapshotter.enabled=true
 ```
 
@@ -75,6 +76,7 @@ Microk8s:
 
 ```bash
 helm repo add csi-driver-nfs https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+helm repo update
 helm upgrade -i csi-driver-nfs csi-driver-nfs/csi-driver-nfs --namespace csi-driver-nfs --create-namespace --set kubeletDir=/var/snap/microk8s/common/var/lib/kubelet --set externalSnapshotter.enabled=true
 ```
 
