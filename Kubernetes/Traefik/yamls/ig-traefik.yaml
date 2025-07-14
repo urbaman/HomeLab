@@ -1,19 +1,19 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: traefik-urbaman-it
+  name: traefik-domain-com
   namespace: traefik
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - traefik.urbaman.it
+  - traefik.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: traefik-urbaman-it
+  secretName: traefik-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -83,7 +83,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`)
+      match: Host(`traefik.domain.com`)
       services:
         - kind: TraefikService
           name: api@internal
@@ -91,7 +91,7 @@ spec:
       middlewares:
         - name: traefik-dashboard-security
   tls:
-    secretName: traefik-urbaman-it
+    secretName: traefik-domain-com
     options:
       name: traefik-dashboard-tlsoptions
 ---
@@ -105,7 +105,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`traefik.urbaman.it`)
+      match: Host(`traefik.domain.com`)
       services:
         - kind: TraefikService
           name: api@internal
