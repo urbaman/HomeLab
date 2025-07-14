@@ -55,6 +55,8 @@ helm show values metallb/metallb > metallb-values.yaml
 
 Set both the serviceMonitor to `enabled: true`, prometheus.rbacPrometheus to false and set an `additionalLabels: release = kube-prometheus-stack` to both the instances (speaker, controller), but add the values only when kube-prometheus-stack is deployed and running, because it needs that chart's CRDs
 
+Also set `ignoreExcludeLB: true` if you only have control planes (with the `node.kubernetes.io/exclude-from-external-load-balancers` label)
+
 ```bash
 helm upgrade -i -n metallb-system --create-namespace metallb metallb/metallb --values metallb-values.yaml
 ```
