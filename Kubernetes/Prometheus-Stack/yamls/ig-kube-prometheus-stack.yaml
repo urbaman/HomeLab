@@ -1,19 +1,19 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: grafana-urbaman-it
+  name: grafana-domain-com
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - grafana.urbaman.it
+  - grafana.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: grafana-urbaman-it
+  secretName: grafana-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -83,7 +83,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`grafana.urbaman.it`)
+      match: Host(`grafana.domain.com`)
       services:
       - name: kube-prometheus-stack-grafana
         port: 80
@@ -91,7 +91,7 @@ spec:
       middlewares:
         - name: monitoring-grafana-security
   tls:
-    secretName: grafana-urbaman-it
+    secretName: grafana-domain-com
     options:
       name: monitoring-grafana-tlsoptions
 ---
@@ -105,7 +105,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`grafana.urbaman.it`)
+      match: Host(`grafana.domain.com`)
       services:
       - name: kube-prometheus-stack-grafana
         port: 80
@@ -115,19 +115,19 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prometheus-urbaman-it
+  name: prometheus-domain-com
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - prometheus.urbaman.it
+  - prometheus.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: prometheus-urbaman-it
+  secretName: prometheus-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -197,7 +197,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`prometheus.urbaman.it`)
+      match: Host(`prometheus.domain.com`)
       services:
       - name: kube-prometheus-stack-prometheus
         port: 9090
@@ -205,7 +205,7 @@ spec:
       middlewares:
         - name: monitoring-prometheus-security
   tls:
-    secretName: prometheus-urbaman-it
+    secretName: prometheus-domain-com
     options:
       name: monitoring-prometheus-tlsoptions
 ---
@@ -219,7 +219,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`prometheus.urbaman.it`)
+      match: Host(`prometheus.domain.com`)
       services:
       - name: kube-prometheus-stack-prometheus
         port: 9090
@@ -229,19 +229,19 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: alertmanager-urbaman-it
+  name: alertmanager-domain-com
   namespace: monitoring
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - alertmanager.urbaman.it
+  - alertmanager.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: alertmanager-urbaman-it
+  secretName: alertmanager-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -311,7 +311,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`alertmanager.urbaman.it`)
+      match: Host(`alertmanager.domain.com`)
       services:
       - name: kube-prometheus-stack-alertmanager
         port: 9093
@@ -319,7 +319,7 @@ spec:
       middlewares:
         - name: monitoring-alertmanager-security
   tls:
-    secretName: alertmanager-urbaman-it
+    secretName: alertmanager-domain-com
     options:
       name: monitoring-alertmanager-tlsoptions
 ---
@@ -333,7 +333,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: Host(`alertmanager.urbaman.it`)
+      match: Host(`alertmanager.domain.com`)
       services:
       - name: kube-prometheus-stack-alertmanager
         port: 9093
