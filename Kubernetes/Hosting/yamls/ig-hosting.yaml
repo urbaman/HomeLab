@@ -6,7 +6,7 @@ metadata:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-hosting
+  name: wildcards-hosting1
   namespace: hosting1
 spec:
   # Certificate will be valid for these domain names
@@ -39,17 +39,17 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: wildcard-hosting
+  secretName: wildcards-hosting1
 ---
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: hosting1-svc
+  name: websites-hosting1-svc
   namespace: hosting1
 subsets:
 - addresses:
   - ip: 10.0.100.16
-    nodeName: hosting1-svc
+    nodeName: websites-hosting1-svc
   ports:
   - name: http
     port: 80
@@ -61,7 +61,7 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hosting1-svc
+  name: websites-hosting1-svc
   namespace: hosting1
 spec:
   type: ClusterIP
@@ -77,12 +77,12 @@ spec:
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: webmin-svc
+  name: webmin-hosting1-svc
   namespace: hosting1
 subsets:
 - addresses:
   - ip: 10.0.100.16
-    nodeName: webmin-svc
+    nodeName: webmin1-hosting1-svc
   ports:
   - name: webmin
     port: 2087
@@ -91,7 +91,7 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webmin-svc
+  name: webmin-hosting1-svc
   namespace: hosting1
 spec:
   type: ClusterIP
@@ -104,12 +104,12 @@ spec:
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: usermin-svc
+  name: usermin-hosting1-svc
   namespace: hosting1
 subsets:
 - addresses:
   - ip: 10.0.100.16
-    nodeName: usermin-svc
+    nodeName: usermin-hosting1-svc
   ports:
   - name: usermin
     port: 2083
@@ -118,7 +118,7 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: usermin-svc
+  name: usermin-hosting1-svc
   namespace: hosting1
 spec:
   type: ClusterIP
@@ -141,7 +141,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-hosting1-security
+  name: traefik-hosting1-secureheaders
   namespace: hosting1
 spec:
   headers:
@@ -185,7 +185,7 @@ spec:
   curvePreferences:
     - CurveP521
     - CurveP384
-  sniStrict: false
+  sniStrict: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -199,13 +199,13 @@ spec:
     - kind: Rule
       match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
-        - name: hosting1-svc
+        - name: websites-hosting1-svc
           port: 443
           serversTransport: traefik-hosting1-transport
       middlewares:
-        - name: traefik-hosting1-security
+        - name: traefik-hosting1-secureheaders
   tls:
-    secretName: wildcard-hosting
+    secretName: wildcards-hosting1
     options:
       name: traefik-hosting1-tlsoptions
 ---
@@ -221,7 +221,7 @@ spec:
     - kind: Rule
       match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
-        - name: hosting1-svc
+        - name: websites-hosting1-svc
           port: 80
       middlewares:
         - name: traefik-hosting1-https-redirect
@@ -238,13 +238,13 @@ spec:
     - kind: Rule
       match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
-        - name: webmin-svc
+        - name: webmin-hosting1-svc-svc
           port: 443
           serversTransport: traefik-hosting1-transport
       middlewares:
-        - name: traefik-hosting1-security
+        - name: traefik-hosting1-secureheaders
   tls:
-    secretName: wildcard-hosting
+    secretName: wildcards-hosting
     options:
       name: traefik-hosting1-tlsoptions
 ---
@@ -260,12 +260,12 @@ spec:
     - kind: Rule
       match: Host(`domain3.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig)\.domain3\.com`) || Hostregexp(`.+\.domain\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain8\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain.com`) || Host(`domain2.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain6.com`) || Host(`domain7.com`) || Host(`domain8.com`)
       services:
-        - name: usermin-svc
+        - name: usermin-hosting1-svc
           port: 443
           serversTransport: traefik-hosting1-transport
       middlewares:
-        - name: traefik-hosting1-security
+        - name: traefik-hosting1-secureheaders
   tls:
-    secretName: wildcard-hosting
+    secretName: wildcards-hosting
     options:
       name: traefik-hosting1-tlsoptions
