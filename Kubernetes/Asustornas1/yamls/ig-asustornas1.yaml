@@ -30,7 +30,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: asustornas1-urbaman-cloud
+  name: asustornas1-domain-com
   namespace: traefik-external
 spec:
   # Certificate will be valid for these domain names
@@ -42,7 +42,7 @@ spec:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: asustornas1-urbaman-cloud
+  secretName: asustornas1-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -100,7 +100,7 @@ spec:
   curvePreferences:
     - CurveP521
     - CurveP384
-  sniStrict: true
+  sniStrict: true 
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -120,7 +120,7 @@ spec:
       middlewares:
         - name: traefik-asustornas1-secureheaders
   tls:
-    secretName: asustornas1-urbaman-cloud
+    secretName: asustornas1-domain-com
     options:
       name: traefik-asustornas1-tlsoptions
 ---
