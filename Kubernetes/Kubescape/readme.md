@@ -107,6 +107,49 @@ export PATH=$PATH:/home/ubuntu/.kubescape/bin
 
 ## Install in the cluster
 
+```bash
+helm repo add kubescape https://kubescape.github.io/helm-charts/
+helm repo update
+helm show values kubescape/kubescape-operator > kubescape-values.yaml
+vi kubescape-values.yaml
+```
+
+Change values to your liking (see example yaml), than deploy
+
+```bash
+helm upgrade -i kubescape kubescape/kubescape-operator -n kubescape --create-namespace -f kubescape-values.yaml
+```
+
+### Add to a dashboard (headlamp)
+
+Install Headlamp dashboard, adding the following initContainer through helm values
+
+```yaml
+# -- An optional list of init containers to be run before the main containers.
+initContainers:
+  - command:
+      - /bin/sh
+      - -c
+      - mkdir -p /headlamp/plugins && cp -r /plugins/* /headlamp/plugins/
+    image: ghcr.io/kubebeam/kubescape-headlamp-plugin:latest ## you can specify a version such as 0.5.0-beta
+    name: kubescape-plugin
+    volumeMounts:
+      - mountPath: /headlamp/plugins
+        name: headlamp-plugins
+
+# -- Headlamp containers volume mounts
+volumeMounts:
+  - name: headlamp-plugins
+    mountPath: /headlamp/plugins
+
+# -- Headlamp pod's volumes
+volumes:
+  - name: headlamp-plugins
+    emptyDir: {}
+```
+
+## Install with ARMO platform (payment)
+
 Go to [https://cloud.armosec.io/dashboard](https://cloud.armosec.io/dashboard) and register, the add a cluster and run the proposed command on a control plane, adding the `--set kubescape.serviceMonitor.enabled=true --set capabilities.prometheusExporter=enable` values, then verify on the web console.
 
 Go to the webgui console to view the checks
