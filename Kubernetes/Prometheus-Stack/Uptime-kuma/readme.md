@@ -2,6 +2,8 @@
 
 ## Create the Prometheus Service Monitor
 
+**NB:** The helm chart deployment already contains the serviceMonitor, see the helm deployment for instructions
+
 Create a secret with the basic auth base64 username and password for uptime-kuma, then the service monitor
 
 

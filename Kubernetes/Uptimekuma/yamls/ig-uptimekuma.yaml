@@ -15,16 +15,16 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: uptimekuma-domain-com
 ---
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: uptimekuma-https-redirect
-  namespace: monitoring
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
+#apiVersion: traefik.io/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: uptimekuma-https-redirect
+#  namespace: monitoring
+#spec:
+#  redirectScheme:
+#    scheme: https
+#    permanent: true
+#---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -100,5 +100,5 @@ spec:
     services:
     - name: uptime-kuma
       port: 3001
-    middlewares:
-      - name: uptimekuma-https-redirect
+#    middlewares:
+#      - name: uptimekuma-https-redirect

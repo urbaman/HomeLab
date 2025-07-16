@@ -85,8 +85,8 @@ spec:
     - kind: Rule
       match: Host(`kubetail.domain.com`)
       services:
-      - name: kubetail-server
-        port: 80
+      - name: kubetail-dashboard
+        port: 8080
         serversTransport: traefik-kubetail-transport
       middlewares:
         - name: traefik-kubetail-security
@@ -107,7 +107,7 @@ spec:
     - kind: Rule
       match: Host(`kubetail.domain.com`)
       services:
-      - name: kubetail-server
-        port: 80
+      - name: kubetail-dashboard
+        port: 8080
       middlewares:
         - name: traefik-kubetail-https-redirect
