@@ -15,16 +15,16 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: k8dashboard-domain-com
 ---
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: k8dashboard-https-redirect
-  namespace: kubernetes-dashboard
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
+#apiVersion: traefik.io/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: k8dashboard-https-redirect
+#  namespace: kubernetes-dashboard
+#spec:
+#  redirectScheme:
+#    scheme: https
+#    permanent: true
+#---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -109,5 +109,5 @@ spec:
     services:
     - name: kubernetes-dashboard-kong-proxy
       port: 443 
-    middlewares:
-      - name: k8dashboard-https-redirect
+#    middlewares:
+#      - name: k8dashboard-https-redirect

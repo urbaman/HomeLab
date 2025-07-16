@@ -31,7 +31,7 @@ helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard -
 
 ### For new version
 
-Just install:
+Just install (maybe enabling the serviceMonitor):
 
 ```bash
 helm upgrade -i kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
@@ -47,13 +47,13 @@ For each of the following snippets for ServiceAccount and ClusterRoleBinding, yo
 
 ### Creating a Service Account
 
-We are creating Service Account with the name admin-user in namespace kubernetes-dashboard first.
+We are creating Service Account with the name k8sdashboard-user in namespace kubernetes-dashboard first.
 
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: admin-user
+  name: k8sdashboard-user
   namespace: kubernetes-dashboard
 ```
 
@@ -65,14 +65,14 @@ In most cases after provisioning the cluster using kops, kubeadm or any other po
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: admin-user
+  name: k8sdashboard-user
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cluster-admin
 subjects:
 - kind: ServiceAccount
-  name: admin-user
+  name: k8sdashboard-user
   namespace: kubernetes-dashboard
 ```
 
@@ -100,15 +100,15 @@ Click the Sign in button and that's it. You are now logged in as an admin.
 apiVersion: v1
 kind: Secret
 metadata:
-  name: admin-user
+  name: k8sdashboard-user
   namespace: kubernetes-dashboard
   annotations:
-    kubernetes.io/service-account.name: "admin-user"   
+    kubernetes.io/service-account.name: "k8sdashboard-user"   
 type: kubernetes.io/service-account-token
 ```
 
 Then to get it:
 
 ```bash
-kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+kubectl get secret k8sdashboard-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
 ```
