@@ -127,16 +127,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-hosting1-https-redirect
-  namespace: traefik-external
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-hosting1-secureheaders
   namespace: traefik-external
 spec:
@@ -158,6 +148,78 @@ metadata:
   namespace: traefik-external
 spec:
   insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain6-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain6.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-wp-manager-domain6-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "wp-manager.domain6.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain1-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain1.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain2-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain2.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-crm-domain2-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "crm.domain2.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain3-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain3.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain4-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain4.com"
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: traefik-domain5-transport
+  namespace: traefik-external
+spec:
+  insecureSkipVerify: true
+  serverName: "domain5.com"
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
@@ -186,18 +248,18 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-hosting1-websecure
+  name: traefik-domain6-it-websecure
   namespace: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`domain6.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain6\.com`) || Hostregexp(`.+\.domain1\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain4\.com`) || Host(`domain1.com`) || Host(`domain3.com`) || Host(`domain2.com`) || Host(`domain5.com`) || Host(`domain4.com`)
+      match: Host(`domain6.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www)\.domain6\.com`)
       services:
         - name: websites-hosting1-svc
           port: 443
-          serversTransport: traefik-hosting1-transport
+          serversTransport: traefik-domain6-transport
       middlewares:
         - name: traefik-hosting1-secureheaders
   tls:
@@ -208,19 +270,156 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-hosting1-web
+  name: traefik-wp-manager-domain6-it-websecure
   namespace: traefik-external
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - kind: Rule
-      match: Host(`domain6.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain6\.com`) || Hostregexp(`.+\.domain1\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain2\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain4\.com`) || Host(`domain1.com`) || Host(`domain3.com`) || Host(`domain2.com`) || Host(`domain5.com`) || Host(`domain4.com`)
+      match: Host(`wp-manager.domain6.com`)
       services:
         - name: websites-hosting1-svc
-          port: 80
+          port: 443
+          serversTransport: traefik-wp-manager-domain6-transport
       middlewares:
-        - name: traefik-hosting1-https-redirect
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-domain1-it-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain1.com`) || Hostregexp(`.+\.domain1\.com`)
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-domain1-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-domain3-it-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain3.com`) || Hostregexp(`.+\.domain3\.com`)
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-domain3-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-domain2-it-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www)\.domain2\.com`)
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-domain2-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-crm-domain2-it-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`crm.domain2.com`)
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-crm-domain2-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-domain4-eu-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain4.com`) || Hostregexp(`.+\.domain4\.com`)
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-domain4-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-domain5-com-websecure
+  namespace: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`domain5.com`) || Hostregexp(`.+\.domain5\.com`)  
+      services:
+        - name: websites-hosting1-svc
+          port: 443
+          serversTransport: traefik-domain5-transport
+      middlewares:
+        - name: traefik-hosting1-secureheaders
+  tls:
+    secretName: wildcards-hosting1
+    options:
+      name: traefik-hosting1-tlsoptions
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
