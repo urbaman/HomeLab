@@ -26,11 +26,16 @@ kubectl edit -n homepage deployment homepage
       - image: ghcr.io/homepage/homepage:latest
 ```
 
+### Apply the traefik ingress route
+
+```bash
+kubectl apply -f ig-homepage.yaml
+```
+
 ## Install through manifests (best)
 
 ```bash
 kubectl create namespace homepage
-kubectl apply -f homepage-cm.yaml
 kubectl apply -f homepage.yaml
 ```
 
@@ -49,12 +54,4 @@ To save your settings:
 
 ```bash
 kubectl get cm -n homepage homepage -o yaml > homepage-cm.yaml
-```
-
-## Apply the traefik ingress route
-
-Set the username and password in the basic-auth secret, and your domain.
-
-```bash
-kubectl apply -f ig-homepage.yaml
 ```
