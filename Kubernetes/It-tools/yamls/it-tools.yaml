@@ -120,8 +120,17 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-it-tools-websecure
-  namespace: it-tools 
-spec:
+  namespace: it-tools
+  annotations:
+    # For Homepage service discovery
+    gethomepage.dev/href: "https://it-tools.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "It Tools"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: it-tools.svg
+    gethomepage.dev/app: it-tools # optional, may be needed if app.kubernetes.io/name != ingressRoute metadata.name
+    gethomepage.dev/name: "It Tools"
+spec
   entryPoints:
     - websecure
   routes:
@@ -137,18 +146,3 @@ spec:
     secretName: it-tools-domain-com
     options:
       name: traefik-it-tools-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-it-tools-web
-  namespace: it-tools
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`it-tools.domain.com`)
-      services:
-        - name: it-tools-service
-          port: 80
