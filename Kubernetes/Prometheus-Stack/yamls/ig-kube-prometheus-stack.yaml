@@ -18,17 +18,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: monitoring-grafana-https-redirect
-  namespace: monitoring
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: monitoring-grafana-security
+  name: monitoring-kube-prometheus-stack-security
   namespace: monitoring
 spec:
   headers:
@@ -52,7 +42,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: monitoring-grafana-tlsoptions
+  name: monitoring-kube-prometheus-stack-tlsoptions
   namespace: monitoring
 spec:
   minVersion: VersionTLS12
@@ -78,6 +68,24 @@ kind: IngressRoute
 metadata:
   name: monitoring-grafana-websecure
   namespace: monitoring
+  annotations:
+    gethomepage.dev/href: "https://grafana.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Grafana Monitoring Dashboards"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: grafana.svg
+    gethomepage.dev/app: grafana # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Grafana"
+    #gethomepage.dev/showStats: "true"
+    gethomepage.dev/widget.type: "grafana"
+    gethomepage.dev/widget.version: "2"
+    gethomepage.dev/widget.alerts: "alertmanager"
+    gethomepage.dev/widget.url: "https://grafana.domain.com"
+    gethomepage.dev/widget.username: GRAFANA_USERNAME
+    gethomepage.dev/widget.password: GRAFANA_PASSWORD
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -89,28 +97,11 @@ spec:
         port: 80
         serversTransport: monitoring-grafana-transport
       middlewares:
-        - name: monitoring-grafana-security
+        - name: monitoring-kube-prometheus-stack-security
   tls:
     secretName: grafana-domain-com
     options:
-      name: monitoring-grafana-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: monitoring-grafana-web
-  namespace: monitoring
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`grafana.domain.com`)
-      services:
-      - name: kube-prometheus-stack-grafana
-        port: 80
-      middlewares:
-        - name: monitoring-grafana-https-redirect
+      name: monitoring-kube-prometheus-stack-tlsoptions
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -130,31 +121,6 @@ spec:
   secretName: prometheus-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: monitoring-prometheus-https-redirect
-  namespace: monitoring
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: monitoring-prometheus-security
-  namespace: monitoring
-spec:
-  headers:
-    frameDeny: true
-    sslRedirect: true
-    browserXssFilter: true
-    contentTypeNosniff: true
-    stsIncludeSubdomains: true
-    stsPreload: true
-    stsSeconds: 31536000
----
-apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: monitoring-prometheus-transport
@@ -164,34 +130,26 @@ spec:
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
-kind: TLSOption
-metadata:
-  name: monitoring-prometheus-tlsoptions
-  namespace: monitoring
-spec:
-  minVersion: VersionTLS12
-  cipherSuites:
-    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
-    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-    - TLS_AES_256_GCM_SHA384
-    - TLS_AES_128_GCM_SHA256
-    - TLS_CHACHA20_POLY1305_SHA256
-    - TLS_FALLBACK_SCSV
-  curvePreferences:
-    - CurveP521
-    - CurveP384
-  sniStrict: false
----
-apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-prometheus-websecure
   namespace: monitoring
+  annotations:
+    gethomepage.dev/href: "https://prometrheus.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Prometheus Monitoring DB"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: prometheus.svg
+    gethomepage.dev/app: prometheus # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Prometheus"
+    #gethomepage.dev/showStats: "true"
+    gethomepage.dev/widget.type: "prometheus"
+    #gethomepage.dev/version: "2"
+    #gethomepage.dev/alerts: alertmanager
+    gethomepage.dev/widget.url: "https://prometheus.domain.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -203,28 +161,11 @@ spec:
         port: 9090
         serversTransport: monitoring-prometheus-transport
       middlewares:
-        - name: monitoring-prometheus-security
+        - name: monitoring-kube-prometheus-stack-security
   tls:
     secretName: prometheus-domain-com
     options:
-      name: monitoring-prometheus-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: monitoring-prometheus-web
-  namespace: monitoring
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`prometheus.domain.com`)
-      services:
-      - name: kube-prometheus-stack-prometheus
-        port: 9090
-      middlewares:
-        - name: monitoring-prometheus-https-redirect
+      name: monitoring-kube-prometheus-stack-tlsoptions
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -244,31 +185,6 @@ spec:
   secretName: alertmanager-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: monitoring-alertmanager-https-redirect
-  namespace: monitoring
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: monitoring-alertmanager-security
-  namespace: monitoring
-spec:
-  headers:
-    frameDeny: true
-    sslRedirect: true
-    browserXssFilter: true
-    contentTypeNosniff: true
-    stsIncludeSubdomains: true
-    stsPreload: true
-    stsSeconds: 31536000
----
-apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: monitoring-alertmanager-transport
@@ -278,34 +194,26 @@ spec:
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
-kind: TLSOption
-metadata:
-  name: monitoring-alertmanager-tlsoptions
-  namespace: monitoring
-spec:
-  minVersion: VersionTLS12
-  cipherSuites:
-    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
-    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-    - TLS_AES_256_GCM_SHA384
-    - TLS_AES_128_GCM_SHA256
-    - TLS_CHACHA20_POLY1305_SHA256
-    - TLS_FALLBACK_SCSV
-  curvePreferences:
-    - CurveP521
-    - CurveP384
-  sniStrict: false
----
-apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: monitoring-alertmanager-websecure
   namespace: monitoring
+  annotations:
+    gethomepage.dev/href: "https://alertmanager.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Alertmanager Alert System"
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: alertmanager.svg
+    gethomepage.dev/app: alertmanager # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Alertmanager"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "grafana"
+    #gethomepage.dev/version: "2"
+    #gethomepage.dev/alerts: alertmanager
+    #gethomepage.dev/widget.url: "https://grafana.domain.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -317,25 +225,8 @@ spec:
         port: 9093
         serversTransport: monitoring-alertmanager-transport
       middlewares:
-        - name: monitoring-alertmanager-security
+        - name: monitoring-kube-prometheus-stack-security
   tls:
     secretName: alertmanager-domain-com
     options:
-      name: monitoring-alertmanager-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: monitoring-alertmanager-web
-  namespace: monitoring
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`alertmanager.domain.com`)
-      services:
-      - name: kube-prometheus-stack-alertmanager
-        port: 9093
-      middlewares:
-        - name: monitoring-alertmanager-https-redirect
+      name: monitoring-kube-prometheus-stack-tlsoptions

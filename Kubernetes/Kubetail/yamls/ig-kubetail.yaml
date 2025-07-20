@@ -18,16 +18,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-kubetail-https-redirect
-  namespace: kubetail
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-kubetail-security
   namespace: kubetail
 spec:
@@ -78,6 +68,20 @@ kind: IngressRoute
 metadata:
   name: traefik-kubetail-websecure
   namespace: kubetail
+  annotations:
+    gethomepage.dev/href: "https://kubetail.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Kubernetes Log Viewer"
+    gethomepage.dev/group: Kubernetes
+    gethomepage.dev/icon: kubernetes-dashboard.svg
+    gethomepage.dev/app: kubetail # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Kubetail"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -94,20 +98,3 @@ spec:
     secretName: kubetail-domain-com
     options:
       name: traefik-kubetail-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-kubetail-web
-  namespace: kubetail
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`kubetail.domain.com`)
-      services:
-      - name: kubetail-dashboard
-        port: 8080
-      middlewares:
-        - name: traefik-kubetail-https-redirect

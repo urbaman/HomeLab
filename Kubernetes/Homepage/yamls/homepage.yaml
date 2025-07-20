@@ -130,7 +130,130 @@ data:
       #- Github:
       #  - abbr: GH
       #    href: https://github.com/
-  services.yaml: ""
+  proxmox.yaml: |
+    url: https://pve1.domain7.com:8006
+    token: PVE_API_TOKEN_ID
+    secret: PVE_API_SECRET
+  services.yaml: |
+    - Storage:
+      - Asustornas1:
+          href: https://asustornas1.domain7.com
+          description: Asustor NAS 1
+          icon: asustor.svg
+          siteMonitor: https://asustornas1.domain7.com
+    - Hosting:
+      - Dreamlord:
+          href: https://domain5.com
+          description: Dreamlord
+          icon: wordpress.svg
+          siteMonitor: https://domain5.com
+      - Fateitalia:
+          href: https://domain2.com
+          description: Fateitalia
+          icon: wordpress.svg
+          siteMonitor: https://domain2.com
+      - Indiecon GDR:
+          href: https://domain3.com
+          description: Indiecon GDR
+          icon: wordpress.svg
+          siteMonitor: https://domain3.com
+      - Gamechef Pummarola:
+          href: https://domain4.com
+          description: Gamechef Pummarola
+          icon: wordpress.svg
+          siteMonitor: https://domain4.com
+      - Kobold in a Box:
+          href: https://domain6.com
+          description: Kobold in a Box
+          icon: wordpress.svg
+          siteMonitor: https://domain6.com
+      - Urbaman:
+          href: https://domain.com
+          description: Urbaman
+          icon: wordpress.svg
+          siteMonitor: https://domain.com
+      - Archives Suspendues:
+          href: https://archives-suspendues.net
+          description: Archives Suspendues
+          icon: wordpress.svg
+          siteMonitor: https://archives-suspendues.net
+      - WP Manager:
+          href: https://wp-manager.domain.com
+          description: WP Manager
+          icon: wordpress.svg
+          siteMonitor: https://wp-manager.domain.com
+      - Dolibarr CRM:
+          href: https://crm.domain5.com
+          description: Dolibarr CRM
+          icon: dolibarr.png
+          siteMonitor: https://crm.domain5.com
+      - Hosting1:
+          icon: virtualmin.svg
+          href: "https://domain.com:2087"
+          description: Virtualmin Hosting
+          proxmoxNode: pve1
+          proxmoxVMID: 100016
+          # proxmoxType: qemu # This is the default, so it can be omitted
+      - Proxmox Mail Gateway:
+          icon: proxmox.svg
+          href: "https://pmg1.domain7.com:8006"
+          description: Proxmox Mail Gateway
+          proxmoxNode: pve1
+          proxmoxVMID: 100017
+          proxmoxType: lxc
+    - Management:
+      - Proxmox Node 1:
+          icon: proxmox.svg
+          href: "https://pve1.domain7.com:8006"
+          description: Proxmox Node 1
+          siteMonitor: "https://pve1.domain7.com:8006"
+          widget:
+            type: proxmox
+            url: "https://pve1.domain7.com:8006"
+            username: PVE_API_TOKEN_ID
+            password: PVE_API_SECRET
+            node: pve1 # optional
+      - Proxmox Node 2:
+          icon: proxmox.svg
+          href: "https://pve2.domain7.com:8006"
+          description: Proxmox Node 2
+          siteMonitor: "https://pve2.domain7.com:8006"
+          widget:
+            type: proxmox
+            url: "https://pve2.domain7.com:8006"
+            username: PVE_API_TOKEN_ID
+            password: PVE_API_SECRET
+            node: pve2 # optional
+      - Proxmox Node 3:
+          icon: proxmox.svg
+          href: "https://pve3.domain7.com:8006"
+          description: Proxmox Node 3
+          siteMonitor: "https://pve3.domain7.com:8006"
+          widget:
+            type: proxmox
+            url: "https://pve3.domain7.com:8006"
+            username: PVE_API_TOKEN_ID
+            password: PVE_API_SECRET
+            node: pve3 # optional
+      - Proxmox Backup Server:
+          icon: proxmox.svg
+          href: "https://pbs1.domain7.com:8007"
+          description: Proxmox Backup Server
+          proxmoxNode: pve1
+          proxmoxVMID: 100014
+          proxmoxType: lxc
+          widget:
+            type: proxmoxbackupserver
+            url: "https://pbs1.domain7.com:8007"
+            username: PBS_API_TOKEN_ID
+            password: PBS_API_SECRET
+      - Proxmox Data Center Manager:
+          icon: proxmox.svg
+          href: "https://dcm1.domain7.com:8443"
+          description: Proxmox Data Center Manager
+          proxmoxNode: pve1
+          proxmoxVMID: 100015
+          proxmoxType: lxc
   widgets.yaml: |
     - logo:
         icon: mdi-folder-home-outline
@@ -248,10 +371,12 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
-            - name:  TZ                       # -- Set the container timezone
+            - name: TZ                       # -- Set the container timezone
               value: Europe/Rome
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: homepage.domain.com
+            - name: LOG_LEVEL
+              value: debug
           volumeMounts:
             - mountPath: /app/config/custom.js
               name: homepage-config
@@ -277,6 +402,9 @@ spec:
             - mountPath: /app/config/widgets.yaml
               name: homepage-config
               subPath: widgets.yaml
+            - mountPath: /app/config/proxmox.yaml
+              name: homepage-config
+              subPath: proxmox.yaml
             - mountPath: /app/config/logs
               name: logs
       volumes:
@@ -356,6 +484,8 @@ kind: IngressRoute
 metadata:
   name: traefik-homepage-websecure
   namespace: homepage
+  annotations:
+    gethomepage.dev/enabled: "false"
 spec:
   entryPoints:
     - websecure

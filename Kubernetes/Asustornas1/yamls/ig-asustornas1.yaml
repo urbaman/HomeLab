@@ -113,18 +113,3 @@ spec:
     secretName: asustornas1-domain-com
     options:
       name: traefik-asustornas1-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-asustornas1-web
-  namespace: traefik-external
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`asustornas1.domain.com`)
-      services:
-        - name: asustornas1-service
-          port: 443

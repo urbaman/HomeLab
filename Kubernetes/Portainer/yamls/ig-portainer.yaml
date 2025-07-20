@@ -15,16 +15,6 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: portainer-domain-com
 ---
-#apiVersion: traefik.io/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: portainer-traefik-https-redirect
-#  namespace: portainer
-#spec:
-#  redirectScheme:
-#    scheme: https
-#    permanent: true
-#---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -78,6 +68,25 @@ kind: IngressRoute
 metadata:
   name: portainer-traefik-websecure
   namespace: portainer
+  annotations:
+    gethomepage.dev/href: "https://portainer.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Portainer Kubernetes UI"
+    gethomepage.dev/group: Kubernetes
+    gethomepage.dev/icon: portainer.svg
+    gethomepage.dev/app: portainer # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Portainer"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "portainer"
+    #gethomepage.dev/widget.kubernetes: "true"
+    #gethomepage.dev/version: "2"
+    #gethomepage.dev/alerts: alertmanager
+    #gethomepage.dev/widget.url: "https://portainer.domain.com"
+    #gethomepage.dev/widget.env: "1"
+    #gethomepage.dev/widget.key: PORTAINER_API_KEY
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -94,20 +103,3 @@ spec:
     secretName: portainer-domain-com
     options:
       name: portainer-traefik-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: portainer-traefik-web
-  namespace: portainer
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`portainer.domain.com`)
-      services:
-      - name: portainer
-        port: 9443
-#      middlewares:
-#        - name: portainer-traefik-https-redirect

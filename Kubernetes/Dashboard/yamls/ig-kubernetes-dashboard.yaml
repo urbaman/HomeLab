@@ -15,16 +15,6 @@ spec:
   # Secret that will be created with our certificate and private keys
   secretName: k8dashboard-domain-com
 ---
-#apiVersion: traefik.io/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: k8dashboard-https-redirect
-#  namespace: kubernetes-dashboard
-#spec:
-#  redirectScheme:
-#    scheme: https
-#    permanent: true
-#---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -78,6 +68,20 @@ kind: IngressRoute
 metadata:
   name: k8dashboard-websecure
   namespace: kubernetes-dashboard
+  annotations:
+    gethomepage.dev/href: "https://k8dashboard.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Kubernetes Dashboard"
+    gethomepage.dev/group: Kubernetes
+    gethomepage.dev/icon: kubernetes-dashboard.svg
+    gethomepage.dev/app: kong # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Kubernetes Dashboard"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -94,20 +98,3 @@ spec:
     secretName: k8dashboard-domain-com
     options:
       name: k8dashboard-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: k8dashboard-web
-  namespace: kubernetes-dashboard
-spec:
-  entryPoints:
-    - web
-  routes:
-  - match: Host(`k8dashboard.domain.com`)
-    kind: Rule
-    services:
-    - name: kubernetes-dashboard-kong-proxy
-      port: 443 
-#    middlewares:
-#      - name: k8dashboard-https-redirect

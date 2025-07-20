@@ -138,8 +138,8 @@ spec:
     stsIncludeSubdomains: true
     stsPreload: true
     stsSeconds: 31536000
-      #    customRequestHeaders:
-      #      X-Forwarded-Proto: "https"
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
 ---
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport

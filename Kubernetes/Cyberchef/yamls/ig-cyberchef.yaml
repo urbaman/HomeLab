@@ -68,6 +68,20 @@ kind: IngressRoute
 metadata:
   name: cyberchef-websecure
   namespace: cyberchef
+  annotations:
+    gethomepage.dev/href: "https://cyberchef.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Cyberchef"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: cyberchef.svg
+    gethomepage.dev/app: cyberchef # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Cyberchef"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -84,18 +98,3 @@ spec:
     secretName: cyberchef-domain-com
     options:
       name: cyberchef-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: cyberchef-web
-  namespace: cyberchef
-spec:
-  entryPoints:
-    - web
-  routes:
-  - match: Host(`cyberchef.domain.com`)
-    kind: Rule
-    services:
-    - name: cyberchef
-      port: 80
