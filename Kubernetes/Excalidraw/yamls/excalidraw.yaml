@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: drawio
+  name: excalidraw
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: drawio
-  namespace: drawio
+  name: excalidraw
+  namespace: excalidraw
   labels:
-    app: draw.io
+    app: excalidraw
 spec:
   type: ClusterIP
   sessionAffinity: ClientIP
@@ -18,58 +18,61 @@ spec:
       timeoutSeconds: 3600
   ports:
   - name: http
-    port: 8080
+    port: 5000
   selector:
-    app: draw.io
+    app: excalidraw
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: drawio
-  namespace: drawio
+  name: excalidraw
+  namespace: excalidraw
   labels:
-    app: draw.io        
-    app.kubernetes.io/name: draw.io
+    app: excalidraw        
+    app.kubernetes.io/name: excalidraw
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: draw.io
+      app: excalidraw
   template:
     metadata:
       labels:
-        app: draw.io        
-        app.kubernetes.io/name: draw.io
+        app: excalidraw        
+        app.kubernetes.io/name: excalidraw
     spec:
       containers:
-      - image: docker.io/jgraph/drawio:latest
+      - image: excalidraw/excalidraw:latest
         imagePullPolicy: IfNotPresent
-        name: drawio
+        name: excalidraw
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
+        env:
+        - name: TZ
+          value: Europe/Rome
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: drawio-domain-com
-  namespace: drawio
+  name: excalidraw-domain-com
+  namespace: excalidraw
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - drawio.domain.com
+  - excalidraw.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: drawio-domain-com
+  secretName: excalidraw-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-drawio-security
-  namespace: drawio
+  name: traefik-excalidraw-security
+  namespace: excalidraw
 spec:
   headers:
     sslRedirect: true
@@ -82,17 +85,17 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
-  name: traefik-drawio-transport
-  namespace: drawio
+  name: traefik-excalidraw-transport
+  namespace: excalidraw
 spec:
-  serverName: drawio 
+  serverName: excalidraw 
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: traefik-drawio-tlsoptions
-  namespace: drawio
+  name: traefik-excalidraw-tlsoptions
+  namespace: excalidraw
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -115,30 +118,30 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-drawio-websecure
-  namespace: drawio
+  name: traefik-excalidraw-websecure
+  namespace: excalidraw
   annotations:
     # For Homepage service discovery
-    gethomepage.dev/href: "https://drawio.domain.com"
+    gethomepage.dev/href: "https://excalidraw.domain.com"
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/description: "Draw.io"
+    gethomepage.dev/description: "Excalidraw"
     gethomepage.dev/group: Graphics
-    gethomepage.dev/icon: draw-io.svg
-    gethomepage.dev/app: draw.io # optional, may be needed if app.kubernetes.io/name != ingressRoute metadata.name
-    gethomepage.dev/name: "Draw.io"
+    gethomepage.dev/icon: excalidraw.svg
+    gethomepage.dev/app: excalidraw # optional, may be needed if app.kubernetes.io/name != ingressRoute metadata.name
+    gethomepage.dev/name: "Excalidraw"
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`drawio.domain.com`)
+      match: Host(`excalidraw.domain.com`)
       services:
-        - name: drawio
-          port: 8080
-          serversTransport: traefik-drawio-transport
+        - name: excalidraw
+          port: 5000
+          serversTransport: traefik-excalidraw-transport
       middlewares:
-        - name: traefik-drawio-security
+        - name: traefik-excalidraw-security
   tls:
-    secretName: drawio-domain-com
+    secretName: excalidraw-domain-com
     options:
-      name: traefik-drawio-tlsoptions
+      name: traefik-excalidraw-tlsoptions

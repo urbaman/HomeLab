@@ -130,16 +130,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-s-pdf-https-redirect
-  namespace: s-pdf
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-s-pdf-security
   namespace: s-pdf
 spec:
@@ -189,7 +179,16 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-s-pdf-websecure
-  namespace: s-pdf 
+  namespace: s-pdf
+  annotations:
+    # For Homepage service discovery
+    gethomepage.dev/href: "https://s-pdf.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Stirling PDF"
+    gethomepage.dev/group: Office
+    gethomepage.dev/icon: stirling-pdf.svg
+    gethomepage.dev/app: s-pdf # optional, may be needed if app.kubernetes.io/name != ingressRoute metadata.name
+    gethomepage.dev/name: "Stirling PDF"
 spec:
   entryPoints:
     - websecure
@@ -206,20 +205,3 @@ spec:
     secretName: s-pdf-domain-com
     options:
       name: traefik-s-pdf-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-s-pdf-web
-  namespace: s-pdf
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`s-pdf.domain.com`)
-      services:
-        - name: s-pdf-service
-          port: 8080
-      middlewares:
-        - name: traefik-s-pdf-https-redirect

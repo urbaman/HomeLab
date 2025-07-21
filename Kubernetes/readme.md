@@ -165,6 +165,7 @@ Here are the detailed steps to deploy our homelab cluster
 6. [Homepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homepage)
 7. [*Netbox](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Netbox)
 8. [Drawio](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Drawio)
+8. [Excalidraw](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Excalidraw)
 9. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
 10. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
 11. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
