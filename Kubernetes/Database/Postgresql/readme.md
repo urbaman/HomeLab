@@ -2,6 +2,57 @@
 
 ## Installation
 
+### CloudnativePG
+
+#### Operator
+
+In Kubernetes, the operator is by default installed in the cnpg-system namespace as a Kubernetes Deployment. The name of this deployment depends on the installation method. When installed through the manifest or the cnpg plugin, it is called cnpg-controller-manager by default. When installed via Helm, the default name is cnpg-cloudnative-pg.
+
+Install the kubectl cnpg plugin
+
+```bash
+curl -sSfL \
+  https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | \
+  sudo sh -s -- -b /usr/local/bin
+```
+
+Install via the plugin
+
+```bash
+kubectl cnpg install generate \
+  --watch-namespaces "cnpg-system" \
+  > cnpg_for_cnpg-system.yaml
+```
+
+Or via helm
+
+```bash
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo update
+helm upgrade -i cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  cnpg/cloudnative-pg
+```
+
+#### Database (via helm)
+
+```bash
+helm show values cnpg/cluster > cnpg-cluster-values.yaml
+helm upgrade --install database \
+  --namespace database \
+  --create-namespace \
+  cnpg/cluster -f cnpg-cluster-values.yaml
+```
+
+#### Database (via CRD)
+
+```bash
+kubectl apply -f cnpg-cluster.yaml
+```
+
+### Bitnami
+
 We need to give time for the pods to be ready (due to shared storage latency) in liveness and readiness probes, and set a high number of concurrent connections for Gitlab in `pgpool.maxPool`, `pgpool.numInitChildren` and `postgresql.maxConnections`. Anyway, `pgpool.maxPool`*`pgpool.numInitChildren`=`postgresql.maxConnections`/2, and must be enough for connection-spawning applications.
 Also set higher resource limits and requests (double memory values).
 
@@ -38,7 +89,7 @@ Then install
 helm upgrade -i postgresql-<major-version> oci://registry-1.docker.io/bitnamicharts/postgresql --namespace postgresql --create-namespace -f postgresql-values.yaml
 ```
 
-## Connection
+#### Connection
 
 Get the password for the postgres (admin) user
 
@@ -68,21 +119,7 @@ You can use a postgresql pod to connect and check the db and connections:
 kubectl exec -it -n postgresql <POSTGRESQL_POD> -- psql -d postgres -U postgres -h postgresql.postgresql.svc.cluster.local
 ```
 
-## Pgadmin
-
-Change the password in the secret, set the pgadmin_default_email, the postgresql server(s) info in the configmap, change the domains in the certificate and ingressroutes, then apply the yaml.
-
-```bash
-kubectl apply -f pgadmin.yaml
-```
-
-You'll probably need to go through the password resetting tool, then it will ask for the postgres user password (select to save it)
-
-## Expose through Traefik
-
-Define an entrypoint for postgresql (port 5432) in Traefik, then deploy the `ig-postgresql.yaml` file
-
-## Upgrade to mayor version
+#### Upgrade to mayor version
 
 - Deploy the new db with the same root password: `--set auth.postgresPassword=$POSTGRESQL_PASSWORD`
 - Delete the old postgresql svc, and re-create it from the postgresql-<new> one
@@ -131,3 +168,17 @@ kubectl exec -it -n postgresql postgresql-<new>-0 -- pg_dumpall -U postgres -h p
 kubectl exec -it -n postgresql postgresql-<new>-0 -- psql -h postgresql-<new>.postgresql.svc.cluster.local -U postgres -f mydb_backup.dump postgres
 kubectl exec -it -n postgresql postgresql-<new>-0 -- rm mydb_backup.dump
 ```
+
+## Pgadmin
+
+Change the password in the secret, set the pgadmin_default_email, the postgresql server(s) info in the configmap, change the domains in the certificate and ingressroutes, then apply the yaml.
+
+```bash
+kubectl apply -f pgadmin.yaml
+```
+
+You'll probably need to go through the password resetting tool, then it will ask for the postgres user password (select to save it)
+
+## Expose through Traefik
+
+Define an entrypoint for postgresql (port 5432) in Traefik, then set the `ig-postgresql.yaml` to the proper connection service and deploy the file
