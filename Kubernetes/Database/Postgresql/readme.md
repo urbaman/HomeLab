@@ -45,7 +45,7 @@ helm upgrade --install database \
   cnpg/cluster -f cnpg-cluster-values.yaml
 ```
 
-#### Database (via CRD)
+#### Database (via CRD, for more ample customization)
 
 ```bash
 kubectl apply -f cnpg-cluster.yaml
