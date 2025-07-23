@@ -196,6 +196,17 @@ grafana:
  adminPassword: prom-operator
 ```
 
+Set the serviceMonitor, podMonitor, rules and probe to be scraped without needing specific lables (setting the, to true will need the `release: kube-prometheus-stack` label):
+
+```yaml
+prometheus:
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+```
+
 **Note:** When using microk8s, add the endpoints to proxy, scheduler and controller-manager, example:
 
 ```yaml
