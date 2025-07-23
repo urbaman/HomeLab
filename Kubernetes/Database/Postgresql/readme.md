@@ -51,6 +51,16 @@ helm upgrade --install database \
 kubectl apply -f cnpg-cluster.yaml
 ```
 
+#### Connection
+
+Get the superuser (postgres) password
+
+```bash
+kubectl get secret -n <namespace> <cluster-name>-superuser -o jsonpath="{.data.password}" | base64 --decode
+```
+
+And connct to <cluister-name>-rw.<namespace>(.svc.cluster.local)
+
 ### Bitnami
 
 We need to give time for the pods to be ready (due to shared storage latency) in liveness and readiness probes, and set a high number of concurrent connections for Gitlab in `pgpool.maxPool`, `pgpool.numInitChildren` and `postgresql.maxConnections`. Anyway, `pgpool.maxPool`*`pgpool.numInitChildren`=`postgresql.maxConnections`/2, and must be enough for connection-spawning applications.
