@@ -35,7 +35,7 @@ helm upgrade -i cnpg \
   cnpg/cloudnative-pg
 ```
 
-#### Database (via helm)
+#### Cluser (via helm)
 
 ```bash
 helm show values cnpg/cluster > cnpg-cluster-values.yaml
@@ -45,10 +45,38 @@ helm upgrade --install database \
   cnpg/cluster -f cnpg-cluster-values.yaml
 ```
 
-#### Database (via CRD, for more ample customization)
+#### Cluster (via CRD, for more ample customization)
 
 ```bash
 kubectl apply -f cnpg-cluster.yaml
+```
+
+#### Adding users and DBs
+
+Create a secret for username and password
+
+```bash
+kubectl create secret generic -n <namespace> <cluster-name>-<username> --from-literal=username=<username> --from-literal=password=<password> --type=kubernetes.io/basic-auth
+```
+
+Add the role to the cluster and re-apply
+
+```yaml
+  roles:
+    - name: <username>
+      login: true
+      passwordSecret:
+        name: <cluster-name>-<username>
+```
+
+```bash
+kubectl apply -f cnpg-cluster.yaml
+```
+
+Create a database owned by the new user/role
+
+```bash
+kubectl apply -f cnpg-database.yaml
 ```
 
 #### Connection
