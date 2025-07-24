@@ -14,6 +14,14 @@ spec:
   #               the switchover of the primary
   primaryUpdateStrategy: unsupervised
 
+  # Roles (db usernames)
+  managed:
+    roles:
+    - name: <username>
+      login: true
+      passwordSecret:
+        name: <cluster-name>-<username>
+
   # This is to enable Immich (see Immich deploy to enable db extensions)
   postgresql:
     shared_preload_libraries:

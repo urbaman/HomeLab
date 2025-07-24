@@ -71,11 +71,11 @@ spec:
                   name: roundcube-secret
                   key: DB_PASSWORD
             - name: ROUNDCUBEMAIL_DEFAULT_HOST
-              value: ssl://mail.maildomain.com
+              value: ssl://mail.domain.com
             - name: ROUNDCUBEMAIL_DEFAULT_PORT
               value: "993"
             - name: ROUNDCUBEMAIL_SMTP_SERVER
-              value: ssl://mail.maildomain.com
+              value: tls://mail.domain.com
             - name: ROUNDCUBEMAIL_SMTP_PORT
               value: "587"
             - name: ROUNDCUBEMAIL_SKIN
@@ -163,7 +163,21 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-roundcube-websecure
-  namespace: roundcube 
+  namespace: roundcube
+  annotations:
+    gethomepage.dev/href: "https://roundcube.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Roundcube Webmail"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: roundcube.svg
+    gethomepage.dev/app: roundcube # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Roundcube Webmail"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -180,20 +194,3 @@ spec:
     secretName: webmail-domain-com
     options:
       name: traefik-roundcube-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-roundcube-web
-  namespace: roundcube
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`webmail.domain.com`)
-      services:
-        - name: roundcube
-          port: 80
-      middlewares:
-        - name: traefik-roundcube-https-redirect
