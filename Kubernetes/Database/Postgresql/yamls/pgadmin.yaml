@@ -1,4 +1,13 @@
 apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: pgadmin
+  namespace: postgresql
+data:
+  pgadmin-password: <password in base64>
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: pgadmin-config-servers
@@ -25,7 +34,7 @@ metadata:
   name: pgadmin
   namespace: postgresql
   labels:
-    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/name: pgadmin
 spec:
   serviceName: pgadmin-service
   podManagementPolicy: Parallel
@@ -39,7 +48,7 @@ spec:
     metadata:
       labels:
         app: pgadmin
-        app.kubernetes.io/name: postgresql
+        app.kubernetes.io/name: pgadmin
     spec:
       terminationGracePeriodSeconds: 10
       containers:
@@ -50,7 +59,10 @@ spec:
           - name: PGADMIN_DEFAULT_EMAIL
             value: user@domain.com
           - name: PGADMIN_DEFAULT_PASSWORD
-            value: secretpassword
+            valueFrom:
+              secretKeyRef:
+                name: pgadmin
+                key: pgadmin-password
           ports:
           - name: pgadmin-port
             containerPort: 80
@@ -112,16 +124,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-pgadmin-https-redirect
-  namespace: postgresql
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-pgadmin-security
   namespace: postgresql
 spec:
@@ -170,7 +172,21 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-pgadmin-websecure
-  namespace: postgresql 
+  namespace: postgresql
+  annotations:
+    gethomepage.dev/href: "https://pgadmin.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "pgAdmin"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: pgadmin.svg
+    gethomepage.dev/app: pgadmin # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "pgAdmin"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -187,20 +203,3 @@ spec:
     secretName: pgadmin-domain-com
     options:
       name: traefik-pgadmin-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-pgadmin-web
-  namespace: postgresql
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`pgadmin.domain.com`)
-      services:
-        - name: pgadmin
-          port: 80
-      middlewares:
-        - name: traefik-pgadmin-https-redirect
