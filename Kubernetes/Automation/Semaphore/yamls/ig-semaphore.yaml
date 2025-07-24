@@ -1,66 +1,25 @@
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: semaphore-service
-  labels:
-    app: semaphore-service
-  namespace: traefik-external
-subsets:
-- addresses:
-  - ip: <semaphore-ip>
-    nodeName: semaphore-service
-  ports:
-  - name: semaphore
-    port: 3000
-    protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: semaphore-service
-  labels:
-    app: semaphore-service
-  namespace: traefik-external
-spec:
-  type: ClusterIP
-  clusterIP: None
-  ports:
-  - name: semaphore
-    port: 3000
-    targetPort: 3000
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: semaphore-urbaman
-  namespace: traefik-external
+  name: semaphore-domain-com
+  namespace: semaphore
 spec:
   # Certificate will be valid for these domain names
   dnsNames:
-  - semaphore.urbaman.it
+  - semaphore.domain.com
   # Reference our issuer
   # As it's a ClusterIssuer, it can be in a different namespace
   issuerRef:
     kind: ClusterIssuer
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
-  secretName: semaphore-urbaman
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-semaphore-https-redirect
-  namespace: traefik-external
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
+  secretName: semaphore-domain-com
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: traefik-semaphore-security
-  namespace: traefik-external
+  namespace: semaphore
 spec:
   headers:
     frameDeny: true
@@ -75,7 +34,7 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: traefik-semaphore-transport
-  namespace: traefik-external
+  namespace: semaphore
 spec:
   serverName: traefik
   insecureSkipVerify: true
@@ -84,7 +43,7 @@ apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: traefik-semaphore-tlsoptions
-  namespace: traefik-external
+  namespace: semaphore
 spec:
   minVersion: VersionTLS12
   cipherSuites:
@@ -108,13 +67,27 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-semaphore-websecure
-  namespace: traefik-external
+  namespace: semaphore
+  annotations:
+    gethomepage.dev/href: "https://cyberchef.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Cyberchef"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: cyberchef.svg
+    gethomepage.dev/app: cyberchef # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Cyberchef"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`semaphore.urbaman.it`)
+      match: Host(`semaphore.domain.com`)
       services:
         - name: semaphore-service
           port: 3000
@@ -122,23 +95,6 @@ spec:
       middlewares:
         - name: traefik-semaphore-security
   tls:
-    secretName: semaphore-urbaman
+    secretName: semaphore-domain-com
     options:
       name: traefik-semaphore-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-semaphore-web
-  namespace: traefik-external
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`semaphore.urbaman.it`)
-      services:
-        - name: semaphore-service
-          port: 3000
-      middlewares:
-        - name: traefik-semaphore-https-redirect

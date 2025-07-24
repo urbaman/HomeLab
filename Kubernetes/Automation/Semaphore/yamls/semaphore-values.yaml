@@ -1,0 +1,484 @@
+---
+# -- Override the name
+nameOverride: ""
+
+# -- Override the fullname
+fullnameOverride: ""
+
+# -- Replicas for the deployment
+replicaCount: 1
+
+config:
+  # -- List of environment variables to forward into the application environment.
+  # Modify this list if additional environment variables need to be accessible.
+  forwarded_env_vars: []
+
+image:
+  # -- Image repository used by deployment
+  repository: semaphoreui/semaphore
+
+  # -- Optional tag for the repository, defaults to app version
+  tag: ""
+
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+  # -- Optional name of pull secret if using a private registry
+  pullSecrets: []
+
+serviceAccount:
+  # -- Create a new service account
+  create: true
+
+  # -- Optional name for an existing service account
+  name: ""
+
+  # -- Define annotations for the service account
+  annotations: {}
+
+# -- Defines dnsConfig for the deployment
+# dnsConfig:
+  # nameservers:      # List of IPs
+  #   - 1.1.1.1
+  # searches:         # Search domains
+  #   - ns1.svc.cluster.local
+  # options:          # Resolver options
+  #   - name: ndots
+  #     value: "2"
+
+# -- Updaqte strategy for deployment
+updateStrategy:
+  type: Recreate
+
+# -- Define additional labels
+labels: {}
+
+# -- Define additional annotations
+annotations: {}
+
+# -- Security context for the deployment
+securityContext:
+  fsGroup: 1001
+
+# -- Security context for the pod
+podSecurityContext: {}
+
+# -- List of extra init containers
+extraInitContainers: []
+
+# -- List of extra sidecar containers
+extraSidecarContainers: []
+
+# -- List of extra volumes
+extraVolumes: []
+  # - name: extra
+  #   emptyDir: {}
+
+# -- List of extra volume mounts
+extraVolumeMounts: []
+  # - name: extra
+  #   mountPath: /usr/local/share
+  #   readOnly: true
+
+service:
+  # -- Type of the service
+  type: ClusterIP
+
+  # -- (int) Port of the service
+  port: 3000
+
+  # -- (int) Internal port of the service
+  internalPort: 3000
+
+  # -- Additional annotations for the service
+  annotations: {}
+
+  # -- Additional labels for the service
+  labels: {}
+
+ingress:
+  # -- Enable ingress
+  enabled: false
+
+  # -- (string) Class name for the ingress resource
+  className:
+
+  # -- Host definition for ingress
+  hosts:
+    - host: example.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+  # -- Optional TLS configuration for ingress
+  tls: []
+
+  # -- Additional annotations for the ingress
+  annotations: {}
+
+  # -- Additional labels for the ingress
+  labels: {}
+
+persistence:
+  # -- Enable persistence for workdir
+  enabled: true
+
+  # -- Size for boltdb volume
+  size: 10G
+
+  # -- Storage class used for workdir volume
+  storageClass: asustornas1-csi-nfs
+
+  # -- Access modes used for workdir volume
+  accessModes:
+    - ReadWriteOnce
+
+  # -- Name of an already existing claim
+  existingClaim:
+
+secrets:
+  # -- Cookie hash secret, generated if not present
+  cookieHash:
+
+  # -- Key used within secret for cookieHash
+  cookieHashKey: cookieHash
+
+  # -- Cookie encryption secret, generated if not present
+  cookieEncryption:
+
+  # -- Key used within secret for cookieEncryption
+  cookieEncryptionKey: cookieEncryption
+
+  # -- Access key encryption secret, generated if not present
+  accesskeyEncryption:
+
+  # -- Key used within secret for accesskeyEncryption
+  accesskeyEncryptionKey: accesskeyEncryption
+
+  # -- Existing secret to use for secrets
+  existingSecret:
+
+general:
+  # -- Host to access Semaphore
+  host:
+
+  # -- Use Git client implementation
+  gitClient: cmd_git
+
+  # -- Working directory for Semaphore
+  tmpPath: /tmp/semaphore
+
+  # -- Maximum parallel tasks
+  maxParallelTasks: 0
+
+  # -- Disable password login
+  passwordLoginDisable: false
+
+  # -- Allow non-admins to create projects
+  nonAdminCanCreateProject: false
+
+  # -- Enable usage of remote runners
+  useRemoteRunner: false
+
+  # -- Path to SSH config
+  sshConfigPath:
+
+  # -- Additional Python packages
+  additionalPythonPackages: []
+
+database:
+  # -- Type of database backend
+  type: postgres
+
+  # -- Read username from secret
+  usernameFromSecret: true
+
+  # -- Username for database
+  username: semaphore
+
+  # -- Key used within secret for username
+  usernameKey: username
+
+  # -- Password for database
+  password:
+
+  # -- Key used within secret for password
+  passwordKey: password
+
+  # -- Existing secret to use for credentials
+  existingSecret: semaphore-database-secret
+
+  # -- Host for database connection
+  host: <service>.<namespace>.svc.cluster.local
+
+  # -- Port for database connection
+  port: 5432
+
+  # -- Name of the used database
+  name: semaphore
+
+  # -- Options for database connection
+  options: {}
+
+  # -- Path for the boltdb
+  path: /var/lib/semaphore/database.boltdb
+
+  persistence:
+    # -- Enable persistence for boltdb
+    enabled: false
+
+    # -- Size for boltdb volume
+    size: 5G
+
+    # -- Storage class used for boltdb volume
+    storageClass:
+
+    # -- Access modes used for boltdb volume
+    accessModes:
+      - ReadWriteOnce
+
+    # -- Name of an already existing claim
+    existingClaim:
+
+ldap:
+  # -- Enable LDAP authentication
+  enable: false
+
+  # -- Address of LDAP server
+  server:
+
+  # -- Enable TLS connection to LDAP
+  needtls: false
+
+  # Search DN for LDAP
+  searchdn:
+
+  # -- Search filter for LDAP
+  filter:
+
+  # -- BindDN for LDAP authentication
+  binddn:
+
+  # -- Key used within secret for username
+  binddnKey: username
+
+  # -- Password for LDAP authentication
+  password:
+
+  # -- Key used within secret for username
+  passwordKey: password
+
+  # -- Existing secret to use for ldap
+  existingSecret:
+
+  # -- Mapping for LDAP attributes
+  mappings:
+    dn: dn
+    mail: mail
+    uid: uid
+    cn: cn
+
+oidc:
+  # -- Enable oidc authentication
+  enable: false
+
+  # -- Dictionary of oidc providers
+  providers: {}
+
+email:
+  # -- Enable email alerting
+  alert: true
+
+  # -- Sender for email alerting
+  sender: semaphoreui@domain.com
+
+  # -- Host of the SMTP server
+  host: mail.domain.com
+
+  # -- Port of the SMTP server
+  port: 587
+
+  # -- Enable a secure connection
+  secure: true
+
+  # -- Username for SMTP server
+  username:
+
+  # -- Key used within secret for username
+  usernameKey: username
+
+  # -- Password for SMTP server
+  password:
+
+  # -- Key used within secret for password
+  passwordKey: password
+
+  # -- Existing secret to use for email
+  existingSecret: semaphore-email-secret
+
+telegram:
+  # -- Enable telegram alerting
+  alert: false
+
+  # -- Chat used for telegram
+  chat:
+
+  # -- Key used within secret for chat
+  chatKey: chat
+
+  # -- Token used for telegram
+  token:
+
+  # -- Key used within secret for token
+  tokenKey: token
+
+  # -- Existing secret to use for telegram
+  existingSecret:
+
+slack:
+  # -- Enable slack alerting
+  alert: false
+
+  # -- URL used for slack
+  url:
+
+  # -- Key used within secret for url
+  urlKey: url
+
+  # -- Existing secret to use for slack
+  existingSecret:
+
+runner:
+  # -- Runner registration token
+  token:
+
+  # -- Key used within secret for token
+  tokenKey: token
+
+  # -- Existing secret to use for runner
+  existingSecret:
+
+admin:
+  # -- Create an local admin user
+  create: true
+
+  # -- Fullname for local admin
+  fullname:
+
+  # -- Key used within secret for fullname
+  fullnameKey: fullname
+
+  # -- Username for local admin
+  username:
+
+  # -- Key used within secret for username
+  usernameKey: username
+
+  # -- Password for local admin
+  password:
+
+  # -- Key used within secret for password
+  passwordKey: password
+
+  # -- Email for local admin
+  email:
+
+  # -- Key used within secret for email
+  emailKey: email
+
+  # -- Existing secret to use for admin
+  existingSecret: semaphore-admin-secret
+
+# -- Resources for the deployment
+resources: {}
+# limits: {}
+#  requests:
+#    cpu: 100m
+#    memory: 64Mi
+
+# -- Node selector for the deployment
+nodeSelector: {}
+
+# -- Affinity for the deployment
+affinity: {}
+
+# -- Tolerations for the deployment
+tolerations: []
+
+# -- List of environment variables from existing secrets
+envFromSecrets: []
+
+# -- List of environment variables from existing configmaps
+envFromConfigMaps: []
+
+# -- Extra environment variables from mapping
+extraEnvVariables: {}
+
+# -- Extra environment variables from secrets
+extraEnvSecrets: {}
+
+mariadb:
+  # -- Enable mariadb dependency
+  enabled: false
+
+  # -- Override fullname of mariadb dependency
+  fullnameOverride: mariadb
+
+  # -- Architecture for mariadb
+  architecture: standalone
+
+  auth:
+    # -- Database created for semaphore
+    database: semaphore
+
+    # -- Username for semaphore database
+    username: semaphore
+
+    # -- Password for semaphore database
+    password:
+
+  serviceAccount:
+    # -- Create service account for mariadb
+    create: true
+
+  metrics:
+    # -- Enable metrics for mariadb
+    enabled: true
+
+    serviceMonitor:
+      # -- Enable service monitor for mariadb
+      enabled: false
+
+postgresql:
+  # -- Enable postgresql dependency
+  enabled: false
+
+  # -- Override fullname of postgresql dependency
+  fullnameOverride: postgresql
+
+  # -- Architecture for postgresql
+  architecture: standalone
+
+  auth:
+    # -- Database created for semaphore
+    database: semaphore
+
+    # -- Username for semaphore database
+    username: semaphore
+
+    # -- Password for semaphore database
+    password:
+
+  serviceAccount:
+    # -- Create service account for postgresql
+    create: true
+
+  metrics:
+    # -- Enable metrics for postgresql
+    enabled: true
+
+    serviceMonitor:
+      # -- Enable service monitor for postgresql
+      enabled: false
+
+...
