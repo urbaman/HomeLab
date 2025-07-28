@@ -18,16 +18,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: vault-https-redirect
-  namespace: vault
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: vault-security
   namespace: vault
 spec:
@@ -78,6 +68,20 @@ kind: IngressRoute
 metadata:
   name: vault-websecure
   namespace: vault
+  annotations:
+    gethomepage.dev/href: "https://vault.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Hashicorp Vault"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: hashicorp-vault.svg
+    gethomepage.dev/app: vault # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Hashicorp Vault"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -94,20 +98,3 @@ spec:
     secretName: vault-domain-com
     options:
       name: vault-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: vault-web
-  namespace: vault
-spec:
-  entryPoints:
-    - web
-  routes:
-  - match: Host(`vault.domain.com`)
-    kind: Rule
-    services:
-    - name: vault
-      port: 8200 
-    middlewares:
-      - name: vault-https-redirect
