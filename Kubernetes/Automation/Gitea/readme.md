@@ -8,10 +8,24 @@ helm repo update
 helm show values gitea-charts/gitea > gitea-values.yaml
 ```
 
-Set the metrics, serviceMonitor to true, then set the configuration ([see here](https://docs.gitea.com/administration/config-cheat-sheet))
+Set the metrics, serviceMonitor to true, then set the following configurations ([see here for more](https://docs.gitea.com/administration/config-cheat-sheet))
 
 
 ```yaml
+gitea:
+  ## @param gitea.admin.username Username for the Gitea admin user
+  ## @param gitea.admin.existingSecret Use an existing secret to store admin user credentials
+  ## @param gitea.admin.password Password for the Gitea admin user
+  ## @param gitea.admin.email Email for the Gitea admin user
+  ## @param gitea.admin.passwordMode Mode for how to set/update the admin user password. Options are: initialOnlyNoReset, initialOnlyRequireReset, and keepUpdated
+  admin:
+    # existingSecret: gitea-admin-secret
+    existingSecret:
+    username: admin
+    password: <password>
+    email: "admin@domain.com"
+    passwordMode: keepUpdated
+[...]
   config:
     #  APP_NAME: "Gitea: Git with a cup of tea"
     #  RUN_MODE: dev
