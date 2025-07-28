@@ -18,16 +18,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: argocd-https-redirect
-  namespace: argocd
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: argocd-security
   namespace: argocd
 spec:
@@ -78,6 +68,20 @@ kind: IngressRoute
 metadata:
   name: argocd-websecure
   namespace: argocd
+  annotations:
+    gethomepage.dev/href: "https://argocd.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "ArgoCD"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: argo-cd.svg
+    gethomepage.dev/app: argocd-server # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "ArgoCD"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -102,20 +106,3 @@ spec:
     secretName: argocd-domain-com
     options:
       name: argocd-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: argocd-web
-  namespace: argocd
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`argocd.domain.com`)
-      services:
-        - name: argocd-server
-          port: 80
-      middlewares:
-        - name: argocd-https-redirect
