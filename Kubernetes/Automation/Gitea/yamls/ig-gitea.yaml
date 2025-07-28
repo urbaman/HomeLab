@@ -1,0 +1,101 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitea-domain-com
+  namespace: gitea
+spec:
+  # Certificate will be valid for these domain names
+  dnsNames:
+  - gitea.domain.com
+  # Reference our issuer
+  # As it's a ClusterIssuer, it can be in a different namespace
+  issuerRef:
+    kind: ClusterIssuer
+    name: cert-manager-acme-issuer
+  # Secret that will be created with our certificate and private keys
+  secretName: gitea-domain-com
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: gitea-security
+  namespace: gitea
+spec:
+  headers:
+    frameDeny: true
+    sslRedirect: true
+    browserXssFilter: true
+    contentTypeNosniff: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: gitea-transport
+  namespace: gitea
+spec:
+  serverName: gitea
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: gitea-tlsoptions
+  namespace: gitea
+spec:
+  minVersion: VersionTLS12
+  cipherSuites:
+    - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+    - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+    - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+    - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+    - TLS_AES_256_GCM_SHA384
+    - TLS_AES_128_GCM_SHA256
+    - TLS_CHACHA20_POLY1305_SHA256
+    - TLS_FALLBACK_SCSV
+  curvePreferences:
+    - CurveP521
+    - CurveP384
+  sniStrict: false
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gitea-websecure
+  namespace: gitea
+  annotations:
+    gethomepage.dev/href: "https://gitea.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Gitea"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: gitea.svg
+    gethomepage.dev/app: gitea # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Gitea"
+    #gethomepage.dev/showStats: "true"
+    gethomepage.dev/widget.type: "gitea"
+    gethomepage.dev/widget.key: "<gitea-api-token>" # See https://docs.gitea.com/development/api-usage#generating-and-listing-api-tokens
+    gethomepage.dev/widget.url: "https://gitea.domain.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`gitea.domain.com`)
+    kind: Rule
+    services:
+    - name: gitea-http
+      port: 3000
+      serversTransport: gitea-transport
+    middlewares:
+      - name: gitea-security
+  tls:
+    secretName: gitea-domain-com
+    options:
+      name: gitea-tlsoptions

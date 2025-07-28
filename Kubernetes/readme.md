@@ -71,10 +71,11 @@ Here are the detailed steps to deploy our homelab cluster
 #### Automation
 
 1. [GitLab](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Gitlab)
-2. [ArgoCD](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ArgoCD)
-3. [Hashcorp Vault](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/HashicorpVault)
-4. [External Secrets](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ExternalSecrets)
-5. [Semaphore UI - Ansible Gui](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Semaphore)
+2. [Gitea](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Gitea)
+3. [ArgoCD](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ArgoCD)
+4. [Hashcorp Vault](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/HashicorpVault)
+5. [External Secrets](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/ExternalSecrets)
+6. [Semaphore UI - Ansible Gui](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Autometion/Semaphore)
 
 #### Identity Provider
 
@@ -156,6 +157,9 @@ Here are the detailed steps to deploy our homelab cluster
 64. [Monitoring Mongodb](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Database/Mongodb)
 65. [Monitoring Memcached](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Database/Memcached)
 66. [Monitoring Crowdsec](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Crowdsec)
+67. [Monitoring ArgoCD](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Automation/ArgoCD)
+68. [Monitoring Hashicorp Vault](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Automation/Vault)
+69. [Monitoring Gitea](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Prometheus-Stack/Automation/Gitea)
 
 ### Deploying the services
 
