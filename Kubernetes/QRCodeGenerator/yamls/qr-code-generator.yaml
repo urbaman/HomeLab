@@ -9,7 +9,7 @@ metadata:
   name: qr-code-generator
   namespace: qr-code-generator
   labels:
-    app: draw.io
+    app: qr-code-generator
 spec:
   type: ClusterIP
   sessionAffinity: ClientIP
@@ -20,7 +20,7 @@ spec:
   - name: http
     port: 80
   selector:
-    app: draw.io
+    app: qr-code-generator
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -28,18 +28,18 @@ metadata:
   name: qr-code-generator
   namespace: qr-code-generator
   labels:
-    app: draw.io        
-    app.kubernetes.io/name: draw.io
+    app: qr-code-generator        
+    app.kubernetes.io/name: qr-code-generator
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: draw.io
+      app: qr-code-generator
   template:
     metadata:
       labels:
-        app: draw.io        
-        app.kubernetes.io/name: draw.io
+        app: qr-code-generator        
+        app.kubernetes.io/name: qr-code-generator
     spec:
       containers:
       - image: bizzycolah/qrcode-generator:latest
@@ -64,16 +64,6 @@ spec:
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
   secretName: qr-code-generator-domain-com
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-qr-code-generator-https-redirect
-  namespace: qr-code-generator
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -126,7 +116,21 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-qr-code-generator-websecure
-  namespace: qr-code-generator 
+  namespace: qr-code-generator
+  annotations:
+    gethomepage.dev/href: "https://qr-code-generator.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "QR Code Generator"
+    gethomepage.dev/group: Office
+    gethomepage.dev/icon: barcodebuddy.png
+    gethomepage.dev/app: qr-code-generator # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "QR Code Generator"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional 
 spec:
   entryPoints:
     - websecure
@@ -143,20 +147,3 @@ spec:
     secretName: qr-code-generator-domain-com
     options:
       name: traefik-qr-code-generator-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-qr-code-generator-web
-  namespace: qr-code-generator
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`qr-code-generator.domain.com`)
-      services:
-        - name: qr-code-generator
-          port: 80 
-      middlewares:
-        - name: traefik-qr-code-generator-https-redirect
