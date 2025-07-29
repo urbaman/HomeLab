@@ -12,7 +12,7 @@ Press ESC to exit the help, then set an alias and check the API:
 
 ```bash
 mc alias set ALIAS_NAME HOSTNAME ACCESS_KEY SECRET_KEY
-mc admin info myminio
+mc admin info ALIAS_NAME
 ```
 
 Use it to generate scrape configs for the different endpoints:
@@ -26,7 +26,7 @@ You'll get something like this (depending on the endpoint scrape config generate
 ```yaml
 scrape_configs:
 - job_name: minio-job
-  bearer_token: <token-cluster>>
+  bearer_token: <token-cluster>
   metrics_path: /minio/v2/metrics/cluster
   scheme: https
   static_configs:
@@ -36,7 +36,7 @@ scrape_configs:
 ```yaml
 scrape_configs:
 - job_name: minio-job-node
-  bearer_token: <token-node>>
+  bearer_token: <token-node>
   metrics_path: /minio/v2/metrics/node
   scheme: https
   static_configs:
@@ -46,7 +46,7 @@ scrape_configs:
 ```yaml
 scrape_configs:
 - job_name: minio-job-bucket
-  bearer_token: <token-bucket>>
+  bearer_token: <token-bucket>
   metrics_path: /minio/v2/metrics/bucket
   scheme: https
   static_configs:

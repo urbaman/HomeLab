@@ -18,16 +18,6 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: traefik-minio-tenant-https-redirect
-  namespace: minio
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
   name: traefik-minio-tenant-security
   namespace: minio
 spec:
@@ -77,7 +67,21 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-minio-tenant-websecure
-  namespace: minio 
+  namespace: minio
+  annotations:
+    gethomepage.dev/href: "https://minio-tenant.domain.com"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: "Minio Object Storage"
+    gethomepage.dev/group: Storage
+    gethomepage.dev/icon: minio.svg
+    gethomepage.dev/app: minio-tenant # optional, may be needed if app.kubernetes.io/name != ingress metadata.name
+    gethomepage.dev/name: "Minio Object Storage"
+    #gethomepage.dev/showStats: "true"
+    #gethomepage.dev/widget.type: "emby"
+    #gethomepage.dev/widget.url: "https://emby.example.com"
+    #gethomepage.dev/pod-selector: ""
+    #gethomepage.dev/weight: 10 # optional
+    #gethomepage.dev/instance: "public" # optional
 spec:
   entryPoints:
     - websecure
@@ -95,23 +99,6 @@ spec:
     options:
       name: traefik-minio-tenant-tlsoptions
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-minio-tenant-web
-  namespace: minio
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`minio-tenant.domain.com`)
-      services:
-        - name: minio-tenant-console
-          port: 9443
-      middlewares:
-        - name: traefik-minio-tenant-https-redirect
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -128,16 +115,6 @@ spec:
     name: cert-manager-acme-issuer
   # Secret that will be created with our certificate and private keys
   secretName: minio-s3-urbaman
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: traefik-minioapi-https-redirect
-  namespace: minio
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -208,20 +185,3 @@ spec:
     secretName: minio-s3-urbaman
     options:
       name: traefik-minioapi-tlsoptions
----
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-minioapi-web
-  namespace: minio
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: Host(`minio-s3.domain.com`)
-      services:
-        - name: minio
-          port: 443
-      middlewares:
-        - name: traefik-minioapi-https-redirect
