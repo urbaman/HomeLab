@@ -47,7 +47,9 @@ kubectl get secret headlamp -n kube-system -o jsonpath={".data.token"} | base64 
 
 ### Create a new serviceAccount
 
+```bash
 kubectl -n kube-system create serviceaccount headlamp-user
 kubectl create clusterrolebinding headlamp-user --serviceaccount=kube-system:headlamp-user --clusterrole=cluster-admin
+```
 
 Then, use a temp or long lifespan token as before to access headlamp
