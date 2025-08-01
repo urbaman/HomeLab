@@ -2,7 +2,7 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
-- Networking:
+- Security:
     - pfSense1:
         description: pfSense networking
         href: https://pfsense1.domain.com
@@ -29,6 +29,28 @@
           username: <TOKEN_ID>
           password: <API_KEY>
             #node: pve1
+    - Proxmox Cluster Node1:
+        description: Proxmox VE Cluster
+        href: https://pve2.domain.com:8006
+        icon: proxmox.svg
+        siteMonitor: https://pve2.domain.com:8006
+        widget:
+          type: proxmox
+          url: https://pve2.domain.com:8006
+          username: <TOKEN_ID>
+          password: <API_KEY>
+            #node: pve2
+    - Proxmox Cluster Node1:
+        description: Proxmox VE Cluster
+        href: https://pve3.domain.com:8006
+        icon: proxmox.svg
+        siteMonitor: https://pve3.domain.com:8006
+        widget:
+          type: proxmox
+          url: https://pve3.domain.com:8006
+          username: <TOKEN_ID>
+          password: <API_KEY>
+            #node: pve3
     - Proxmox Backup Server:
         description: Proxmox Backup Server
         href: https://pbs1.domain.com:8007
@@ -46,7 +68,7 @@
         siteMonitor: https://asustornas1.domain.com
     - Nut 1:
         description: NUT 1
-        href: http://<API_KEY>/cgi-bin/nut/upsstats.cgi
+        href: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
         icon: nut.svg
         siteMonitor: http://<DOMAIN OR IP>/cgi-bin/nut/upsstats.cgi
     - Nut 2:
@@ -62,7 +84,7 @@
 
 - Hosting:
     - Virtualmin:
-        description: Proxmox VE Cluster
+        description: Virtualmin Web Hosting
         href: https://www.domain.com:2087
         icon: virtualmin.svg
         siteMonitor: https://www.domain.com:2087

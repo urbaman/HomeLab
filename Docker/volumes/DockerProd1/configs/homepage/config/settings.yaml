@@ -4,7 +4,7 @@
 
 title: My Homelab Homepage
 language: it
-showStats: true
+#showStats: true
 statusStyle: "dot"
 quicklaunch:
   searchDescriptions: true
