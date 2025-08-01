@@ -1,0 +1,18 @@
+http:
+  serversTransports:
+    domain2:
+      serverName: "domain2.com"
+    crm-domain1:
+      serverName: "crm.domain1.com"
+    wp-manager-domain2:
+      serverName: "wp-manager.domain2.com"
+    domain1:
+      serverName: "domain1.com"
+    domain3:
+      serverName: "domain3.com"
+    domain4:
+      serverName: "domain4.com"
+    domain5:
+      serverName: "domain5.com"
+    domain6:
+      serverName: "domain6.com"

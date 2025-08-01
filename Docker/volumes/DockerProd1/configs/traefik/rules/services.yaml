@@ -3,16 +3,52 @@ http:
     asustornas1-service:
       loadBalancer:
         servers:
-          - url: "https://<ASUSTORNAS_IP>:8001"
-    hosting1-https-service:
+          - url: "https://<ASUSTOR-NAS-IP>:8001"
+    hosting1-crm-domain1-service:
       loadBalancer:
         servers:
-          - url: "https://<VIRTUALMIN_IP>"
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: crm-domain1
+    hosting1-wp-manager-domain2-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: wp-manager-domain2
+    hosting1-domain2-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain2
+    hosting1-domain3-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain3
+    hosting1-domain4-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain4
+    hosting1-domain1-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain1
+    hosting1-domain5-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain5
+    hosting1-domain6-service:
+      loadBalancer:
+        servers:
+          - url: "https://<VIRTUALMIN-IP>"
+        serversTransport: domain6
     hosting1-usermin-service:
       loadBalancer:
         servers:
-          - url: "https://<VIRTUALMIN_IP>:2083"
+          - url: "https://<VIRTUALMIN-IP>:2083"
     hosting1-webmin-service:
       loadBalancer:
         servers:
-          - url: "https://<VIRTUALMIN_IP>:2087"
+          - url: "https://<VIRTUALMIN-IP>:2087"
