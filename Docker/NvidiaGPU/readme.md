@@ -72,7 +72,7 @@ sudo apt-get install -y nvidia-container-toolkit
 ```bash
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
-docker run --rm -it --gpus all nvcr.io/nvidia/pytorch:22.03-py3
+docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
 ```
 
 You should see no errors in the container's logs.
