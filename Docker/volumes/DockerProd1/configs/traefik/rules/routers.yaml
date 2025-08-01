@@ -11,7 +11,7 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
     hosting1-https-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
       entryPoints:
         - websecure
       middlewares:
@@ -46,7 +46,7 @@ http:
             sans:
               - "*.domain6.com"
     hosting1-usermin-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
       entryPoints:
         - usermin
       middlewares:
@@ -81,7 +81,7 @@ http:
             sans:
               - "*.domain6.com"
     hosting1-webmin-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
       entryPoints:
         - webmin
       middlewares:
@@ -109,9 +109,9 @@ http:
           - main: "domain3.com"
             sans:
               - "*.domain3.com"
-          - main: "domain7.com.com"
+          - main: "domain7.com"
             sans:
-              - "*.domain7.com.com"
+              - "*.domain7.com"
           - main: "domain6.com"
             sans:
               - "*.domain6.com"
