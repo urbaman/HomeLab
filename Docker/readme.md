@@ -84,7 +84,7 @@ printf "mysql_root_password" | docker secret create mysql_root_password -
 Add a `deploy:` instance in the service instance:
 
 ```yaml
-deploy:
+    deploy:
       mode: replicated
       replicas: 1
       placement:
