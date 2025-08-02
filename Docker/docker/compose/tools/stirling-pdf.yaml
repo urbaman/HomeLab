@@ -9,7 +9,6 @@ services:
     volumes:
       - $DATADIR/stirling-pdf:/usr/share/tessdata
       - $CONFIGDIR/stirling-pdf:/configs
-      - $LOGDIR/stirling-pdf:/logs
     environment:
       - DOCKER_ENABLE_SECURITY=true
       - SECURITY_ENABLE_LOGIN=true
