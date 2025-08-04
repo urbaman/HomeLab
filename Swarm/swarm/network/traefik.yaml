@@ -222,7 +222,7 @@ services:
     environment:
       - TZ=Europe/Rome
         #- CLOUDFLARE_DNS_API_TOKEN=cloudflare_api_token
-        # CF_DNS_API_TOKEN=0cuYq7OamxeuXmoUSL-CXljngIsctryN8ad7VqPs #JE_x_kprqvanniCDRrv8N4lUCWJDlQKxG61Al89Z
+        # CF_DNS_API_TOKEN=<api-token>
       - CF_DNS_API_TOKEN_FILE=/run/secrets/CF_DNS_API_TOKEN
         #- DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
         #- DOMAINNAME_2
