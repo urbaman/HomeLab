@@ -1,0 +1,36 @@
+networks:
+  tools:
+    external: true
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - tools
+    volumes:
+      - /SwarmVolumes/configs/homepage:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations, see alternative methods
+    environment:
+      - TZ=Europe/Rome
+      - HOMEPAGE_ALLOWED_HOSTS=homepage.domain.com
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.homepage-router.entrypoints=websecure"
+        - "traefik.http.routers.homepage-router.rule=Host(`homepage.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.homepage-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.homepage-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.homepage-router.service=homepage-service"
+        - "traefik.http.services.homepage-service.loadbalancer.server.port=3000"
+
+

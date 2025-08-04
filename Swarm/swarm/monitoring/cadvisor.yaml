@@ -1,0 +1,159 @@
+networks:
+  monitoring:
+    external: true
+
+# I do single replicas for each node instead of global placement in order to reach each service with Traefik
+# Be warned that we can't use /dev/ksmg in Swarm as of now
+
+services:
+  cadvisor1:
+    image: gcr.io/cadvisor/cadvisor:latest
+    command:
+      - '--docker_only=true'
+      - '--housekeeping_interval=10s'
+        #      - "-disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
+        #      - "-allow_dynamic_housekeeping=false"
+        #- '-logtostderr'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    environment:
+      - TZ=Europe/Rome
+    #devices:
+    #  - /dev/kmsg
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == docker1
+      labels:
+        - "org.label-schema.group=monitoring"      
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.cadvisor1-router.entrypoints=websecure"
+        - "traefik.http.routers.cadvisor1-router.rule=Host(`cadvisor1.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.cadvisor1-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.cadvisor1-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.cadvisor1-router.service=cadvisor1-service"
+        - "traefik.http.services.cadvisor1-service.loadbalancer.server.port=8080"
+        - homepage.group=Monitoring
+        - homepage.name=Cadvisor1
+        - homepage.icon=cadvisor.png
+        - homepage.href=https://cadvisor1.domain.com
+        - homepage.description=Cadvisor1
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
+
+  cadvisor2:
+    image: gcr.io/cadvisor/cadvisor:latest
+    command:
+      - '--docker_only=true'
+      - '--housekeeping_interval=10s'
+        #      - "-disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
+        #      - "-allow_dynamic_housekeeping=false"
+        #- '-logtostderr'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    environment:
+      - TZ=Europe/Rome
+    #devices:
+    #  - /dev/kmsg
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == docker2
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.cadvisor2-router.entrypoints=websecure"
+        - "traefik.http.routers.cadvisor2-router.rule=Host(`cadvisor2.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.cadvisor2-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.cadvisor2-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.cadvisor2-router.service=cadvisor2-service"
+        - "traefik.http.services.cadvisor2-service.loadbalancer.server.port=8080"
+        - homepage.group=Monitoring
+        - homepage.name=Cadvisor2
+        - homepage.icon=cadvisor.png
+        - homepage.href=https://cadvisor2.domain.com
+        - homepage.description=Cadvisor2
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
+
+  cadvisor3:
+    image: gcr.io/cadvisor/cadvisor:latest
+    command:
+      - '--docker_only=true'
+      - '--housekeeping_interval=10s'
+        #      - "-disable_metrics=cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
+        #      - "-allow_dynamic_housekeeping=false"
+        #- '-logtostderr'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /sys/fs/cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    environment:
+      - TZ=Europe/Rome
+    #devices:
+    #  - /dev/kmsg
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == docker3
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.cadvisor3-router.entrypoints=websecure"
+        - "traefik.http.routers.cadvisor3-router.rule=Host(`cadvisor3.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.cadvisor3-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.cadvisor3-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.cadvisor3-router.service=cadvisor3-service"
+        - "traefik.http.services.cadvisor3-service.loadbalancer.server.port=8080"
+        - homepage.group=Monitoring
+        - homepage.name=Cadvisor3
+        - homepage.icon=cadvisor.png
+        - homepage.href=https://cadvisor3.domain.com
+        - homepage.description=Cadvisor3
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
+
+
