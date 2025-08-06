@@ -30,6 +30,7 @@ services:
       - DB_USERNAME=bookstack
       - DB_PASSWORD=${BOOKSTACK_DB_PASSWORD}
       - DB_DATABASE=bookstack
+      - QUEUE_CONNECTION=database
     volumes:
       - $CONFIGDIR/bookstack:/config
     labels:
