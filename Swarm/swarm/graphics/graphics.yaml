@@ -1,0 +1,71 @@
+networks:
+  tools:
+    external: true
+
+services:
+  drawio:
+    image: jgraph/drawio:latest
+    networks:
+      - tools 
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.drawio-router.entrypoints=websecure"
+        - "traefik.http.routers.drawio-router.rule=Host(`drawio.domain.com`)" # HostRegexp:drawio.${DOMAINNAME_1},{catchall:.*}" # Host(`drawio.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.drawio-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.drawio-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.drawio-router.service=drawio-service"
+        - "traefik.http.services.drawio-service.loadbalancer.server.port=8080"
+        - homepage.group=Graphics
+        - homepage.name=Drawio
+        - homepage.icon=draw-io.svg
+        - homepage.href=https://drawio.domain.com
+        - homepage.description=Drawio
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+    networks:
+      - tools 
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.excalidraw-router.entrypoints=websecure"
+        - "traefik.http.routers.excalidraw-router.rule=Host(`excalidraw.domain.com`)" # HostRegexp:excalidraw.${DOMAINNAME_1},{catchall:.*}" # Host(`excalidraw.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.excalidraw-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.excalidraw-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.excalidraw-router.service=excalidraw-service"
+        - "traefik.http.services.excalidraw-service.loadbalancer.server.port=80"
+        - homepage.group=Graphics
+        - homepage.name=Excalidraw
+        - homepage.icon=excalidraw.svg
+        - homepage.href=https://excalidraw.domain.com
+        - homepage.description=Excalidraw
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
+

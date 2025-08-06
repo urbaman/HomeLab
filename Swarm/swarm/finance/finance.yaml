@@ -1,0 +1,40 @@
+networks:
+  tools:
+    external: true
+
+services:
+  actual-budget:
+    image: actualbudget/actual-server:latest
+    networks:
+      - tools 
+    environment:
+      - TZ=Europe/Rome
+    volumes:
+      - /SwarmVolumes/data/actual-budget:/data
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.actual-budget-router.entrypoints=websecure"
+        - "traefik.http.routers.actual-budget-router.rule=Host(`actual-budget.domain.com`)" # HostRegexp:actual-budget.${DOMAINNAME_1},{catchall:.*}" # Host(`actual-budget.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.actual-budget-router.middlewares=secure-headers@file"
+        # HTTP Services
+        - "traefik.http.routers.actual-budget-router.service=actual-budget-service"
+        - "traefik.http.services.actual-budget-service.loadbalancer.server.port=5006"
+        - homepage.group=Finance
+        - homepage.name=Actual Budget
+        - homepage.icon=actual-budget.svg
+        - homepage.href=https://actual-budget.domain.com
+        - homepage.description=Actual Budget
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+
+

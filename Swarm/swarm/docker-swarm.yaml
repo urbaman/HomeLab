@@ -1,0 +1,167 @@
+#version: "3.9"
+ 
+# NETWORKS
+networks:
+  traefik:
+    external: true
+  management:
+    external: true
+  monitoring:
+    external: true
+  security:
+    external: true
+  tools:
+    external: true
+  databases:
+    external: true
+  storage:
+    external: true
+  mediaserver:
+    external: true
+#  dnet:
+#    external: true
+ 
+# SECRETS
+#secrets:
+#  cf_dns_api_token
+#    file: $SECRETSDIR/cf_dns_api_token
+ 
+# SERVICES
+
+include:
+# NETWORK
+  # Traefik 3 - Reverse Proxy
+  - compose/network/traefik.yaml
+
+# MANAGEMENT
+  # Portainer - Docker management
+  #  - compose/management/portainer.yaml
+  # Authentik
+  #  - compose/management/authentik.yaml
+
+# MONITORING
+  # Cadvisor
+  #  - compose/monitoring/cadvisor.yaml
+  # Grafana
+  #  - compose/monitoring/grafana.yaml
+  # Prometheus
+  #  - compose/monitoring/prometheus.yaml
+  # Node-Exporter
+  #  - compose/monitoring/node-exporter.yaml
+  # Alertmanager
+  #  - compose/monitoring/alertmanager.yaml
+  # Pbs1-Exporter
+  #  - compose/monitoring/pbs1-exporter.yaml
+  # MariaDB Exporter
+  #  - compose/monitoring/mariadb-exporter.yaml
+  # Postgres Exporter
+  #  - compose/monitoring/postgres-exporter.yaml
+  # Redis Exporter for Valkey
+  #  - compose/monitoring/redis-exporter.yaml
+  # Dozzle
+  #  - compose/monitoring/dozzle.yaml
+  # Mongodb Exporter
+  #  - compose/monitoring/mongodb-exporter.yaml
+  # Memcached exporter
+  #  - compose/monitoring/memcached-exporter.yaml
+  
+
+# SECURITY
+  # Wazuh
+  #  - compose/security/wazuh.yaml
+  # Crowdsec
+  #  - compose/security/crowdsec.yaml
+  # Crowdsec
+  #  - compose/security/clamav.yaml
+
+# Storage
+  # Minio
+  #  - compose/storage/minio.yaml
+
+# Databases
+  # MariaDB
+  #  - compose/databases/mariadb.yaml
+  # Postgresql - immich version
+  #  - compose/databases/postgresql.yaml
+  # Valkey (Redis)
+  #  - compose/databases/valkey.yaml
+  # MongoDB
+  #  - compose/databases/mongodb.yaml
+  # Memcached
+  #  - compose/databases/memcached.yaml
+  # Cloudbeaver
+  #  - compose/databases/cloudbeaver.yaml
+  # DB Gate
+  #  - compose/databases/dbgate.yaml
+
+# Tools
+  # Draw.io
+  #  - compose/tools/drawio.yaml
+  # It-Tools
+  #  - compose/tools/it-tools.yaml
+  # Stirling PDF
+  #  - compose/tools/stirling-pdf.yaml
+  # Exalidraw
+  #  - compose/tools/excalidraw.yaml
+  # Immich
+  #  - compose/tools/immich.yaml
+  # Collabora
+  #  - compose/tools/collabora.yaml
+  # Nextcloud
+  #  - compose/tools/nextcloud.yaml
+  # Talk for Nextcloud
+  #  - compose/tools/talk.yaml
+  # Loacl-AI
+  #  - compose/tools/local-ai.yaml
+  # Gitlab
+  #  - compose/tools/gitlab.yaml
+  # Roundcube
+  #  - compose/tools/roundcube.yaml
+  # Homepage
+  #  - compose/tools/homepage.yaml
+  # Cyberchef
+  #  - compose/tools/cyberchef.yaml
+  # Shlink
+  #  - compose/tools/shlink.yaml
+  # Netbox
+  #  - compose/tools/netbox.yaml
+  # Bookstack
+  #  - compose/tools/bookstack.yaml
+  # n8n
+  #  - compose/tools/n8n.yaml
+  # Semaphore UI
+  #  - compose/tools/semaphoreui.yaml
+  # FreshRSS
+  #  - compose/tools/freshrss.yaml
+  # Compose Craft
+  #  - compose/tools/composecraft.yaml
+  # Vaultwarden
+  #  - compose/tools/vaultwarden.yaml
+  # Openproject
+  #  - compose/tools/openproject.yaml
+  # Privatebin
+  #  - compose/tools/privatebin.yaml
+  # Paperless-ngx
+  #  - compose/tools/paperless-ngx.yaml
+  # Actual-budget
+  #  - compose/tools/actual-budget.yaml
+  # Firefly III
+  #  - compose/tools/fireflyIII.yaml
+  # Teleport
+  #  - compose/tools/teleport.yaml
+
+# Mediaserver
+#  - compose/mediaserver/sabnzbd.yaml
+#  - compose/mediaserver/transmission.yaml
+#  - compose/mediaserver/flaresolverr.yaml
+#  - compose/mediaserver/prowlarr.yaml
+#  - compose/mediaserver/sonarr.yaml
+#  - compose/mediaserver/radarr.yaml
+#  - compose/mediaserver/lidarr.yaml
+#  - compose/mediaserver/readarr.yaml
+#  - compose/mediaserver/bazarr.yaml
+#  - compose/mediaserver/unpackerr.yaml
+#  - compose/mediaserver/jellyfin.yaml
+#  - compose/mediaserver/jellyseerr.yaml
+#  - compose/mediaserver/calibre.yaml
+

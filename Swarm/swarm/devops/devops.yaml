@@ -1,0 +1,117 @@
+networks:
+  tools:
+    external: true
+  databases:
+    external: true
+
+secrets:
+  PGADMIN_DEFAULT_PASSWORD:
+    file: .PGADMIN_DEFAULT_PASSWORD
+
+services:
+  cyberchef:
+    image: ghcr.io/gchq/cyberchef:latest
+    networks:
+      - tools
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.cyberchef-router.entrypoints=websecure"
+        - "traefik.http.routers.cyberchef-router.rule=Host(`cyberchef.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.cyberchef-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.cyberchef-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.cyberchef-router.service=cyberchef-service"
+        - "traefik.http.services.cyberchef-service.loadbalancer.server.port=80"
+        - homepage.group=DevOps
+        - homepage.name=Cyberchef
+        - homepage.icon=cyberchef.svg
+        - homepage.href=https://cyberchef.domain.com
+        - homepage.description=Cyberchef
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
+
+  it-tools:
+    image: corentinth/it-tools:latest
+    networks:
+      - tools
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.it-tools-router.entrypoints=websecure"
+        - "traefik.http.routers.it-tools-router.rule=Host(`it-tools.domain.com`)" # HostRegexp:it-tools.${DOMAINNAME_1},{catchall:.*}" # Host(`it-tools.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.it-tools-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.it-tools-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.it-tools-router.service=it-tools-service"
+        - "traefik.http.services.it-tools-service.loadbalancer.server.port=80"
+        - homepage.group=DevOps
+        - homepage.name=It Tools
+        - homepage.icon=it-tools.svg
+        - homepage.href=https://it-tools.domain.com
+        - homepage.description=It Tools
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional
+
+  pgadmin:
+    image: dpage/pgadmin4
+    networks:
+      - tools
+      - databases
+    secrets:
+      - PGADMIN_DEFAULT_PASSWORD
+    environment:
+      - TZ=Europe/Rome
+      - PGADMIN_DEFAULT_EMAIL=<mail@domain.com>
+      - PGADMIN_DEFAULT_PASSWORD_FILE=/run/secrets/PGADMIN_DEFAULT_PASSWORD
+    volumes:
+      - /SwarmVolumes/data/pgadmin:/var/lib/pgadmin
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=tools"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=tools"
+        # HTTP Routers
+        - "traefik.http.routers.pgadmin-router.entrypoints=websecure"
+        - "traefik.http.routers.pgadmin-router.rule=Host(`pgadmin.domain.com`)" # HostRegexp:it-tools.${DOMAINNAME_1},{catchall:.*}" # Host(`it-tools.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.pgadmin-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.pgadmin-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.pgadmin-router.service=pgadmin-service"
+        - "traefik.http.services.pgadmin-service.loadbalancer.server.port=80"
+        - homepage.group=DevOps
+        - homepage.name=PgAdmin
+        - homepage.icon=pgadmin.svg
+        - homepage.href=https://pgadmin.domain.com
+        - homepage.description=PgAdmin
+        #- homepage.showStats=true
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optiona
+
