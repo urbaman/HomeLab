@@ -220,3 +220,12 @@ You'll probably need to go through the password resetting tool, then it will ask
 ## Expose through Traefik
 
 Define an entrypoint for postgresql (port 5432) in Traefik, then set the `ig-postgresql.yaml` to the proper connection service and deploy the file
+
+## Create db and user
+
+```sql
+create database mydb;
+create user myuser with encrypted password 'mypass';
+grant all privileges on database mydb to myuser;
+alter database mydb owner to myuser;
+```
