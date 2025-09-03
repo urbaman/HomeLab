@@ -42,7 +42,7 @@ sudo systemctl enable containerd.service
 ### Configure journald as default logging driver
 
 ```bash
-vi /etc/docker/daemin.json
+vi /etc/docker/daem0n.json
 ```
 
 ```json
