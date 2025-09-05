@@ -74,12 +74,6 @@ Mon Jul 31 15:47:23 2023
 +---------------------------------------------------------------------------------------+
 ```
 
-## Enable the gpu addon (microk8s cluster)
-
-```bash
-microk8s enable gpu
-```
-
 ## Install Nvidia driver plugin for Kubernetes (prefer the Nvidia operator)
 
 ### Install Nvidia contanier (containerd version, kubeadm cluster)
@@ -145,6 +139,18 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia && helm repo update
 helm show values nvidia/gpu-operator > gpu-operator-values.yaml
 vi gpu-operator-values.yaml
 helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values.yaml
+```
+
+### Microk8s
+
+```bash
+microk8s enable nvidia
+```
+
+Or, to do it manually:
+
+```bash
+helm upgrade -i gpu-operator -n gpu-operator --create-namespace nvidia/gpu-operator --values gpu-operator-values.yaml $HELM_OPTIONS     --set toolkit.env[0].name=CONTAINERD_CONFIG     --set toolkit.env[0].value=/var/snap/microk8s/current/args/containerd-template.toml     --set toolkit.env[1].name=CONTAINERD_SOCKET     --set toolkit.env[1].value=/var/snap/microk8s/common/run/containerd.sock
 ```
 
 ### vGPU drivers
