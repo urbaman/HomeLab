@@ -23,3 +23,12 @@ Add a counter to the previous commands
 ```bash
 <command> | wc -l
 ```
+
+List all images on the cluster
+
+```bash
+kubectl get pods --all-namespaces -o jsonpath="{.items[*].spec['initContainers', 'containers'][*].image}" |\
+tr -s '[[:space:]]' '\n' |\
+sort |\
+uniq -c
+```
