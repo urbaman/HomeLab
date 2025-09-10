@@ -1,0 +1,44 @@
+# Set dockerN and watchtowerN to your preference
+networks:
+  networking:
+    external: true
+
+services:
+  watchtower-dockerN:
+    image: containrrr/watchtower
+    container_name: watchtower-dockerN
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      WATCHTOWER_HTTP_API_TOKEN: ${WATCHTOWER_HTTP_API_TOKEN}
+      WATCHTOWER_NOTIFICATIONS_HOSTNAME: dockerN
+      WATCHTOWER_CLEANUP: "true"
+      DOCKER_API_VERSION: "1.51"
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+      WATCHTOWER_INCLUDE_STOPPED: "true"
+      WATCHTOWER_MONITOR_ONLY: "true"
+      WATCHTOWER_HTTP_API_METRICS: "true"
+      WATCHTOWER_SCHEDULE: 0 0 2 * * *
+      #- WATCHTOWER_POLL_INTERVAL=""
+      #ATCHTOWER_NOTIFICATIONS=""
+      # WATCHTOWER_NOTIFICATIONS_HOSTNAME="watchtower-docker1"
+      WATCHTOWER_NOTIFICATION_REPORT: "true"
+      WATCHTOWER_NOTIFICATION_URL: >
+        smtp://dockeradmin@${DOMAINNAME_1}:${WATCHTOWER_EMAIL_PASSWORD}@mail.${DOMAINNAME_1}:587/?from=watchtowerN@${DOMAINNAME_1}&to=dockeradmin@${DOMAINNAME_1}&auth=Plain
+        telegram://${WATCHTOWER_TELEGRAM_BOT}@telegram?chats=${WATCHTOWER_TELEGRAM_CHAT}
+    networks:
+      - networking
+    ports:
+      - "8081:8080"
+    labels:
+      - "org.label-schema.group=monitoring"
+      - homepage.group=Monitoring
+      - homepage.name=Watchtower DockerN
+      - homepage.icon=watchtower.png
+      - homepage.href=https://watchtowerN.$DOMAINNAME_1
+      - homepage.description=Watchtower DockerN
+      - homepage.widget.type=watchtower
+      - homepage.widget.url=https://watchtowerN.$DOMAINNAME_1
+      - homepage.widget.key=${WATCHTOWER_HTTP_API_TOKEN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
