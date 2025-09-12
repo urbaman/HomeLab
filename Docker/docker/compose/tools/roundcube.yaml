@@ -1,5 +1,4 @@
 services:
-
   roundcube:
     container_name: roundcube
     image: roundcube/roundcubemail:latest 
