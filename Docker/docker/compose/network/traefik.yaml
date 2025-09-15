@@ -176,7 +176,7 @@ services:
     environment:
       - TZ=${TZ}
         #- CLOUDFLARE_DNS_API_TOKEN=cloudflare_api_token
-      - CF_DNS_API_TOKEN=JE_x_kprqvanniCDRrv8N4lUCWJDlQKxG61Al89Z
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
       - DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
       - DOMAINNAME_2
     labels:

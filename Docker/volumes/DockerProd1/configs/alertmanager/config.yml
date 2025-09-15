@@ -1,7 +1,7 @@
 global:
   resolve_timeout: '5m'
 route:
-  group_by: ['namespace']
+  group_by: ['alertname','instance','severity']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 12h
@@ -11,18 +11,31 @@ route:
     matchers:
       - alertname =~ "InfoInhibitor|Watchdog"
   - receiver: 'mail'
+    continue: true
+  - receiver: 'telegram'
+    continue: true
+inhibit_rules:
+- target_matchers: # Alerts to be silenced
+    - severity = "info"
+  source_matchers: # The alert that does the silencin0
+    - alertname = "InfoInhibitor"
 receivers:
   - name: 'null'
   - name: 'mail'
     email_configs:
-    - to: 'admin@domain.com'
+    - to: 'dockeradmin@domain.com'
       from: 'alertmanager@domain.com'
       smarthost: mail.domain.com:587
-      auth_username: 'admin@domain.com'
-      auth_identity: 'admin@domain.com'
-      auth_password: '<password>'
+      auth_username: 'dockeradmin@domain.com'
+      auth_identity: 'dockeradmin@domain.com'
+      auth_password: 'password'
       send_resolved: true
       tls_config:
         insecure_skip_verify: true
       headers:
         subject: 'Prometheus Mail Alerts'
+  - name: 'telegram'
+    telegram_configs:
+    - api_url: https://api.telegram.org
+      bot_token: token
+      chat_id: id
