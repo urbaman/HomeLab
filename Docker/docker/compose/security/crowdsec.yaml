@@ -3,8 +3,8 @@ services:
     image: crowdsecurity/crowdsec
     container_name: crowdsec
     environment:
-      PGID: "1000"
-      COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve"
+      - PGID="1000"
+      - COLLECTIONS="crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/http-dos" #crowdsecurity/linux-lpe crowdsecurity/postfix crowdsecurity/apache2 fulljackz/proxmox
     networks:
       - traefik
       - security

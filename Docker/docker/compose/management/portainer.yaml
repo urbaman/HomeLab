@@ -36,8 +36,6 @@ services:
       - homepage.showStats=true
       - homepage.widget.type=portainer
       - homepage.widget.url=https://portainer.$DOMAINNAME_1
-      - homepage.widget.key=ptr_8vmExIq8sQzCE3vrPtFg8WQ6qKblUN3E/87gDFAtPzY=
+      - homepage.widget.key=<portainer-api-key>
       - homepage.widget.env=1
-        #- homepage.widget.fields=["field1","field2"] # optiona
-
-
+        #- homepage.widget.fields=["field1","field2"] # optional

@@ -6,8 +6,6 @@ services:
       - no-new-privileges:true
     restart: unless-stopped
     container_name: freshrss
-    expose:
-      - 80
     networks:
       - traefik
       - tools

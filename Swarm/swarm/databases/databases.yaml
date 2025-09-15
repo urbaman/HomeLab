@@ -1,0 +1,65 @@
+networks:
+  databases:
+    external: true
+
+#secrets:
+#  POSTGRES_PASSWORD:
+#    file: .POSTGRES_PASSWORD
+
+services:
+  pg17-v043:
+    image: tensorchord/vchord-postgres:pg17-v0.4.3
+    networks:
+      - databases
+    #secrets:
+    #  - POSTGRES_PASSWORD
+    environment:
+      #- POSTGRES_PASSWORD_FILE:/run/secrets/POSTGRES_PASSWORD
+      - POSTGRES_PASSWORD=<postgres-password>
+    volumes:
+      - /SwarmVolumes/data/postgresql:/var/lib/postgresql/data
+      - /SwarmVolumes/configs/postgresql:/etc/postgresql
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=databases"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=databases"
+        - "traefik.tcp.routers.postgresql-router.entrypoints=postgresql"
+        - "traefik.tcp.routers.postgresql-router.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.postgresql-router.service=postgresql-service"
+        - "traefik.tcp.services.postgresql-service.loadbalancer.server.port=5432"
+        - "homepage.group=Databases"
+        - "homepage.name=Postgresql 17-v0.4.3"
+        - "homepage.icon=postgresql.svg"
+        - "homepage.href=#"
+        - "homepage.description=Postgresql Tendorchord 17-v0.4.3"
+
+  valkey:
+    image: docker.io/valkey/valkey
+    networks:
+      - databases
+    command:
+      - --save 60 1
+      - --loglevel warning
+    environment:
+      - TZ=Europe/Rome
+    volumes:
+      - /SwarmVolumes/data/valkey:/data
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=databases"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=databases"
+        - "traefik.tcp.routers.valkey-router.entrypoints=redis"
+        - "traefik.tcp.routers.valkey-router.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.valkey-router.service=valkey-service"
+        - "traefik.tcp.services.valkey-service.loadbalancer.server.port=6379"
+        - "homepage.group=Databases"
+        - "homepage.name=Valkey"
+        - "homepage.icon=valkey.svg"
+        - "homepage.href=#"
+        - "homepage.description=Valkey (Redis alternative)"

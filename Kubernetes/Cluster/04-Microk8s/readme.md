@@ -31,7 +31,7 @@ sudo cp microk8s.yaml /var/snap/microk8s/common/.microk8s.yaml
 ```
 
 ```bash
-sudo snap install microk8s --classic --channel=1.28
+sudo snap install microk8s --classic --channel=1.33
 sudo cp etcd-cluster-ca.crt /var/snap/microk8s/current/certs/etcd-cluster-ca.crt
 sudo cp etcd-cluster-client.crt /var/snap/microk8s/current/certs/etcd-cluster-client.crt
 sudo cp etcd-cluster-client.key /var/snap/microk8s/current/certs/etcd-cluster-client.key
@@ -90,26 +90,30 @@ sudo microk8s join 10.0.50.51:25000/e223f1b3d2040b82ee82aa6db88bfc5d/5bed05e3b3a
 - Install microk8s on the 3 nodes that form the control plane cluster:
 
 ```bash
-sudo snap install microk8s --classic --channel=1.31/stable
+sudo snap install microk8s --classic --channel=1.33/stable
 sudo usermod -a -G microk8s $USER
 mkdir -p ~/.kube
 chmod 0700 ~/.kube
 su $USER
+mkdir .kube
+microk8s config > .kube/config
 ```
 
 - Create new certificates on all nodes allowing for the VIP address:
   - Edit `/var/snap/microk8s/current/certs/csr.conf.template` on all control planes
   - Add IP.99 = a.b.c.d where a.b.c.d is the VIP address
   - Add DNS.99 = mk8.domain.com for the loadbalancer FQDN
-  - Generate new certificates on all nodes with `sudo microk8s refresh-certs`
+  - Generate new certificates on all nodes with `sudo microk8s refresh-certs -e ca.crt`
 - Form the cluster following the [instructions listed here](https://microk8s.io/docs/high-availability)
 - Prepare the basic cluster components microk8s enable rbac helm3 dns
+- Install helm and kubectl tools on all nodes
 - Install kube-vip via helm-chart (as a deamon set)
 
 ```bash
-microk8s helm repo add kube-vip https://kube-vip.github.io/helm-charts
-microk8s helm repo update
-microk8s helm upgrade -i kube-vip kube-vip/kube-vip --namespace kube-system -f kubevip-values.yaml
+helm repo add kube-vip https://kube-vip.github.io/helm-charts
+helm repo update
+helm show values kube-vip/kube-vip > kube-vip.yaml
+helm upgrade -i kube-vip kube-vip/kube-vip --namespace kube-system -f kubevip-values.yaml
 ```
 
 The file values.yaml [can be found here](https://raw.githubusercontent.com/kube-vip/helm-charts/refs/heads/main/charts/kube-vip/values.yaml)

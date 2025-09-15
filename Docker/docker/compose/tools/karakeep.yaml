@@ -16,6 +16,8 @@ services:
       MEILI_ADDR: http://meilisearch:7700
       BROWSER_WEB_URL: http://chrome:9222
       OPENAI_BASE_URL: ${OPENAI_BASE_URL}
+      # INFERENCE_TEXT_MODEL: gpt-4.1-mini
+      # INFERENCE_IMAGE_MODEL: gpt-4o-mini
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_LOCAL_URL: http://localhost:3000

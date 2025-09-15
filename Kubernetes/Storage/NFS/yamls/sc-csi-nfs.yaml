@@ -6,8 +6,13 @@ provisioner: nfs.csi.k8s.io
 parameters:
   server: <Hostname or IP>
   share: <Share>
+  subDir: ${pvc.metadata.namespace}/${pvc.metadata.name}/${pv.metadata.name}
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 mountOptions:
   - hard
   - nfsvers=4.2
+  - bg
+  - nolock
+  - noatime
+  - nointr

@@ -1,0 +1,184 @@
+networks:
+  monitoring:
+    external: true
+  tools:
+    external: true
+  databases:
+    external: true
+
+secrets:
+  DATA_SOURCE_PASS:
+    file: .DATA_SOURCE_PASS
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - '/SwarmVolumes/configs/prometheus:/etc/prometheus'
+      - '/SwarmVolumes/data/prometheus:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - monitoring
+      - tools
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.prometheus-router.entrypoints=websecure"
+        - "traefik.http.routers.prometheus-router.rule=Host(`prometheus.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.prometheus-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.prometheus-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.prometheus-router.service=prometheus-service"
+        - "traefik.http.services.prometheus-service.loadbalancer.server.port=9090"
+        - homepage.group=Monitoring
+        - homepage.name=Prometheus
+        - homepage.icon=prometheus.png
+        - homepage.href=https://prometheus.domain.com
+        - homepage.description=Prometheus
+        - homepage.widget.type=prometheus
+        - homepage.widget.url=http://prometheus:9090
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - '/SwarmVolumes/configs/alertmanager:/etc/alertmanager'
+      - '/SwarmVolumes/data/alertmanager:/alertmanager'
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - monitoring
+    environment:
+      - TZ=Europe/Rome
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.alertmanager-router.entrypoints=websecure"
+        - "traefik.http.routers.alertmanager-router.rule=Host(`alertmanager.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.alertmanager-router.middlewares=secure-headers@file"
+        #- "traefik.http.routers.alertmanager-router.middlewares=authentik-traefik@file"
+        # HTTP Services
+        - "traefik.http.routers.alertmanager-router.service=alertmanager-service"
+        - "traefik.http.services.alertmanager-service.loadbalancer.server.port=9093"
+        - homepage.group=Monitoring
+        - homepage.name=Alertmanager
+        - homepage.icon=alertmanager.png
+        - homepage.href=https://alertmanager.domain.com
+        - homepage.description=Alertmanager
+        #- homepage.widget.type=emby
+        #- homepage.widget.url=http://emby.home
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"]
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    environment:
+      - TZ=Europe/Rome
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro
+      - /run/udev/data:/run/udev/data:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.processes'
+      - '--collector.interrupts'
+      - '--collector.systemd'
+      - '--collector.tcpstat'
+      - '--log.level=warn'
+    networks:
+      - monitoring
+    deploy:
+      mode: global
+      labels:
+        - "org.label-schema.group=monitoring"
+        - homepage.group=Monitoring
+        - homepage.name=Node Exporter
+        - homepage.icon=prometheus.png
+        - homepage.href=https://#
+        - homepage.description=Node Exporter
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    networks:
+      - monitoring
+      - databases
+    command:
+     - --collector.postmaster
+     - --collector.long_running_transactions
+     - --collector.process_idle
+     - --collector.stat_activity_autovacuum
+     - --collector.stat_statements
+     - --collector.stat_wal_receiver
+     - --collector.statio_user_indexes
+     - --collector.statio_user_tables
+    secrets:
+      - DATA_SOURCE_PASS
+    environment:
+      - TZ=Europe/Rome
+      - DATA_SOURCE_URI=databases_pg17-v043:5432/postgres?sslmode=disable
+      - DATA_SOURCE_USER=postgres
+      - DATA_SOURCE_PASS_FILE=/run/secrets/DATA_SOURCE_PASS
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+
+  pbs1-exporter:
+    image: ghcr.io/natrontech/pbs-exporter
+    environment:
+      - TZ=Europe/Rome
+      - PBS_API_TOKEN=<token>
+      - PBS_API_TOKEN_NAME=<api-token-name>
+      - PBS_USERNAME=<username>@pbs
+      - PBS_ENDPOINT=https://pbs1.urbaman.cloud:8007
+      - PBS_INSECURE=false
+        #- PBS_METRICS_PATH="/pbs1-metrics"
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    networks:
+      - monitoring
+      - databases
+    environment:
+      - TZ=Europe/Rome
+      - REDIS_ADDR=redis://databases_valkey:6379
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"

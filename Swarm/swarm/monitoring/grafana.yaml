@@ -1,0 +1,51 @@
+networks:
+  monitoring:
+    external: true
+
+services:
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    volumes:
+      - '/SwarmVolumes/data/grafana:/var/lib/grafana'
+      - '/SwarmVolumes/configs/grafana:/etc/grafana/provisioning'
+    environment:
+      - GF_SECURITY_ADMIN_USER=<user>
+      - GF_SECURITY_ADMIN_PASSWORD=<password>
+      - GF_SECURITY_ADMIN_EMAIL=admin@domain.com
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_ALERTING_ENABLED=false
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_SERVER_ROOT_URL=https://grafana.domain.com
+      - TZ=Europe/Rome
+    user: '1000'
+    networks:
+      - monitoring
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=monitoring"
+        # HTTP Routers
+        - "traefik.http.routers.grafana-router.entrypoints=websecure"
+        - "traefik.http.routers.grafana-router.rule=Host(`grafana.domain.com`)"
+        # Middlewares
+        - "traefik.http.routers.grafana-router.middlewares=secure-headers@file"
+        # HTTP Services
+        - "traefik.http.routers.grafana-router.service=grafana-service"
+        - "traefik.http.services.grafana-service.loadbalancer.server.port=3000"
+        - homepage.group=Monitoring
+        - homepage.name=Grafana
+        - homepage.icon=grafana.svg
+        - homepage.href=https://grafana.domain.com
+        - homepage.description=Grafana
+        #- homepage.showStats=true
+        - homepage.widget.type=grafana
+        - homepage.widget.version=2
+        #- homepage.widget.alerts=alertmanager
+        - homepage.widget.url=https://grafana.domain.com
+        - homepage.widget.username=<user>
+        - homepage.widget.password=<password>
+
+

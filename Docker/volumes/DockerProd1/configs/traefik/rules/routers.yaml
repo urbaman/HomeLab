@@ -1,7 +1,7 @@
 http:
   routers:
     asustornas1-router:
-      rule: "Host(`asustornas1.domain1.com`)"
+      rule: "Host(`asustornas1.domain0.com`)"
       entryPoints:
         - websecure
       middlewares:
@@ -10,43 +10,122 @@ http:
       tls:
         certResolver: dns-cloudflare
         options: tls-opts@file
-    hosting1-https-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+    hosting1-domain3-router:
+      rule: Hostregexp(`.+\.domain3\.com`) || Host(`domain3.com`)
       entryPoints:
         - websecure
       middlewares:
         - secure-headers@file
-      service: hosting1-https-service
+      service: hosting1-domain3-service
       tls:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "domain2.com"
-            sans:
-              - "admin.domain2.com"
-              - "webmail.domain2.com"
-              - "mail.domain2.com"
-              - "autodiscover.domain2.com"
-              - "autoconfig.domain2.com"
-              - "www.domain2.com"
-              - "wp-manager.domain2.com"
-          - main: "domain4.com"
-            sans:
-              - "*.domain4.com"
-          - main: "domain5.com"
-            sans:
-              - "*.domain5.com"
           - main: "domain3.com"
             sans:
               - "*.domain3.com"
-          - main: "domain7.com.com"
+    hosting1-urbaman-router:
+      rule: Host(`urbaman.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www)\.urbaman\.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-urbaman-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "urbaman.com"
             sans:
-              - "*.domain7.com.com"
+              - "admin.urbaman.com"
+              - "webmail.urbaman.com"
+              - "mail.urbaman.com"
+              - "autodiscover.urbaman.com"
+              - "autoconfig.urbaman.com"
+              - "www.urbaman.com"
+    hosting1-wp-manager-router:
+      rule: Host(`wp-manager.urbaman.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-wp-manager-urbaman-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+    hosting1-crm-dreamlord-router:
+      rule: Host(`crm.dreamlord.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-crm-dreamlord-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+    hosting1-dreamlord-router:
+      rule: Host(`dreamlord.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www)\.dreamlord\.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-dreamlord-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "dreamlord.com"
+            sans:
+              - "admin.dreamlord.com"
+              - "webmail.dreamlord.com"
+              - "mail.dreamlord.com"
+              - "autodiscover.dreamlord.com"
+              - "autoconfig.dreamlord.com"
+              - "www.dreamlord.com"
+    hosting1-domain4-router:
+      rule: Hostregexp(`.+\.domain4\.com`) || Host(`domain4.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-domain4-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "domain4.com"
+            sans:
+              - "*.domain4.com"
+    hosting1-domain5-router:
+      rule: Hostregexp(`.+\.domain5\.com`) || Host(`domain5.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-domain5-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: "domain5.com"
+            sans:
+              - "*.domain5.com"
+    hosting1-domain6-router:
+      rule: Hostregexp(`.+\.domain6\.com`) || Host(`domain6.com`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - secure-headers@file
+      service: hosting1-domain6-service
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
           - main: "domain6.com"
             sans:
               - "*.domain6.com"
     hosting1-usermin-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+      rule: Host(`urbaman.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.dreamlord\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain6\.com`) || Hostregexp(`.+\.domain5\.com`) || Host(`domain4.com`) || Host(`dreamlord.com`) || Host(`domain3.com`) || Host(`domain6.com`) || Host(`domain5.com`)
       entryPoints:
         - usermin
       middlewares:
@@ -56,32 +135,32 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "domain2.com"
+          - main: "urbaman.com"
             sans:
-              - "admin.domain2.com"
-              - "webmail.domain2.com"
-              - "mail.domain2.com"
-              - "autodiscover.domain2.com"
-              - "autoconfig.domain2.com"
-              - "www.domain2.com"
-              - "wp-manager.domain2.com"
+              - "admin.urbaman.com"
+              - "webmail.urbaman.com"
+              - "mail.urbaman.com"
+              - "autodiscover.urbaman.com"
+              - "autoconfig.urbaman.com"
+              - "www.urbaman.com"
+              - "wp-manager.urbaman.com"
           - main: "domain4.com"
             sans:
               - "*.domain4.com"
-          - main: "domain5.com"
+          - main: "dreamlord.com"
             sans:
-              - "*.domain5.com"
+              - "*.dreamlord.com"
           - main: "domain3.com"
             sans:
               - "*.domain3.com"
-          - main: "domain7.com.com"
-            sans:
-              - "*.domain7.com.com"
           - main: "domain6.com"
             sans:
               - "*.domain6.com"
+          - main: "domain5.com"
+            sans:
+              - "*.domain5.com"
     hosting1-webmin-router:
-      rule: Host(`domain2.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.domain2\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.domain5\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain7.com\.com`) || Hostregexp(`.+\.domain6\.com`) || Host(`domain4.com`) || Host(`domain5.com`) || Host(`domain3.com`) || Host(`domain7.com.com`) || Host(`domain6.com`)
+      rule: Host(`urbaman.com`) || Hostregexp(`^(admin|webmail|mail|autodiscover|autoconfig|www|wp-manager)\.urbaman\.com`) || Hostregexp(`.+\.domain4\.com`) || Hostregexp(`.+\.dreamlord\.com`) || Hostregexp(`.+\.domain3\.com`) || Hostregexp(`.+\.domain6\.com`) || Hostregexp(`.+\.domain5\.com`) || Host(`domain4.com`) || Host(`dreamlord.com`) || Host(`domain3.com`) || Host(`domain6.com`) || Host(`domain5.com`)
       entryPoints:
         - webmin
       middlewares:
@@ -91,30 +170,30 @@ http:
         certResolver: dns-cloudflare
         options: tls-opts@file
         domains:
-          - main: "domain2.com"
+          - main: "urbaman.com"
             sans:
-              - "admin.domain2.com"
-              - "webmail.domain2.com"
-              - "mail.domain2.com"
-              - "autodiscover.domain2.com"
-              - "autoconfig.domain2.com"
-              - "www.domain2.com"
-              - "wp-manager.domain2.com"
+              - "admin.urbaman.com"
+              - "webmail.urbaman.com"
+              - "mail.urbaman.com"
+              - "autodiscover.urbaman.com"
+              - "autoconfig.urbaman.com"
+              - "www.urbaman.com"
+              - "wp-manager.urbaman.com"
           - main: "domain4.com"
             sans:
               - "*.domain4.com"
-          - main: "domain5.com"
+          - main: "dreamlord.com"
             sans:
-              - "*.domain5.com"
+              - "*.dreamlord.com"
           - main: "domain3.com"
             sans:
               - "*.domain3.com"
-          - main: "domain7.com.com"
-            sans:
-              - "*.domain7.com.com"
           - main: "domain6.com"
             sans:
               - "*.domain6.com"
-          - main: "teleport.domain2.com"
+          - main: "domain5.com"
             sans:
-              - "*.teleport.domain2.com"
+              - "*.domain5.com"
+          - main: "teleport.urbaman.com"
+            sans:
+              - "*.teleport.urbaman.com"

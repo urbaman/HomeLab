@@ -42,7 +42,7 @@ sudo systemctl enable containerd.service
 ### Configure journald as default logging driver
 
 ```bash
-vi /etc/docker/daemin.json
+vi /etc/docker/daem0n.json
 ```
 
 ```json
@@ -84,7 +84,7 @@ printf "mysql_root_password" | docker secret create mysql_root_password -
 Add a `deploy:` instance in the service instance:
 
 ```yaml
-deploy:
+    deploy:
       mode: replicated
       replicas: 1
       placement:

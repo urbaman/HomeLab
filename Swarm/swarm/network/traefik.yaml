@@ -1,0 +1,266 @@
+networks:
+  traefik:
+    external: true
+  management:
+    external: true
+  monitoring:
+    external: true
+  databases:
+    external: true
+  security:
+    external: true
+  storage:
+    external: true
+  tools:
+    external: true
+  mediaserver:
+    external: true
+
+secrets:
+  CF_DNS_API_TOKEN:
+    file: .CF_DNS_API_TOKEN
+
+services:
+  # Traefik 2 - Reverse Proxy
+  traefik:
+    #container_name: traefik
+    image: traefik:latest
+    #pull_policy: always
+    #security_opt:
+    #  - no-new-privileges:true
+    #restart: unless-stopped
+    # profiles: ["core", "all"]
+    networks:
+      - traefik
+      - management
+      - monitoring
+      - databases
+      - security
+      - storage
+      - tools
+      - mediaserver
+    command: # CLI arguments
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+        #- --entryPoints.web.proxyProtocol.insecure=true
+      - --entrypoints.web.proxyProtocol.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entryPoints.web.forwardedHeaders.insecure=true
+      - --entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.web.http.middlewares=traefik-bouncer@file
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.options=tls-opts@file
+      - --entrypoints.websecure.http.tls.certresolver=dns-cloudflare
+      - --entrypoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entryPoints.websecure.forwardedHeaders.insecure=true
+        #- --entryPoints.websecure.proxyProtocol.insecure=true
+      - --entrypoints.websecure.proxyProtocol.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.websecure.http.middlewares=traefik-bouncer@file
+      - --entrypoints.traefik.address=:8080
+      - --entryPoints.metrics.address=:8082
+      - --entryPoints.gitlab-shell.address=:2232/tcp
+        #- --entryPoints.gitlab-shell.proxyProtocol.insecure=true
+      - --entrypoints.gitlab-shell.proxyProtocol.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+      - --entrypoints.gitlab-shell.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entryPoints.gitlab-shell.forwardedHeaders.insecure=true
+        #- --entrypoints.gitlab-shell.http.middlewares=traefik-bouncer@file
+      - --entryPoints.memcached.address=:11211/tcp
+        #- --entryPoints.memcached.proxyProtocol.insecure=true
+        #- --entryPoints.memcached.forwardedHeaders.insecure=true
+      - --entrypoints.memcached.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.memcached.http.middlewares=traefik-bouncer@file
+      - --entryPoints.mysql.address=:3306/tcp
+        #- --entryPoints.mysql.proxyProtocol.insecure=true
+        #- --entryPoints.mysql.forwardedHeaders.insecure=true
+      - --entrypoints.mysql.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.mysql.http.middlewares=traefik-bouncer@file
+      - --entryPoints.postgresql.address=:5432/tcp
+        #- --entryPoints.postgresql.proxyProtocol.insecure=true
+        #- --entryPoints.postgresql.forwardedHeaders.insecure=true
+      - --entrypoints.postgresql.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.postgresql.http.middlewares=traefik-bouncer@file
+      - --entryPoints.redis.address=:6379/tcp
+        #- --entryPoints.redis.proxyProtocol.insecure=true
+        #- --entryPoints.redis.forwardedHeaders.insecure=true
+      - --entrypoints.redis.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.redis.http.middlewares=traefik-bouncer@file
+      - --entryPoints.mongo.address=:27017/tcp
+        #- --entryPoints.mongo.proxyProtocol.insecure=true
+        #- --entryPoints.mongo.forwardedHeaders.insecure=true
+      - --entrypoints.mongo.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.mongo.http.middlewares=traefik-bouncer@file
+      - --entryPoints.usermin.address=:2083/tcp
+        #- --entryPoints.usermin.proxyProtocol.insecure=true
+      - --entrypoints.usermin.proxyProtocol.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entryPoints.usermin.forwardedHeaders.insecure=true
+      - --entrypoints.usermin.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.usermin.http.middlewares=traefik-bouncer@file
+      - --entryPoints.webmin.address=:2087/tcp
+        #- --entryPoints.webmin.proxyProtocol.insecure=true
+      - --entrypoints.webmin.proxyProtocol.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entryPoints.webmin.forwardedHeaders.insecure=true
+      - --entrypoints.webmin.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.webmin.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-1514.address=:1514/tcp
+        #- --entryPoints.wazuh-1514.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-1514.forwardedHeaders.insecure=true
+      - --entrypoints.wazuh-1514.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.wazuh-1514.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-1515.address=:1515/tcp
+        #- --entryPoints.wazuh-1515.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-1515.forwardedHeaders.insecure=true
+      - --entrypoints.wazuh-1515.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.wazuh-1515.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-514.address=:514/udp
+        #- --entryPoints.wazuh-514.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-514.forwardedHeaders.insecure=true
+      - --entrypoints.wazuh-514.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.wazuh-514.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-55000.address=:55000/tcp
+        #- --entryPoints.wazuh-55000.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-55000.forwardedHeaders.insecure=true
+      - --entrypoints.wazuh-55000.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.wazuh-55000.http.middlewares=traefik-bouncer@file
+      - --entryPoints.wazuh-9200.address=:9200/tcp
+        #- --entryPoints.wazuh-9200.proxyProtocol.insecure=true
+        #- --entryPoints.wazuh-9200.forwardedHeaders.insecure=true
+      - --entrypoints.wazuh-9200.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.wazuh-9200.http.middlewares=traefik-bouncer@file
+      - --entryPoints.talk-udp.address=:3478/udp
+        #- --entryPoints.wazuh-514.proxyProtocol.insecure=true
+        #- --entryPoints.talk-udp.forwardedHeaders.insecure=true
+      - --entrypoints.talk-udp.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.talk-udp.http.middlewares=traefik-bouncer@file
+      - --entryPoints.talk-tcp.address=:3478/tcp
+        #- --entryPoints.wazuh-55000.proxyProtocol.insecure=true
+        #- --entryPoints.talk-tcp.forwardedHeaders.insecure=true
+      - --entrypoints.talk-tcp.forwardedHeaders.trustedIPs=127.0.0.1/32,10.0.0.0/8,192.168.0.0/16,172.16.0.0/12,173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22
+        #- --entrypoints.talk-tcp.http.middlewares=traefik-bouncer@file
+      - --api=true
+      - --api.dashboard=true
+      - --ping=true
+      # - --api.insecure=true
+      - --serversTransport.insecureSkipVerify=true
+      # Metrics
+      - --metrics.prometheus=true
+      - --metrics.addinternals
+      #- --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
+      - --metrics.prometheus.addrouterslabels=true
+      - --metrics.prometheus.entryPoint=metrics
+      # Allow these IPs to set the X-Forwarded-* headers - Cloudflare IPs: https://www.cloudflare.com/ips/
+      - --log=true
+      - --log.filePath=/logs/traefik.log
+      - --log.level=INFO # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --log.compress=true
+      - --log.maxBackups=3
+      - --log.maxAge=3
+      - --accessLog=true
+      - --accessLog.addInternals=true
+      - --accessLog.filePath=/logs/access.log
+      - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
+      # --accessLog.filters.statusCodes=204-299,400-499,500-599
+      - --providers.swarm=true
+      - --providers.swarm.endpoint=unix:///var/run/docker.sock # Disable for Socket Proxy. Enable otherwise.
+      # - --providers.swarm.endpoint=tcp://socket-proxy:2375 # Enable for Socket Proxy. Disable otherwise.
+      - --providers.swarm.exposedByDefault=false
+      - --providers.swarm.network=traefik
+      - --providers.swarm.watch=true
+      #- --providers.swarm.swarmMode=true
+      # Add dns-cloudflare as default certresolver for all services. Also enables TLS and no need to specify on individual services
+     #- --entrypoints.websecure.forwardedHeaders.trustedIPs=173.245.48.0/20, 103.21.244.0/22, 103.22.200.0/22, 103.31.4.0/22, 141.101.64.0/18, 108.162.192.0/18, 190.93.240.0/20, 188.114.96.0/20, 197.234.240.0/22, 198.41.128.0/17, 162.158.0.0/15, 104.16.0.0/13, 104.24.0.0/14, 172.64.0.0/13, 131.0.72.0/22
+      # - --entrypoints.websecure.http.tls.domains[1].main=$DOMAINNAME_2 # Pulls main cert for second domain
+      # - --entrypoints.websecure.http.tls.domains[1].sans=*.$DOMAINNAME_2 # Pulls wildcard cert for second domain
+      - --providers.file.directory=/rules # Load dynamic configuration from one or more .toml or .yml files in a directory
+      - --providers.file.watch=true # Only works on top level files in the rules folder
+      # - --certificatesResolvers.dns-cloudflare.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server - uncomment when testing
+      - --certificatesresolvers.dns-cloudflare.acme.dnschallenge=true
+      - --certificatesresolvers.dns-cloudflare.acme.storage=acme.json
+      - --certificatesresolvers.dns-cloudflare.acme.email=<mail@domain.com>
+      - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.provider=cloudflare
+      - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.resolvers=8.8.8.8:53,1.1.1.1:53,1.0.0.1:53
+      - --certificatesresolvers.dns-cloudflare.acme.dnsChallenge.propagation.delayBeforeChecks=90 # To delay DNS check and reduce LE hitrate
+      - --experimental.plugins.bouncer.moduleName=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      - --experimental.plugins.bouncer.version=v1.4.4
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8082:8082"
+      # GitlabShell
+      - "2232:2232"
+      # Memcached
+      - "11211:11211"
+      # MySQL/MariaDB
+      - "3306:3306"
+      # PostgreSQL
+      - "5432:5432"
+      # Redis
+      - "6379:6379"
+      # Usermin
+      - "2083:2083"
+      # Webmin
+      - "2087:2087"
+      # Wazuh
+      - "1514:1514"
+      - "1515:1515"
+      - "514:514/udp"
+      - "52000:52000"
+      - "9200:9200"
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "27017:27017"
+    volumes:
+      - /SwarmVolumes/configs/traefik/rules:/rules # Dynamic File Provider directory
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Enable if not using Socket Proxy
+      - /SwarmVolumes/configs/traefik/acme/acme.json:/acme.json # Certs File
+      - /SwarmVolumes/logs/traefik:/logs # Traefik logs
+    secrets:
+      - CF_DNS_API_TOKEN
+    environment:
+      - TZ=Europe/Rome
+        #- CLOUDFLARE_DNS_API_TOKEN=cloudflare_api_token
+        # CF_DNS_API_TOKEN=<api-token>
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/CF_DNS_API_TOKEN
+        #- DOMAINNAME_1 # Passing the domain name to traefik container to be able to use the variable in rules.
+        #- DOMAINNAME_2
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "org.label-schema.group=monitoring"
+        - "traefik.enable=true"
+        - "traefik.swarm.network=traefik"
+        # HTTP Routers
+        - "traefik.http.routers.traefik-router-it.entrypoints=websecure"
+        - "traefik.http.routers.traefik-router-it.rule=Host(`traefik.domain.com`)"
+        - "traefik.http.routers.traefik-router-it.tls=true"
+        - "traefik.http.routers.traefik-router-it.tls.options=tls-opts@file"
+        - "traefik.http.routers.traefik-router-it.tls.certresolver=dns-cloudflare"
+        - "traefik.http.routers.traefik-router-cloud.entrypoints=websecure"
+        - "traefik.http.routers.traefik-router-cloud.rule=Host(`traefik.urbaman.cloud`)"
+        #- "traefik.http.routers.traefik-router-cloud.tls=true"
+        #- "traefik.http.routers.traefik-router-cloud.tls.options=tls-opts@file"
+        #- "traefik.http.routers.traefik-router-cloud.tls.certresolver=dns-cloudflare"
+        #Services - API
+        - "traefik.http.routers.traefik-router-it.service=api@internal"
+        - "traefik.http.routers.traefik-router-cloud.service=api@internal"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        # Middlewares
+        - "traefik.http.routers.traefik-router-it.middlewares=secure-headers@file"
+        - "traefik.http.routers.traefik-router-cloud.middlewares=secure-headers@file"
+        #- traefik.http.routers.traefik-router-it.middlewares=authentik-traefik@file"
+        - "homepage.group=Networking"
+        - "homepage.name=Traefik"
+        - "homepage.icon=traefik.svg"
+        - "homepage.href=https://traefik.domain.com"
+        - "homepage.description=Traefik"
+        #- "homepage.showStats=true"
+        - "homepage.widget.type=traefik"
+        - "homepage.widget.url=https://traefik.domain.com"
+        #- - "homepage.widget.key=yourembyapikeyhere
+        #- - "homepage.widget.fields=["field1","field2"] # optiona
+
+      
