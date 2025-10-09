@@ -9,7 +9,7 @@ services:
       - no-new-privileges:true
     environment:
       - TZ=${TZ}
-    restart: always
+    restart: unless-stopped
     labels:
       - "org.label-schema.group=databases"
       - "traefik.enable=true"

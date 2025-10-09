@@ -19,7 +19,7 @@ services:
       - OPENPROJECT_RAILS__CACHE__STORE=memcache
       - OPENPROJECT_CACHE__MEMCACHE__SERVER=memcached:11211
       - CACHE_MEMCACHE_SERVER=memcached:11211
-      - RALS_CACHE_STORE=memcach"0
+      - RALS_CACHE_STORE=memcache
       - DATABASE_URL=postgres://openproject:$OPENPROJECT_DB_PASSWORD@postgres/openproject
       - RAILS_MIN_THREADS=4
       - RAILS_MAX_THREADS=16
@@ -56,3 +56,4 @@ services:
         #- homepage.widget.key=yourembyapikeyhere
         #- homepage.widget.fields=["field1","field2"] # optiona
 
+# docker exec -ti office-openproject-1 /app/bin/rails runner "::Projects::ScheduleDeletionService.new(user: User.admin.active.first, model: Project.find('your-scrum-project')).call; ::Projects::ScheduleDeletionService.new(user: User.admin.active.first, model: Project.find('demo-project')).call"
