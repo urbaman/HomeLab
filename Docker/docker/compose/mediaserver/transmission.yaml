@@ -13,7 +13,8 @@ services:
     #  - 51413:51413
     #  - 51413:51413/udp
     restart: unless-stopped
-    network_mode: "service:gluetun" # no networks or ports
+    #network_mode: "service:gluetun" # no networks or ports, same compose
+    network_mode: "container:gluetun" # no networks or ports, different compose
     #networks: # no networks with gluetun
     #  - traefik
     #  - mediaserver
