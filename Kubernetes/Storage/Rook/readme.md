@@ -1,4 +1,10 @@
-# Rook with external Ceph (proxmox or microceph)
+# Rook
+
+## Internal Ceph (managed by rook)
+
+TODO
+
+## External Ceph (proxmox or microceph)
 
 Check rbd and nbd modules existence on the nodes:
 
