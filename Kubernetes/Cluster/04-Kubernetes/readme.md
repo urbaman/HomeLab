@@ -107,11 +107,15 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 And then, add the Docker repository to the system by running the below command.
 
 ```bash
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
 ```
 
 #### Install Containerd
@@ -203,14 +207,14 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --
 Add the Kubernetes apt repository:
 
 ```bash
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
 Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y kubelet=1.30.3* kubeadm=1.30.3* kubectl=1.30.3*
+sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
@@ -252,7 +256,25 @@ On the first CP node:
 
 ```bash
 sudo su
-export VIP=10.0.100.90
+export VIP=10.0.100.60
+export INTERFACE=eth0
+KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
+alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+kube-vip manifest pod \
+    --interface $INTERFACE \
+    --address $VIP \
+    --controlplane \
+    --arp \
+    --leaderElection \
+    --k8sConfigPath=/etc/kubernetes/super-admin.conf | tee /etc/kubernetes/manifests/kube-vip.yaml
+exit
+```
+
+On the other CP nodes:
+
+```bash
+sudo su
+export VIP=10.0.100.60
 export INTERFACE=eth0
 KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
 alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
@@ -263,31 +285,23 @@ kube-vip manifest pod \
     --arp \
     --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
 exit
-scp /etc/kubernetes/manifests/kube-vip.yaml ubuntu@<CP2-IP>:/home/ubuntu/kube-vip.yaml
-scp /etc/kubernetes/manifests/kube-vip.yaml ubuntu@<CP3-IP>:/home/ubuntu/kube-vip.yaml
-```
-
-On the other nodes:
-
-```bash
-sudo cp kube-vip.yaml /etc/kubernetes/manifests/kube-vip.yaml
 ```
 
 ## Set up the first control plane node
 
 For kube-vip: setup the loadbalancer DNS to the first cp node IP for the moment (just to init the first node).
 
-Create a file called kubeadm-config.yaml with the following contents (modify IPs and hostnames as needed, then eliminate comments; eliminate the etcd section if not using an external etcd):
+Create a file called `kubeadm-config.yaml` with the following contents (modify IPs and hostnames as needed, then eliminate comments; eliminate the etcd section if not using an external etcd):
 
 ```yaml
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: "k8cp.domain.com:6443" # change this (see below)
+controlPlaneEndpoint: "k8scp.domain.com:6443" # change this (see below)
 networking:
-  podSubnet: "10.1.0.0/16" # change this (see below)
-  serviceSubnet: "10.2.0.0/16" # change this (see below)
+  podSubnet: "10.1.0.0/16" # change this (see below - calico only)
+  serviceSubnet: "10.2.0.0/16" # change this (see below - calico only)
 apiServer:
   certSANs:
   - "Cluster loadbalancer IP"
@@ -296,11 +310,11 @@ apiServer:
   - "Control-plane-3 IP"
   ...
   - "kubernetes.default"
-  - "k8s.domain.com"
+  - "k8scp.domain.com"
 etcd:
   external:
     endpoints:
-      - https://k8cp.urbaman.it:2379 # change to the haproxy vip ip/host appropriately
+      - https://k8cp.domain.com:2379 # change to the haproxy vip ip/host appropriately
     caFile: /etc/kubernetes/pki/etcd/ca.crt
     certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
     keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
@@ -328,6 +342,23 @@ Write the output join commands that are returned to a text file for later use.
 
 For kube-vip: finally setup the loadbalancer DNS to the VIP.
 
+Finally, reset the kube-vip manifest for fisrt CP
+
+```bash
+sudo su
+export VIP=10.0.100.60
+export INTERFACE=eth0
+KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
+alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+kube-vip manifest pod \
+    --interface $INTERFACE \
+    --address $VIP \
+    --controlplane \
+    --arp \
+    --leaderElection | tee /etc/kubernetes/manifests/kube-vip.yaml
+exit
+```
+
 ### Setup kubectl for a normal user
 
 To start using your cluster, you need to run the following as a regular user:
@@ -339,6 +370,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 ### Apply the CNI plugin of your choice
+
+#### Cilium
+
+Follow [Network with Cilium](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Ciulim)
+
+#### Calico
 
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
@@ -355,14 +392,14 @@ kubectl create -f custom-resources.yaml
 
 Then, intstall the calicoctl to manage Calico.
 
-#### As a static pod
+##### As a static pod
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
-#### As a binary
+##### As a binary
 
 ```bash
 sudo curl -L https://github.com/projectcalico/calico/releases/download/v3.28.1/calicoctl-linux-amd64 -o /usr/sbin/calicoctl
@@ -375,7 +412,7 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 calicoctl create -f - < my_manifest.yaml
 ```
 
-#### Enable ebpf mode
+##### Enable ebpf mode
 
 Create a configmap with informations on the cluster service:
 

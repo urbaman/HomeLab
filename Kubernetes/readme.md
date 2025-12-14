@@ -58,6 +58,10 @@ Here are the detailed steps to deploy our homelab cluster
 3. [High Availability](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/03-High-Availability)
 4. [Kubernetes](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/04-Kubernetes)
 
+### Networking
+
+1. [Networking with Cilium](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cilium)
+
 ### Storage planning
 
 1. [Storage planning](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Storage)

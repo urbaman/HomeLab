@@ -1,0 +1,56 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    restart: unless-stopped
+    pull_policy: always
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - $DATADIR/gluetun:/gluetun
+    networks:
+      - traefik
+      - mediaserver
+    expose:
+      - 9091
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    environment:
+      TZ: $TZ
+      # Wireguard
+      VPN_SERVICE_PROVIDER: surfshark
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: $SURFSHARK_WG_PRIVATE_KEY
+      WIREGUARD_ADDRESSES: 10.14.0.2/16
+      # SERVER_COUNTRIES: Netherlands
+      # # OpenVPN
+      # VPN_SERVICE_PROVIDER: nordvpn
+      # VPN_TYPE: openvpn
+      # OPENVPN_USER: $NORDVPN_USERNAME
+      # OPENVPN_USER: $NORDVPN_PASSWORD
+    labels:
+      - "org.label-schema.group=mediaserver"
+      - "traefik.enable=true"
+      - "traefik.docker.network=mediaserver"
+      # HTTP Routers
+      - "traefik.http.routers.transmission-router.entrypoints=websecure"
+      - "traefik.http.routers.transmission-router.rule=Host(`transmission.$DOMAINNAME_1`)" # HostRegexp:transmission.${DOMAINNAME_1},{catchall:.*}" # Host(`transmission.$DOMAINNAME_1`)"
+      # Middlewares
+      - "traefik.http.routers.transmission-router.middlewares=secure-headers@file"
+      - "traefik.http.routers.transmission-router.middlewares=authentik-traefik@file"
+      # HTTP Services
+      - "traefik.http.routers.transmission-router.service=transmission-service"
+      - "traefik.http.services.transmission-service.loadbalancer.server.port=9091"
+      #- homepage.group=Media
+      #- homepage.name=Transmission
+      #- homepage.icon=transmission.svg
+      #- homepage.href=https://transmission.$DOMAINNAME_1
+      #- homepage.description=Transmission
+      #- homepage.showStats=true
+      #- homepage.widget.type=transmission
+      #- homepage.widget.url=http://transmission:9091
+        #- homepage.widget.key=yourembyapikeyhere
+        #- homepage.widget.fields=["field1","field2"] # optional

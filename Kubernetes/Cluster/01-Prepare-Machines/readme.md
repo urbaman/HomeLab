@@ -38,7 +38,7 @@ sudo touch /var/log/mail.info
 sudo chown syslog:adm /var/log/mail*
 ```
 
-Change rsyslog conf in /etc/rsyslog.d/50-default.conf, restart the service
+Change rsyslog conf in `/etc/rsyslog.d/50-default.conf`, restart the service
 
 ```bash
 #  Default rules for rsyslog.
@@ -97,7 +97,7 @@ sudo service rsyslog restart
 
 ### Configure postfix
 
-Change /etc/postfix/main.cf to include/change these lines:
+Change `/etc/postfix/main.cf` to include/change these lines:
 
 ```bash
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
@@ -122,7 +122,7 @@ inet_interfaces = loopback-only
 recipient_delimiter = +
 
 #Relay
-relayhost = [smtp.domain.com]:587
+relayhost = [mail.domain.com]:587
 smtp_use_tls = yes
 smtp_sasl_auth_enable = yes
 smtp_sasl_security_options = noanonymous
@@ -136,10 +136,10 @@ smtp_header_checks = pcre:/etc/postfix/smtp_header_checks
 
 Be sure there are no dupes as the main.cf may have smtp_sasl_security_options = {} , and relayhost = {}. Just delete or comment those lines.
 
-Create an /etc/postfix/sasl_passwd file with:
+Create an `/etc/postfix/sasl_passwd` file with:
 
 ```bash
-[smtp.domain.com]:587    testmehere@gmail.com:PASSWD
+[mail.domain.com]:587    testmehere@gmail.com:PASSWD
 ```
 
 run
@@ -149,7 +149,7 @@ sudo chmod 600 /etc/postfix/sasl_passwd
 sudo postmap /etc/postfix/sasl_passwd
 ```
 
-Set the default root email in /etc/aliases adding the following line:
+Set the default root email in `/etc/aliases` adding the following line:
 
 ```bash
 root: me@myemail.com
@@ -161,7 +161,7 @@ sudo newaliases
 
 #### Customize From field
 
-Create /etc/postfix/smtp_header_checks file, this changes all outgoing mail:
+Create `/etc/postfix/smtp_header_checks` file, this changes all outgoing mail:
 
 ```bash
 /^From:.*/ REPLACE From: HOSTNAME-alert <HOSTNAME-alert@something.com>

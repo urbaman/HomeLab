@@ -1,5 +1,4 @@
 services:
-  
   nextcloud:
     container_name: nextcloud
     image: nextcloud:latest
