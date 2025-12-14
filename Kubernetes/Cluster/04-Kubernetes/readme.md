@@ -371,6 +371,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ### Apply the CNI plugin of your choice
 
+#### Cilium
+
+Follow [Network with Cilium](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Ciulim)
+
+#### Calico
+
 Note: You must pick a network plugin that suits your use case and deploy it before you move on to next step. If you don't do this, you will not be able to launch your cluster properly. We will use Calico:
 
 ```bash
@@ -386,14 +392,14 @@ kubectl create -f custom-resources.yaml
 
 Then, intstall the calicoctl to manage Calico.
 
-#### As a static pod
+##### As a static pod
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calicoctl.yaml
 alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl" 
 ```
 
-#### As a binary
+##### As a binary
 
 ```bash
 sudo curl -L https://github.com/projectcalico/calico/releases/download/v3.28.1/calicoctl-linux-amd64 -o /usr/sbin/calicoctl
@@ -406,7 +412,7 @@ This way, in order to use the calicoctl alias when reading manifests, redirect t
 calicoctl create -f - < my_manifest.yaml
 ```
 
-#### Enable ebpf mode
+##### Enable ebpf mode
 
 Create a configmap with informations on the cluster service:
 
