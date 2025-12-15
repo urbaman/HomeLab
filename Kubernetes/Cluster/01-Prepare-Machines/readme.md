@@ -408,3 +408,32 @@ sudo postmap /etc/postfix/smtp_header_checks
 sudo systemctl restart postfix
 sudo sed -i 's/prova/k8w9/g' /etc/mailname
 ```
+
+Create (or check and customize) two executable files to manage the mail settings and the disk resize
+
+```bash
+sudo vi /usr/sbin/mailsetfrom
+
+#!/bin/bash
+
+#Define the variables
+HOST=$(hostname | tr '[:lower:]' '[:upper:]')
+HOST_MIN=$(hostname)
+
+#Set custom FROM for mails
+sed -i "s/ubuntu/$HOST_MIN/g" /etc/postfix/main.cf
+sed -i "s/UBUNTU/$HOST/g" /etc/postfix/smtp_header_checks
+postmap /etc/postfix/smtp_header_checks
+service postfix restart
+```
+
+```bash
+sudo vi /usr/sbin/disk-resize
+
+#!/bin/bash
+
+growpart /dev/sda 3
+pvresize /dev/sda3
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+resize2fs /dev/ubuntu-vg/ubuntu-lv
+```
