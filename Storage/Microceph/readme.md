@@ -54,7 +54,7 @@ sudo microceph.ceph dashboard ac-user-create -i /var/snap/microceph/current/conf
 rm /var/snap/microceph/current/conf/password.txt
 ```
 
-Go to any mgr ip, port 8080 inn http only
+Go to any mgr ip, port 8080 in http only
 
 ## Eventually deploy a proxy for SSL
 
