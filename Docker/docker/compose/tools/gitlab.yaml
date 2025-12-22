@@ -208,3 +208,5 @@ services:
       - homepage.widget.user_id=1
         #- homepage.widget.fields=["field1","field2"] # optiona
     
+
+# Per pulire la cache dopo un aggiornamento dell'immagine: docker exec -ti gitlab gitlab-rake cache:clear
