@@ -1,0 +1,32 @@
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+  extraManifests:
+    - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
+# For installing the metrics server, uncomment the following line
+#    - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+# For installing the metrics server in HA, uncomment the following line
+    - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
+  apiServer:
+    extraArgs:
+# For enabling Dynamic Resource Allocation, uncomment the following line
+#      feature-gates: DynamicResourceAllocation=true
+  controllerManager:
+    extraArgs:
+# For enabling Dynamic Resource Allocation, uncomment the following line
+#      feature-gates: DynamicResourceAllocation=true
+# For allowing the controllerManager to bind to all interfaces, uncomment the following line (needed for Kube Prometheus Stack)
+      bind-address: 0.0.0.0
+  scheduler:
+    extraArgs:
+# For enabling Dynamic Resource Allocation, uncomment the following line
+#      feature-gates: DynamicResourceAllocation=true
+# For allowing the scheduler to bind to all interfaces, uncomment the following line (needed for Kube Prometheus Stack)
+      bind-address: 0.0.0.0
+  etcd:
+    extraArgs:
+# For setting the etcd metrics listen address to all interfaces, uncomment the following line
+      listen-metrics-urls: http://0.0.0.0:2381

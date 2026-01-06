@@ -37,6 +37,8 @@ kubectl delete pod <pod-name> -n kube-system
 
 **Note:** When using microk8s, the above settings about bind addresses are in `/var/snap/microk8s/current/args/`, specific files for each service. Remember the services are not pods, you'll need to set appropriate endpoints to properly scrape their metrics (see note later on).
 
+**Note:** For Talos clusters, use the cluster patches to set the proper manifests' arguments (see cluster setup).
+
 Get the helm value file and add all your namespaces. Add others and upgrade the deploy if needed.
 
 ```bash
@@ -219,6 +221,223 @@ kubeScheduler:
    - IP1
    - IP2
    - IP3
+```
+
+**Note:** For Talos clusters:
+
+a) set the etcd extraArgs in the cluster patch to add a listen_metrics_url (see cluster setup)
+
+```yaml
+# ⚠️ Requires reboot after changing!
+cluster:
+  etcd:
+    extraArgs:
+      listen-metrics-urls: https://0.0.0.0:2381
+```
+
+Get the etcd certs
+
+```bash
+talosctl get etcdrootsecret -o yaml
+talosctl get etcdsecret  -o yaml
+```
+
+The output should look like:
+
+```bash
+spec:
+    etcdCA:
+        crt:
+spec:
+    etcd:
+        crt:
+        key:
+```
+
+Create a secret
+
+```yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: etcd-client-cert
+  namespace: monitoring
+type: Opaque
+data:
+  etcd-ca.crt:
+    LS0t....LS0K
+  etcd-client.crt:
+    LS0t....LS0K
+  etcd-client-key.key:
+    LS0t....=
+```
+
+Setup kubeEtcd, kubeScheduler and kubeControllerManager in the values:
+
+```yaml
+kubeControllerManager:
+  endpoints:
+    - 10.0.0.1
+    - 10.0.0.2
+    - 10.0.0.3
+
+kubeEtcd:
+  endpoints:
+    - 10.0.0.1
+    - 10.0.0.2
+    - 10.0.0.3
+  service:
+    selector:
+      component: etcd
+  serviceMonitor:
+    scheme: https
+    insecureSkipVerify: false
+    serverName: "localhost"
+    caFile: "/etc/prometheus/secrets/etcd-client-cert/etcd-ca.crt"
+    certFile: "/etc/prometheus/secrets/etcd-client-cert/etcd-client.crt"
+    keyFile: "/etc/prometheus/secrets/etcd-client-cert/etcd-client-key.key"
+
+kubeScheduler:
+  endpoints:
+    - 10.0.0.1
+    - 10.0.0.2
+    - 10.0.0.3
+
+prometheus:
+  prometheusSpec:
+    secrets:
+      - etcd-client-cert
+```
+
+b) deploy the following job to create the proper secret and then setup kubeEtcd
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secrets-writer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/hook: PreSync # make sure this happens early
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: secrets-writer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/hook: PreSync # make sure this happens early
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: secrets-writer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/hook: PreSync # make sure this happens early
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secrets-writer
+subjects:
+- kind: ServiceAccount
+  name: secrets-writer
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: etcd-secret-writer
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1" # happen first
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+      containers:
+      - image: docker.io/bitnami/kubectl:1.32.0-debian-12-r0
+        command: ["/bin/sh"]
+        args: 
+          - "-c"
+          - >-
+              kubectl create secret generic etcd-secrets --save-config
+              --dry-run=client --from-file=/system/secrets/etcd/ca.crt
+              --from-file=/system/secrets/etcd/server.crt
+              --from-file=/system/secrets/etcd/server.key -o yaml | kubectl apply -f
+              - 
+        imagePullPolicy: IfNotPresent
+        name: kubectl
+        volumeMounts:
+        - mountPath: /system/secrets/etcd
+          name: k8setcdcert
+        - mountPath: /tmp
+          name: tmp
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 60 # this is matches the etcd user in the cluster
+          seLinuxOptions: {}
+          seccompProfile:
+            type: RuntimeDefault
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - hostPath:
+          path: /system/secrets/etcd
+        name: k8setcdcert
+      restartPolicy: Never
+      serviceAccount: secrets-writer
+      serviceAccountName: secrets-writer
+  backoffLimit: 3
+```
+
+```yaml
+    kubeEtcd:
+      enabled: true
+      endpoints: 
+      	- <your control plane nodes>
+      service:
+        enabled: true
+        port: 2379
+        targetPort: 2379
+      serviceMonitor:
+        scheme: https
+        insecureSkipVerify: false
+        serverName: localhost
+        caFile: /etc/prometheus/secrets/etcd-certs/etcd-ca.crt
+        certFile: /etc/prometheus/secrets/etcd-certs/etcd-client.crt
+        keyFile: /etc/prometheus/secrets/etcd-certs/etcd-client-key.key
+```
+
+```yaml
+      prometheusSpec:
+        secrets:
+          - etcd-certs
 ```
 
 And install:
