@@ -2,25 +2,21 @@
 
 ## Talos
 
+See Omni (you'll have a GUI managing your clusters)
+
 ## Omni
+
+- Install Omni (see docker installation), can use Authentic for SAML auth instead of Auth0
+
+### Manual VM creation (or bare metal nodes)
+
+- Download installation media
+- (Optional) Create virtual machines (Proxmox?)
+- Start the nodes with the installation media (do not install)
+- Get the machines in Omni, set the patches (see the examples), create the cluster
+- Get kubectl and setup the kubelogin plugin for OIDC connection, download the kubeconfig file from Omni, connect
+- Install Cilium (or some other CNI, see Calico on the Talos documentation for example)
 
 ### Cilium
 
-```bash
-helm install \
-    cilium \
-    cilium/cilium \
-    --version 1.18.0 \
-    --namespace kube-system \
-    --set ipam.mode=kubernetes \
-    --set kubeProxyReplacement=true \
-    --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
-    --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
-    --set cgroup.autoMount.enabled=false \
-    --set cgroup.hostRoot=/sys/fs/cgroup \
-    --set k8sServiceHost=localhost \
-    --set k8sServicePort=7445
-    --set=gatewayAPI.enabled=true \
-    --set=gatewayAPI.enableAlpn=true \
-    --set=gatewayAPI.enableAppProtocol=true
-```
+See [Cilium deployment notes](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cilium)

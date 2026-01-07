@@ -21,6 +21,8 @@ helm show values cilium/cilium > cilium-values.yaml
 
 We then customize the values as per the example (see the cilium documentation for specifics and other settings)
 
+**Note:** If using Talos, see the Talos docs on cilium for specific settings
+
 Before installing the chart, we need to create a secret with the keys for the network encryption and the CRDs for the Gateway API
 
 ```bash

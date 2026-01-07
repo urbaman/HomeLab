@@ -11,25 +11,25 @@ Here is the Cluster infrastructure we will deploy on Proxmox
 
 | Hostname               | CPU | RAM  | Disk                     | System             | Role                              | IP         |
 | ---------------------- | --- | ---- | ------------------------ | ------------------ | --------------------------------- | ---------- |
-| k8cp1.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 1 | 10.0.50.51 |
-| k8cp2.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 2 | 10.0.50.52 |
-| k8cp3.domain.com       | 4   | 16GB | 100GB           | Ubuntu 24.04       | Kubernetes control manager node 3 | 10.0.50.53 |
-| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 1          | 10.0.50.81 |
-| k8w2.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 2          | 10.0.50.82 |
-| k8w3.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 3          | 10.0.50.83 |
-| k8w1.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 4          | 10.0.50.84 |
-| k8w5.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 5          | 10.0.50.85 |
-| k8w6.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 6          | 10.0.50.86 |
-| k8w7.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 7          | 10.0.50.87 |
-| k8w8.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 8          | 10.0.50.88 |
-| k8w9.domain.com        | 8   | 32GB | 100GB           | Ubuntu 24.04       | Kubernetes worker node 9          | 10.0.50.89 |
-| etcd1.domain.com[^1]   | 4   | 8GB  | 12GB            | Ubuntu 24.04       | Etcd cluster node 1               | 10.0.50.41 |
-| etcd2.domain.com[^1]   | 4   | 8GB  | 12GB            | Ubuntu 24.04       | Etcd cluster node 2               | 10.0.50.42 |
-| etcd3.domain.com[^1]   | 4   | 8GB  | 12GB            | Ubuntu 24.04       | Etcd cluster node 3               | 10.0.50.43 |
-| haproxy1.domain.com[^1]| 2   | 2GB  | 12GB            | Ubuntu 24.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
-| haproxy2.domain.com[^1]| 2   | 2GB  | 12GB            | Ubuntu 24.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
-| haproxy3.domain.com[^1]| 2   | 2GB  | 12GB            | Ubuntu 24.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
-| k8cp.domain.com        | N/A | N/A  | N/A             | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
+| k8cp1.domain.com       | 4   | 16GB | 100GB                    | Ubuntu 24.04       | Kubernetes control manager node 1 | 10.0.50.51 |
+| k8cp2.domain.com       | 4   | 16GB | 100GB                    | Ubuntu 24.04       | Kubernetes control manager node 2 | 10.0.50.52 |
+| k8cp3.domain.com       | 4   | 16GB | 100GB                    | Ubuntu 24.04       | Kubernetes control manager node 3 | 10.0.50.53 |
+| k8w1.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 1          | 10.0.50.81 |
+| k8w2.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 2          | 10.0.50.82 |
+| k8w3.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 3          | 10.0.50.83 |
+| k8w1.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 4          | 10.0.50.84 |
+| k8w5.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 5          | 10.0.50.85 |
+| k8w6.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 6          | 10.0.50.86 |
+| k8w7.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 7          | 10.0.50.87 |
+| k8w8.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 8          | 10.0.50.88 |
+| k8w9.domain.com        | 8   | 32GB | 100GB                    | Ubuntu 24.04       | Kubernetes worker node 9          | 10.0.50.89 |
+| etcd1.domain.com[^1]   | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 1               | 10.0.50.41 |
+| etcd2.domain.com[^1]   | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 2               | 10.0.50.42 |
+| etcd3.domain.com[^1]   | 4   | 8GB  | 12GB                     | Ubuntu 24.04       | Etcd cluster node 3               | 10.0.50.43 |
+| haproxy1.domain.com[^1]| 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Master/Haproxy node 1   | 10.0.50.61 |
+| haproxy2.domain.com[^1]| 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Backup/Haproxy node 2   | 10.0.50.62 |
+| haproxy3.domain.com[^1]| 2   | 2GB  | 12GB                     | Ubuntu 24.04       | Keepalive Backup/Haproxy node 3   | 10.0.50.63 |
+| k8cp.domain.com        | N/A | N/A  | N/A                      | N/A                | Keepalive VIP IP                  | 10.0.50.64 |
 
 [^1]: Etcd and haproxy servers only needed without KubeVIP for High Availability.
 
@@ -175,28 +175,28 @@ Here are the detailed steps to deploy our homelab cluster
 6. [Homepage](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Homepage)
 7. [*Netbox](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Netbox)
 8. [Drawio](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Drawio)
-8. [Excalidraw](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Excalidraw)
-9. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
-10. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
-11. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
-12. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
-13. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
-14. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
-15. [Calibre server and Calibre web server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
-16. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
-17. [Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
-18. [Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
-19. [OpenProject](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Openproject)
-20. [Shlink URL shortener](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Shlink)
-21. [Privatebin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Privatebin)
-22. [Local AI](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/LocalAI)
-23. [Composecraft](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Composecraft)
-24. [Paperless NGX](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Paperless-ngx)
-25. [Obsidian (to do)](https://mariushosting.com/how-to-install-obsidian-on-your-synology-nas/)
-26. [Github Desktop (to do)](https://mariushosting.com/how-to-install-github-desktop-on-your-synology-nas/)
-27. [QRcode Generator](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/QRCodeGenerator)
-28. [Reactive Resume (to do)](https://mariushosting.com/how-to-install-reactive-resume-v4-on-your-synology-nas/)
-29. [RSS (to do )](https://mariushosting.com/how-to-install-rss-on-your-synology-nas/)
-30. [FreshRSS](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FreshRSS)
-31. [Karakeep bookmark organizer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Karakeep)
-32. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)
+9. [Excalidraw](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Excalidraw)
+10. [Actual Budget for financial budgeting](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/ActualBudget)
+11. [Stirling PDF for PDF Tools](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Stirling-PDF)
+12. [FireflyIII](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FireflyIII)
+13. [Collabora online](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Collabora)
+14. [Nextcloud](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Nextcloud)
+15. [Media Server: Transmission, Sonarr, Radarr, Readarr, Lidarr, Bazarr, Unpackerr, Prowlarr, Plex, Overseerr](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+16. [Calibre server and Calibre web server](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Media-Server)
+17. [BOINC shared computing](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Computing/Boinc)
+18. [Bookstack](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Bookstack)
+19. [Vaultwarden](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Vaultwarden)
+20. [OpenProject](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Openproject)
+21. [Shlink URL shortener](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Shlink)
+22. [Privatebin](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Privatebin)
+23. [Local AI](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/LocalAI)
+24. [Composecraft](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Composecraft)
+25. [Paperless NGX](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Paperless-ngx)
+26. [Obsidian (to do)](https://mariushosting.com/how-to-install-obsidian-on-your-synology-nas/)
+27. [Github Desktop (to do)](https://mariushosting.com/how-to-install-github-desktop-on-your-synology-nas/)
+28. [QRcode Generator](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/QRCodeGenerator)
+29. [Reactive Resume (to do)](https://mariushosting.com/how-to-install-reactive-resume-v4-on-your-synology-nas/)
+30. [RSS (to do )](https://mariushosting.com/how-to-install-rss-on-your-synology-nas/)
+31. [FreshRSS](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/FreshRSS)
+32. [Karakeep bookmark organizer](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Karakeep)
+33. [Immich (to do)](https://mariushosting.com/how-to-install-immich-on-your-synology-nas/)

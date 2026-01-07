@@ -1,6 +1,7 @@
 machine:
   network:
-    hostname: talos
+# For setting a custom hostname, DO NOT use the following (deprecated), but use the hostname.yaml patch instead
+#    hostname: talos
     nameservers:
       - 10.0.0.1
     interfaces:
