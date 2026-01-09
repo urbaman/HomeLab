@@ -42,10 +42,10 @@ module.exports = {
   "enabledManagers": ["kubernetes", "argocd", "docker-compose"],
   "pinDigests": true,
   "argocd": {
-    "managerFilePatterns": ["/\\.yaml$/"]
+    "managerFilePatterns": ["/argocd/.+\\.yaml$/"]
   },
   "kubernetes": {
-    "managerFilePatterns": ["/\\.yaml$/"]
+    "managerFilePatterns": ["/kubernetes/.+\\.yaml$/"]
   }
 }
 ```
@@ -103,10 +103,10 @@ data:
       "enabledManagers": ["kubernetes", "argocd", "docker-compose"],
       "pinDigests": true,
       "argocd": {
-        "managerFilePatterns": ["/\\.yaml$/"]
+        "managerFilePatterns": ["/argocd/.+\\.yaml$/"]
       },
       "kubernetes": {
-        "managerFilePatterns": ["/\\.yaml$/"]
+        "managerFilePatterns": ["/kubernetes/.+\\.yaml$/"]
       }
     }
 
