@@ -15,17 +15,19 @@ Deploy, with or wothout Omni
 
 ## Pre-production
 
-Manually install basic tools, without service/pod monitors (doable with ansible):
-- storage (NFS, Ceph,...)
+Manually install basic tools, without service/pod monitors, through manifests, eventually templating helm charts (doable with ansible):
+
+- ArgoCD
+- Storage (NFS, Ceph,...)
 - Cert-manager
+- Secrets vault
 - Ingress (Traefik)
 - Metallb (if needed)
 - Databases
-- Secrets vault
 - External Secrets Operator
 - Sealed Secrets (optional)
 - Git-manager (Gitea)
-- ...
+- Monitoring (Prometheus Stack)
 
 ## Production
 
