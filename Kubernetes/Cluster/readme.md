@@ -11,7 +11,7 @@
 
 ### Talos Linux
 
-Deploy, with or wothout Omni
+Deploy, with or without Omni
 
 ## Pre-production
 
