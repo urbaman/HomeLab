@@ -39,10 +39,12 @@ cluster:
 #    - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 # For installing the metrics server in HA, uncomment the following line
     - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
-#  apiServer:
-#    extraArgs:
+  apiServer:
+    extraArgs:
 # For enabling Dynamic Resource Allocation, uncomment the following line
 #      feature-gates: DynamicResourceAllocation=true
+# For enabling aggregator routing (needed for Metrics Server HA)
+      enable-aggregator-routing: true
   controllerManager:
     extraArgs:
 # For enabling Dynamic Resource Allocation, uncomment the following line

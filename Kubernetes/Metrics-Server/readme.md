@@ -8,7 +8,9 @@ First, download the high availability version of the yaml manifest to deploy two
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
 ```
 
-Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
+Then
+
+option a) add the ```--kubelet-insecure-tls``` flag to the containers args:
 
 ```yaml
       containers:
@@ -19,6 +21,12 @@ Then, add the ```--kubelet-insecure-tls``` flag to the containers args:
         - --kubelet-use-node-status-port
         - --metric-resolution=15s
         - --kubelet-insecure-tls
+```
+
+option b) install the Kubelet Serving Cert approver
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml
 ```
 
 Eventually, change the replica number.
