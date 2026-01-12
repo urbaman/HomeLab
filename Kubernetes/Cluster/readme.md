@@ -1,5 +1,53 @@
 # Creating the Cluster
 
+## Prerequisites
+
+- Git Server (Gitea)
+- Secrets Vault (OpenBao, for External Secrets operator)
+
+***Design notes:***
+
+- We will use hostpath for database clusters, setting three nodes for scheduling the clusters. You need to install a proper database-ready shared storage to replace this (rookCeph?) but in a homeLab environment having both database cluster replicas and storage replicas would be too much of a bottleneck. Rook Ceph is there just for an example. You can also use NFS, but be aware of the settings to make it database-ready, as some of them do not support NFS or need specific settings.
+- ...
+
+## Repository design
+
+We will need a git repository with the following structure
+
+project # kubeadm, microk8s, talos, ...
+└── cluster
+    ├── bootstrap # bootstrapping the cluster
+    |   ├── kubeadm
+    |   |   ├── kubeadm-config.yaml
+    |   |   ├── cilium-argocd-chart.yaml
+    |   |   └── cilium-values.yaml
+    |   ├── microk8s
+    |   |   └── microk8s.yaml
+    |   └── talos
+    |       ├── control-panel.yaml
+    |       ├── hostname.yaml
+    |       ├── worker.yaml
+    |       ├── cilium-argocd-chart.yaml
+    |       └── cilium-values.yaml
+    ├── pre-production # pre-production setup
+    |   ├── externalSecretsOperator
+    |   |   ├── eso-argocd-chart.yaml
+    |   |   ├── eso-values.yaml
+    |   |   └── eso-argocd-external-secret-store.yaml
+    |   ├── sealedSecrets
+    |   ├── rookCeph
+    |   |   ├── rook-ceph-argocd-chart.yaml
+    |   |   ├── rook-ceph-values.yaml
+    |   |   ├── rook-ceph-cluster-argocd-chart.yaml
+    |   |   └── rook-ceph-cluster-values.yaml
+    |   ├── NFS
+    |   |   ├── nfs-subdir-external-provisioner-argocd-chart.yaml
+    |   |   ├── nfs-subdir-external-provisioner-values.yaml
+    |   |   └── nfs-subdir-external-provisioner-argocd-sc-vss.yaml
+    |   ├── valkey
+    |   └── argoCD
+    └── production # production setup
+
 ## Basic bootstrapping
 
 ### Kubeadm/Microk8s (doable with terraform)
@@ -19,26 +67,23 @@ or:
 
 ## Pre-production
 
-Prerequisites, already running:
-
-- Git Server (Gitea)
-- Secrets Vault (OpenBao, for External Secrets operator)
-
 Manually install basic tools, without service/pod monitors, through manifests, eventually templating helm charts (doable with kustomize/ansible):
 
-- ArgoCD
 - External Secrets Operator (with OpenBao)
 - Sealed Secrets (with Git)
+- Storage (for Valkey)
+- Valkey (for ArgoCD)
+- ArgoCD
 
 ## Production
 
 Point ESO to the Secrets Vault or SS to the Git Server and get the secrets, then point ArgoCD to a repo with the proper ArgoApps to (re)deploy
 
 - Metrics Server
-- Storage (NFS, Ceph,...)
+- Storage (NFS, Ceph,... if not already deployed for Valkey)
 - Monitoring (Prometheus Stack, and service/pod monitors where not already deployed: CNI, ArgoCD, ESO/SS, Storage, ...)
 - Cert-manager
 - Ingress (Traefik)
 - Metallb (if needed)
-- Databases
+- Databases (other than Valkey)
 - ...

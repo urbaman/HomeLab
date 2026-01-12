@@ -26,3 +26,6 @@ machine:
       rotate-server-certificates: true
 # For enabling Dynamic Resource Allocation, uncomment the following line
 #      feature-gates: DynamicResourceAllocation=true
+# For setting custom node labels, uncomment and modify the following lines
+#  nodeLabels:
+#    database: "true"
