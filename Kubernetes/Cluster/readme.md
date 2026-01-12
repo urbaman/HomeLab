@@ -50,6 +50,13 @@ project # kubeadm, microk8s, talos, ...
 
 ## Basic bootstrapping
 
+***Beware:*** use helm template instead of helm install or upgrade -i when installing things like Cilium or other Pre-Production stuff if you're going to use ArgoCD for GitOps, as it makes use of helm template, and you'll make the tools manageable through ArgoCD
+
+```bash
+helm template cilium cilium/cilium -n kube-system -f cilium-values.yaml > cilium.yaml
+kubectl apply -f cilium.yaml
+```
+
 ### Kubeadm/Microk8s (doable with terraform)
 
 1. [Preparing the machines](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/01-Prepare-Machines)
@@ -67,7 +74,7 @@ or:
 
 ## Pre-production
 
-Manually install basic tools, without service/pod monitors, through manifests, eventually templating helm charts (doable with kustomize/ansible):
+Manually install basic tools, without service/pod monitors, through manifests, eventually templating helm charts (doable with ansible) if using ArgoCD for GitOps.
 
 - External Secrets Operator (with OpenBao)
 - Sealed Secrets (with Git)
