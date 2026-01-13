@@ -14,7 +14,7 @@
 
 We will need a git repository with the following structure
 
-```bash
+```
 project # kubeadm, microk8s, talos, ...
 └── cluster
     ├── bootstrap # bootstrapping the cluster
