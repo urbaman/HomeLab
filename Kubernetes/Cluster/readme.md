@@ -17,7 +17,7 @@ We will need a git repository with the following structure
 ```
 project # kubeadm, microk8s, talos, ...
 └── cluster
-    ├── bootstrap # bootstrapping the cluster
+    ├── bootstrap # bootstrapping the cluster, you can select the needed directory (kubeadm, microk8s, talos) and move the file up one level in /bootstrap directory
     |   ├── kubeadm
     |   |   ├── kubeadm-config.yaml
     |   |   ├── cilium-argocd-chart.yaml
