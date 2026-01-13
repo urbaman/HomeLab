@@ -75,7 +75,7 @@ or:
 
 ### Talos Linux
 
-[Deploy, with or without Omni](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/04-Kubernetes)/microk8s
+[Deploy, with or without Omni](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/05-Talos)
 
 ## Pre-production
 
