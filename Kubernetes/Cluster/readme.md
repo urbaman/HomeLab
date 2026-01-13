@@ -33,7 +33,7 @@ project # kubeadm, microk8s, talos, ...
     ├── pre-production # pre-production setup
     |   ├── metricsServer
     |   |   ├── manifest-kubelet-serving-cert-approver-argocd.yaml #copy the kubelet-serving-cert-approver manifest, standalone or high-availability
-    |   |   ├── manifest-metrics-server-argocd.yaml #copy the metrics server manifest, standalone or high-availability
+    |   |   └── manifest-metrics-server-argocd.yaml #copy the metrics server manifest, standalone or high-availability
     |   ├── externalSecretsOperator
     |   |   ├── eso-argocd-chart.yaml
     |   |   ├── eso-values.yaml
