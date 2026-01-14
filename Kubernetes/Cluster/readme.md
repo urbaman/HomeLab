@@ -5,7 +5,7 @@
 - Git Server (Gitea)
 - Secrets Vault (OpenBao, for External Secrets operator)
 
-***Design notes:***
+**Design notes:**
 
 - We will use hostpath for database clusters, setting three nodes for scheduling the clusters. You need to install a proper database-ready shared storage to replace this (rookCeph?) but in a homeLab environment having both database cluster replicas and storage replicas would be too much of a bottleneck. Rook Ceph is there just for an example. You can also use NFS, but be aware of the settings to make it database-ready, as some of them do not support NFS or need specific settings.
 - ...
@@ -14,9 +14,10 @@
 
 We will need a git repository with the following structure
 
+```
 project # kubeadm, microk8s, talos, ...
 └── cluster
-    ├── bootstrap # bootstrapping the cluster
+    ├── bootstrap # bootstrapping the cluster, you can select the needed directory (kubeadm, microk8s, talos) and move the file up one level in /bootstrap directory
     |   ├── kubeadm
     |   |   ├── kubeadm-config.yaml
     |   |   ├── cilium-argocd-chart.yaml
@@ -30,10 +31,13 @@ project # kubeadm, microk8s, talos, ...
     |       ├── cilium-argocd-chart.yaml
     |       └── cilium-values.yaml
     ├── pre-production # pre-production setup
+    |   ├── metricsServer
+    |   |   ├── manifest-kubelet-serving-cert-approver-argocd.yaml #copy the kubelet-serving-cert-approver manifest, standalone or high-availability
+    |   |   └── manifest-metrics-server-argocd.yaml #copy the metrics server manifest, standalone or high-availability
     |   ├── externalSecretsOperator
     |   |   ├── eso-argocd-chart.yaml
     |   |   ├── eso-values.yaml
-    |   |   └── eso-argocd-external-secret-store.yaml
+    |   |   └── manifest-eso-argocd-external-secret-store.yaml
     |   ├── sealedSecrets
     |   ├── rookCeph
     |   |   ├── rook-ceph-argocd-chart.yaml
@@ -43,10 +47,11 @@ project # kubeadm, microk8s, talos, ...
     |   ├── NFS
     |   |   ├── nfs-subdir-external-provisioner-argocd-chart.yaml
     |   |   ├── nfs-subdir-external-provisioner-values.yaml
-    |   |   └── nfs-subdir-external-provisioner-argocd-sc-vss.yaml
+    |   |   └── manifest-nfs-subdir-external-provisioner-argocd-sc-vss.yaml
     |   ├── valkey
     |   └── argoCD
     └── production # production setup
+```
 
 ## Basic bootstrapping
 
@@ -70,7 +75,7 @@ or:
 
 ### Talos Linux
 
-[Deploy, with or without Omni](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/04-Kubernetes)/microk8s
+[Deploy, with or without Omni](https://github.com/urbaman/HomeLab/tree/main/Kubernetes/Cluster/05-Talos)
 
 ## Pre-production
 
