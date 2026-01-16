@@ -9,7 +9,7 @@ spec:
 apiVersion: "cilium.io/v2"
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: "blue-pool"
+  name: cilium-lb-pool
 spec:
   blocks:
   - start: "10.0.100.200"
