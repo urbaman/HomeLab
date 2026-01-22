@@ -352,7 +352,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: cuda-container
-      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda10.2
+      image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.8
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 GPU
