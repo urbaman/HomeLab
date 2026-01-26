@@ -26,19 +26,21 @@ For Docker Compose the default is the following, add and change it if you need
 
 ```json
 module.exports = {
-  "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
-  "endpoint": "https://gitea.domain.com",
+  "gitAuthor": "Amministratore Gitea <dockeradmin@urbaman.it>",
+  "endpoint": "https://gitea.urbaman.it",
   "platform": "gitea",
-  "token": "<git platform Personal Acccess Token>",
+  "token": "<token>",
   "hostRules": [
     {
-      "token": "<github Personal Acccess Token for changelog fetching>",
+      "token": "<gityhub-pat>",
       "matchHost": "github.com"
     }
   ],
   "repositories": [
-    'user/repo'
+    'admin/prova-renovate'
   ],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
   "enabledManagers": ["kubernetes", "argocd", "docker-compose"],
   "pinDigests": true,
   "argocd": {
