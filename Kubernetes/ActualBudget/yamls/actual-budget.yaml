@@ -8,7 +8,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: actual-budget-pvc
+  name: actual-budget-data-pvc
   namespace: actual-budget
 spec:
   accessModes:
@@ -48,12 +48,12 @@ spec:
               containerPort: 5006
               protocol: TCP
           volumeMounts:
-            - mountPath: /app/user-files
+            - mountPath: /data
               name: actual-data
       volumes:
         - name: actual-data
           persistentVolumeClaim:
-            claimName: actual-budget-pvc
+            claimName: actual-budget-data-pvc
 ---
 kind: Service
 metadata:
