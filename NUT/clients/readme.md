@@ -27,7 +27,7 @@ Set `Always On` in the BIOS power settings
 
 ### /etc/nut/ups.conf
 
-Add the `ignore = bypass` line to the UPS definition if you need the clients not to react to the UPS being in Eco Mode (Bypass)
+**NB: not working, breaks the driver** Add the `ignore = bypass` line to the UPS definition if you need the clients not to react to the UPS being in Eco Mode (Bypass)
 
 ### /etc/nut/upsmon.conf
 
