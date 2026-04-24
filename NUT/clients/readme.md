@@ -15,6 +15,10 @@ SHUTDOWNCMD "/sbin/shutdown -h +0"
 
 Set `Always On` in the BIOS power settings
 
+### VM/CT
+
+Set Shutdown timeout 300 to give 5 minutes and hard reset VM/CT
+
 ## PfSense
 
 Set FINAL_DELAY properly in advanced settings
@@ -97,3 +101,14 @@ esac
 ### /etc/nut/upsserv.conf
 
 Check that command `upsdrvctl shutdown` is active
+
+## Kubernetes:
+
+### Kubelet
+
+shutdownGracePeriod: 60s
+shutdownGracePeriodCriticalPods: 20s
+
+### Pods/Deployments/Statefulsets
+
+terminationGracePeriodSeconds 60 #or 120 - give time to the pods to properly shutdown dbs
